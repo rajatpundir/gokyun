@@ -19,7 +19,8 @@ export type LispExpression =
   | TextComparatorExpression
   | LogicalBinaryExpression
   | LogicalUnaryExpression
-  | DotExpression;
+  | DotExpression
+  | MatchExpression<ToBoolean, ToNumber>;
 
 export type BooleanLispExpression = (LispExpression | Bool) & ToBoolean;
 

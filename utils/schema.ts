@@ -5,12 +5,14 @@ import {
   BooleanLispExpression,
   Decimal,
   DecimalComparatorExpression,
+  Divide,
   Dot,
   DotExpression,
   Equals,
   GreaterThan,
   GreaterThanEquals,
   LessThan,
+  LessThanEquals,
   LogicalBinaryExpression,
   LogicalUnaryExpression,
   Not,
@@ -61,12 +63,16 @@ const schema: Record<
     effects: {},
     checks: {
       name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
@@ -206,7 +212,7 @@ const schema: Record<
       //Note. name can be overwritten via separate api endpoint
       // no private permissions will be given to modify the User struct
       mobile: [{ type: "str" }],
-      name: [{ type: "str" }],
+      nickname: [{ type: "str" }],
       language: [{ type: "other", other: "Language" }],
       knows_english: [{ type: "bool" }],
       country: [{ type: "other", other: "Country" }],
@@ -214,14 +220,13 @@ const schema: Record<
       guild_count: [{ type: "u32", default: 0 }],
       clan_count: [{ type: "u32", default: 0 }],
     },
-    uniqueness: [["mobile"]],
+    uniqueness: [["mobile"], ["nickname"]],
     permissions: {
       ownership: [],
       borrow: {},
       private: {},
       public: [
-        [["mobile"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [["nickname"], new Bool(true)],
         [["language"], new Bool(true)],
         [["knows_english"], new Bool(true)],
         [["country"], new Bool(true)],
@@ -243,13 +248,13 @@ const schema: Record<
         ),
         [errors.ErrEmptyField] as Message,
       ],
-      name_is_not_empty: [
+      nickname_is_not_empty: [
         new LogicalUnaryExpression(
           new Not(
             new TextComparatorExpression(
               new Equals<ToText>([
                 new Text(""),
-                new DotExpression(new Dot(["name"])),
+                new DotExpression(new Dot(["nickname"])),
                 [],
               ])
             )
@@ -322,6 +327,7 @@ const schema: Record<
       wallet: [{ type: "other", other: "Wallet" }],
       member_count: [{ type: "u32" }],
       product_count: [{ type: "u32" }],
+      virtual_product_count: [{ type: "u32" }],
       service_count: [{ type: "u32" }],
     },
     uniqueness: [["name"]],
@@ -511,6 +517,8 @@ const schema: Record<
     fields: {
       alliance: [{ type: "other", other: "Alliance" }],
       member: [{ type: "other", other: "User" }],
+      product_count: [{ type: "u32", default: 0 }],
+      service_count: [{ type: "u32", default: 0 }],
     },
     uniqueness: [["alliance", "member"]],
     permissions: {
@@ -801,10 +809,12 @@ const schema: Record<
     fields: {
       alliance: [{ type: "other", other: "Alliance" }],
       name: [{ type: "str" }],
-      language: [{ type: "other", other: "Language" }],
       description: [{ type: "clob" }],
       min_price: [{ type: "udecimal" }],
       max_price: [{ type: "udecimal" }],
+      provider_count: [{ type: "u32", default: 0 }],
+      provider_price_sum: [{ type: "u32", default: 0 }],
+      provider_average_price: [{ type: "udecimal", default: 0 }],
     },
     uniqueness: [["alliance", "name"]],
     permissions: {
@@ -815,7 +825,6 @@ const schema: Record<
           read: [],
           write: [
             [["name"], new Bool(true)],
-            [["language"], new Bool(true)],
             [["description"], new Bool(true)],
             [["min_price"], new Bool(true)],
             [["max_price"], new Bool(true)],
@@ -825,21 +834,74 @@ const schema: Record<
       public: [
         [["alliance"], new Bool(true)],
         [["name"], new Bool(true)],
-        [["language"], new Bool(true)],
         [["description"], new Bool(true)],
         [["min_price"], new Bool(true)],
         [["max_price"], new Bool(true)],
+        [["provider_count"], new Bool(true)],
+        [["provider_price_sum"], new Bool(true)],
+        [["provider_average_price"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance: {
+        dependencies: [["alliance"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance", "product_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance", "product_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance", "product_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance", "product_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+      compute_provider_average_price: {
+        dependencies: [["provider_count"], ["provider_price_sum"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "provider_average_price"],
+            expr: new NumberArithmeticExpression(
+              new Divide<ToDecimal>([
+                new DotExpression(new Dot(["_curr", "provider_price_sum"])),
+                [new DotExpression(new Dot(["_curr", "provider_count"]))],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
       name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
@@ -886,22 +948,30 @@ const schema: Record<
     effects: {},
     checks: {
       name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
-      language_is_not_being_redefined: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new DotExpression(new Dot(["language"])),
-            new DotExpression(new Dot(["alliance_product", "language"])),
-            [],
-          ])
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
@@ -912,6 +982,7 @@ const schema: Record<
       user: [{ type: "other", other: "User" }],
       name: [{ type: "str" }],
       price: [{ type: "udecimal" }],
+      alliance_count: [{ type: "u32", default: 0 }],
     },
     uniqueness: [["user", "name"]],
     permissions: {
@@ -927,6 +998,7 @@ const schema: Record<
         },
       },
       public: [
+        [["user"], new Bool(true)],
         [["name"], new Bool(true)],
         [["price"], new Bool(true)],
       ],
@@ -934,51 +1006,281 @@ const schema: Record<
     effects: {},
     checks: {
       name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
     },
   },
-  // Send request to User first to link AllianceProduct to UserProduct
-  // Rename below to LinkedUserProduct or something
-  // Ensure that a user product can only be linked to one alliance product
-  Listed_Alliance_Product: {
+  Listed_Alliance_Product_Request: {
+    // This struct represents a request sent to user to allow/deny linking
+    // This will be consumed by a function and transformed into a Listed_Alliance_Product
+    // fx(a: Listed_Alliance_Product_Request) -> Create(Listed_Alliance_Product), Delete(Listed_Alliance_Product_Request)
     fields: {
       alliance_product: [{ type: "other", other: "Alliance_Product" }],
-      member: [{ type: "other", other: "Alliance_Member" }],
+      alliance_member: [{ type: "other", other: "Alliance_Member" }],
       user_product: [{ type: "other", other: "User_Product" }],
     },
-    uniqueness: [["alliance_product", "unlisted_product"]],
+    uniqueness: [
+      ["alliance_product", "user_product"],
+      ["alliance_member", "user_product"],
+    ],
     permissions: {
       ownership: [
         ["alliance_product", new Bool(true)],
         ["user_product", new Bool(true)],
       ],
       borrow: {},
-      private: {},
+      private: {
+        alliance_product: {
+          read: [
+            [["alliance_member"], new Bool(true)],
+            [["user_product"], new Bool(true)],
+          ],
+          write: [],
+        },
+        user_product: {
+          read: [
+            [["alliance_product"], new Bool(true)],
+            [["alliance_member"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {
+      alliance_is_the_same: [
+        new NumberComparatorExpression(
+          new Equals<ToNumber>([
+            new DotExpression(new Dot(["alliance_product", "alliance"])),
+            new DotExpression(new Dot(["alliance_member", "alliance"])),
+            [],
+          ])
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
+      user_is_the_same: [
+        new NumberComparatorExpression(
+          new Equals<ToNumber>([
+            new DotExpression(new Dot(["alliance_member", "member"])),
+            new DotExpression(new Dot(["user_product", "user"])),
+            [],
+          ])
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
+      price_is_within_bounds: [
+        new LogicalBinaryExpression(
+          new And([
+            new NumberComparatorExpression(
+              new GreaterThanEquals([
+                new DotExpression(new Dot(["alliance_product", "min_price"])),
+                new DotExpression(new Dot(["user_product", "price"])),
+                [],
+              ])
+            ),
+            new NumberComparatorExpression(
+              new LessThanEquals([
+                new DotExpression(new Dot(["user_product", "price"])),
+                new DotExpression(new Dot(["alliance_product", "max_price"])),
+                [],
+              ])
+            ),
+            [],
+          ])
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
+    },
+  },
+  Listed_Alliance_Product: {
+    // This will be created after Listed_Alliance_Product_Request is consumed by a function
+    fields: {
+      alliance_product: [{ type: "other", other: "Alliance_Product" }],
+      alliance_member: [{ type: "other", other: "Alliance_Member" }],
+      user_product: [{ type: "other", other: "User_Product" }],
+    },
+    uniqueness: [
+      ["alliance_product", "user_product"],
+      ["alliance_member", "user_product"],
+    ],
+    permissions: {
+      ownership: [
+        ["alliance_product", new Bool(true)],
+        ["alliance_member", new Bool(true)],
+        ["user_product", new Bool(true)],
+      ],
+      borrow: {},
+      private: {
+        alliance_product: {
+          read: [[["alliance_member"], new Bool(true)]],
+          write: [],
+        },
+        user_product: {
+          read: [[["alliance_member"], new Bool(true)]],
+          write: [],
+        },
+      },
       public: [
         [["alliance_product"], new Bool(true)],
         [["user_product"], new Bool(true)],
       ],
     },
-    effects: {},
-    checks: {},
+    effects: {
+      update_count_in_alliance_product: {
+        dependencies: [["alliance_product"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance_product", "provider_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance_product", "provider_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance_product", "provider_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_product", "provider_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+      update_count_in_alliance_member: {
+        dependencies: [["alliance_member"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance_member", "product_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance_member", "product_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance_member", "product_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_member", "product_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+      update_count_in_user_product: {
+        dependencies: [["user_product"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "user_product", "alliance_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "user_product", "alliance_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "user_product", "alliance_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user_product", "alliance_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      alliance_is_the_same: [
+        new NumberComparatorExpression(
+          new Equals<ToNumber>([
+            new DotExpression(new Dot(["alliance_product", "alliance"])),
+            new DotExpression(new Dot(["alliance_member", "alliance"])),
+            [],
+          ])
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
+      user_is_the_same: [
+        new NumberComparatorExpression(
+          new Equals<ToNumber>([
+            new DotExpression(new Dot(["alliance_member", "member"])),
+            new DotExpression(new Dot(["user_product", "user"])),
+            [],
+          ])
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
+      price_is_within_bounds: [
+        new LogicalBinaryExpression(
+          new And([
+            new NumberComparatorExpression(
+              new GreaterThanEquals([
+                new DotExpression(new Dot(["alliance_product", "min_price"])),
+                new DotExpression(new Dot(["user_product", "price"])),
+                [],
+              ])
+            ),
+            new NumberComparatorExpression(
+              new LessThanEquals([
+                new DotExpression(new Dot(["user_product", "price"])),
+                new DotExpression(new Dot(["alliance_product", "max_price"])),
+                [],
+              ])
+            ),
+            [],
+          ])
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
+    },
   },
   Alliance_Virtual_Product: {
     fields: {
       alliance: [{ type: "other", other: "Alliance" }],
-      listed_alliance_product: [
-        { type: "other", other: "Listed_Alliance_Product" },
-      ],
+      alliance_product: [{ type: "other", other: "Listed_Alliance_Product" }],
       markup: [{ type: "udecimal" }], // percentage increase above base price
     },
-    uniqueness: [["alliance", "listed_alliance_product"]],
+    uniqueness: [["alliance", "alliance_product"]],
     permissions: {
       ownership: [["alliance", new Bool(true)]],
       borrow: {},
@@ -986,30 +1288,74 @@ const schema: Record<
         alliance: {
           read: [],
           write: [
-            [["listed_alliance_product"], new Bool(true)],
+            [["alliance_product"], new Bool(true)],
             [["markup"], new Bool(true)],
           ],
         },
       },
       public: [
         [["alliance"], new Bool(true)],
-        [["listed_alliance_product"], new Bool(true)],
+        [["alliance_product"], new Bool(true)],
         [["markup"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance: {
+        dependencies: [["alliance"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance", "virtual_product_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance", "virtual_product_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance", "virtual_product_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance", "virtual_product_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
-      // listed_alliance_product.alliance != alliance
+      alliance_is_not_same: [
+        new LogicalUnaryExpression(
+          new Not(
+            new NumberComparatorExpression(
+              new Equals<ToNumber>([
+                new DotExpression(new Dot(["alliance_product", "alliance"])),
+                new DotExpression(new Dot(["alliance"])),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrUnexpected] as Message,
+      ],
     },
   },
   Alliance_Service: {
     fields: {
       alliance: [{ type: "other", other: "Alliance" }],
-      language: [{ type: "other", other: "Language" }],
       name: [{ type: "str" }],
       description: [{ type: "clob" }],
       min_price: [{ type: "udecimal" }],
       max_price: [{ type: "udecimal" }],
+      provider_count: [{ type: "u32", default: 0 }],
     },
     uniqueness: [["alliance", "name"]],
     permissions: {
@@ -1019,8 +1365,8 @@ const schema: Record<
         alliance: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
             [["name"], new Bool(true)],
+            [["language"], new Bool(true)],
             [["description"], new Bool(true)],
             [["min_price"], new Bool(true)],
             [["max_price"], new Bool(true)],
@@ -1029,22 +1375,60 @@ const schema: Record<
       },
       public: [
         [["alliance"], new Bool(true)],
-        [["language"], new Bool(true)],
         [["name"], new Bool(true)],
+        [["language"], new Bool(true)],
         [["description"], new Bool(true)],
         [["min_price"], new Bool(true)],
         [["max_price"], new Bool(true)],
+        [["provider_count"], new Bool(true)],
+        [["provider_price_sum"], new Bool(true)],
+        [["provider_average_price"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance: {
+        dependencies: [["alliance"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance", "service_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance", "service_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance", "service_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance", "service_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
       name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
@@ -1072,7 +1456,7 @@ const schema: Record<
       ownership: [["alliance_service", new Bool(true)]],
       borrow: {},
       private: {
-        alliance: {
+        alliance_service: {
           read: [],
           write: [
             [["language"], new Bool(true)],
@@ -1091,119 +1475,431 @@ const schema: Record<
     effects: {},
     checks: {
       name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
-      // language != alliance_service.language (base language of product)
-    },
-  },
-  Unlisted_Service: {
-    // Service should have tasks that needs to be done
-    // Milestones and Tasks are predefined
-    // Tasks are filled into milestone against AllianceService at time of delivery to determine price
-    fields: {
-      user: [{ type: "other", other: "User" }],
-      name: [{ type: "str" }],
-      price: [{ type: "udecimal" }],
-    },
-    uniqueness: [["user", "name"]],
-    permissions: {
-      ownership: [["user", new Bool(true)]],
-      borrow: {},
-      private: {
-        user: {
-          read: [],
-          write: [
-            [["name"], new Bool(true)],
-            [["price"], new Bool(true)],
-          ],
-        },
-      },
-      public: [
-        [["name"], new Bool(true)],
-        [["price"], new Bool(true)],
-      ],
-    },
-    effects: {},
-    checks: {
-      name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
         ),
         [errors.ErrEmptyField] as Message,
       ],
     },
   },
-  Unlisted_Service_Task: {
-    fields: {
-      unlisted_service: [{ type: "other", other: "Unlisted_Service" }],
-      name: [{ type: "str" }],
-      price: [{ type: "udecimal" }],
-    },
-    uniqueness: [["unlisted_service", "name"]],
-    permissions: {
-      ownership: [["unlisted_service", new Bool(true)]],
-      borrow: {},
-      private: {
-        user: {
-          read: [],
-          write: [
-            [["name"], new Bool(true)],
-            [["price"], new Bool(true)],
-          ],
-        },
-      },
-      public: [
-        [["name"], new Bool(true)],
-        [["price"], new Bool(true)],
-      ],
-    },
-    effects: {},
-    checks: {
-      name_cannot_be_empty: [
-        new TextComparatorExpression(
-          new Equals<ToText>([
-            new Text(""),
-            new DotExpression(new Dot(["name"])),
-            [],
-          ])
-        ),
-        [errors.ErrEmptyField] as Message,
-      ],
-    },
-  },
-  Listed_Alliance_Service: {
+  Alliance_Service_Task: {
     fields: {
       alliance_service: [{ type: "other", other: "Alliance_Service" }],
-      member: [{ type: "other", other: "Alliance_Member" }],
-      unlisted_service: [{ type: "other", other: "Unlisted_Service" }],
+      name: [{ type: "str" }],
+      description: [{ type: "clob" }],
+      price: [{ type: "udecimal" }],
     },
-    uniqueness: [["alliance_service", "unlisted_service"]],
+    uniqueness: [["alliance_service", "name"]],
     permissions: {
-      ownership: [
-        ["alliance_service", new Bool(true)],
-        ["unlisted_service", new Bool(true)],
-      ],
+      ownership: [["alliance_service", new Bool(true)]],
       borrow: {},
-      private: {},
+      private: {
+        alliance_service: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["price"], new Bool(true)],
+          ],
+        },
+      },
       public: [
         [["alliance_service"], new Bool(true)],
-        [["unlisted_service"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["description"], new Bool(true)],
+        [["price"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Service_Task_Translation: {
+    fields: {
+      alliance_service_task: [
+        { type: "other", other: "Alliance_Service_Task" },
+      ],
+      language: [{ type: "other", other: "Language" }],
+      name: [{ type: "str" }],
+      description: [{ type: "clob" }],
+    },
+    uniqueness: [["alliance_service_task", "language"]],
+    permissions: {
+      ownership: [["alliance_service_task", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance_service_task: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_service_task"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Service_Milestone: {
+    fields: {
+      alliance_service: [{ type: "other", other: "Alliance_Service" }],
+      name: [{ type: "str" }],
+      description: [{ type: "clob" }],
+      order: [{ type: "u32" }],
+    },
+    uniqueness: [
+      ["alliance_service", "name"],
+      ["alliance_service", "order"],
+    ],
+    permissions: {
+      ownership: [["alliance_service", new Bool(true)]],
+      borrow: {},
+      private: {
+        user: {
+          read: [],
+          write: [[["name"], new Bool(true)]],
+        },
+      },
+      public: [
+        [["alliance_service"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Service_Milestone_Translation: {
+    fields: {
+      alliance_service_milsestone: [
+        { type: "other", other: "Alliance_Service_Milestone" },
+      ],
+      language: [{ type: "other", other: "Language" }],
+      name: [{ type: "str" }],
+      description: [{ type: "clob" }],
+    },
+    uniqueness: [["alliance_service_milsestone", "language"]],
+    permissions: {
+      ownership: [["alliance_service_milsestone", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance_service_milsestone: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_service_milsestone"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Service_Milestone_Task: {
+    fields: {
+      alliance_service_milestone: [
+        { type: "other", other: "Alliance_Service_Milestone" },
+      ],
+      alliance_service_task: [
+        { type: "other", other: "Alliance_Service_Task" },
+      ],
+    },
+    uniqueness: [["alliance_service_milestone", "alliance_service_task"]],
+    permissions: {
+      ownership: [
+        ["alliance_service_milestone", new Bool(true)],
+        ["alliance_service_task", new Bool(true)],
+      ],
+      borrow: {},
+      private: {
+        alliance_service_milestone: {
+          read: [],
+          write: [],
+        },
+        alliance_service_task: {
+          read: [],
+          write: [],
+        },
+      },
+      public: [
+        [["alliance_service_milestone"], new Bool(true)],
+        [["alliance_service_task"], new Bool(true)],
       ],
     },
     effects: {},
     checks: {},
   },
+  Alliance_Service_Provider: {
+    fields: {
+      alliance_service: [{ type: "other", other: "Alliance_Service" }],
+      alliance_member: [{ type: "other", other: "Alliance_Member" }],
+    },
+    uniqueness: [["alliance_service", "alliance_member"]],
+    permissions: {
+      ownership: [
+        ["alliance_service", new Bool(true)],
+        ["alliance_member", new Bool(true)],
+      ],
+      borrow: {},
+      private: {
+        alliance_service: {
+          read: [],
+          write: [],
+        },
+      },
+      public: [
+        [["alliance_service"], new Bool(true)],
+        [["alliance_member"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_service: {
+        dependencies: [["alliance_service"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance_service", "provider_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance_service", "provider_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance_service", "provider_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_service", "provider_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+      update_count_in_member: {
+        dependencies: [["alliance_member"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance_member", "service_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance_member", "service_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance_member", "service_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_member", "service_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Coupon: {
+    fields: {
+      alliance: [{ type: "other", other: "Alliance" }],
+      name: [{ type: "str" }],
+      remaining: [{ type: "u32", default: 0 }],
+      used: [{ type: "u32", default: 0 }],
+      min_price: [{ type: "udecimal", default: 0 }],
+      flat_discount: [{ type: "bool", default: true }],
+      discount: [{ type: "udecimal", default: 0 }],
+      max_discount: [{ type: "udecimal", default: 0 }],
+      valid_from: [{ type: "timestamp" }],
+      valid_to: [{ type: "timestamp" }],
+    },
+    uniqueness: [["alliance", "name"]],
+    permissions: {
+      ownership: [["alliance", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance: {
+          read: [
+            [["name"], new Bool(true)],
+            [["issued"], new Bool(true)],
+            [["used"], new Bool(true)],
+            [["min_price"], new Bool(true)],
+            [["flat_discount"], new Bool(true)],
+            [["discount"], new Bool(true)],
+            [["max_discount"], new Bool(true)],
+            [["valid_from"], new Bool(true)],
+            [["valid_to"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [
+        [["alliance"], new Bool(true)],
+        [["min_price"], new Bool(true)],
+        [["flat_discount"], new Bool(true)],
+        [["valid_from"], new Bool(true)],
+        [["valid_to"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {},
+  },
+
   Alliance_Member_Request: {
     fields: {
       alliance: [{ type: "other", other: "Alliance" }],
