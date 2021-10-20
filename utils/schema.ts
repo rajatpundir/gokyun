@@ -9,7 +9,6 @@ import {
   Dot,
   DotExpression,
   Equals,
-  GreaterThan,
   GreaterThanEquals,
   LessThan,
   LessThanEquals,
@@ -42,16 +41,347 @@ import { StructEffects, StructPermissions, WeakEnum } from "./variable";
 const schema: Record<
   string,
   {
-    fields: Record<string, ReadonlyArray<WeakEnum>>;
+    fields: Record<string, WeakEnum>;
     uniqueness: ReadonlyArray<ReadonlyArray<string>>;
     permissions: StructPermissions;
     effects: StructEffects;
     checks: Record<string, [BooleanLispExpression, Message]>;
   }
 > = {
+  Product_Category: {
+    fields: {
+      parent: { type: "other", other: "Product_Category" },
+      name: { type: "str" },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [
+        [["parent"], new Bool(true)],
+        [["name"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Product_Category_Translation: {
+    fields: {
+      product_category: { type: "other", other: "Product_Category" },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+    },
+    uniqueness: [["product_category", "language"]],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [
+        [["product_category"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_product_category: {
+        dependencies: [["product_category"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "product_category", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "product_category", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "product_category", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "product_category", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Service_Category: {
+    fields: {
+      parent: { type: "other", other: "Service_Category" },
+      name: { type: "str" },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [
+        [["parent"], new Bool(true)],
+        [["name"], new Bool(true)],
+      ],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Service_Category_Translation: {
+    fields: {
+      service_category: { type: "other", other: "Service_Category" },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+    },
+    uniqueness: [["service_category", "language"]],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [
+        [["service_category"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_service_category: {
+        dependencies: [["service_category"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "service_category", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "service_category", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "service_category", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "service_category", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Tag: {
+    fields: {
+      name: { type: "str" },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [["name"]],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [[["name"], new Bool(true)]],
+    },
+    effects: {},
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Tag_Translation: {
+    fields: {
+      tag: { type: "other", other: "Tag" },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+    },
+    uniqueness: [["tag", "language"]],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_tag: {
+        dependencies: [["tag"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "tag", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "tag", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "tag", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "tag", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
   Country: {
     fields: {
-      name: [{ type: "str" }],
+      name: { type: "str" },
     },
     uniqueness: [["name"]],
     permissions: {
@@ -84,15 +414,15 @@ const schema: Record<
   // System can even utilize this information in future to suggest fastest path of delivery.
   Pincode: {
     fields: {
-      country: [{ type: "other", other: "Country" }],
-      name: [{ type: "str" }],
+      country: { type: "other", other: "Country" },
+      name: { type: "str" },
       // Use standard deviation for average calculation
       // values greater than 2*sigma (95%) are outliers
       // outliers should not be used to update mean and sigma, if count > 100
       //figure formula for calculatin mu and sigma as values are added/removed one at a time
-      count: [{ type: "u32", default: 0 }],
-      average_latitude: [{ type: "idecimal", default: 0 }],
-      average_longitude: [{ type: "idecimal", default: 0 }],
+      count: { type: "u32", default: 0 },
+      average_latitude: { type: "idecimal", default: 0 },
+      average_longitude: { type: "idecimal", default: 0 },
     },
     uniqueness: [["country", "name"]],
     permissions: {
@@ -144,10 +474,10 @@ const schema: Record<
   },
   PincodeStats: {
     fields: {
-      from: [{ type: "other", other: "Pincode" }],
-      to: [{ type: "other", other: "Pincode" }],
+      from: { type: "other", other: "Pincode" },
+      to: { type: "other", other: "Pincode" },
       // Use standard deviation for average calculation
-      average_time: [{ type: "timestamp", default: 0 }],
+      average_time: { type: "timestamp", default: 0 },
     },
     uniqueness: [["from", "to"]],
     permissions: {
@@ -180,7 +510,7 @@ const schema: Record<
   },
   Language: {
     fields: {
-      code: [{ type: "str" }],
+      code: { type: "str" },
     },
     uniqueness: [["code"]],
     permissions: {
@@ -211,14 +541,15 @@ const schema: Record<
     fields: {
       //Note. name can be overwritten via separate api endpoint
       // no private permissions will be given to modify the User struct
-      mobile: [{ type: "str" }],
-      nickname: [{ type: "str" }],
-      language: [{ type: "other", other: "Language" }],
-      knows_english: [{ type: "bool" }],
-      country: [{ type: "other", other: "Country" }],
-      alliance_count: [{ type: "u32", default: 0 }],
-      guild_count: [{ type: "u32", default: 0 }],
-      clan_count: [{ type: "u32", default: 0 }],
+      mobile: { type: "str" },
+      nickname: { type: "str" },
+      language: { type: "other", other: "Language" },
+      knows_english: { type: "bool" },
+      country: { type: "other", other: "Country" },
+      alliance_count: { type: "u32", default: 0 },
+      guild_count: { type: "u32", default: 0 },
+      clan_count: { type: "u32", default: 0 },
+      product_family_count: { type: "u32", default: 0 },
     },
     uniqueness: [["mobile"], ["nickname"]],
     permissions: {
@@ -266,16 +597,16 @@ const schema: Record<
   },
   Wallet: {
     fields: {
-      user: [{ type: "other", other: "User" }],
-      name: [{ type: "str" }],
+      user: { type: "other", other: "User" },
+      name: { type: "str" },
       // Note. A Function modifies values for copper, silver, gold.
       // Coins cannot be modified directly
-      copper: [{ type: "udecimal" }],
-      silver: [{ type: "udecimal" }],
-      gold: [{ type: "udecimal" }],
-      alliance_count: [{ type: "u32", default: 0 }],
-      guild_count: [{ type: "u32", default: 0 }],
-      clan_count: [{ type: "u32", default: 0 }],
+      copper: { type: "udecimal" },
+      silver: { type: "udecimal" },
+      gold: { type: "udecimal" },
+      alliance_count: { type: "u32", default: 0 },
+      guild_count: { type: "u32", default: 0 },
+      clan_count: { type: "u32", default: 0 },
     },
     uniqueness: [["user", "name"]],
     permissions: {
@@ -322,13 +653,14 @@ const schema: Record<
   },
   Alliance: {
     fields: {
-      name: [{ type: "str" }],
+      name: { type: "str" },
       // Note. Care to be taken that wallet of just about anyone cannot be assigned
-      wallet: [{ type: "other", other: "Wallet" }],
-      member_count: [{ type: "u32" }],
-      product_count: [{ type: "u32" }],
-      virtual_product_count: [{ type: "u32" }],
-      service_count: [{ type: "u32" }],
+      wallet: { type: "other", other: "Wallet" },
+      member_count: { type: "u32", default: 0 },
+      product_count: { type: "u32", default: 0 },
+      virtual_product_count: { type: "u32", default: 0 },
+      service_count: { type: "u32", default: 0 },
+      product_family_count: { type: "u32", default: 0 },
     },
     uniqueness: [["name"]],
     permissions: {
@@ -391,10 +723,10 @@ const schema: Record<
   },
   Guild: {
     fields: {
-      name: [{ type: "str" }],
+      name: { type: "str" },
       // Note. Care to be taken that wallet of just about anyone cannot be assigned
-      wallet: [{ type: "other", other: "Wallet" }],
-      member_count: [{ type: "u32" }],
+      wallet: { type: "other", other: "Wallet" },
+      member_count: { type: "u32" },
     },
     uniqueness: [["name"]],
     permissions: {
@@ -453,10 +785,10 @@ const schema: Record<
   },
   Clan: {
     fields: {
-      name: [{ type: "str" }],
+      name: { type: "str" },
       // Note. Care to be taken that wallet of just about anyone cannot be assigned
-      wallet: [{ type: "other", other: "Wallet" }],
-      member_count: [{ type: "u32" }],
+      wallet: { type: "other", other: "Wallet" },
+      member_count: { type: "u32" },
     },
     uniqueness: [],
     permissions: {
@@ -513,12 +845,86 @@ const schema: Record<
       ],
     },
   },
+  Alliance_Member_Request: {
+    // This is consumed by a function and converted to AllianceMember or just deleted by another.
+    fields: {
+      alliance: { type: "other", other: "Alliance" },
+      user: { type: "other", other: "User" },
+    },
+    uniqueness: [["alliance", "user"]],
+    permissions: {
+      ownership: [["user", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance: {
+          read: [[["user"], new Bool(true)]],
+          write: [],
+        },
+        user: {
+          read: [[["alliance"], new Bool(true)]],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Guild_Member_Request: {
+    fields: {
+      guild: { type: "other", other: "Guild" },
+      user: { type: "other", other: "User" },
+    },
+    uniqueness: [["guild", "user"]],
+    permissions: {
+      ownership: [["guild", new Bool(true)]],
+      borrow: {},
+      private: {
+        guild: {
+          read: [[["user"], new Bool(true)]],
+          write: [],
+        },
+        user: {
+          read: [[["guild"], new Bool(true)]],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Clan_Member_Invite: {
+    // Produced by Clan leader and consumed by a User to produce ClanMember
+    fields: {
+      clan: { type: "other", other: "Clan" },
+      user: { type: "other", other: "User" },
+    },
+    uniqueness: [["clan", "user"]],
+    permissions: {
+      ownership: [["user", new Bool(true)]],
+      borrow: {},
+      private: {
+        clan: {
+          read: [[["user"], new Bool(true)]],
+          write: [],
+        },
+        user: {
+          read: [[["clan"], new Bool(true)]],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
   Alliance_Member: {
     fields: {
-      alliance: [{ type: "other", other: "Alliance" }],
-      member: [{ type: "other", other: "User" }],
-      product_count: [{ type: "u32", default: 0 }],
-      service_count: [{ type: "u32", default: 0 }],
+      alliance: { type: "other", other: "Alliance" },
+      member: { type: "other", other: "User" },
+      product_count: { type: "u32", default: 0 },
+      service_count: { type: "u32", default: 0 },
     },
     uniqueness: [["alliance", "member"]],
     permissions: {
@@ -619,8 +1025,8 @@ const schema: Record<
   },
   Guild_Member: {
     fields: {
-      guild: [{ type: "other", other: "Guild" }],
-      member: [{ type: "other", other: "User" }],
+      guild: { type: "other", other: "Guild" },
+      member: { type: "other", other: "User" },
     },
     uniqueness: [["guild", "member"]],
     permissions: {
@@ -713,8 +1119,8 @@ const schema: Record<
   },
   Clan_Member: {
     fields: {
-      clan: [{ type: "other", other: "Clan" }],
-      member: [{ type: "other", other: "User" }],
+      clan: { type: "other", other: "Clan" },
+      member: { type: "other", other: "User" },
     },
     uniqueness: [["clan", "member"]],
     permissions: {
@@ -805,16 +1211,667 @@ const schema: Record<
     },
     checks: {},
   },
+  Alliance_Product_Family: {
+    fields: {
+      alliance: { type: "other", other: "Alliance" },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      product_category: { type: "other", other: "Product_Category" },
+      property_count: { type: "u32", default: 0 },
+      variant_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["alliance", "name"],
+      ["alliance", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        alliance: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance: {
+        dependencies: [["alliance"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance", "product_family_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance", "product_family_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance", "product_family_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance", "product_family_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Family_Translation: {
+    fields: {
+      alliance_product_family: {
+        type: "other",
+        other: "Alliance_Product_Family",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
+    },
+    uniqueness: [["alliance_product_family", "language"]],
+    permissions: {
+      ownership: [["alliance_product_family", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance_product_family: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_product_family"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product_family: {
+        dependencies: [["alliance_product_family"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_product_family", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_product_family", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Family_Property: {
+    fields: {
+      alliance_product_family: {
+        type: "other",
+        other: "Alliance_Product_Family",
+      },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      value_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["alliance_product_family", "name"],
+      ["alliance_product_family", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        alliance_product_family: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_product_family"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product_family: {
+        dependencies: [["alliance_product_family"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_product_family", "property_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family",
+                    "property_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_product_family", "property_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family",
+                    "property_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Family_Property_Translation: {
+    fields: {
+      alliance_product_family_property: {
+        type: "other",
+        other: "Alliance_Product_Family_Property",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
+    },
+    uniqueness: [["alliance_product_family_property", "language"]],
+    permissions: {
+      ownership: [["alliance_product_family_property", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance_product_family_property: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_product_family_property"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product_family_property: {
+        dependencies: [["alliance_product_family_property"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: [
+              "_prev",
+              "alliance_product_family_property",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family_property",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: [
+              "_curr",
+              "alliance_product_family_property",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family_property",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Family_Property_Value: {
+    fields: {
+      alliance_product_family_property: {
+        type: "other",
+        other: "Alliance_Product_Family_Property",
+      },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["alliance_product_family_property", "name"],
+      ["alliance_product_family_property", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        alliance_product_family_property: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_product_family_property"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product_family_property: {
+        dependencies: [["alliance_product_family_property"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_product_family_property", "value_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family_property",
+                    "value_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_product_family_property", "value_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family_property",
+                    "value_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Family_Property_Value_Translation: {
+    fields: {
+      alliance_product_family_property_value: {
+        type: "other",
+        other: "Alliance_Product_Family_Property_Value",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
+    },
+    uniqueness: [["alliance_product_family_property_value", "language"]],
+    permissions: {
+      ownership: [["alliance_product_family_property_value", new Bool(true)]],
+      borrow: {},
+      private: {
+        alliance_product_family_property_value: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_product_family_property_value"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product_family_property_value: {
+        dependencies: [["alliance_product_family_property_value"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: [
+              "_prev",
+              "alliance_product_family_property_value",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family_property_value",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: [
+              "_curr",
+              "alliance_product_family_property_value",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_product_family_property_value",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Family_Variant: {
+    fields: {
+      alliance_product_family: {
+        type: "other",
+        other: "Alliance_Product_Family",
+      },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      value_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["alliance_product_family", "name"],
+      ["alliance_product_family", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        alliance_product_family: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["alliance_product_family"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product_family: {
+        dependencies: [["alliance_product_family"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_product_family", "variant_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_product_family", "variant_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_product_family", "variant_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_product_family", "variant_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
   Alliance_Product: {
     fields: {
-      alliance: [{ type: "other", other: "Alliance" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
-      min_price: [{ type: "udecimal" }],
-      max_price: [{ type: "udecimal" }],
-      provider_count: [{ type: "u32", default: 0 }],
-      provider_price_sum: [{ type: "u32", default: 0 }],
-      provider_average_price: [{ type: "udecimal", default: 0 }],
+      alliance: { type: "other", other: "Alliance" },
+      name: { type: "str" },
+      description: { type: "clob" },
+      min_price: { type: "udecimal" },
+      max_price: { type: "udecimal" },
+      provider_count: { type: "u32", default: 0 },
+      provider_price_sum: { type: "u32", default: 0 },
+      provider_average_price: { type: "udecimal", default: 0 },
+      tag_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: 0 },
     },
     uniqueness: [["alliance", "name"]],
     permissions: {
@@ -915,14 +1972,24 @@ const schema: Record<
         ),
         [errors.ErrEmptyField] as Message,
       ],
+      tag_count_is_less_than_system_tag_count: [
+        new NumberComparatorExpression(
+          new LessThanEquals<ToNumber>([
+            new DotExpression(new Dot(["tag_count"])),
+            new DotExpression(new Dot(["_system", "tag_count"])),
+            [],
+          ])
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
     },
   },
   Alliance_Product_Translation: {
     fields: {
-      alliance_product: [{ type: "other", other: "Alliance_Product" }],
-      language: [{ type: "other", other: "Language" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
+      alliance_product: { type: "other", other: "Alliance_Product" },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
     },
     uniqueness: [["alliance_product", "language"]],
     permissions: {
@@ -945,7 +2012,642 @@ const schema: Record<
         [["description"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance_product: {
+        dependencies: [["alliance_product"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_product", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_product", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_product", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_product", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  Alliance_Product_Tag: {
+    fields: {
+      alliance_product: { type: "other", other: "Alliance_Product" },
+      tag: { type: "other", other: "Tag" },
+    },
+    uniqueness: [["alliance_product", "tag"]],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        alliance_product: {
+          read: [],
+          write: [[["tag"], new Bool(true)]],
+        },
+      },
+      public: [
+        [["alliance_product"], new Bool(true)],
+        [["tag"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_alliance_product: {
+        dependencies: [["alliance_product"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            // Run on creation/updation as per rules of effects
+            path: ["_curr", "alliance_product", "tag_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_curr", "alliance_product", "tag_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            // Run on updation/deletion as per rules of effects
+            path: ["_prev", "alliance_product", "tag_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_product", "tag_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {},
+  },
+  User_Product_Family: {
+    fields: {
+      user: { type: "other", other: "User" },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      property_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["user", "name"],
+      ["user", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        user: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["user"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_user: {
+        dependencies: [["user"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "user", "product_family_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user", "product_family_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "user", "product_family_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user", "product_family_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  User_Product_Family_Translation: {
+    fields: {
+      user_product_family: {
+        type: "other",
+        other: "User_Product_Family",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
+    },
+    uniqueness: [["user_product_family", "language"]],
+    permissions: {
+      ownership: [["user_product_family", new Bool(true)]],
+      borrow: {},
+      private: {
+        user_product_family: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["user_product_family"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_user_product_family: {
+        dependencies: [["user_product_family"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "user_product_family", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user_product_family", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "user_product_family", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user_product_family", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  User_Product_Family_Property: {
+    fields: {
+      user_product_family: {
+        type: "other",
+        other: "User_Product_Family",
+      },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      value_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["user_product_family", "name"],
+      ["user_product_family", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        user_product_family: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["user_product_family"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_user_product_family: {
+        dependencies: [["user_product_family"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "user_product_family", "property_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user_product_family", "property_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "user_product_family", "property_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "user_product_family", "property_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  User_Product_Family_Property_Translation: {
+    fields: {
+      user_product_family_property: {
+        type: "other",
+        other: "User_Product_Family_Property",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
+    },
+    uniqueness: [["user_product_family_property", "language"]],
+    permissions: {
+      ownership: [["user_product_family_property", new Bool(true)]],
+      borrow: {},
+      private: {
+        user_product_family_property: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["user_product_family_property"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_user_product_family_property: {
+        dependencies: [["user_product_family_property"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: [
+              "_prev",
+              "user_product_family_property",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "user_product_family_property",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: [
+              "_curr",
+              "user_product_family_property",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "user_product_family_property",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      language_is_not_english: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["language", "code"])),
+                new Text("en"),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  User_Product_Family_Property_Value: {
+    fields: {
+      user_product_family_property: {
+        type: "other",
+        other: "User_Product_Family_Property",
+      },
+      name: { type: "str" },
+      order: { type: "u32", default: 1 },
+      translation_count: { type: "u32", default: 0 },
+    },
+    uniqueness: [
+      ["user_product_family_property", "name"],
+      ["user_product_family_property", "order"],
+    ],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {
+        user_product_family_property: {
+          read: [],
+          write: [
+            [["name"], new Bool(true)],
+            [["order"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["user_product_family_property"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["order"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_user_product_family_property: {
+        dependencies: [["user_product_family_property"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "user_product_family_property", "value_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "user_product_family_property",
+                    "value_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "user_product_family_property", "value_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "user_product_family_property",
+                    "value_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
+    checks: {
+      name_cannot_be_empty: [
+        new LogicalUnaryExpression(
+          new Not(
+            new TextComparatorExpression(
+              new Equals<ToText>([
+                new DotExpression(new Dot(["name"])),
+                new Text(""),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+    },
+  },
+  User_Product_Family_Property_Value_Translation: {
+    fields: {
+      user_product_family_property_value: {
+        type: "other",
+        other: "User_Product_Family_Property_Value",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
+    },
+    uniqueness: [["user_product_family_property_value", "language"]],
+    permissions: {
+      ownership: [["user_product_family_property_value", new Bool(true)]],
+      borrow: {},
+      private: {
+        user_product_family_property_value: {
+          read: [],
+          write: [
+            [["language"], new Bool(true)],
+            [["name"], new Bool(true)],
+            [["description"], new Bool(true)],
+          ],
+        },
+      },
+      public: [
+        [["user_product_family_property_value"], new Bool(true)],
+        [["language"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["description"], new Bool(true)],
+      ],
+    },
+    effects: {
+      update_count_in_user_product_family_property_value: {
+        dependencies: [["user_product_family_property_value"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: [
+              "_prev",
+              "user_product_family_property_value",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "user_product_family_property_value",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: [
+              "_curr",
+              "user_product_family_property_value",
+              "translation_count",
+            ],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "user_product_family_property_value",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -979,10 +2681,10 @@ const schema: Record<
   },
   User_Product: {
     fields: {
-      user: [{ type: "other", other: "User" }],
-      name: [{ type: "str" }],
-      price: [{ type: "udecimal" }],
-      alliance_count: [{ type: "u32", default: 0 }],
+      user: { type: "other", other: "User" },
+      name: { type: "str" },
+      price: { type: "udecimal" },
+      alliance_count: { type: "u32", default: 0 },
     },
     uniqueness: [["user", "name"]],
     permissions: {
@@ -1026,9 +2728,9 @@ const schema: Record<
     // This will be consumed by a function and transformed into a Listed_Alliance_Product
     // fx(a: Listed_Alliance_Product_Request) -> Create(Listed_Alliance_Product), Delete(Listed_Alliance_Product_Request)
     fields: {
-      alliance_product: [{ type: "other", other: "Alliance_Product" }],
-      alliance_member: [{ type: "other", other: "Alliance_Member" }],
-      user_product: [{ type: "other", other: "User_Product" }],
+      alliance_product: { type: "other", other: "Alliance_Product" },
+      alliance_member: { type: "other", other: "Alliance_Member" },
+      user_product: { type: "other", other: "User_Product" },
     },
     uniqueness: [
       ["alliance_product", "user_product"],
@@ -1107,9 +2809,9 @@ const schema: Record<
   Listed_Alliance_Product: {
     // This will be created after Listed_Alliance_Product_Request is consumed by a function
     fields: {
-      alliance_product: [{ type: "other", other: "Alliance_Product" }],
-      alliance_member: [{ type: "other", other: "Alliance_Member" }],
-      user_product: [{ type: "other", other: "User_Product" }],
+      alliance_product: { type: "other", other: "Alliance_Product" },
+      alliance_member: { type: "other", other: "Alliance_Member" },
+      user_product: { type: "other", other: "User_Product" },
     },
     uniqueness: [
       ["alliance_product", "user_product"],
@@ -1276,9 +2978,9 @@ const schema: Record<
   },
   Alliance_Virtual_Product: {
     fields: {
-      alliance: [{ type: "other", other: "Alliance" }],
-      alliance_product: [{ type: "other", other: "Listed_Alliance_Product" }],
-      markup: [{ type: "udecimal" }], // percentage increase above base price
+      alliance: { type: "other", other: "Alliance" },
+      alliance_product: { type: "other", other: "Listed_Alliance_Product" },
+      markup: { type: "udecimal" }, // percentage increase above base price
     },
     uniqueness: [["alliance", "alliance_product"]],
     permissions: {
@@ -1350,12 +3052,13 @@ const schema: Record<
   },
   Alliance_Service: {
     fields: {
-      alliance: [{ type: "other", other: "Alliance" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
-      min_price: [{ type: "udecimal" }],
-      max_price: [{ type: "udecimal" }],
-      provider_count: [{ type: "u32", default: 0 }],
+      alliance: { type: "other", other: "Alliance" },
+      name: { type: "str" },
+      description: { type: "clob" },
+      min_price: { type: "udecimal" },
+      max_price: { type: "udecimal" },
+      provider_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: 0 },
     },
     uniqueness: [["alliance", "name"]],
     permissions: {
@@ -1446,10 +3149,10 @@ const schema: Record<
   },
   Alliance_Service_Translation: {
     fields: {
-      alliance_service: [{ type: "other", other: "Alliance_Service" }],
-      language: [{ type: "other", other: "Language" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
+      alliance_service: { type: "other", other: "Alliance_Service" },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
     },
     uniqueness: [["alliance_service", "language"]],
     permissions: {
@@ -1472,7 +3175,36 @@ const schema: Record<
         [["description"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance_service: {
+        dependencies: [["alliance_service"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_service", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_service", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_service", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot(["_prev", "alliance_service", "translation_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -1506,10 +3238,11 @@ const schema: Record<
   },
   Alliance_Service_Task: {
     fields: {
-      alliance_service: [{ type: "other", other: "Alliance_Service" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
-      price: [{ type: "udecimal" }],
+      alliance_service: { type: "other", other: "Alliance_Service" },
+      name: { type: "str" },
+      description: { type: "clob" },
+      price: { type: "udecimal" },
+      translation_count: { type: "u32", default: 0 },
     },
     uniqueness: [["alliance_service", "name"]],
     permissions: {
@@ -1552,12 +3285,10 @@ const schema: Record<
   },
   Alliance_Service_Task_Translation: {
     fields: {
-      alliance_service_task: [
-        { type: "other", other: "Alliance_Service_Task" },
-      ],
-      language: [{ type: "other", other: "Language" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
+      alliance_service_task: { type: "other", other: "Alliance_Service_Task" },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
     },
     uniqueness: [["alliance_service_task", "language"]],
     permissions: {
@@ -1580,7 +3311,44 @@ const schema: Record<
         [["description"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance_service_task: {
+        dependencies: [["alliance_service_task"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_service_task", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_service_task",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_service_task", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_service_task",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -1614,10 +3382,11 @@ const schema: Record<
   },
   Alliance_Service_Milestone: {
     fields: {
-      alliance_service: [{ type: "other", other: "Alliance_Service" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
-      order: [{ type: "u32" }],
+      alliance_service: { type: "other", other: "Alliance_Service" },
+      name: { type: "str" },
+      description: { type: "clob" },
+      order: { type: "u32" },
+      translation_count: { type: "u32", default: 0 },
     },
     uniqueness: [
       ["alliance_service", "name"],
@@ -1659,12 +3428,13 @@ const schema: Record<
   },
   Alliance_Service_Milestone_Translation: {
     fields: {
-      alliance_service_milsestone: [
-        { type: "other", other: "Alliance_Service_Milestone" },
-      ],
-      language: [{ type: "other", other: "Language" }],
-      name: [{ type: "str" }],
-      description: [{ type: "clob" }],
+      alliance_service_milsestone: {
+        type: "other",
+        other: "Alliance_Service_Milestone",
+      },
+      language: { type: "other", other: "Language" },
+      name: { type: "str" },
+      description: { type: "clob" },
     },
     uniqueness: [["alliance_service_milsestone", "language"]],
     permissions: {
@@ -1687,7 +3457,44 @@ const schema: Record<
         [["description"], new Bool(true)],
       ],
     },
-    effects: {},
+    effects: {
+      update_count_in_alliance_service_milsestone: {
+        dependencies: [["alliance_service_milsestone"]],
+        mutate: [
+          // prev keys referred by '_prev', current by '_curr'
+          {
+            path: ["_prev", "alliance_service_milsestone", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_service_milsestone",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+          {
+            path: ["_curr", "alliance_service_milsestone", "translation_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNumber>([
+                new DotExpression(
+                  new Dot([
+                    "_prev",
+                    "alliance_service_milsestone",
+                    "translation_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
+    },
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -1721,12 +3528,11 @@ const schema: Record<
   },
   Alliance_Service_Milestone_Task: {
     fields: {
-      alliance_service_milestone: [
-        { type: "other", other: "Alliance_Service_Milestone" },
-      ],
-      alliance_service_task: [
-        { type: "other", other: "Alliance_Service_Task" },
-      ],
+      alliance_service_milestone: {
+        type: "other",
+        other: "Alliance_Service_Milestone",
+      },
+      alliance_service_task: { type: "other", other: "Alliance_Service_Task" },
     },
     uniqueness: [["alliance_service_milestone", "alliance_service_task"]],
     permissions: {
@@ -1755,8 +3561,8 @@ const schema: Record<
   },
   Alliance_Service_Provider: {
     fields: {
-      alliance_service: [{ type: "other", other: "Alliance_Service" }],
-      alliance_member: [{ type: "other", other: "Alliance_Member" }],
+      alliance_service: { type: "other", other: "Alliance_Service" },
+      alliance_member: { type: "other", other: "Alliance_Member" },
     },
     uniqueness: [["alliance_service", "alliance_member"]],
     permissions: {
@@ -1857,16 +3663,21 @@ const schema: Record<
   },
   Alliance_Coupon: {
     fields: {
-      alliance: [{ type: "other", other: "Alliance" }],
-      name: [{ type: "str" }],
-      remaining: [{ type: "u32", default: 0 }],
-      used: [{ type: "u32", default: 0 }],
-      min_price: [{ type: "udecimal", default: 0 }],
-      flat_discount: [{ type: "bool", default: true }],
-      discount: [{ type: "udecimal", default: 0 }],
-      max_discount: [{ type: "udecimal", default: 0 }],
-      valid_from: [{ type: "timestamp" }],
-      valid_to: [{ type: "timestamp" }],
+      alliance: { type: "other", other: "Alliance" },
+      name: { type: "str" },
+      unused: { type: "u32", default: 0 },
+      used: { type: "u32", default: 0 },
+      min_order_amount: { type: "udecimal", default: 0 },
+      flat_discount: { type: "bool", default: true },
+      discount: { type: "udecimal", default: 0 },
+      max_absolute_discount: { type: "udecimal", default: 0 },
+      valid_from: { type: "timestamp" },
+      valid_to: { type: "timestamp" },
+      min_clan_loyalty: { type: "udecimal", default: 0 },
+      max_clan_loyalty: { type: "udecimal", default: -1 },
+      show_coupon: { type: "bool", default: false },
+      used_coupon_count: { type: "udecimal", default: 0 },
+      used_coupon_price_sum: { type: "udecimal", default: 0 },
     },
     uniqueness: [["alliance", "name"]],
     permissions: {
@@ -1876,94 +3687,249 @@ const schema: Record<
         alliance: {
           read: [
             [["name"], new Bool(true)],
-            [["issued"], new Bool(true)],
+            [["unused"], new Bool(true)],
             [["used"], new Bool(true)],
-            [["min_price"], new Bool(true)],
+            [["min_order_value"], new Bool(true)],
             [["flat_discount"], new Bool(true)],
             [["discount"], new Bool(true)],
-            [["max_discount"], new Bool(true)],
+            [["max_absolute_discount"], new Bool(true)],
             [["valid_from"], new Bool(true)],
             [["valid_to"], new Bool(true)],
+            [["min_clan_loyalty"], new Bool(true)],
+            [["max_clan_loyalty"], new Bool(true)],
+            [["show_coupon"], new Bool(true)],
           ],
           write: [],
         },
       },
       public: [
         [["alliance"], new Bool(true)],
+        [["name"], new Bool(true)],
+        [["unused"], new Bool(true)],
+        [["used"], new Bool(true)],
+        [["min_order_value"], new Bool(true)],
         [["min_price"], new Bool(true)],
         [["flat_discount"], new Bool(true)],
+        [["discount"], new Bool(true)],
+        [["max_absolute_discount"], new Bool(true)],
         [["valid_from"], new Bool(true)],
         [["valid_to"], new Bool(true)],
+        [["min_clan_loyalty"], new Bool(true)],
+        [["max_clan_loyalty"], new Bool(true)],
+        [["show_coupon"], new Bool(true)],
       ],
     },
     effects: {},
-    checks: {},
-  },
-
-  Alliance_Member_Request: {
-    fields: {
-      alliance: [{ type: "other", other: "Alliance" }],
-      user: [{ type: "other", other: "User" }],
-      status: [{ type: "bool" }],
+    checks: {
+      valid_from_is_less_than_valid_to: [
+        new NumberComparatorExpression(
+          new GreaterThanEquals<ToNumber>([
+            new DotExpression(new Dot(["valid_from"])),
+            new DotExpression(new Dot(["valid_to"])),
+            [],
+          ])
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
+      min_clan_loyalty_is_less_than_max_clan_loyalty: [
+        new NumberComparatorExpression(
+          new GreaterThanEquals<ToNumber>([
+            new DotExpression(new Dot(["min_clan_loyalty"])),
+            new DotExpression(new Dot(["max_clan_loyalty"])),
+            [],
+          ])
+        ),
+        [errors.ErrEmptyField] as Message,
+      ],
     },
-    uniqueness: [["alliance", "user"]],
+  },
+  Alliance_Customer: {
+    fields: {
+      alliance: { type: "other", other: "Alliance" },
+      clan: { type: "other", other: "Clan" },
+      order_count: { type: "udecimal" },
+      order_amount_sum: { type: "udecimal" },
+      order_amount_mean: { type: "udecimal" },
+    },
+    uniqueness: [["alliance", "clan"]],
     permissions: {
-      ownership: [["alliance", new Bool(true)]],
+      ownership: [
+        ["alliance", new Bool(true)],
+        ["clan", new Bool(true)],
+      ],
       borrow: {},
       private: {
-        user: {
-          read: [
-            [["alliance"], new Bool(true)],
-            [["status"], new Bool(true)],
-          ],
-          write: [],
-        },
-      },
-      public: [],
-    },
-    effects: {},
-    checks: {},
-  },
-  Guild_Member_Request: {
-    fields: {
-      guild: [{ type: "other", other: "Guild" }],
-      user: [{ type: "other", other: "User" }],
-      status: [{ type: "bool" }],
-    },
-    uniqueness: [["guild", "user"]],
-    permissions: {
-      ownership: [["guild", new Bool(true)]],
-      borrow: {},
-      private: {
-        user: {
-          read: [
-            [["guild"], new Bool(true)],
-            [["status"], new Bool(true)],
-          ],
-          write: [],
-        },
-      },
-      public: [],
-    },
-    effects: {},
-    checks: {},
-  },
-  Clan_Member_Invite: {
-    fields: {
-      clan: [{ type: "other", other: "Clan" }],
-      user: [{ type: "other", other: "User" }],
-      status: [{ type: "bool" }],
-    },
-    uniqueness: [["clan", "user"]],
-    permissions: {
-      ownership: [["user", new Bool(true)]],
-      borrow: {},
-      private: {
-        user: {
+        alliance: {
           read: [
             [["clan"], new Bool(true)],
-            [["status"], new Bool(true)],
+            [["order_count"], new Bool(true)],
+            [["order_price_sum"], new Bool(true)],
+            [["order_price_mean"], new Bool(true)],
           ],
+          write: [],
+        },
+        clan: {
+          read: [
+            [["alliance"], new Bool(true)],
+            [["order_count"], new Bool(true)],
+            [["order_price_sum"], new Bool(true)],
+            [["order_price_mean"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Clan_Product_Order_Draft: {
+    // Clan_Product_Order_Draft and Clan_Product_Order_Draft_Item are consumed by a function
+    // to produce Clan_Product_Order and Clan_Product_Order_Item
+    fields: {
+      // This should be alliance_customer
+      clan: { type: "other", other: "Clan" },
+      product_count: { type: "udecimal" },
+      product_price_sum: { type: "udecimal" },
+    },
+    uniqueness: [],
+    permissions: {
+      ownership: [["clan", new Bool(true)]],
+      borrow: {},
+      private: {
+        clan: {
+          read: [
+            [["product_count"], new Bool(true)],
+            [["product_price_sum"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Clan_Product_Order_Draft_Item: {
+    // Also think about variations that can be applied to a product
+    fields: {
+      clan_product_order_draft: {
+        type: "other",
+        other: "Clan_Product_Order_Draft",
+      },
+      listed_alliance_product: {
+        type: "other",
+        other: "Listed_Alliance_Product",
+      },
+      quantity: { type: "u32" },
+    },
+    uniqueness: [["clan_product_order_draft", "listed_alliance_product"]],
+    permissions: {
+      ownership: [
+        ["clan_product_order_draft", new Bool(true)],
+        ["listed_alliance_product", new Bool(true)],
+      ],
+      borrow: {},
+      private: {
+        clan_product_order_draft: {
+          read: [
+            [["listed_alliance_product"], new Bool(true)],
+            [["price"], new Bool(true)],
+          ],
+          write: [],
+        },
+        listed_alliance_product: {
+          read: [
+            [["clan_product_order_draft"], new Bool(true)],
+            [["price"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Clan_Product_Order: {
+    fields: {
+      clan: { type: "other", other: "Clan" },
+      product_count: { type: "udecimal" },
+      product_price_sum: { type: "udecimal" },
+    },
+    uniqueness: [],
+    permissions: {
+      ownership: [["clan", new Bool(true)]],
+      borrow: {},
+      private: {
+        clan: {
+          read: [
+            [["product_count"], new Bool(true)],
+            [["product_price_sum"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Clan_Product_Order_Item: {
+    fields: {
+      clan_product_order: { type: "other", other: "Clan_Product_Order_Draft" },
+      listed_alliance_product: {
+        type: "other",
+        other: "Listed_Alliance_Product",
+      },
+      quantity: { type: "u32" },
+      price: { type: "udecimal" },
+    },
+    uniqueness: [["clan_product_order_draft", "listed_alliance_product"]],
+    permissions: {
+      ownership: [
+        ["clan_product_order_draft", new Bool(true)],
+        ["listed_alliance_product", new Bool(true)],
+      ],
+      borrow: {},
+      private: {
+        clan_product_order: {
+          read: [
+            [["listed_alliance_product"], new Bool(true)],
+            [["quantity"], new Bool(true)],
+            [["price"], new Bool(true)],
+          ],
+          write: [],
+        },
+        listed_alliance_product: {
+          read: [
+            [["clan_product_order"], new Bool(true)],
+            [["quantity"], new Bool(true)],
+            [["price"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  Clan_Service_Order: {
+    fields: {
+      clan: { type: "other", other: "Clan" },
+      listed_alliance_service: {
+        type: "other",
+        other: "Listed_Alliance_Product",
+      },
+    },
+    uniqueness: [],
+    permissions: {
+      ownership: [["clan", new Bool(true)]],
+      borrow: {},
+      private: {
+        clan: {
+          read: [[["listed_alliance_service"], new Bool(true)]],
           write: [],
         },
       },
