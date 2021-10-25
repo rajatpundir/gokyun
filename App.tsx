@@ -16,7 +16,7 @@ import { LinkingOptions } from "@react-navigation/native";
 
 import useCachedResources from "./main/hooks/useCachedResources";
 import useColorScheme from "./main/hooks/useColorScheme";
-import { MainBottomTabNavigator, NavigatorParams } from "./screens";
+import { MainBottomTabNavigator, NavigatorParams } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
 
 declare global {
