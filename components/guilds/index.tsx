@@ -4,7 +4,7 @@ import { Platform, StyleSheet } from "react-native";
 
 import { StatusBar } from "expo-status-bar";
 
-import { Text, View } from "../../main/themed/Themed";
+import { Text, View } from "../../main/themed";
 
 export default function Component() {
   return (
@@ -16,7 +16,6 @@ export default function Component() {
         darkColor="rgba(255,255,255,0.1)"
       />
       <View>Guilds</View>
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );

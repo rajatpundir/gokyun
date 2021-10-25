@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Text, TextProps } from "../../main/themed/Themed";
+import { Text, TextProps } from ".";
 
 export function MonoText(props: TextProps) {
   return (
