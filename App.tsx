@@ -14,7 +14,7 @@ import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LinkingOptions } from "@react-navigation/native";
 
-import useCachedResources from "./main/hooks/useCachedResources";
+import useAssets from "./main/hooks/useAssets";
 import useColorScheme from "./main/hooks/useColorScheme";
 import { Navigator, NavigatorParams } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
@@ -54,6 +54,11 @@ const linking: LinkingOptions<StackParams> = {
               Guilds: "guilds",
             },
           },
+          Users: {
+            screens: {
+              Users: "users",
+            },
+          },
         },
       },
       NotFound: "*",
@@ -64,7 +69,7 @@ const linking: LinkingOptions<StackParams> = {
 const Stack = createNativeStackNavigator<StackParams>();
 
 export default function App() {
-  const isLoadingComplete = useCachedResources();
+  const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
   if (!isLoadingComplete) {
     return null;

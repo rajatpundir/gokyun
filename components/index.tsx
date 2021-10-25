@@ -16,11 +16,13 @@ import { StackParams } from "../App";
 import Clans from "./clans";
 import Alliances from "./alliances";
 import Guilds from "./guilds";
+import Users from "./users";
 
 export type NavigatorParams = {
   Clans: undefined;
   Alliances: undefined;
   Guilds: undefined;
+  Users: undefined;
 };
 
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
@@ -73,6 +75,16 @@ export function Navigator() {
         component={Guilds}
         options={{
           title: "Guilds",
+          tabBarIcon: ({ color }) => (
+            <NavigatorItemIcon name="code" color={color} />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Users"
+        component={Users}
+        options={{
+          title: "Users",
           tabBarIcon: ({ color }) => (
             <NavigatorItemIcon name="code" color={color} />
           ),
