@@ -1,6 +1,8 @@
 import * as React from "react";
-import { StatusBar } from "expo-status-bar";
+
 import { Platform, StyleSheet } from "react-native";
+
+import { StatusBar } from "expo-status-bar";
 
 import { Text, View } from "../../main/themed/Themed";
 

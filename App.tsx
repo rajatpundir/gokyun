@@ -16,7 +16,7 @@ import { LinkingOptions } from "@react-navigation/native";
 
 import useCachedResources from "./main/hooks/useCachedResources";
 import useColorScheme from "./main/hooks/useColorScheme";
-import { MainBottomTabNavigator, NavigatorParams } from "./components";
+import { Navigator, NavigatorParams } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
 
 declare global {
@@ -26,7 +26,7 @@ declare global {
 }
 
 export type StackParams = {
-  Root: NavigatorScreenParams<NavigatorParams> | undefined;
+  Main: NavigatorScreenParams<NavigatorParams> | undefined;
   NotFound: undefined;
 };
 
@@ -37,16 +37,21 @@ const linking: LinkingOptions<StackParams> = {
   prefixes: [Linking.makeUrl("/")],
   config: {
     screens: {
-      Root: {
+      Main: {
         screens: {
           Clans: {
             screens: {
-              Clans: "one",
+              Clans: "clans",
             },
           },
-          TT: {
+          Alliances: {
             screens: {
-              TabTwoScreen: "two",
+              Alliances: "alliances",
+            },
+          },
+          Guilds: {
+            screens: {
+              Guilds: "guilds",
             },
           },
         },
@@ -72,8 +77,8 @@ export default function App() {
         >
           <Stack.Navigator>
             <Stack.Screen
-              name="Root"
-              component={MainBottomTabNavigator}
+              name="Main"
+              component={Navigator}
               options={{ headerShown: false }}
             />
             <Stack.Screen

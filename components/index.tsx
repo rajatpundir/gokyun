@@ -1,21 +1,26 @@
+import * as React from "react";
+
 import { FontAwesome } from "@expo/vector-icons";
+
+import { CompositeScreenProps } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
   BottomTabScreenProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
+
 import Colors from "../main/constants/Colors";
 import useColorScheme from "../main/hooks/useColorScheme";
-import { Pressable } from "react-native";
-import * as React from "react";
+import { StackParams } from "../App";
 
 import Clans from "./clans";
-import { CompositeScreenProps } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { StackParams } from "../App";
+import Alliances from "./alliances";
+import Guilds from "./guilds";
 
 export type NavigatorParams = {
   Clans: undefined;
-  TT: undefined;
+  Alliances: undefined;
+  Guilds: undefined;
 };
 
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
@@ -26,7 +31,14 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
 
 const BottomTab = createBottomTabNavigator<NavigatorParams>();
 
-export function MainBottomTabNavigator() {
+function NavigatorItemIcon(props: {
+  name: React.ComponentProps<typeof FontAwesome>["name"];
+  color: string;
+}) {
+  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
+}
+
+export function Navigator() {
   const colorScheme = useColorScheme();
 
   return (
@@ -41,39 +53,31 @@ export function MainBottomTabNavigator() {
         component={Clans}
         options={({ navigation }: NavigatorProps<"Clans">) => ({
           title: "Clans",
-          //   tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          //   headerRight: () => (
-          //     <Pressable
-          //       onPress={() => navigation.navigate("Modal")}
-          //       style={({ pressed }) => ({
-          //         opacity: pressed ? 0.5 : 1,
-          //       })}
-          //     >
-          //       <FontAwesome
-          //         name="info-circle"
-          //         size={25}
-          //         color={Colors[colorScheme].text}
-          //         style={{ marginRight: 15 }}
-          //       />
-          //     </Pressable>
-          //   ),
+          tabBarIcon: ({ color }) => (
+            <NavigatorItemIcon name="code" color={color} />
+          ),
         })}
       />
       <BottomTab.Screen
-        name="TT"
-        component={Clans}
+        name="Alliances"
+        component={Alliances}
         options={{
-          title: "TT",
-          //   tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Alliances",
+          tabBarIcon: ({ color }) => (
+            <NavigatorItemIcon name="code" color={color} />
+          ),
+        }}
+      />
+      <BottomTab.Screen
+        name="Guilds"
+        component={Guilds}
+        options={{
+          title: "Guilds",
+          tabBarIcon: ({ color }) => (
+            <NavigatorItemIcon name="code" color={color} />
+          ),
         }}
       />
     </BottomTab.Navigator>
   );
-}
-
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }
