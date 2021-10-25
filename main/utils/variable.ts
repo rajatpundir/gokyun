@@ -83,12 +83,12 @@ export class Struct {
 export class Field {
   struct: Struct;
   name: string;
-  variants: HashSet<FieldVariant>;
+  value: WeakEnum;
 
-  constructor(struct: Struct, name: string, variants: HashSet<FieldVariant>) {
+  constructor(struct: Struct, name: string, value: WeakEnum) {
     this.struct = struct;
     this.name = name;
-    this.variants = variants;
+    this.value = value;
   }
 
   equals(other: Field): boolean {
@@ -104,41 +104,6 @@ export class Field {
 
   toString(): string {
     return String(this.name);
-  }
-}
-
-export class FieldVariant {
-  field: Field;
-  variant: WeakEnum;
-
-  constructor(field: Field, variant: WeakEnum) {
-    this.field = field;
-    this.variant = variant;
-  }
-
-  equals(other: FieldVariant): boolean {
-    if (!other) {
-      return false;
-    }
-    if (this.field.equals(other.field)) {
-      if (this.variant.type === other.variant.type) {
-        if (this.variant.type === "other" && other.variant.type === "other") {
-          if (this.variant.other !== other.variant.type) {
-            return false;
-          }
-        }
-        return true;
-      }
-    }
-    return false;
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String(this.variant);
   }
 }
 
@@ -216,7 +181,7 @@ export type WeakEnum =
 export class Variable {
   id: number;
   struct: Struct;
-  values: Array<Value>;
+  values: HashSet<Value>;
   created_at: number;
   updated_at: number;
   requested_at: number;
@@ -224,7 +189,7 @@ export class Variable {
   constructor(
     id: number,
     struct: Struct,
-    values: Array<Value>,
+    values: HashSet<Value>,
     created_at: number,
     updated_at: number,
     requested_at: number
@@ -255,12 +220,12 @@ export class Variable {
 
 export class Value {
   variable: Variable;
-  variant: FieldVariant;
+  field: Field;
   value: StrongEnum;
 
-  constructor(variable: Variable, variant: FieldVariant, value: StrongEnum) {
+  constructor(variable: Variable, field: Field, value: StrongEnum) {
     this.variable = variable;
-    this.variant = variant;
+    this.field = field;
     this.value = value;
   }
 
@@ -269,7 +234,7 @@ export class Value {
       return false;
     }
     return (
-      this.variable.equals(other.variable) && this.variant.equals(other.variant)
+      this.variable.equals(other.variable) && this.field.equals(other.field)
     );
   }
 

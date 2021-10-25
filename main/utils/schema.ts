@@ -1,3 +1,4 @@
+import { HashSet } from "prelude-ts";
 import {
   Add,
   And,
@@ -26,7 +27,13 @@ import {
   ToText,
 } from "./lisp";
 import { errors, Message } from "./prelude";
-import { StructEffects, StructPermissions, WeakEnum } from "./variable";
+import {
+  Field,
+  Struct,
+  StructEffects,
+  StructPermissions,
+  WeakEnum,
+} from "./variable";
 
 // get permissions for struct,
 // select subset of paths that wish to be shown in form,
@@ -4397,18 +4404,24 @@ const schema: Record<
   },
 };
 
-// export function get_structs(): HashSet<Struct> {
-//     const structs: HashSet<Struct> = HashSet.of()
-//     for (let structName in schema) {
-//         const struct: Struct = new Struct(structName, HashSet.of())
-//         for (let fieldName in schema[structName]) {
-//             const field = new Field(struct, fieldName, HashSet.of())
-//             for (let variant of schema[structName][fieldName]) {
-//                 field.variants.add(new FieldVariant(field, variant))
-//             }
-//             struct.fields.add(field)
-//         }
-//         structs.add(struct)
-//     }
-//     return structs
-// }
+export function get_structs(): HashSet<Struct> {
+  let structs: HashSet<Struct> = HashSet.of();
+  for (let structName in schema) {
+    const structDef = schema[structName];
+    const struct: Struct = new Struct(
+      structName,
+      HashSet.of(),
+      structDef.uniqueness,
+      structDef.permissions,
+      structDef.effects,
+      structDef.checks
+    );
+    for (let fieldName in structDef.fields) {
+      struct.fields = struct.fields.add(
+        new Field(struct, fieldName, structDef.fields[fieldName])
+      );
+    }
+    structs = structs.add(struct);
+  }
+  return structs;
+}

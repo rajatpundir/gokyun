@@ -1,4 +1,4 @@
-import Handlebars from "handlebars";
+// import Handlebars from "handlebars";
 
 export type Language = "English";
 
@@ -30,9 +30,10 @@ export function to_string(message: Message, lang: Language): string {
         case "ErrEmptyField":
           return "Field cannot be empty";
         case "CannotBeEmpty": {
-          return Handlebars.compile(" Value for {{field}} cannot be empty")({
-            field: message[1].field,
-          });
+          return "Field cannot be empty";
+          // return Handlebars.compile(" Value for {{field}} cannot be empty")({
+          //   field: message[1].field,
+          // });
         }
         default: {
           const _exhaustiveCheck: never = message;
