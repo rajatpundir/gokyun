@@ -15,7 +15,6 @@ export function useThemeColor(
 ) {
   const theme = useColorScheme();
   const colorFromProps = props[theme];
-
   if (colorFromProps) {
     return colorFromProps;
   } else {
@@ -29,14 +28,14 @@ type ThemeProps = {
 };
 
 export type TextProps = ThemeProps & DefaultText["props"];
-export type ViewProps = ThemeProps & DefaultView["props"];
 
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-
   return <DefaultText style={[{ color }, style]} {...otherProps} />;
 }
+
+export type ViewProps = ThemeProps & DefaultView["props"];
 
 export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
@@ -44,6 +43,11 @@ export function View(props: ViewProps) {
     { light: lightColor, dark: darkColor },
     "background"
   );
-
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+}
+
+export function MonoText(props: TextProps) {
+  return (
+    <Text {...props} style={[props.style, { fontFamily: "space-mono" }]} />
+  );
 }

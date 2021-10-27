@@ -78,7 +78,7 @@ export default function App() {
       <SafeAreaProvider>
         <NavigationContainer
           linking={linking}
-          theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
         >
           <Stack.Navigator>
             <Stack.Screen

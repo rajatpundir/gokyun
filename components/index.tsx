@@ -11,24 +11,27 @@ import {
 
 import Colors from "../main/constants/Colors";
 import useColorScheme from "../main/hooks/useColorScheme";
-import { StackParams } from "../App";
+
+import { StackParams as ParentNavigatorParams } from "../App";
 
 import Clans from "./clans";
 import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
+import System from "./system";
 
 export type NavigatorParams = {
   Clans: undefined;
   Alliances: undefined;
   Guilds: undefined;
   Users: undefined;
+  System: undefined;
 };
 
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
   CompositeScreenProps<
     BottomTabScreenProps<NavigatorParams, Screen>,
-    NativeStackScreenProps<StackParams>
+    NativeStackScreenProps<ParentNavigatorParams>
   >;
 
 const BottomTab = createBottomTabNavigator<NavigatorParams>();
@@ -45,9 +48,13 @@ export function Navigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Clans"
+      initialRouteName="System"
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarActiveTintColor: "#fff",
+        tabBarInactiveTintColor: "#9b9baf",
+        tabBarLabelStyle: { fontSize: 11 },
+        tabBarStyle: { backgroundColor: "#000" },
+        headerStyle: { backgroundColor: "#000", height: 55 },
       }}
     >
       <BottomTab.Screen
@@ -89,6 +96,16 @@ export function Navigator() {
             <NavigatorItemIcon name="code" color={color} />
           ),
         }}
+      />
+      <BottomTab.Screen
+        name="System"
+        component={System}
+        options={({ navigation }: NavigatorProps<"System">) => ({
+          title: "System",
+          tabBarIcon: ({ color }) => (
+            <NavigatorItemIcon name="code" color={color} />
+          ),
+        })}
       />
     </BottomTab.Navigator>
   );

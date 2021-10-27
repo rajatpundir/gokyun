@@ -15,7 +15,7 @@ export default function Component() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <View>Alliances</View>
+      <Text>Alliances</Text>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );
