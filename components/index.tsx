@@ -9,9 +9,6 @@ import {
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 
-import Colors from "../main/constants/Colors";
-import useColorScheme from "../main/hooks/useColorScheme";
-
 import { StackParams as ParentNavigatorParams } from "../App";
 
 import Clans from "./clans";
@@ -44,8 +41,6 @@ function NavigatorItemIcon(props: {
 }
 
 export function Navigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="System"

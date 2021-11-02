@@ -682,7 +682,10 @@ const schema: Record<
           write: [[["name"], new Bool(true)]],
         },
       },
-      public: [[["name", "member_count"], new Bool(true)]],
+      public: [
+        [["name"], new Bool(true)],
+        [["member_count"], new Bool(true)],
+      ],
     },
     effects: {
       update_count_in_wallet: {

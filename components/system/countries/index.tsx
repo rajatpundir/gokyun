@@ -1,12 +1,24 @@
 import * as React from "react";
 
-import { FlatList, Platform, StyleSheet, StatusBar as ST } from "react-native";
+import {
+  FlatList,
+  Platform,
+  StyleSheet,
+  StatusBar as ST,
+  Button,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 
 import { StatusBar } from "expo-status-bar";
 
-import PagerView from "react-native-pager-view";
-
 import { Text, View } from "../../../main/themed";
+import { HashSet, Option } from "prelude-ts";
+import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
+import { Immutable, Draft } from "immer";
+import { get_permissions, validate_ownership_path } from "./country";
+import { get_structs } from "../../../main/utils/schema";
+import { Struct } from "../../../main/utils/variable";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
@@ -49,7 +61,17 @@ const Item = ({ title }: { title: string }) => (
   </View>
 );
 
+const struct: Option<Struct> = get_structs()
+  .filter((s) => s.name === "Alliance_Member")
+  .single();
+
 export default function Component() {
+  if (struct.isSome()) {
+    // console.log(get_permissions(struct.get(), []));
+    console.log(validate_ownership_path(struct.get(), ["member"]));
+  } else {
+    console.log("---nothing---");
+  }
   const renderItem = ({ item }) => <Item title={item.title} />;
   return (
     <View
@@ -58,48 +80,19 @@ export default function Component() {
         flexGrow: 1,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          flexGrow: 1,
-        }}
-      >
-        <FlatList
-          horizontal={true}
-          data={DATA2}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
-      <View
-        style={{
-          flexDirection: "column-reverse",
-          flexGrow: 1,
-        }}
-      >
-        <PagerView style={styles.viewPager} initialPage={0}>
-          <View style={styles.page} key="1">
-            <Text>First page</Text>
-            <Text>Swipe ➡️</Text>
-          </View>
-          <View style={styles.page} key="2">
-            <Text>Second page</Text>
-            <FlatList
-              data={DATA}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-            />
-          </View>
-          <View style={styles.page} key="3">
-            <Text>Third page</Text>
-            <Text>System1</Text>
-            <View>
-              <Text>System2</Text>
-            </View>
-          </View>
-        </PagerView>
-      </View>
+      <FlatList
+        data={DATA2}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => console.log("000")}
+        style={styles.touchableOpacityStyle}
+      >
+        <SimpleLineIcons name="plus" size={36} color="white" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -118,28 +111,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
-  viewPager: {
-    flex: 1,
-  },
-  page: {
-    // justifyContent: "center",
-    // alignItems: "center",
+  touchableOpacityStyle: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    right: 30,
+    bottom: 30,
   },
 });
-
-// const styles = StyleSheet.create({
-// container: {
-//   flex: 1,
-//   alignItems: "center",
-//   justifyContent: "center",
-// },
-// title: {
-//   fontSize: 20,
-//   fontWeight: "bold",
-// },
-// separator: {
-//   marginVertical: 30,
-//   height: 1,
-//   width: "80%",
-// },
-// });

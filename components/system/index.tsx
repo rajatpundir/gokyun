@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import { FontAwesome } from "@expo/vector-icons";
-
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import {
@@ -9,8 +7,6 @@ import {
   createMaterialTopTabNavigator,
 } from "@react-navigation/material-top-tabs";
 
-import Colors from "../../main/constants/Colors";
-import useColorScheme from "../../main/hooks/useColorScheme";
 import { StackParams as ParentNavigatorParams } from "../../App";
 
 import Countries from "./countries";
@@ -35,8 +31,6 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
 const BottomTab = createMaterialTopTabNavigator<NavigatorParams>();
 
 export function Navigator() {
-  const colorScheme = useColorScheme();
-
   return (
     <BottomTab.Navigator
       initialRouteName="Countries"

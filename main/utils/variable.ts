@@ -1,4 +1,4 @@
-import { HashSet } from "prelude-ts";
+import { Vector, HashSet } from "prelude-ts";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { Message } from "./prelude";
 
@@ -247,7 +247,7 @@ export class Value {
   }
 }
 
-type StrongEnum =
+export type StrongEnum =
   | {
       type: "str";
       value: string;
@@ -317,3 +317,28 @@ type StrongEnum =
       other: string;
       value: number;
     };
+
+export class Path {
+  path: Vector<string>;
+  value: StrongEnum;
+
+  constructor(path: Vector<string>, value: StrongEnum) {
+    this.path = path;
+    this.value = value;
+  }
+
+  equals(other: Path): boolean {
+    if (!other) {
+      return false;
+    }
+    return this.path.equals(other.path);
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return String([this.path, this.value]);
+  }
+}
