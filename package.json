@@ -26,6 +26,7 @@
     "expo-status-bar": "~1.1.0",
     "expo-web-browser": "~10.0.3",
     "immer": "^9.0.6",
+    "mustache": "^4.2.0",
     "prelude-ts": "^1.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@types/mustache": "^4.1.2",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "jest-expo": "~43.0.0",

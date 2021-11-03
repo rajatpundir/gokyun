@@ -1,4 +1,4 @@
-// import Handlebars from "handlebars";
+import Mustache from "mustache";
 
 export type Language = "English";
 
@@ -30,10 +30,9 @@ export function to_string(message: Message, lang: Language): string {
         case "ErrEmptyField":
           return "Field cannot be empty";
         case "CannotBeEmpty": {
-          return "Field cannot be empty";
-          // return Handlebars.compile(" Value for {{field}} cannot be empty")({
-          //   field: message[1].field,
-          // });
+          return Mustache.render(" Value for {{field}} cannot be empty", {
+            field: message[1].field,
+          });
         }
         default: {
           const _exhaustiveCheck: never = message;
@@ -72,10 +71,28 @@ export class Err {
   }
 }
 
+export type Option<T> = Ok<T> | undefined;
+
 export type Result<T> = Ok<T> | Err;
 
 export function unwrap<T>(result: Result<T>): result is Ok<T> {
   return result instanceof Ok;
 }
 
-export type Option<T> = Ok<T> | undefined;
+export function unwrap_array<T>(
+  input: ReadonlyArray<Result<T>>
+): Result<ReadonlyArray<T>> {
+  const results: Array<T> = [];
+  for (let result of input) {
+    if (unwrap(result)) {
+      results.push(result.value);
+    } else {
+      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    }
+  }
+  return new Ok(results);
+}
+
+export function apply<T, U>(v: T, fx: (it: T) => U): U {
+  return fx(v);
+}

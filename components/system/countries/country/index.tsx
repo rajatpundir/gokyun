@@ -8,6 +8,7 @@ import { get_structs } from "../../../../main/utils/schema";
 import { Text, View } from "../../../../main/themed";
 import { iff } from "../../../../pibity-erp/src/main/utils";
 import {
+  apply,
   CustomError,
   Err,
   errors,
@@ -15,6 +16,7 @@ import {
   Ok,
   Result,
   unwrap,
+  unwrap_array,
 } from "../../../../main/utils/prelude";
 import { Input } from "../../../../pibity-erp/src/main/Table";
 import { TextInput } from "react-native";
@@ -125,20 +127,6 @@ export function validate_ownership_path(
   return new Err(new CustomError([errors.ErrUnexpected] as Message));
 }
 
-export function unwrap_array<T>(
-  input: ReadonlyArray<Result<T>>
-): Result<ReadonlyArray<T>> {
-  const results: Array<T> = [];
-  for (let result of input) {
-    if (unwrap(result)) {
-      results.push(result.value);
-    } else {
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
-    }
-  }
-  return new Ok(results);
-}
-
 export function get_permissions(
   struct: Struct,
   ownership_paths: ReadonlyArray<ReadonlyArray<string>>,
@@ -198,7 +186,6 @@ export function get_permissions(
         return new Err(new CustomError([errors.ErrUnexpected] as Message));
       }
     }
-    // Todo. Also process borrowed fields here
     for (let borrow_field_name of allowed_borrow_fields) {
       // get borrow field
       const borrow_field = struct.permissions.borrow[borrow_field_name];
@@ -245,11 +232,6 @@ export function get_permissions(
   return new Err(new CustomError([errors.ErrUnexpected] as Message));
 }
 
-export function apply<T, U>(v: T, fx: (it: T) => U): U {
-  return fx(v);
-}
-
-// Todo. Borrow case to be considered.
 function get_permissions_for_owned_field(
   prefix: ReadonlyArray<string>,
   struct: Struct,
