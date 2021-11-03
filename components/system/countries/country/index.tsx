@@ -141,18 +141,11 @@ export function unwrap_array<T>(
 
 export function get_permissions(
   struct: Struct,
-  prefix: ReadonlyArray<string> = [],
   ownership_paths: ReadonlyArray<ReadonlyArray<string>>,
   borrow_fields: ReadonlyArray<string>
 ): Result<
   [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]
 > {
-  const read_permissions: Array<Array<string>> = [];
-  // get public permissions, append to read permissions
-  for (let permission_key_and_expression of struct.permissions.public) {
-    read_permissions.push([...prefix, ...permission_key_and_expression[0]]);
-  }
-  const write_permissions: Array<Array<string>> = [];
   // validate user pointing paths
   const result = unwrap_array(
     ownership_paths.map((path) => validate_ownership_path(struct, path))
@@ -183,6 +176,8 @@ export function get_permissions(
         !accessed_ownership_fields.contains(borrow_field) &&
         borrow_fields.includes(borrow_field)
     );
+    const read_permissions: Array<Array<string>> = [];
+    const write_permissions: Array<Array<string>> = [];
     for (let ownership_path of allowed_ownership_paths) {
       const result = get_permissions_for_owned_field(
         [],
@@ -204,6 +199,43 @@ export function get_permissions(
       }
     }
     // Todo. Also process borrowed fields here
+    for (let borrow_field_name of allowed_borrow_fields) {
+      // get borrow field
+      const borrow_field = struct.permissions.borrow[borrow_field_name];
+      // validate borrowed ownership fields
+      const result = unwrap_array(
+        borrow_field.ownership.map((path) =>
+          validate_ownership_path(struct, path)
+        )
+      );
+      // validate user pointing paths
+      if (unwrap(result)) {
+        // get paths (leaf points to User struct) which are used to prove ownership
+        const allowed_borrowed_ownership_paths: ReadonlyArray<
+          ReadonlyArray<string>
+        > = result.value.filter(
+          (path) => path.length !== 0 && all_ownership_fields.contains(path[0])
+        );
+        for (let borrowed_ownership_path of allowed_borrowed_ownership_paths) {
+          const result = get_permissions_for_owned_field(
+            [],
+            struct,
+            borrowed_ownership_path,
+            true
+          );
+          if (unwrap(result)) {
+            const [nested_write_permissions, nested_read_permissions] =
+              result.value;
+            read_permissions.push(
+              ...(nested_write_permissions as Array<Array<string>>),
+              ...(nested_read_permissions as Array<Array<string>>)
+            );
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          }
+        }
+      }
+    }
     // return a tuple of write and read permissions
     return new Ok([write_permissions, read_permissions] as [
       ReadonlyArray<ReadonlyArray<string>>,
@@ -213,9 +245,8 @@ export function get_permissions(
   return new Err(new CustomError([errors.ErrUnexpected] as Message));
 }
 
-export function apply<T>(v: T, fx: (it: T) => void): T {
-  fx(v);
-  return v;
+export function apply<T, U>(v: T, fx: (it: T) => U): U {
+  return fx(v);
 }
 
 // Todo. Borrow case to be considered.
@@ -242,6 +273,10 @@ function get_permissions_for_owned_field(
         permissions.read.map((x) => [...prefix, ...x[0]]),
         (it) => {
           it.push([...prefix, owned_field_name]);
+          it.push(
+            ...struct.permissions.public.map((x) => [...prefix, ...x[0]])
+          );
+          return it;
         }
       );
       // get the owned field
@@ -281,28 +316,25 @@ function get_permissions_for_owned_field(
               if (borrow) {
                 return new Ok([
                   [],
-                  apply(read_permissions, (permissions) =>
-                    permissions.push(
+                  apply(read_permissions, (it) => {
+                    it.push(
                       ...nested_write_permissions,
                       ...nested_read_permissions
-                    )
-                  ),
-                ] as [
-                  ReadonlyArray<ReadonlyArray<string>>,
-                  ReadonlyArray<ReadonlyArray<string>>
-                ]);
+                    );
+                    return it;
+                  }),
+                ] as [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]);
               } else {
                 return new Ok([
-                  apply(write_permissions, (permissions) =>
-                    permissions.push(...nested_write_permissions)
-                  ),
-                  apply(read_permissions, (permissions) =>
-                    permissions.push(...nested_read_permissions)
-                  ),
-                ] as [
-                  ReadonlyArray<ReadonlyArray<string>>,
-                  ReadonlyArray<ReadonlyArray<string>>
-                ]);
+                  apply(write_permissions, (it) => {
+                    it.push(...nested_write_permissions);
+                    return it;
+                  }),
+                  apply(read_permissions, (it) => {
+                    it.push(...nested_read_permissions);
+                    return it;
+                  }),
+                ] as [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]);
               }
             } else {
               return new Err(

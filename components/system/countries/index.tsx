@@ -69,6 +69,11 @@ export default function Component() {
   if (struct.isSome()) {
     // console.log(get_permissions(struct.get(), []));
     console.log(validate_ownership_path(struct.get(), ["member"]));
+    console.log("=======================");
+    console.log(
+      get_permissions(struct.get(), [["alliance", "wallet", "user"]], [])
+    );
+    console.log("=======================");
   } else {
     console.log("---nothing---");
   }

@@ -13,7 +13,10 @@ export type StructPermissions = {
   ownership: ReadonlyArray<[string, BooleanLispExpression]>;
   borrow: Record<
     string,
-    ReadonlyArray<[string, string, BooleanLispExpression]>
+    {
+      prove: ReadonlyArray<[string, string, BooleanLispExpression]>;
+      ownership: ReadonlyArray<ReadonlyArray<string>>;
+    }
   >;
   private: Record<
     string,

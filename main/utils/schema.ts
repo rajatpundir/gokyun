@@ -946,19 +946,22 @@ const schema: Record<
         ["member", new Bool(true)],
       ],
       borrow: {
-        alliance: [
-          [
-            "Alliance_Member",
-            "member",
-            new NumberComparatorExpression(
-              new Equals<ToNumber>([
-                new DotExpression(new Dot(["alliance"])),
-                new DotExpression(new Dot(["_borrow", "alliance"])),
-                [],
-              ])
-            ),
+        alliance: {
+          prove: [
+            [
+              "AllianceMember",
+              "member",
+              new NumberComparatorExpression(
+                new Equals<ToNumber>([
+                  new DotExpression(new Dot(["alliance"])),
+                  new DotExpression(new Dot(["_borrow", "alliance"])),
+                  [],
+                ])
+              ),
+            ],
           ],
-        ],
+          ownership: [["alliance", "wallet", "user"]],
+        },
       },
       private: {
         alliance: {
@@ -1056,19 +1059,22 @@ const schema: Record<
         ["member", new Bool(true)],
       ],
       borrow: {
-        guild: [
-          [
-            "GuildMember",
-            "member",
-            new NumberComparatorExpression(
-              new Equals<ToNumber>([
-                new DotExpression(new Dot(["guild"])),
-                new DotExpression(new Dot(["_borrow", "guild"])),
-                [],
-              ])
-            ),
+        guild: {
+          prove: [
+            [
+              "GuildMember",
+              "member",
+              new NumberComparatorExpression(
+                new Equals<ToNumber>([
+                  new DotExpression(new Dot(["guild"])),
+                  new DotExpression(new Dot(["_borrow", "guild"])),
+                  [],
+                ])
+              ),
+            ],
           ],
-        ],
+          ownership: [["guild", "wallet", "user"]],
+        },
       },
       private: {
         guild: {
@@ -1150,19 +1156,22 @@ const schema: Record<
         ["member", new Bool(true)],
       ],
       borrow: {
-        clan: [
-          [
-            "ClanMember",
-            "member",
-            new NumberComparatorExpression(
-              new Equals<ToNumber>([
-                new DotExpression(new Dot(["clan"])),
-                new DotExpression(new Dot(["_borrow", "clan"])),
-                [],
-              ])
-            ),
+        clan: {
+          prove: [
+            [
+              "ClanMember",
+              "member",
+              new NumberComparatorExpression(
+                new Equals<ToNumber>([
+                  new DotExpression(new Dot(["clan"])),
+                  new DotExpression(new Dot(["_borrow", "clan"])),
+                  [],
+                ])
+              ),
+            ],
           ],
-        ],
+          ownership: [["clan", "wallet", "user"]],
+        },
       },
       private: {
         clan: {
