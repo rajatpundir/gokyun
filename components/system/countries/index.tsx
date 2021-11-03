@@ -16,9 +16,12 @@ import { Text, View } from "../../../main/themed";
 import { HashSet, Option } from "prelude-ts";
 import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
 import { Immutable, Draft } from "immer";
-import { get_permissions, validate_ownership_path } from "./country";
 import { get_structs } from "../../../main/utils/schema";
 import { Struct } from "../../../main/utils/variable";
+import {
+  validate_ownership_path,
+  get_permissions,
+} from "../../../main/utils/permissions";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
