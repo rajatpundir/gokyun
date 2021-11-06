@@ -1,4 +1,7 @@
 import Mustache from "mustache";
+import { Immutable, Draft } from "immer";
+import { HashSet } from "prelude-ts";
+import { Path, StrongEnum, Struct } from "./variable";
 
 export type Language = "English";
 
@@ -75,7 +78,7 @@ export type Option<T> = Ok<T> | undefined;
 
 export type Result<T> = Ok<T> | Err;
 
-export function unwrap<T>(result: Result<T>): result is Ok<T> {
+export function unwrap<T>(result: Result<T> | Option<T>): result is Ok<T> {
   return result instanceof Ok;
 }
 
@@ -95,4 +98,57 @@ export function unwrap_array<T>(
 
 export function apply<T, U>(v: T, fx: (it: T) => U): U {
   return fx(v);
+}
+
+export type State = Immutable<{
+  struct: Struct;
+  id: number | undefined;
+  values: HashSet<Path>;
+}>;
+
+export type Action = ["id", number] | ["values", Path, StrongEnum];
+
+export function reducer(state: Draft<State>, action: Action) {
+  switch (action[0]) {
+    case "id": {
+      state.id = action[1];
+      break;
+    }
+    case "values": {
+      state.values = apply(
+        state.values.filter((x) => !x.equals(action[1])),
+        (it) => {
+          const temp = state.values.findAny((x) => x.equals(action[1]));
+          if (temp.isSome()) {
+            const path: Path = temp.get();
+            if (unwrap(path.value)) {
+              if (path.updatable) {
+                if (path.value.value.type === action[2].type) {
+                  if (
+                    path.value.value.type === "other" &&
+                    action[2].type === "other"
+                  ) {
+                    if (path.value.value.other === action[2].other) {
+                      path.value = new Ok(action[2]);
+                    }
+                  } else {
+                    path.value = new Ok(action[2]);
+                  }
+                }
+              } else {
+                path.value = new Ok(action[2]);
+              }
+            }
+            return it.add(path);
+          }
+          return it;
+        }
+      );
+      break;
+    }
+    default: {
+      const _exhaustiveCheck: never = action;
+      return _exhaustiveCheck;
+    }
+  }
 }

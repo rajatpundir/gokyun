@@ -16,6 +16,7 @@ import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
+import { Platform } from "react-native";
 
 export type NavigatorParams = {
   Clans: undefined;
@@ -45,6 +46,7 @@ export function Navigator() {
     <BottomTab.Navigator
       initialRouteName="System"
       screenOptions={{
+        lazy: true,
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "#9b9baf",
         tabBarLabelStyle: { fontSize: 11 },

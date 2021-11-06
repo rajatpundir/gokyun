@@ -28,14 +28,15 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
     BottomTabScreenProps<ParentNavigatorParams>
   >;
 
-const BottomTab = createMaterialTopTabNavigator<NavigatorParams>();
+const TopTab = createMaterialTopTabNavigator<NavigatorParams>();
 
 export function Navigator() {
   return (
-    <BottomTab.Navigator
+    <TopTab.Navigator
       initialRouteName="Countries"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
+        lazy: true,
         tabBarActiveTintColor: "#ff0000",
         tabBarInactiveTintColor: "#9b9baf",
         tabBarScrollEnabled: true,
@@ -48,35 +49,35 @@ export function Navigator() {
         tabBarIndicatorStyle: { backgroundColor: "#ff0000" },
       }}
     >
-      <BottomTab.Screen
+      <TopTab.Screen
         name="Countries"
         component={Countries}
         // options={({ navigation }: NavigatorProps<"Countries">) => ({
         //   title: "Countries",
         // })}
       />
-      <BottomTab.Screen
+      <TopTab.Screen
         name="Languages"
         component={Languages}
         // options={({ navigation }: NavigatorProps<"Languages">) => ({
         //   title: "Languages",
         // })}
       />
-      <BottomTab.Screen
+      <TopTab.Screen
         name="Tags"
         component={Tags}
         // options={({ navigation }: NavigatorProps<"Tags">) => ({
         //   title: "Tags",
         // })}
       />
-      <BottomTab.Screen
+      <TopTab.Screen
         name="Categories"
         component={Categories}
         // options={({ navigation }: NavigatorProps<"Categories">) => ({
         //   title: "Categories",
         // })}
       />
-    </BottomTab.Navigator>
+    </TopTab.Navigator>
   );
 }
 

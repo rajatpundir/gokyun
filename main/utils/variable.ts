@@ -1,6 +1,8 @@
 import { Vector, HashSet } from "prelude-ts";
+import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { Message } from "./prelude";
+import { Option } from "./prelude";
 
 // Ownership states multiple ways to prove ownership of a struct
 // Permissions are matched against proven ownerships to get allowed operations
@@ -125,19 +127,19 @@ export type WeakEnum =
     }
   | {
       type: "i32";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "u32";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "i64";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "u64";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "idouble";
@@ -149,11 +151,11 @@ export type WeakEnum =
     }
   | {
       type: "idecimal";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "udecimal";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "bool";
@@ -161,24 +163,24 @@ export type WeakEnum =
     }
   | {
       type: "date";
-      default?: number;
+      default?: Date;
     }
   | {
       type: "time";
-      default?: number;
+      default?: Date;
     }
   | {
       type: "timestamp";
-      default?: number;
+      default?: Date;
     }
   | {
       type: "timeslice";
-      default?: [number, number];
+      default?: [Date, Date];
     }
   | {
       type: "other";
       other: string;
-      default?: number;
+      default?: Decimal;
     };
 
 export class Variable {
@@ -265,19 +267,19 @@ export type StrongEnum =
     }
   | {
       type: "i32";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "u32";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "i64";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "u64";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "idouble";
@@ -289,11 +291,11 @@ export type StrongEnum =
     }
   | {
       type: "idecimal";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "udecimal";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "bool";
@@ -301,31 +303,34 @@ export type StrongEnum =
     }
   | {
       type: "date";
-      value: number;
+      value: Date;
     }
   | {
       type: "time";
-      value: number;
+      value: Date;
     }
   | {
       type: "timestamp";
-      value: number;
+      value: Date;
     }
   | {
       type: "timeslice";
-      value: [number, number];
+      value: [Date, Date];
     }
   | {
       type: "other";
       other: string;
-      value: number;
+      value: Decimal;
     };
 
 export class Path {
+  label: string;
   path: Vector<string>;
-  value: StrongEnum;
+  value: Option<StrongEnum>;
+  updatable: boolean = false;
 
-  constructor(path: Vector<string>, value: StrongEnum) {
+  constructor(label: string, path: Vector<string>, value: Option<StrongEnum>) {
+    this.label = label;
     this.path = path;
     this.value = value;
   }
@@ -342,6 +347,6 @@ export class Path {
   }
 
   toString(): string {
-    return String([this.path, this.value]);
+    return String([this.path, this.value, this.updatable]);
   }
 }

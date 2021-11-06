@@ -1,4 +1,4 @@
-import { HashSet } from "prelude-ts";
+import { HashSet, Vector } from "prelude-ts";
 import {
   Result,
   Ok,
@@ -11,7 +11,7 @@ import {
   apply,
 } from "./prelude";
 import { get_structs } from "./schema";
-import { Struct } from "./variable";
+import { Path, StrongEnum, Struct } from "./variable";
 
 export function validate_ownership_path(
   struct: Struct,
@@ -56,9 +56,7 @@ export function get_permissions(
   struct: Struct,
   ownership_paths: ReadonlyArray<ReadonlyArray<string>>,
   borrow_fields: ReadonlyArray<string>
-): Result<
-  [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]
-> {
+): Result<[HashSet<Vector<string>>, HashSet<Vector<string>>]> {
   // validate user pointing paths
   const result = unwrap_array(
     ownership_paths.map((path) => validate_ownership_path(struct, path))
@@ -149,9 +147,9 @@ export function get_permissions(
       }
     }
     // return a tuple of write and read permissions
-    return new Ok([write_permissions, read_permissions] as [
-      ReadonlyArray<ReadonlyArray<string>>,
-      ReadonlyArray<ReadonlyArray<string>>
+    return new Ok<[HashSet<Vector<string>>, HashSet<Vector<string>>]>([
+      HashSet.ofIterable(write_permissions.map((x) => Vector.ofIterable(x))),
+      HashSet.ofIterable(read_permissions.map((x) => Vector.ofIterable(x))),
     ]);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as Message));
@@ -266,4 +264,34 @@ function get_permissions_for_owned_field(
     }
   }
   return new Err(new CustomError([errors.ErrUnexpected] as Message));
+}
+
+export function get_paths(
+  permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>],
+  values: ReadonlyArray<[string, ReadonlyArray<string>, StrongEnum]>
+): HashSet<Path> {
+  const paths: HashSet<Path> = apply([], (it: Array<Path>) => {
+    for (let value of values) {
+      it.push(
+        new Path(value[0], Vector.ofIterable(value[1]), new Ok(value[2]))
+      );
+    }
+    return HashSet.ofIterable(it);
+  });
+  return apply([], (it: Array<Path>) => {
+    const [write_permissions, read_permissions] = permissions;
+    for (let path of paths) {
+      if (write_permissions.contains(path.path)) {
+        it.push(
+          apply(path, (v) => {
+            v.updatable = true;
+            return v;
+          })
+        );
+      } else if (read_permissions.contains(path.path)) {
+        it.push(path);
+      }
+    }
+    return HashSet.ofIterable(it);
+  });
 }
