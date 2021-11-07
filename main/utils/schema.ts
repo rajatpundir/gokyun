@@ -4,7 +4,7 @@ import {
   And,
   Bool,
   BooleanLispExpression,
-  Decimal,
+  Deci,
   DecimalComparatorExpression,
   Divide,
   Dot,
@@ -22,8 +22,8 @@ import {
   Subtract,
   Text,
   TextComparatorExpression,
-  ToDecimal,
-  ToNumber,
+  ToDeci,
+  ToNum,
   ToText,
 } from "./lisp";
 import { errors, Message } from "./prelude";
@@ -114,7 +114,7 @@ const schema: Record<
           {
             path: ["_prev", "product_category", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "product_category", "translation_count"])
                 ),
@@ -125,7 +125,7 @@ const schema: Record<
           {
             path: ["_curr", "product_category", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "product_category", "translation_count"])
                 ),
@@ -226,7 +226,7 @@ const schema: Record<
           {
             path: ["_prev", "service_category", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "service_category", "translation_count"])
                 ),
@@ -237,7 +237,7 @@ const schema: Record<
           {
             path: ["_curr", "service_category", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "service_category", "translation_count"])
                 ),
@@ -333,7 +333,7 @@ const schema: Record<
           {
             path: ["_prev", "tag", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "tag", "translation_count"])
                 ),
@@ -344,7 +344,7 @@ const schema: Record<
           {
             path: ["_curr", "tag", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "tag", "translation_count"])
                 ),
@@ -459,17 +459,17 @@ const schema: Record<
         new LogicalBinaryExpression(
           new And([
             new DecimalComparatorExpression(
-              new GreaterThanEquals<ToDecimal>([
-                new Decimal(-90),
+              new GreaterThanEquals<ToDeci>([
+                new Deci(-90),
                 new DotExpression(new Dot(["average_latitude"])),
-                [new Decimal(90)],
+                [new Deci(90)],
               ])
             ),
             new DecimalComparatorExpression(
-              new GreaterThanEquals<ToDecimal>([
-                new Decimal(-180),
+              new GreaterThanEquals<ToDeci>([
+                new Deci(-180),
                 new DotExpression(new Dot(["average_longitude"])),
-                [new Decimal(180)],
+                [new Deci(180)],
               ])
             ),
             [],
@@ -641,7 +641,7 @@ const schema: Record<
         new LogicalUnaryExpression(
           new Not(
             new NumberComparatorExpression(
-              new LessThan<ToNumber>([
+              new LessThan<ToNum>([
                 new NumberArithmeticExpression(
                   new Add([
                     new DotExpression(new Dot(["alliance_count"])),
@@ -695,7 +695,7 @@ const schema: Record<
           {
             path: ["_prev", "wallet", "alliance_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "wallet", "alliance_count"])
                 ),
@@ -706,7 +706,7 @@ const schema: Record<
           {
             path: ["_curr", "wallet", "alliance_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "wallet", "alliance_count"])
                 ),
@@ -761,7 +761,7 @@ const schema: Record<
           {
             path: ["_prev", "wallet", "guild_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "wallet", "guild_count"])),
                 [new Num(1)],
               ])
@@ -770,7 +770,7 @@ const schema: Record<
           {
             path: ["_curr", "wallet", "guild_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_prev", "wallet", "guild_count"])),
                 [new Num(1)],
               ])
@@ -823,7 +823,7 @@ const schema: Record<
           {
             path: ["_prev", "wallet", "clan_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "wallet", "clan_count"])),
                 [new Num(1)],
               ])
@@ -832,7 +832,7 @@ const schema: Record<
           {
             path: ["_curr", "wallet", "clan_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_prev", "wallet", "clan_count"])),
                 [new Num(1)],
               ])
@@ -952,7 +952,7 @@ const schema: Record<
               "AllianceMember",
               "member",
               new NumberComparatorExpression(
-                new Equals<ToNumber>([
+                new Equals<ToNum>([
                   new DotExpression(new Dot(["alliance"])),
                   new DotExpression(new Dot(["_borrow", "alliance"])),
                   [],
@@ -992,7 +992,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance", "member_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance", "member_count"])
                 ),
@@ -1004,7 +1004,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance", "member_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "member_count"])
                 ),
@@ -1022,7 +1022,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "member", "alliance_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "member", "alliance_count"])
                 ),
@@ -1034,7 +1034,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "member", "alliance_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "member", "alliance_count"])
                 ),
@@ -1065,7 +1065,7 @@ const schema: Record<
               "GuildMember",
               "member",
               new NumberComparatorExpression(
-                new Equals<ToNumber>([
+                new Equals<ToNum>([
                   new DotExpression(new Dot(["guild"])),
                   new DotExpression(new Dot(["_borrow", "guild"])),
                   [],
@@ -1097,7 +1097,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "guild", "member_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_curr", "guild", "member_count"])),
                 [new Num(1)],
               ])
@@ -1107,7 +1107,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "guild", "member_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "guild", "member_count"])),
                 [new Num(1)],
               ])
@@ -1123,7 +1123,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "member", "guild_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_curr", "member", "guild_count"])),
                 [new Num(1)],
               ])
@@ -1133,7 +1133,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "member", "guild_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "member", "guild_count"])),
                 [new Num(1)],
               ])
@@ -1162,7 +1162,7 @@ const schema: Record<
               "ClanMember",
               "member",
               new NumberComparatorExpression(
-                new Equals<ToNumber>([
+                new Equals<ToNum>([
                   new DotExpression(new Dot(["clan"])),
                   new DotExpression(new Dot(["_borrow", "clan"])),
                   [],
@@ -1194,7 +1194,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "clan", "member_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_curr", "clan", "member_count"])),
                 [new Num(1)],
               ])
@@ -1204,7 +1204,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "clan", "member_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "clan", "member_count"])),
                 [new Num(1)],
               ])
@@ -1220,7 +1220,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "member", "clan_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_curr", "member", "clan_count"])),
                 [new Num(1)],
               ])
@@ -1230,7 +1230,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "member", "clan_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "member", "clan_count"])),
                 [new Num(1)],
               ])
@@ -1289,7 +1289,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance", "product_family_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "product_family_count"])
                 ),
@@ -1300,7 +1300,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance", "product_family_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "product_family_count"])
                 ),
@@ -1317,7 +1317,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "product_count"])
                 ),
@@ -1328,7 +1328,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "product_count"])
                 ),
@@ -1392,7 +1392,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_product_family", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1407,7 +1407,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_product_family", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1486,7 +1486,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_product_family", "property_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1501,7 +1501,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_product_family", "property_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1573,7 +1573,7 @@ const schema: Record<
               "translation_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1592,7 +1592,7 @@ const schema: Record<
               "translation_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1678,7 +1678,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_product_family_property", "value_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1693,7 +1693,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_product_family_property", "value_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1765,7 +1765,7 @@ const schema: Record<
               "translation_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1784,7 +1784,7 @@ const schema: Record<
               "translation_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -1875,7 +1875,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_product_family", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product_family", "product_count"])
                 ),
@@ -1886,7 +1886,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_product_family", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product_family", "product_count"])
                 ),
@@ -1914,7 +1914,7 @@ const schema: Record<
       ],
       tag_count_is_less_than_system_tag_count: [
         new NumberComparatorExpression(
-          new LessThanEquals<ToNumber>([
+          new LessThanEquals<ToNum>([
             new DotExpression(new Dot(["tag_count"])),
             new DotExpression(new Dot(["_system", "tag_count"])),
             [],
@@ -1963,7 +1963,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_product", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product", "translation_count"])
                 ),
@@ -1974,7 +1974,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_product", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product", "translation_count"])
                 ),
@@ -2048,7 +2048,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance_product", "tag_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance_product", "tag_count"])
                 ),
@@ -2060,7 +2060,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance_product", "tag_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product", "tag_count"])
                 ),
@@ -2128,7 +2128,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_product", "variant_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product", "variant_count"])
                 ),
@@ -2139,7 +2139,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_product", "variant_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_product", "variant_count"])
                 ),
@@ -2157,7 +2157,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "provider_average_price"],
             expr: new NumberArithmeticExpression(
-              new Divide<ToDecimal>([
+              new Divide<ToDeci>([
                 new DotExpression(new Dot(["_curr", "provider_price_sum"])),
                 [new DotExpression(new Dot(["_curr", "provider_count"]))],
               ])
@@ -2183,7 +2183,7 @@ const schema: Record<
       ],
       min_quantity_is_less_than_max_quantity: [
         new NumberComparatorExpression(
-          new GreaterThanEquals<ToNumber>([
+          new GreaterThanEquals<ToNum>([
             new DotExpression(new Dot(["min_quantity"])),
             new DotExpression(new Dot(["max_quantity"])),
             [],
@@ -2193,7 +2193,7 @@ const schema: Record<
       ],
       min_price_is_less_than_max_price: [
         new NumberComparatorExpression(
-          new GreaterThanEquals<ToNumber>([
+          new GreaterThanEquals<ToNum>([
             new DotExpression(new Dot(["min_price"])),
             new DotExpression(new Dot(["max_price"])),
             [],
@@ -2243,7 +2243,7 @@ const schema: Record<
               "translation_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -2262,7 +2262,7 @@ const schema: Record<
               "translation_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -2360,7 +2360,7 @@ const schema: Record<
               "variant_property_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -2379,7 +2379,7 @@ const schema: Record<
               "variant_property_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -2397,7 +2397,7 @@ const schema: Record<
     checks: {
       alliance_product_family_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(
               new Dot([
                 "alliance_product_family_property",
@@ -2417,7 +2417,7 @@ const schema: Record<
       ],
       alliance_product_family_property_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(
               new Dot([
                 "alliance_product_family_property_value",
@@ -2479,7 +2479,7 @@ const schema: Record<
           {
             path: ["_prev", "user", "product_family_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user", "product_family_count"])
                 ),
@@ -2490,7 +2490,7 @@ const schema: Record<
           {
             path: ["_curr", "user", "product_family_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user", "product_family_count"])
                 ),
@@ -2507,7 +2507,7 @@ const schema: Record<
           {
             path: ["_prev", "user", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(new Dot(["_prev", "user", "product_count"])),
                 [new Num(1)],
               ])
@@ -2516,7 +2516,7 @@ const schema: Record<
           {
             path: ["_curr", "user", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(new Dot(["_prev", "user", "product_count"])),
                 [new Num(1)],
               ])
@@ -2575,7 +2575,7 @@ const schema: Record<
           {
             path: ["_prev", "user_product_family", "property_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product_family", "property_count"])
                 ),
@@ -2586,7 +2586,7 @@ const schema: Record<
           {
             path: ["_curr", "user_product_family", "property_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product_family", "property_count"])
                 ),
@@ -2654,7 +2654,7 @@ const schema: Record<
           {
             path: ["_prev", "user_product_family_property", "value_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -2669,7 +2669,7 @@ const schema: Record<
           {
             path: ["_curr", "user_product_family_property", "value_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -2746,7 +2746,7 @@ const schema: Record<
           {
             path: ["_prev", "user_product_family", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product_family", "product_count"])
                 ),
@@ -2757,7 +2757,7 @@ const schema: Record<
           {
             path: ["_curr", "user_product_family", "product_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product_family", "product_count"])
                 ),
@@ -2785,7 +2785,7 @@ const schema: Record<
       ],
       tag_count_is_less_than_system_tag_count: [
         new NumberComparatorExpression(
-          new LessThanEquals<ToNumber>([
+          new LessThanEquals<ToNum>([
             new DotExpression(new Dot(["tag_count"])),
             new DotExpression(new Dot(["_system", "tag_count"])),
             [],
@@ -2834,7 +2834,7 @@ const schema: Record<
           {
             path: ["_prev", "user_product", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product", "translation_count"])
                 ),
@@ -2845,7 +2845,7 @@ const schema: Record<
           {
             path: ["_curr", "user_product", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product", "translation_count"])
                 ),
@@ -2936,7 +2936,7 @@ const schema: Record<
           {
             path: ["_prev", "user_product", "variant_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product", "variant_count"])
                 ),
@@ -2947,7 +2947,7 @@ const schema: Record<
           {
             path: ["_curr", "user_product", "variant_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "user_product", "variant_count"])
                 ),
@@ -3027,7 +3027,7 @@ const schema: Record<
               "variant_property_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3046,7 +3046,7 @@ const schema: Record<
               "variant_property_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3064,7 +3064,7 @@ const schema: Record<
     checks: {
       user_product_family_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(
               new Dot(["user_product_family_property", "user_product_family"])
             ),
@@ -3078,7 +3078,7 @@ const schema: Record<
       ],
       user_product_family_property_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(
               new Dot([
                 "user_product_family_property_value",
@@ -3140,7 +3140,7 @@ const schema: Record<
     checks: {
       alliance_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(
               new Dot([
                 "alliance_product_family_variant",
@@ -3157,7 +3157,7 @@ const schema: Record<
       ],
       user_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(new Dot(["alliance_member", "member"])),
             new DotExpression(
               new Dot([
@@ -3286,7 +3286,7 @@ const schema: Record<
               "provider_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_curr",
@@ -3306,7 +3306,7 @@ const schema: Record<
               "provider_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3328,7 +3328,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance_member", "variant_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance_member", "variant_count"])
                 ),
@@ -3340,7 +3340,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance_member", "variant_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_member", "variant_count"])
                 ),
@@ -3362,7 +3362,7 @@ const schema: Record<
               "alliance_variant_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_curr",
@@ -3382,7 +3382,7 @@ const schema: Record<
               "alliance_variant_count",
             ],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3400,7 +3400,7 @@ const schema: Record<
     checks: {
       alliance_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(new Dot(["alliance_product", "alliance"])),
             new DotExpression(new Dot(["alliance_member", "alliance"])),
             [],
@@ -3410,7 +3410,7 @@ const schema: Record<
       ],
       user_is_the_same: [
         new NumberComparatorExpression(
-          new Equals<ToNumber>([
+          new Equals<ToNum>([
             new DotExpression(new Dot(["alliance_member", "member"])),
             new DotExpression(new Dot(["user_product", "user"])),
             [],
@@ -3476,7 +3476,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance", "virtual_product_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance", "virtual_product_count"])
                 ),
@@ -3488,7 +3488,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance", "virtual_product_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "virtual_product_count"])
                 ),
@@ -3504,7 +3504,7 @@ const schema: Record<
         new LogicalUnaryExpression(
           new Not(
             new NumberComparatorExpression(
-              new Equals<ToNumber>([
+              new Equals<ToNum>([
                 new DotExpression(
                   new Dot([
                     "alliance_product",
@@ -3569,7 +3569,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance", "service_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance", "service_count"])
                 ),
@@ -3581,7 +3581,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance", "service_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance", "service_count"])
                 ),
@@ -3609,7 +3609,7 @@ const schema: Record<
       ],
       min_price_is_less_than_max_price: [
         new NumberComparatorExpression(
-          new GreaterThanEquals<ToNumber>([
+          new GreaterThanEquals<ToNum>([
             new DotExpression(new Dot(["min_price"])),
             new DotExpression(new Dot(["max_price"])),
             [],
@@ -3655,7 +3655,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_service", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_service", "translation_count"])
                 ),
@@ -3666,7 +3666,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_service", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_service", "translation_count"])
                 ),
@@ -3791,7 +3791,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_service_task", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3806,7 +3806,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_service_task", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3937,7 +3937,7 @@ const schema: Record<
           {
             path: ["_prev", "alliance_service_milsestone", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -3952,7 +3952,7 @@ const schema: Record<
           {
             path: ["_curr", "alliance_service_milsestone", "translation_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot([
                     "_prev",
@@ -4063,7 +4063,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance_service", "provider_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance_service", "provider_count"])
                 ),
@@ -4075,7 +4075,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance_service", "provider_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_service", "provider_count"])
                 ),
@@ -4093,7 +4093,7 @@ const schema: Record<
             // Run on creation/updation as per rules of effects
             path: ["_curr", "alliance_member", "service_count"],
             expr: new NumberArithmeticExpression(
-              new Add<ToNumber>([
+              new Add<ToNum>([
                 new DotExpression(
                   new Dot(["_curr", "alliance_member", "service_count"])
                 ),
@@ -4105,7 +4105,7 @@ const schema: Record<
             // Run on updation/deletion as per rules of effects
             path: ["_prev", "alliance_member", "service_count"],
             expr: new NumberArithmeticExpression(
-              new Subtract<ToNumber>([
+              new Subtract<ToNum>([
                 new DotExpression(
                   new Dot(["_prev", "alliance_member", "service_count"])
                 ),
@@ -4195,7 +4195,7 @@ const schema: Record<
     checks: {
       valid_from_is_less_than_valid_to: [
         new NumberComparatorExpression(
-          new GreaterThanEquals<ToNumber>([
+          new GreaterThanEquals<ToNum>([
             new DotExpression(new Dot(["valid_from"])),
             new DotExpression(new Dot(["valid_to"])),
             [],
@@ -4205,7 +4205,7 @@ const schema: Record<
       ],
       min_clan_loyalty_is_less_than_max_clan_loyalty: [
         new NumberComparatorExpression(
-          new GreaterThanEquals<ToNumber>([
+          new GreaterThanEquals<ToNum>([
             new DotExpression(new Dot(["min_clan_loyalty"])),
             new DotExpression(new Dot(["max_clan_loyalty"])),
             [],

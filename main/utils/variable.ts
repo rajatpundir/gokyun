@@ -174,10 +174,6 @@ export type WeakEnum =
       default?: Date;
     }
   | {
-      type: "timeslice";
-      default?: [Date, Date];
-    }
-  | {
       type: "other";
       other: string;
       default?: Decimal;
@@ -312,10 +308,6 @@ export type StrongEnum =
   | {
       type: "timestamp";
       value: Date;
-    }
-  | {
-      type: "timeslice";
-      value: [Date, Date];
     }
   | {
       type: "other";

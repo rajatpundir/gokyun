@@ -707,12 +707,12 @@ export function DateTime_Field(
   return null;
 }
 
-// TODO. Implement Timeslice Picker here (once the DateTime Picker is tested)
-
 // Box probably requires implementing a full fledged list and filter support
 // A modal with top bar with filter button and a flatlist, maybe a bottom bar with some stats from query
 // Filter opens in an action sheet component
 // Possibility of Joins and Group Aggregates should be considered
+
+// Alternative: Just place a u64 picker as placeholder here for the time being.
 export function Box(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {

@@ -100,6 +100,45 @@ export function apply<T, U>(v: T, fx: (it: T) => U): U {
   return fx(v);
 }
 
+export function fold<T, U>(
+  init: T,
+  values: ReadonlyArray<U>,
+  fn: (acc: T, val: U) => T
+): T {
+  return apply(init, (acc) => {
+    for (let val of values) {
+      acc = fn(acc, val);
+    }
+    return acc;
+  });
+  // let acc: T = init;
+  // for (let val of values) {
+  //   acc = fn(acc, val);
+  // }
+  // return acc;
+}
+
+export function fold_prev<T, U>(
+  init: T,
+  prev: U,
+  values: ReadonlyArray<U>,
+  fn: (acc: T, prev: U, val: U) => T
+): T {
+  return apply(init, (acc) => {
+    for (let val of values) {
+      acc = fn(acc, prev, val);
+      prev = val;
+    }
+    return acc;
+  });
+  // let acc: T = init;
+  // for (let val of values) {
+  //   acc = fn(acc, prev, val);
+  //   prev = val;
+  // }
+  // return acc;
+}
+
 export type State = Immutable<{
   struct: Struct;
   id: number | undefined;

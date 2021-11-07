@@ -7,9 +7,11 @@ import {
   CustomError,
   errors,
   Message,
+  fold,
+  fold_prev,
 } from "./prelude";
 
-type LispResult = Num | Decimal | Text | Bool;
+type LispResult = Num | Deci | Text | Bool;
 
 export type LispExpression =
   | NumberArithmeticExpression
@@ -20,7 +22,7 @@ export type LispExpression =
   | LogicalBinaryExpression
   | LogicalUnaryExpression
   | DotExpression
-  | MatchExpression<ToBoolean, ToNumber>;
+  | MatchExpression<ToBoolean, ToNum>;
 
 export type BooleanLispExpression = (LispExpression | Bool) & ToBoolean;
 
@@ -39,22 +41,20 @@ export abstract class ToText extends ToValue {
   abstract get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text>;
 }
 
-export abstract class ToNumber extends ToText {
+export abstract class ToNum extends ToText {
   abstract get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num>;
 }
 
-export abstract class ToDecimal extends ToText {
+export abstract class ToDeci extends ToText {
   abstract get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num>;
-  abstract get_decimal(
-    symbols: Readonly<Record<string, Symbol>>
-  ): Result<Decimal>;
+  abstract get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci>;
 }
 
 export abstract class ToBoolean extends ToText {
   abstract get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool>;
 }
 
-export class Num implements ToNumber, ToDecimal, ToText {
+export class Num implements ToNum, ToDeci, ToText {
   value: number;
 
   constructor(value: number) {
@@ -77,8 +77,8 @@ export class Num implements ToNumber, ToDecimal, ToText {
     return new Ok(new Num(this.value));
   }
 
-  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Decimal> {
-    return new Ok(new Decimal(this.value));
+  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
+    return new Ok(new Deci(this.value));
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
@@ -90,7 +90,7 @@ export class Num implements ToNumber, ToDecimal, ToText {
   }
 }
 
-export class Decimal implements ToNumber, ToDecimal, ToText {
+export class Deci implements ToNum, ToDeci, ToText {
   value: number;
 
   constructor(value: number) {
@@ -113,8 +113,8 @@ export class Decimal implements ToNumber, ToDecimal, ToText {
     return new Ok(new Num(this.value));
   }
 
-  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Decimal> {
-    return new Ok(new Decimal(this.value));
+  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
+    return new Ok(new Deci(this.value));
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
@@ -186,7 +186,7 @@ export class Bool implements ToBoolean, ToText {
   }
 }
 
-type Leaf = Num | Decimal | Text | Bool;
+type Leaf = Num | Deci | Text | Bool;
 
 class Symbol {
   value: {
@@ -199,33 +199,7 @@ class Symbol {
   }
 }
 
-function fold<T, U>(
-  init: T,
-  values: ReadonlyArray<U>,
-  fn: (acc: T, val: U) => T
-): T {
-  let acc: T = init;
-  for (let val of values) {
-    acc = fn(acc, val);
-  }
-  return acc;
-}
-
-function fold_prev<T, U>(
-  init: T,
-  prev: U,
-  values: ReadonlyArray<U>,
-  fn: (acc: T, prev: U, val: U) => T
-): T {
-  let acc: T = init;
-  for (let val of values) {
-    acc = fn(acc, prev, val);
-    prev = val;
-  }
-  return acc;
-}
-
-export class Add<T extends ToNumber | ToDecimal> {
+export class Add<T extends ToNum | ToDeci> {
   value: [T, ReadonlyArray<T>];
 
   constructor(value: [T, ReadonlyArray<T>]) {
@@ -233,7 +207,7 @@ export class Add<T extends ToNumber | ToDecimal> {
   }
 }
 
-export class Multiply<T extends ToNumber | ToDecimal> {
+export class Multiply<T extends ToNum | ToDeci> {
   value: [T, ReadonlyArray<T>];
 
   constructor(value: [T, ReadonlyArray<T>]) {
@@ -241,7 +215,7 @@ export class Multiply<T extends ToNumber | ToDecimal> {
   }
 }
 
-export class Subtract<T extends ToNumber | ToDecimal> {
+export class Subtract<T extends ToNum | ToDeci> {
   value: [T, ReadonlyArray<T>];
 
   constructor(value: [T, ReadonlyArray<T>]) {
@@ -249,7 +223,7 @@ export class Subtract<T extends ToNumber | ToDecimal> {
   }
 }
 
-export class Divide<T extends ToNumber | ToDecimal> {
+export class Divide<T extends ToNum | ToDeci> {
   value: [T, ReadonlyArray<T>];
 
   constructor(value: [T, ReadonlyArray<T>]) {
@@ -257,7 +231,7 @@ export class Divide<T extends ToNumber | ToDecimal> {
   }
 }
 
-export class Modulus<T extends ToNumber | ToDecimal> {
+export class Modulus<T extends ToNum | ToDeci> {
   value: [T, ReadonlyArray<T>];
 
   constructor(value: [T, ReadonlyArray<T>]) {
@@ -265,17 +239,17 @@ export class Modulus<T extends ToNumber | ToDecimal> {
   }
 }
 
-type ArithmeticExpressionVariant<T extends ToNumber | ToDecimal> =
+type ArithmeticExpressionVariant<T extends ToNum | ToDeci> =
   | Add<T>
   | Multiply<T>
   | Subtract<T>
   | Divide<T>
   | Modulus<T>;
 
-export class NumberArithmeticExpression implements ToNumber, ToDecimal {
-  value: ArithmeticExpressionVariant<ToNumber>;
+export class NumberArithmeticExpression implements ToNum, ToDeci {
+  value: ArithmeticExpressionVariant<ToNum>;
 
-  constructor(value: ArithmeticExpressionVariant<ToNumber>) {
+  constructor(value: ArithmeticExpressionVariant<ToNum>) {
     this.value = value;
   }
 
@@ -301,7 +275,7 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
-    let v: Result<ToNumber> = this.eval(symbols);
+    let v: Result<ToNum> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_number(symbols);
     } else {
@@ -309,12 +283,12 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
     }
   }
 
-  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Decimal> {
-    let v: Result<ToNumber> = this.eval(symbols);
+  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
+    let v: Result<ToNum> = this.eval(symbols);
     if (unwrap(v)) {
       let v1 = v.value.get_number(symbols);
       if (unwrap(v1)) {
-        return new Ok(new Decimal(v1.value.value));
+        return new Ok(new Deci(v1.value.value));
       } else {
         return v1;
       }
@@ -324,7 +298,7 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
-    let v: Result<ToNumber> = this.eval(symbols);
+    let v: Result<ToNum> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
     } else {
@@ -332,10 +306,10 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
     }
   }
 
-  eval(symbols: Readonly<Record<string, Symbol>>): Result<ToNumber> {
-    let args: [ToNumber, ReadonlyArray<ToNumber>] = this.value.value;
+  eval(symbols: Readonly<Record<string, Symbol>>): Result<ToNum> {
+    let args: [ToNum, ReadonlyArray<ToNum>] = this.value.value;
     if (this.value instanceof Add) {
-      let result: Result<ToNumber> = fold(
+      let result: Result<ToNum> = fold(
         args[0].get_number(symbols),
         args[1],
         (acc, val) => {
@@ -350,7 +324,7 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Multiply) {
-      let result: Result<ToNumber> = fold(
+      let result: Result<ToNum> = fold(
         args[0].get_number(symbols),
         args[1],
         (acc, val) => {
@@ -365,7 +339,7 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Subtract) {
-      let result: Result<ToNumber> = fold(
+      let result: Result<ToNum> = fold(
         args[0].get_number(symbols),
         args[1],
         (acc, val) => {
@@ -380,7 +354,7 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Divide) {
-      let result: Result<ToNumber> = fold(
+      let result: Result<ToNum> = fold(
         args[0].get_number(symbols),
         args[1],
         (acc, val) => {
@@ -395,7 +369,7 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Modulus) {
-      let result: Result<ToNumber> = fold(
+      let result: Result<ToNum> = fold(
         args[0].get_number(symbols),
         args[1],
         (acc, val) => {
@@ -458,10 +432,10 @@ export class NumberArithmeticExpression implements ToNumber, ToDecimal {
   }
 }
 
-export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
-  value: ArithmeticExpressionVariant<ToDecimal>;
+export class DecimalArithmeticExpression implements ToNum, ToDeci {
+  value: ArithmeticExpressionVariant<ToDeci>;
 
-  constructor(value: ArithmeticExpressionVariant<ToDecimal>) {
+  constructor(value: ArithmeticExpressionVariant<ToDeci>) {
     this.value = value;
   }
 
@@ -487,7 +461,7 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
-    let v: Result<ToDecimal> = this.eval(symbols);
+    let v: Result<ToDeci> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_number(symbols);
     } else {
@@ -495,8 +469,8 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
     }
   }
 
-  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Decimal> {
-    let v: Result<ToDecimal> = this.eval(symbols);
+  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
+    let v: Result<ToDeci> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_decimal(symbols);
     } else {
@@ -505,7 +479,7 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
-    let v: Result<ToDecimal> = this.eval(symbols);
+    let v: Result<ToDeci> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
     } else {
@@ -513,10 +487,10 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
     }
   }
 
-  eval(symbols: Readonly<Record<string, Symbol>>): Result<ToDecimal> {
-    let args: [ToDecimal, ReadonlyArray<ToDecimal>] = this.value.value;
+  eval(symbols: Readonly<Record<string, Symbol>>): Result<ToDeci> {
+    let args: [ToDeci, ReadonlyArray<ToDeci>] = this.value.value;
     if (this.value instanceof Add) {
-      let result: Result<ToDecimal> = fold(
+      let result: Result<ToDeci> = fold(
         args[0].get_decimal(symbols),
         args[1],
         (acc, val) => {
@@ -531,7 +505,7 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Multiply) {
-      let result: Result<ToDecimal> = fold(
+      let result: Result<ToDeci> = fold(
         args[0].get_decimal(symbols),
         args[1],
         (acc, val) => {
@@ -546,7 +520,7 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Subtract) {
-      let result: Result<ToDecimal> = fold(
+      let result: Result<ToDeci> = fold(
         args[0].get_decimal(symbols),
         args[1],
         (acc, val) => {
@@ -561,7 +535,7 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Divide) {
-      let result: Result<ToDecimal> = fold(
+      let result: Result<ToDeci> = fold(
         args[0].get_decimal(symbols),
         args[1],
         (acc, val) => {
@@ -576,7 +550,7 @@ export class DecimalArithmeticExpression implements ToNumber, ToDecimal {
       );
       return result;
     } else if (this.value instanceof Modulus) {
-      let result: Result<ToDecimal> = fold(
+      let result: Result<ToDeci> = fold(
         args[0].get_decimal(symbols),
         args[1],
         (acc, val) => {
@@ -687,9 +661,9 @@ type ComparatorExpressionVariant<T> =
   | LessThanEquals<T>;
 
 export class NumberComparatorExpression implements ToBoolean {
-  value: ComparatorExpressionVariant<ToNumber>;
+  value: ComparatorExpressionVariant<ToNum>;
 
-  constructor(value: ComparatorExpressionVariant<ToNumber>) {
+  constructor(value: ComparatorExpressionVariant<ToNum>) {
     this.value = value;
   }
 
@@ -733,7 +707,7 @@ export class NumberComparatorExpression implements ToBoolean {
   }
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
-    let args: [ToNumber, ToNumber, ReadonlyArray<ToNumber>] = this.value.value;
+    let args: [ToNum, ToNum, ReadonlyArray<ToNum>] = this.value.value;
     if (this.value instanceof Equals) {
       let v = args[0].get_number(symbols);
       if (unwrap(v)) {
@@ -927,9 +901,9 @@ export class NumberComparatorExpression implements ToBoolean {
 }
 
 export class DecimalComparatorExpression implements ToBoolean {
-  value: ComparatorExpressionVariant<ToDecimal>;
+  value: ComparatorExpressionVariant<ToDeci>;
 
-  constructor(value: ComparatorExpressionVariant<ToDecimal>) {
+  constructor(value: ComparatorExpressionVariant<ToDeci>) {
     this.value = value;
   }
 
@@ -973,8 +947,7 @@ export class DecimalComparatorExpression implements ToBoolean {
   }
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
-    let args: [ToDecimal, ToDecimal, ReadonlyArray<ToDecimal>] =
-      this.value.value;
+    let args: [ToDeci, ToDeci, ReadonlyArray<ToDeci>] = this.value.value;
     if (this.value instanceof Equals) {
       let v = args[0].get_decimal(symbols);
       if (unwrap(v)) {
@@ -1644,7 +1617,7 @@ export class Match<T extends ToValue, U extends ToValue> {
 }
 
 export class MatchExpression<T extends ToValue, U extends ToValue>
-  implements ToNumber, ToDecimal, ToText, ToBoolean
+  implements ToNum, ToDeci, ToText, ToBoolean
 {
   value: Match<T, U>;
 
@@ -1655,16 +1628,16 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
     let v = this.get_result(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToNumber) {
+      if (v.value instanceof ToNum) {
         let v1 = other.get_result(symbols);
         if (unwrap(v1)) {
-          if (v1.value instanceof ToNumber) {
+          if (v1.value instanceof ToNum) {
             let v2 = v.value.get_number(symbols);
             let v3 = v1.value.get_number(symbols);
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
-          } else if (v1.value instanceof ToDecimal) {
+          } else if (v1.value instanceof ToDeci) {
             let v2 = v.value.get_number(symbols);
             let v3 = v1.value.get_number(symbols);
             if (unwrap(v2) && unwrap(v3)) {
@@ -1672,16 +1645,16 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
             }
           }
         }
-      } else if (v.value instanceof ToDecimal) {
+      } else if (v.value instanceof ToDeci) {
         let v1 = other.get_result(symbols);
         if (unwrap(v1)) {
-          if (v1.value instanceof ToDecimal) {
+          if (v1.value instanceof ToDeci) {
             let v2 = v.value.get_decimal(symbols);
             let v3 = v1.value.get_decimal(symbols);
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
-          } else if (v1.value instanceof ToNumber) {
+          } else if (v1.value instanceof ToNum) {
             let v2 = v.value.get_decimal(symbols);
             let v3 = v1.value.get_number(symbols);
             if (unwrap(v2) && unwrap(v3)) {
@@ -1723,12 +1696,12 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToNumber) {
+      if (v.value instanceof ToNum) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
           return v1;
         }
-      } else if (v.value instanceof ToDecimal) {
+      } else if (v.value instanceof ToDeci) {
         let v1 = v.value.get_decimal(symbols);
         if (unwrap(v1)) {
           return new Ok(new Num(v1.value.value));
@@ -1738,18 +1711,18 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
     return new Err(new CustomError([errors.ErrUnexpected] as Message));
   }
 
-  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Decimal> {
+  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToDecimal) {
+      if (v.value instanceof ToDeci) {
         let v1 = v.value.get_decimal(symbols);
         if (unwrap(v1)) {
           return v1;
         }
-      } else if (v.value instanceof ToNumber) {
+      } else if (v.value instanceof ToNum) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
-          return new Ok(new Decimal(v1.value.value));
+          return new Ok(new Deci(v1.value.value));
         }
       }
     }
@@ -1794,8 +1767,8 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
               return guard[1].get_result(symbols);
             }
           } else if (
-            condition.value instanceof Decimal &&
-            v.value instanceof Decimal
+            condition.value instanceof Deci &&
+            v.value instanceof Deci
           ) {
             if (condition.value.equals(v.value, symbols)) {
               return guard[1].get_result(symbols);
@@ -1831,14 +1804,14 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
       guards.push([arg[0].serialize(), arg[1].serialize()]);
     }
     args.push(this.value.value[2].serialize());
-    if (this.value.value[2] instanceof ToNumber) {
-      if (this.value.value[0] instanceof ToNumber) {
+    if (this.value.value[2] instanceof ToNum) {
+      if (this.value.value[0] instanceof ToNum) {
         return {
           op: "match",
           type: ["Number", "Number"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToDecimal) {
+      } else if (this.value.value[0] instanceof ToDeci) {
         return {
           op: "match",
           type: ["Number", "Decimal"],
@@ -1857,14 +1830,14 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
           args: args,
         };
       }
-    } else if (this.value.value[2] instanceof ToDecimal) {
-      if (this.value.value[0] instanceof ToNumber) {
+    } else if (this.value.value[2] instanceof ToDeci) {
+      if (this.value.value[0] instanceof ToNum) {
         return {
           op: "match",
           type: ["Decimal", "Number"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToDecimal) {
+      } else if (this.value.value[0] instanceof ToDeci) {
         return {
           op: "match",
           type: ["Decimal", "Decimal"],
@@ -1884,13 +1857,13 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
         };
       }
     } else if (this.value.value[2] instanceof ToText) {
-      if (this.value.value[0] instanceof ToNumber) {
+      if (this.value.value[0] instanceof ToNum) {
         return {
           op: "match",
           type: ["Text", "Number"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToDecimal) {
+      } else if (this.value.value[0] instanceof ToDeci) {
         return {
           op: "match",
           type: ["Text", "Decimal"],
@@ -1910,13 +1883,13 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
         };
       }
     } else if (this.value.value[2] instanceof ToBoolean) {
-      if (this.value.value[0] instanceof ToNumber) {
+      if (this.value.value[0] instanceof ToNum) {
         return {
           op: "match",
           type: ["Boolean", "Number"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToDecimal) {
+      } else if (this.value.value[0] instanceof ToDeci) {
         return {
           op: "match",
           type: ["Boolean", "Decimal"],
@@ -1952,7 +1925,7 @@ export class Dot {
   }
 }
 
-export class DotExpression implements ToNumber, ToText, ToBoolean {
+export class DotExpression implements ToNum, ToText, ToBoolean {
   value: Dot;
 
   constructor(value: Dot) {
@@ -1962,16 +1935,16 @@ export class DotExpression implements ToNumber, ToText, ToBoolean {
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
     let v = this.get_result(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToNumber) {
+      if (v.value instanceof ToNum) {
         let v1 = other.get_result(symbols);
         if (unwrap(v1)) {
-          if (v1.value instanceof ToNumber) {
+          if (v1.value instanceof ToNum) {
             let v2 = v.value.get_number(symbols);
             let v3 = v1.value.get_number(symbols);
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
-          } else if (v1.value instanceof ToDecimal) {
+          } else if (v1.value instanceof ToDeci) {
             let v2 = v.value.get_number(symbols);
             let v3 = v1.value.get_number(symbols);
             if (unwrap(v2) && unwrap(v3)) {
@@ -1979,16 +1952,16 @@ export class DotExpression implements ToNumber, ToText, ToBoolean {
             }
           }
         }
-      } else if (v.value instanceof ToDecimal) {
+      } else if (v.value instanceof ToDeci) {
         let v1 = other.get_result(symbols);
         if (unwrap(v1)) {
-          if (v1.value instanceof ToDecimal) {
+          if (v1.value instanceof ToDeci) {
             let v2 = v.value.get_decimal(symbols);
             let v3 = v1.value.get_decimal(symbols);
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
-          } else if (v1.value instanceof ToNumber) {
+          } else if (v1.value instanceof ToNum) {
             let v2 = v.value.get_decimal(symbols);
             let v3 = v1.value.get_number(symbols);
             if (unwrap(v2) && unwrap(v3)) {
@@ -2030,12 +2003,12 @@ export class DotExpression implements ToNumber, ToText, ToBoolean {
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToNumber) {
+      if (v.value instanceof ToNum) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
           return v1;
         }
-      } else if (v.value instanceof ToDecimal) {
+      } else if (v.value instanceof ToDeci) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
           return new Ok(new Num(v1.value.value));
@@ -2045,18 +2018,18 @@ export class DotExpression implements ToNumber, ToText, ToBoolean {
     return new Err(new CustomError([errors.ErrUnexpected] as Message));
   }
 
-  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Decimal> {
+  get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToDecimal) {
+      if (v.value instanceof ToDeci) {
         let v1 = v.value.get_decimal(symbols);
         if (unwrap(v1)) {
           return v1;
         }
-      } else if (v.value instanceof ToNumber) {
+      } else if (v.value instanceof ToNum) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
-          return new Ok(new Decimal(v1.value.value));
+          return new Ok(new Deci(v1.value.value));
         }
       }
     }
