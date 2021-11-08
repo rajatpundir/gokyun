@@ -6,6 +6,8 @@ import { StatusBar } from "expo-status-bar";
 
 import { Text, View } from "../../main/themed";
 
+import { NavigatorProps as ParentNavigatorProps } from "..";
+
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
 // Remove linking for now
@@ -14,7 +16,10 @@ import { Text, View } from "../../main/themed";
 // Show a flat list with a bunch of string, a button at top right to open a modal to add new string
 // Some mechanism to update and delete this list
 // Edit and Show modes to show or edit this list
-export default function Component() {
+
+export default function Component({
+  navigation,
+}: ParentNavigatorProps<"Users">) {
   return (
     <View
       style={{

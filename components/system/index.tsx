@@ -7,13 +7,19 @@ import {
   createMaterialTopTabNavigator,
 } from "@react-navigation/material-top-tabs";
 
-import { StackParams as ParentNavigatorParams } from "../../App";
+import {
+  NavigatorParams as ParentNavigatorParams,
+  NavigatorProps as ParentNavigatorProps,
+} from "../index";
+
+import { NavigatorParams as RootParentNavigatorParams } from "../../App";
 
 import Countries from "./countries";
 import Languages from "./languages";
 import Tags from "./tags";
 import Categories from "./categories";
 import { Dimensions } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type NavigatorParams = {
   Countries: undefined;
@@ -25,12 +31,16 @@ export type NavigatorParams = {
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
   CompositeScreenProps<
     MaterialTopTabScreenProps<NavigatorParams, Screen>,
-    BottomTabScreenProps<ParentNavigatorParams>
+    // BottomTabScreenProps<ParentNavigatorParams>
+    CompositeScreenProps<
+      BottomTabScreenProps<ParentNavigatorParams>,
+      NativeStackScreenProps<RootParentNavigatorParams>
+    >
   >;
 
 const TopTab = createMaterialTopTabNavigator<NavigatorParams>();
 
-export function Navigator() {
+export function Navigator({ navigation }: ParentNavigatorProps<"System">) {
   return (
     <TopTab.Navigator
       initialRouteName="Countries"

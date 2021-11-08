@@ -6,7 +6,9 @@ import { StatusBar } from "expo-status-bar";
 
 import { Text, View } from "../../main/themed";
 
-export default function Component() {
+import { NavigatorProps as ParentNavigatorProps } from "..";
+
+export default function Component(props: ParentNavigatorProps<"Alliances">) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Alliances</Text>

@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import {
   Add,
@@ -59,7 +60,7 @@ const schema: Record<
     fields: {
       parent: { type: "other", other: "Product_Category" },
       name: { type: "str" },
-      translation_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [],
     permissions: {
@@ -171,7 +172,7 @@ const schema: Record<
     fields: {
       parent: { type: "other", other: "Service_Category" },
       name: { type: "str" },
-      translation_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [],
     permissions: {
@@ -282,7 +283,7 @@ const schema: Record<
   Tag: {
     fields: {
       name: { type: "str" },
-      translation_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["name"]],
     permissions: {
@@ -427,9 +428,9 @@ const schema: Record<
       // values greater than 2*sigma (95%) are outliers
       // outliers should not be used to update mean and sigma, if count > 100
       //figure formula for calculatin mu and sigma as values are added/removed one at a time
-      count: { type: "u32", default: 0 },
-      average_latitude: { type: "idecimal", default: 0 },
-      average_longitude: { type: "idecimal", default: 0 },
+      count: { type: "u32", default: new Decimal(0) },
+      average_latitude: { type: "idecimal", default: new Decimal(0) },
+      average_longitude: { type: "idecimal", default: new Decimal(0) },
     },
     uniqueness: [["country", "name"]],
     permissions: {
@@ -484,7 +485,7 @@ const schema: Record<
       from: { type: "other", other: "Pincode" },
       to: { type: "other", other: "Pincode" },
       // Use standard deviation for average calculation
-      average_time: { type: "timestamp", default: 0 },
+      average_time: { type: "timestamp", default: new Date() },
     },
     uniqueness: [["from", "to"]],
     permissions: {
@@ -553,11 +554,11 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       knows_english: { type: "bool" },
       country: { type: "other", other: "Country" },
-      alliance_count: { type: "u32", default: 0 },
-      guild_count: { type: "u32", default: 0 },
-      clan_count: { type: "u32", default: 0 },
-      product_family_count: { type: "u32", default: 0 },
-      product_count: { type: "u32", default: 0 },
+      alliance_count: { type: "u32", default: new Decimal(0) },
+      guild_count: { type: "u32", default: new Decimal(0) },
+      clan_count: { type: "u32", default: new Decimal(0) },
+      product_family_count: { type: "u32", default: new Decimal(0) },
+      product_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["mobile"], ["nickname"]],
     permissions: {
@@ -614,9 +615,9 @@ const schema: Record<
       copper: { type: "udecimal" },
       silver: { type: "udecimal" },
       gold: { type: "udecimal" },
-      alliance_count: { type: "u32", default: 0 },
-      guild_count: { type: "u32", default: 0 },
-      clan_count: { type: "u32", default: 0 },
+      alliance_count: { type: "u32", default: new Decimal(0) },
+      guild_count: { type: "u32", default: new Decimal(0) },
+      clan_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["user", "name"]],
     permissions: {
@@ -666,11 +667,11 @@ const schema: Record<
       name: { type: "str" },
       // Note. Care to be taken that wallet of just about anyone cannot be assigned
       wallet: { type: "other", other: "Wallet" },
-      member_count: { type: "u32", default: 0 },
-      product_family_count: { type: "u32", default: 0 },
-      product_count: { type: "u32", default: 0 },
-      virtual_product_count: { type: "u32", default: 0 },
-      service_count: { type: "u32", default: 0 },
+      member_count: { type: "u32", default: new Decimal(0) },
+      product_family_count: { type: "u32", default: new Decimal(0) },
+      product_count: { type: "u32", default: new Decimal(0) },
+      virtual_product_count: { type: "u32", default: new Decimal(0) },
+      service_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["name"]],
     permissions: {
@@ -936,8 +937,8 @@ const schema: Record<
     fields: {
       alliance: { type: "other", other: "Alliance" },
       member: { type: "other", other: "User" },
-      variant_count: { type: "u32", default: 0 },
-      service_count: { type: "u32", default: 0 },
+      variant_count: { type: "u32", default: new Decimal(0) },
+      service_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["alliance", "member"]],
     permissions: {
@@ -1245,11 +1246,11 @@ const schema: Record<
     fields: {
       alliance: { type: "other", other: "Alliance" },
       name: { type: "str" },
-      order: { type: "u32", default: 1 },
+      order: { type: "u32", default: new Decimal(1) },
       product_category: { type: "other", other: "Product_Category" },
-      property_count: { type: "u32", default: 0 },
-      product_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      property_count: { type: "u32", default: new Decimal(0) },
+      product_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
       ["alliance", "name"],
@@ -1460,8 +1461,8 @@ const schema: Record<
         other: "Alliance_Product_Family",
       },
       name: { type: "str" },
-      value_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      value_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["alliance_product_family", "name"]],
     permissions: {
@@ -1645,8 +1646,8 @@ const schema: Record<
         other: "Alliance_Product_Family_Property",
       },
       name: { type: "str" },
-      order: { type: "u32", default: 1 },
-      translation_count: { type: "u32", default: 0 },
+      order: { type: "u32", default: new Decimal(1) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
       ["alliance_product_family_property", "name"],
@@ -1838,9 +1839,9 @@ const schema: Record<
       },
       name: { type: "str" },
       description: { type: "clob" },
-      variant_count: { type: "u32", default: 0 },
-      tag_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      variant_count: { type: "u32", default: new Decimal(0) },
+      tag_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["alliance_product_family", "name"]],
     permissions: {
@@ -2080,15 +2081,15 @@ const schema: Record<
         other: "Alliance_Product",
       },
       name: { type: "str" },
-      min_quantity: { type: "u32", default: 1 },
+      min_quantity: { type: "u32", default: new Decimal(1) },
       max_quantity: { type: "u32" },
       min_price: { type: "udecimal" },
       max_price: { type: "udecimal" },
-      variant_property_count: { type: "u32", default: 0 },
-      provider_count: { type: "u32", default: 0 },
-      provider_price_sum: { type: "u32", default: 0 },
-      provider_average_price: { type: "udecimal", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      variant_property_count: { type: "u32", default: new Decimal(0) },
+      provider_count: { type: "u32", default: new Decimal(0) },
+      provider_price_sum: { type: "u32", default: new Decimal(0) },
+      provider_average_price: { type: "udecimal", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["alliance_product", "name"]],
     permissions: {
@@ -2314,7 +2315,7 @@ const schema: Record<
         type: "other",
         other: "Alliance_Product_Family_Variant",
       },
-      order: { type: "u32", default: 1 },
+      order: { type: "u32", default: new Decimal(1) },
       alliance_product_family_property: {
         type: "other",
         other: "Alliance_Product_Family_Property",
@@ -2436,10 +2437,10 @@ const schema: Record<
     fields: {
       user: { type: "other", other: "User" },
       name: { type: "str" },
-      order: { type: "u32", default: 1 },
-      property_count: { type: "u32", default: 0 },
-      product_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      order: { type: "u32", default: new Decimal(1) },
+      property_count: { type: "u32", default: new Decimal(0) },
+      product_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
       ["alliance", "name"],
@@ -2549,8 +2550,8 @@ const schema: Record<
         other: "User_Product_Family",
       },
       name: { type: "str" },
-      value_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      value_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["user_product_family", "name"]],
     permissions: {
@@ -2621,8 +2622,8 @@ const schema: Record<
         other: "User_Product_Family_Property",
       },
       name: { type: "str" },
-      order: { type: "u32", default: 1 },
-      translation_count: { type: "u32", default: 0 },
+      order: { type: "u32", default: new Decimal(1) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
       ["user_product_family_property", "name"],
@@ -2709,9 +2710,9 @@ const schema: Record<
       },
       name: { type: "str" },
       description: { type: "clob" },
-      variant_count: { type: "u32", default: 0 },
-      tag_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      variant_count: { type: "u32", default: new Decimal(0) },
+      tag_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["user_product_family", "name"]],
     permissions: {
@@ -2894,11 +2895,11 @@ const schema: Record<
         other: "User_Product",
       },
       name: { type: "str" },
-      quantity: { type: "u32", default: 0 },
+      quantity: { type: "u32", default: new Decimal(0) },
       price: { type: "udecimal" },
-      variant_property_count: { type: "u32", default: 0 },
-      alliance_variant_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      variant_property_count: { type: "u32", default: new Decimal(0) },
+      alliance_variant_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
       ["user_product", "name"],
@@ -2981,7 +2982,7 @@ const schema: Record<
         type: "other",
         other: "User_Product_Family_Variant",
       },
-      order: { type: "u32", default: 1 },
+      order: { type: "u32", default: new Decimal(1) },
       user_product_family_property: {
         type: "other",
         other: "User_Product_Family_Property",
@@ -3529,8 +3530,8 @@ const schema: Record<
       description: { type: "clob" },
       min_price: { type: "udecimal" },
       max_price: { type: "udecimal" },
-      provider_count: { type: "u32", default: 0 },
-      translation_count: { type: "u32", default: 0 },
+      provider_count: { type: "u32", default: new Decimal(0) },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["alliance", "name"]],
     permissions: {
@@ -3714,7 +3715,7 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
       price: { type: "udecimal" },
-      translation_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [["alliance_service", "name"]],
     permissions: {
@@ -3858,7 +3859,7 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
       order: { type: "u32" },
-      translation_count: { type: "u32", default: 0 },
+      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
       ["alliance_service", "name"],
@@ -4137,19 +4138,19 @@ const schema: Record<
     fields: {
       alliance: { type: "other", other: "Alliance" },
       name: { type: "str" },
-      unused: { type: "u32", default: 0 },
-      used: { type: "u32", default: 0 },
-      min_order_amount: { type: "udecimal", default: 0 },
+      unused: { type: "u32", default: new Decimal(0) },
+      used: { type: "u32", default: new Decimal(0) },
+      min_order_amount: { type: "udecimal", default: new Decimal(0) },
       flat_discount: { type: "bool", default: true },
-      discount: { type: "udecimal", default: 0 },
-      max_absolute_discount: { type: "udecimal", default: 0 },
+      discount: { type: "udecimal", default: new Decimal(0) },
+      max_absolute_discount: { type: "udecimal", default: new Decimal(0) },
       valid_from: { type: "timestamp" },
       valid_to: { type: "timestamp" },
-      min_clan_loyalty: { type: "udecimal", default: 0 },
-      max_clan_loyalty: { type: "udecimal", default: -1 },
+      min_clan_loyalty: { type: "udecimal", default: new Decimal(0) },
+      max_clan_loyalty: { type: "udecimal", default: new Decimal(-1) },
       show_coupon: { type: "bool", default: false },
-      used_coupon_count: { type: "udecimal", default: 0 },
-      used_coupon_price_sum: { type: "udecimal", default: 0 },
+      used_coupon_count: { type: "udecimal", default: new Decimal(0) },
+      used_coupon_price_sum: { type: "udecimal", default: new Decimal(0) },
     },
     uniqueness: [["alliance", "name"]],
     permissions: {

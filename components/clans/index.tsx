@@ -6,7 +6,11 @@ import { StatusBar } from "expo-status-bar";
 
 import { Text, View } from "../../main/themed";
 
-export default function Component() {
+import { NavigatorProps as ParentNavigatorProps } from "..";
+
+export default function Component({
+  navigation,
+}: ParentNavigatorProps<"Clans">) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Clans</Text>

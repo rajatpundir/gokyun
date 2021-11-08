@@ -9,14 +9,16 @@ import {
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 
-import { StackParams as ParentNavigatorParams } from "../App";
+import {
+  NavigatorParams as ParentNavigatorParams,
+  NavigatorProps as ParentNavigatorProps,
+} from "../App";
 
 import Clans from "./clans";
 import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
-import { Platform } from "react-native";
 
 export type NavigatorParams = {
   Clans: undefined;
@@ -34,14 +36,7 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
 
 const BottomTab = createBottomTabNavigator<NavigatorParams>();
 
-function NavigatorItemIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
-}
-
-export function Navigator() {
+export function Navigator(props: ParentNavigatorProps<"Main">) {
   return (
     <BottomTab.Navigator
       initialRouteName="System"
@@ -106,4 +101,11 @@ export function Navigator() {
       />
     </BottomTab.Navigator>
   );
+}
+
+function NavigatorItemIcon(props: {
+  name: React.ComponentProps<typeof FontAwesome>["name"];
+  color: string;
+}) {
+  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

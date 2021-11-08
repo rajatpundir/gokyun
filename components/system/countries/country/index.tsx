@@ -14,6 +14,7 @@ import { get_paths } from "../../../../main/utils/permissions";
 //
 
 export default function Component(props: {
+  navigation: any;
   struct: Struct;
   permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>];
   id: number | undefined;

@@ -111,11 +111,6 @@ export function fold<T, U>(
     }
     return acc;
   });
-  // let acc: T = init;
-  // for (let val of values) {
-  //   acc = fn(acc, val);
-  // }
-  // return acc;
 }
 
 export function fold_prev<T, U>(
@@ -131,12 +126,6 @@ export function fold_prev<T, U>(
     }
     return acc;
   });
-  // let acc: T = init;
-  // for (let val of values) {
-  //   acc = fn(acc, prev, val);
-  //   prev = val;
-  // }
-  // return acc;
 }
 
 export type State = Immutable<{

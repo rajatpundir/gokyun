@@ -10,10 +10,12 @@ import {
 
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Decimal from "decimal.js";
-import { Vector } from "prelude-ts";
+import { HashSet, Vector } from "prelude-ts";
 
 import { Action, State, unwrap } from "./prelude";
 import { useState } from "react";
+import { Path, Struct } from "./variable";
+import { get_structs } from "./schema";
 
 type ComponentProps = {
   state: State;
@@ -32,7 +34,7 @@ export function Str(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "str") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -86,7 +88,7 @@ export function I_32(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "i32") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -112,7 +114,7 @@ export function I_32(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -134,7 +136,7 @@ export function U_32(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "u32") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -160,7 +162,7 @@ export function U_32(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -182,7 +184,7 @@ export function I_64(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "i64") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -208,7 +210,7 @@ export function I_64(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -230,7 +232,7 @@ export function U_64(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "u64") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -256,7 +258,7 @@ export function U_64(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -278,7 +280,7 @@ export function I_Double(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "idouble") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -300,7 +302,7 @@ export function I_Double(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -322,7 +324,7 @@ export function U_Double(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "udouble") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -344,7 +346,7 @@ export function U_Double(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -366,7 +368,7 @@ export function I_Decimal(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "idecimal") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -388,7 +390,7 @@ export function I_Decimal(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -410,7 +412,7 @@ export function U_Decimal(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "udecimal") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <TextInput
               style={[{}, style]}
@@ -432,7 +434,7 @@ export function U_Decimal(
         } else {
           return (
             <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
+              {value.value.value.toString()}
             </Text>
           );
         }
@@ -455,7 +457,7 @@ export function Bool(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "bool") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           return (
             <Switch
               style={[{}, style]}
@@ -500,7 +502,7 @@ export function Date_Field(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "date") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           const [showPicker, setPicker] = useState(false);
           return (
             <>
@@ -563,7 +565,7 @@ export function Time_Field(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "time") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           const [showPicker, setPicker] = useState(false);
           return (
             <>
@@ -622,7 +624,7 @@ export function DateTime_Field(
     const value = path.get().value;
     if (unwrap(value)) {
       if (value.value.type === "timestamp") {
-        if (path.get().updatable && state.id !== undefined) {
+        if (state.id !== undefined && path.get().updatable) {
           const [showPicker, setPicker] = useState(false);
           const [mode, setMode] = useState("date");
           const [tempDate, setTempDate] = useState(
@@ -714,7 +716,19 @@ export function DateTime_Field(
 
 // Alternative: Just place a u64 picker as placeholder here for the time being.
 export function Box(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: TextInput["props"] &
+    Text["props"] &
+    ComponentProps & {
+      display_path: ReadonlyArray<string>;
+      navigation: any;
+      permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>];
+      render_item: (
+        struct: Struct,
+        id: number,
+        paths: HashSet<Path>,
+        selected: Decimal
+      ) => JSX.Element;
+    }
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const path = state.values.findAny((x) =>
@@ -723,28 +737,69 @@ export function Box(
   if (path.isSome()) {
     const value = path.get().value;
     if (unwrap(value)) {
-      if (value.value.type === "str") {
-        if (path.get().updatable && state.id !== undefined) {
-          return (
-            <TextInput
-              style={[{}, style]}
-              {...otherProps}
-              value={value.value.value}
-              onChangeText={(x) =>
-                dispatch(["values", path.get(), { type: "str", value: x }])
+      if (value.value.type === "other") {
+        const other_struct_name = value.value.other;
+        const display_path = state.values.findAny((x) =>
+          x.path.equals(Vector.ofIterable(props.display_path))
+        );
+        if (display_path.isSome()) {
+          const display_value = display_path.get().value;
+          if (unwrap(display_value)) {
+            if (display_value.value.type === "str") {
+              const other_struct = get_structs()
+                .filter((x) => x.name === other_struct_name)
+                .single();
+              if (other_struct.isSome()) {
+                if (state.id !== undefined && path.get().updatable) {
+                  const v = value.value.value;
+                  return (
+                    <>
+                      <Pressable onPress={() => {}}>
+                        <Text style={[{}, style]} {...otherProps}>
+                          {display_value.value.value}
+                        </Text>
+                      </Pressable>
+                    </>
+                  );
+                } else {
+                  return (
+                    <>
+                      <Pressable onPress={() => {}}>
+                        <Text style={[{}, style]} {...otherProps}>
+                          {display_value.value.value}
+                        </Text>
+                      </Pressable>
+                    </>
+                  );
+                }
               }
-            />
-          );
-        } else {
-          return (
-            <Text style={[{}, style]} {...otherProps}>
-              {value.value.value}
-            </Text>
-          );
+            }
+          }
         }
       }
     }
   }
   console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
   return null;
+}
+
+function VariableSelectionModal(): JSX.Element {
+  return <></>;
+}
+
+function get_variables(
+  struct: Struct,
+  permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>],
+  // below four fields will not be passed as props to Box
+  // but Box would user to select them
+  requested_paths: HashSet<Path>,
+  field_filters: Array<HashSet<Path>>,
+  limit: number,
+  offset: number
+): HashSet<{
+  struct: Struct;
+  id: number;
+  paths: HashSet<Path>;
+}> {
+  return HashSet.of();
 }

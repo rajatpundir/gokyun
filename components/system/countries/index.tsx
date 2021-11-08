@@ -8,6 +8,7 @@ import {
   Button,
   TouchableOpacity,
   Image,
+  Pressable,
 } from "react-native";
 
 import { StatusBar } from "expo-status-bar";
@@ -22,6 +23,7 @@ import {
   validate_ownership_path,
   get_permissions,
 } from "../../../main/utils/permissions";
+import { NavigatorProps as ParentNavigatorProps } from "..";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
@@ -68,18 +70,19 @@ const struct: Option<Struct> = get_structs()
   .filter((s) => s.name === "Alliance_Member")
   .single();
 
-export default function Component() {
-  if (struct.isSome()) {
-    // console.log(get_permissions(struct.get(), []));
-    console.log(validate_ownership_path(struct.get(), ["member"]));
-    console.log("=======================");
-    console.log(
-      get_permissions(struct.get(), [["alliance", "wallet", "user"]], [])
-    );
-    console.log("=======================");
-  } else {
-    console.log("---nothing---");
-  }
+export default function Component(props: ParentNavigatorProps<"Countries">) {
+  console.log(props.navigation);
+  // if (struct.isSome()) {
+  //   // console.log(get_permissions(struct.get(), []));
+  //   console.log(validate_ownership_path(struct.get(), ["member"]));
+  //   console.log("=======================");
+  //   console.log(
+  //     get_permissions(struct.get(), [["alliance", "wallet", "user"]], [])
+  //   );
+  //   console.log("=======================");
+  // } else {
+  //   console.log("---nothing---");
+  // }
   const renderItem = ({ item }) => <Item title={item.title} />;
   return (
     <View
@@ -88,6 +91,14 @@ export default function Component() {
         flexGrow: 1,
       }}
     >
+      <Pressable
+        onPress={() => {
+          console.log("something-------");
+          props.navigation.navigate("NotFound");
+        }}
+      >
+        <Text>jjj</Text>
+      </Pressable>
       <FlatList
         data={DATA2}
         renderItem={renderItem}

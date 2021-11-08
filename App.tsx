@@ -16,24 +16,27 @@ import { LinkingOptions } from "@react-navigation/native";
 
 import useAssets from "./main/hooks/useAssets";
 import useColorScheme from "./main/hooks/useColorScheme";
-import { Navigator, NavigatorParams } from "./components";
+import {
+  Navigator,
+  NavigatorParams as MainScreenNavigatorParams,
+} from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
 
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends StackParams {}
+    interface RootParamList extends NavigatorParams {}
   }
 }
 
-export type StackParams = {
-  Main: NavigatorScreenParams<NavigatorParams> | undefined;
+export type NavigatorParams = {
+  Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
   NotFound: undefined;
 };
 
-export type StackProps<Screen extends keyof StackParams> =
-  NativeStackScreenProps<StackParams, Screen>;
+export type NavigatorProps<Screen extends keyof NavigatorParams> =
+  NativeStackScreenProps<NavigatorParams, Screen>;
 
-const linking: LinkingOptions<StackParams> = {
+const linking: LinkingOptions<NavigatorParams> = {
   prefixes: [Linking.makeUrl("/")],
   config: {
     screens: {
@@ -66,7 +69,7 @@ const linking: LinkingOptions<StackParams> = {
   },
 };
 
-const Stack = createNativeStackNavigator<StackParams>();
+const Stack = createNativeStackNavigator<NavigatorParams>();
 
 export default function App() {
   const isLoadingComplete = useAssets();
