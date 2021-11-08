@@ -1,9 +1,11 @@
 import * as React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { NavigatorProps } from "../App";
+import { NavigatorProps as ParentNavigatorProps } from "../App";
 
-export default function NotFoundScreen(props: NavigatorProps<"NotFound">) {
+export default function NotFoundScreen(
+  props: ParentNavigatorProps<"NotFound">
+) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>This screen doesn't exist.</Text>

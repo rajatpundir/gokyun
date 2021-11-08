@@ -31,7 +31,6 @@ export type NavigatorParams = {
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
   CompositeScreenProps<
     MaterialTopTabScreenProps<NavigatorParams, Screen>,
-    // BottomTabScreenProps<ParentNavigatorParams>
     CompositeScreenProps<
       BottomTabScreenProps<ParentNavigatorParams>,
       NativeStackScreenProps<RootParentNavigatorParams>

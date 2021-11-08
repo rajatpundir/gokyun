@@ -21,6 +21,10 @@ import {
   NavigatorParams as MainScreenNavigatorParams,
 } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
+import { VariablesModal } from "./main/utils/variables_modal";
+import { Path, Struct } from "./main/utils/variable";
+import { HashSet, Vector } from "prelude-ts";
+import Decimal from "decimal.js";
 
 declare global {
   namespace ReactNavigation {
@@ -31,6 +35,23 @@ declare global {
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
   NotFound: undefined;
+  VariablesModal: {
+    struct: Struct;
+    permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>];
+    render_item: (
+      struct: Struct,
+      id: Decimal,
+      paths: HashSet<Path>,
+      selected: Decimal,
+      set_selected: (selected: Decimal) => void
+    ) => JSX.Element;
+    requested_paths: HashSet<Path>;
+    field_filters: Array<HashSet<Path>>;
+    limit: Decimal;
+    offset: Decimal;
+    selected: Decimal;
+    set_selected: (selected: Decimal) => void;
+  };
 };
 
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
@@ -42,26 +63,24 @@ const linking: LinkingOptions<NavigatorParams> = {
     screens: {
       Main: {
         screens: {
-          Clans: {
+          Alliances: "alliances",
+          Clans: "clans",
+          Guilds: "guilds",
+          System: {
+            path: "system",
             screens: {
-              Clans: "clans",
+              Categories: "categories",
+              Countries: {
+                path: "country/:id",
+                parse: {
+                  id: (id: number) => `${id}`,
+                },
+              },
+              Languages: "languages",
+              Tags: "tags",
             },
           },
-          Alliances: {
-            screens: {
-              Alliances: "alliances",
-            },
-          },
-          Guilds: {
-            screens: {
-              Guilds: "guilds",
-            },
-          },
-          Users: {
-            screens: {
-              Users: "users",
-            },
-          },
+          Users: "users",
         },
       },
       NotFound: "*",
@@ -88,6 +107,11 @@ export default function App() {
               name="Main"
               component={Navigator}
               options={{ headerShown: false, animation: "none" }}
+            />
+            <Stack.Screen
+              name="VariablesModal"
+              component={VariablesModal}
+              options={{ title: "Select your Variable!" }}
             />
             <Stack.Screen
               name="NotFound"

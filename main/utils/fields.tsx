@@ -4,8 +4,8 @@ import {
   Text,
   TextInput,
   Switch,
-  Platform,
   Pressable,
+  Platform,
 } from "react-native";
 
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -16,6 +16,7 @@ import { Action, State, unwrap } from "./prelude";
 import { useState } from "react";
 import { Path, Struct } from "./variable";
 import { get_structs } from "./schema";
+import { useNavigation } from "@react-navigation/native";
 
 type ComponentProps = {
   state: State;
@@ -720,16 +721,17 @@ export function Box(
     Text["props"] &
     ComponentProps & {
       display_path: ReadonlyArray<string>;
-      navigation: any;
       permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>];
       render_item: (
         struct: Struct,
-        id: number,
+        id: Decimal,
         paths: HashSet<Path>,
-        selected: Decimal
+        selected: Decimal,
+        set_selected: (selected: Decimal) => void
       ) => JSX.Element;
     }
 ): JSX.Element | null {
+  const navigation = useNavigation();
   const { state, dispatch, style, ...otherProps } = props;
   const path = state.values.findAny((x) =>
     x.path.equals(Vector.ofIterable(props.path))
@@ -781,25 +783,4 @@ export function Box(
   }
   console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
   return null;
-}
-
-function VariableSelectionModal(): JSX.Element {
-  return <></>;
-}
-
-function get_variables(
-  struct: Struct,
-  permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>],
-  // below four fields will not be passed as props to Box
-  // but Box would user to select them
-  requested_paths: HashSet<Path>,
-  field_filters: Array<HashSet<Path>>,
-  limit: number,
-  offset: number
-): HashSet<{
-  struct: Struct;
-  id: number;
-  paths: HashSet<Path>;
-}> {
-  return HashSet.of();
 }

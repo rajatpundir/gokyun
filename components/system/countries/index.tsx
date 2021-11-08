@@ -34,21 +34,6 @@ import { NavigatorProps as ParentNavigatorProps } from "..";
 // Some mechanism to update and delete this list
 // Edit and Show modes to show or edit this list
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Third Item",
-  },
-];
-
 const DATA2 = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -71,7 +56,7 @@ const struct: Option<Struct> = get_structs()
   .single();
 
 export default function Component(props: ParentNavigatorProps<"Countries">) {
-  console.log(props.navigation);
+  // console.log(navigation.navigation.navigate('Main'));
   // if (struct.isSome()) {
   //   // console.log(get_permissions(struct.get(), []));
   //   console.log(validate_ownership_path(struct.get(), ["member"]));
@@ -94,7 +79,7 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       <Pressable
         onPress={() => {
           console.log("something-------");
-          props.navigation.navigate("NotFound");
+          props.navigation.navigate("Guilds");
         }}
       >
         <Text>jjj</Text>
