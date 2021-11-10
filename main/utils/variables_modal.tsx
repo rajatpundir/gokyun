@@ -3,16 +3,27 @@ import { Draft, Immutable } from "immer";
 import { useImmerReducer } from "use-immer";
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
-import { Text, FlatList, TextInput, View, StyleSheet } from "react-native";
-
-import BottomSheet from "@gorhom/bottom-sheet";
+import { FlatList, StyleSheet, Button } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { get_variables } from "./sqlite";
 import { Struct, Path, PathFilter } from "./variable";
 
-export type State = Immutable<{
-  filters: ReadonlyArray<[boolean, HashSet<PathFilter>]>;
+import { Text, View, TextInput } from "../themed";
+
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetSectionList,
+} from "@gorhom/bottom-sheet";
+
+// A button press is used to copy values of offline filter to online filter
+// while offline_filter directly queries from the SQLite DB
+// online_filter is used to query from backend, once its done, is should notify the component of such to refresh its contents from SQLite DB
+
+type State = Immutable<{
+  offline_filters: ReadonlyArray<[boolean, HashSet<PathFilter>]>;
+  online_filters: ReadonlyArray<[boolean, HashSet<PathFilter>]>;
   limit: Decimal;
   offset: Decimal;
   variables: ReadonlyArray<{
@@ -22,8 +33,9 @@ export type State = Immutable<{
   }>;
 }>;
 
-export type Action =
-  | ["filters", Array<[boolean, HashSet<PathFilter>]>]
+type Action =
+  | ["offline_filters", Array<[boolean, HashSet<PathFilter>]>]
+  | ["online_filters", Array<[boolean, HashSet<PathFilter>]>]
   | ["limit", Decimal]
   | ["offset", Decimal]
   | [
@@ -35,10 +47,14 @@ export type Action =
       }>
     ];
 
-export function reducer(state: Draft<State>, action: Action) {
+function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
-    case "filters": {
-      state.filters = action[1];
+    case "offline_filters": {
+      state.offline_filters = action[1];
+      break;
+    }
+    case "online_filters": {
+      state.online_filters = action[1];
       break;
     }
     case "limit": {
@@ -64,7 +80,8 @@ export function VariablesModal(
   props: RootNavigatorProps<"VariablesModal">
 ): JSX.Element {
   const init: State = {
-    filters: props.route.params.filters,
+    offline_filters: props.route.params.filters,
+    online_filters: props.route.params.filters,
     limit: props.route.params.limit,
     offset: props.route.params.offset,
     variables: [],
@@ -76,54 +93,128 @@ export function VariablesModal(
         props.route.params.struct,
         props.route.params.permissions,
         props.route.params.requested_paths,
-        state.filters,
+        state.online_filters,
         state.limit,
         state.offset
       );
       dispatch(["variables", variables]);
     };
     update_variables();
-  }, [state.filters, state.limit, state.offset]);
+  }, [state.online_filters, state.limit, state.offset]);
 
   // ref
-  const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
   // variables
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const sections = useMemo(
+    () =>
+      Array(10)
+        .fill(0)
+        .map((_, index) => ({
+          title: `Section ${index}`,
+          data: Array(10)
+            .fill(0)
+            .map((_, index) => `Item ${index}`),
+        })),
+    []
+  );
+  const snapPoints = useMemo(() => ["25%", "50%", "100%"], []);
 
   // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
 
+  // const handleSnapPress = useCallback((index) => {
+  //   bottomSheetModalRef.current?.snapToIndex(index);
+  // }, []);
+
+  // const handleClosePress = useCallback(() => {
+  //   bottomSheetModalRef.current?.close();
+  // }, []);
+
+  // render
+  const renderSectionHeader = useCallback(
+    ({ section }) => (
+      <View>
+        <Text>{section.title}</Text>
+      </View>
+    ),
+    []
+  );
+
+  const renderItem = useCallback(
+    ({ item }) => (
+      <View>
+        <Text>{item}</Text>
+      </View>
+    ),
+    []
+  );
+
   return (
     <>
-      <Text>Show button to open Filter Action Sheet</Text>
-      <FlatList
-        data={state.variables}
-        renderItem={(list_item) => {
-          return props.route.params.render_item(
-            list_item.item.struct,
-            list_item.item.id,
-            list_item.item.paths,
-            props.route.params.selected,
-            props.route.params.set_selected
-          );
-        }}
-        keyExtractor={(list_item) => list_item.id.toString()}
-      />
-      <View>
-        <Text>Limit</Text>
-        <TextInput
-          value={state.limit.toString()}
-          onChangeText={(x) => dispatch(["limit", new Decimal(x).truncated()])}
-        />
-        <Text>Offset</Text>
-        <TextInput
-          value={state.offset.toString()}
-          onChangeText={(x) => dispatch(["offset", new Decimal(x).truncated()])}
-        />
-      </View>
+      <BottomSheetModalProvider>
+        <View>
+          <Button
+            onPress={handlePresentModalPress}
+            title="Present Modal"
+            color="black"
+          />
+          <FlatList
+            data={state.variables}
+            renderItem={(list_item) => {
+              return props.route.params.render_item(
+                list_item.item.struct,
+                list_item.item.id,
+                list_item.item.paths,
+                props.route.params.selected,
+                props.route.params.set_selected
+              );
+            }}
+            keyExtractor={(list_item) => list_item.id.valueOf()}
+          />
+          <View>
+            <Text>Limit</Text>
+            <TextInput
+              value={state.limit.toString()}
+              keyboardType={"number-pad"}
+              onChangeText={(x) =>
+                dispatch(["limit", new Decimal(x).truncated()])
+              }
+            />
+            <Text>Offset</Text>
+            <TextInput
+              value={state.offset.toString()}
+              keyboardType={"number-pad"}
+              onChangeText={(x) =>
+                dispatch(["offset", new Decimal(x).truncated()])
+              }
+            />
+          </View>
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={1}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View>
+              <Text>Awesome 🎉</Text>
+            </View>
+            <BottomSheetSectionList
+              sections={sections}
+              keyExtractor={(i) => i}
+              renderSectionHeader={renderSectionHeader}
+              renderItem={renderItem}
+              // contentContainerStyle={styles.contentContainer}
+            />
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </>
   );
 }

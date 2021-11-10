@@ -1,11 +1,9 @@
 import * as React from "react";
 
 import {
-  FlatList,
   Platform,
   StyleSheet,
   StatusBar as ST,
-  Button,
   TouchableOpacity,
   Pressable,
 } from "react-native";
@@ -16,14 +14,22 @@ import { Text, View } from "../../../main/themed";
 import { HashSet, Option } from "prelude-ts";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { get_structs } from "../../../main/utils/schema";
-import { Struct } from "../../../main/utils/variable";
+import { Path, Struct } from "../../../main/utils/variable";
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import { useCallback, useMemo, useRef } from "react";
-
 import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
+  get_permissions,
+  log_permissions,
+} from "../../../main/utils/permissions";
+import { useNavigation } from "@react-navigation/core";
+import { unwrap } from "../../../main/utils/prelude";
+import Decimal from "decimal.js";
+import { Immutable } from "immer";
+import {
+  getState,
+  setState,
+  subscribe,
+  useStore,
+} from "../../../main/utils/store";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
@@ -34,55 +40,61 @@ import {
 // Some mechanism to update and delete this list
 // Edit and Show modes to show or edit this list
 
-const DATA2 = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "First Item",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Second Item",
-  },
-];
+function A() {
+  const [x, setX] = React.useState(getState().db_updation_toggle);
+  subscribe((s) => {
+    setX(s.db_updation_toggle);
+  });
+  console.log("A", x);
+  return (
+    <>
+      <Pressable
+        onPress={() => {
+          console.log("A is toggling toggle");
+          getState().toggle_db_update_toggle();
+        }}
+      >
+        <Text>AAAAAAAAAAAAAAAA</Text>
+      </Pressable>
+    </>
+  );
+}
 
-const Item = ({ title }: { title: string }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
+function B() {
+  const [x, setX] = React.useState(getState().db_updation_toggle);
+  subscribe((s) => {
+    setX(s.db_updation_toggle);
+  });
+  console.log("B", x);
+  return (
+    <>
+      <Pressable
+        onPress={() => {
+          console.log("B is toggling toggle");
+          getState().toggle_db_update_toggle();
+        }}
+      >
+        <Text>BBBBBBBBBBBBBBB</Text>
+      </Pressable>
+    </>
+  );
+}
 
 const struct: Option<Struct> = get_structs()
-  .filter((s) => s.name === "Alliance_Member")
+  .filter((s) => s.name === "Test")
   .single();
 
 export default function Component(props: ParentNavigatorProps<"Countries">) {
-  // console.log(navigation.navigation.navigate('Main'));
-  // if (struct.isSome()) {
-  //   // console.log(get_permissions(struct.get(), []));
-  //   console.log(validate_ownership_path(struct.get(), ["member"]));
-  //   console.log("=======================");
-  //   console.log(
-  //     get_permissions(struct.get(), [["alliance", "wallet", "user"]], [])
-  //   );
-  //   console.log("=======================");
-  // } else {
-  //   console.log("---nothing---");
-  // }
-  const renderItem = ({ item }) => <Item title={item.title} />;
+  const navigation = useNavigation();
 
-  // ref
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // variables
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
-
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
+  if (struct.isSome()) {
+    log_permissions(
+      struct.get(),
+      get_permissions(struct.get(), [["user"]], [])
+    );
+  } else {
+    console.log("---nothing---");
+  }
 
   return (
     <View
@@ -91,19 +103,52 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
         flexGrow: 1,
       }}
     >
+      <A />
+      <B />
+      <A />
       <Pressable
         onPress={() => {
-          console.log("something-------");
-          props.navigation.navigate("Guilds");
+          if (struct.isSome()) {
+            const permissions = get_permissions(struct.get(), [["user"]], []);
+            if (unwrap(permissions)) {
+              navigation.navigate("VariablesModal", {
+                struct: struct.get(),
+                permissions: permissions.value,
+                requested_paths: HashSet.of(),
+                selected: new Decimal(0),
+                set_selected: (selected: Decimal) => {},
+                filters: [],
+                limit: new Decimal(10),
+                offset: new Decimal(0),
+                render_item: (
+                  struct: Immutable<Struct>,
+                  id: Immutable<Decimal>,
+                  paths: Immutable<HashSet<Path>>,
+                  selected: Immutable<Decimal>,
+                  set_selected: (selected: Decimal) => void
+                ) => {
+                  return (
+                    <>
+                      <Text>PKPKPKPK</Text>
+                      {/* <TextInput
+                        value={"9i09i09i09i09"}
+                        keyboardType={"number-pad"}
+                        onChangeText={
+                          (x) => {}
+                        }
+                      /> */}
+                    </>
+                  );
+                },
+              });
+            }
+          }
         }}
       >
-        <Text>jjj</Text>
+        <Text>GOTO VARIABLES MODAL</Text>
       </Pressable>
-      <FlatList
-        data={DATA2}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+
+      {/* Floating button */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       <TouchableOpacity
         activeOpacity={0.7}
@@ -112,25 +157,6 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       >
         <SimpleLineIcons name="plus" size={36} color="white" />
       </TouchableOpacity>
-      <BottomSheetModalProvider>
-        <View style={styles.container}>
-          <Button
-            onPress={handlePresentModalPress}
-            title="Present Modal"
-            color="black"
-          />
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={1}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
-          >
-            <View>
-              <Text>Awesome 🎉</Text>
-            </View>
-          </BottomSheetModal>
-        </View>
-      </BottomSheetModalProvider>
     </View>
   );
 }

@@ -56,6 +56,38 @@ const schema: Record<
     checks: Record<string, [BooleanLispExpression, Message]>;
   }
 > = {
+  Test: {
+    fields: {
+      user: { type: "other", other: "User" },
+      name: { type: "str" },
+      // Note. A Function modifies values for copper, silver, gold.
+      // Coins cannot be modified directly
+      copper: { type: "udecimal" },
+      silver: { type: "udecimal" },
+      gold: { type: "udecimal" },
+      alliance_count: { type: "u32", default: new Decimal(0) },
+      guild_count: { type: "u32", default: new Decimal(0) },
+      clan_count: { type: "u32", default: new Decimal(0) },
+    },
+    uniqueness: [["user", "name"]],
+    permissions: {
+      ownership: [["user", new Bool(true)]],
+      borrow: {},
+      private: {
+        user: {
+          read: [
+            [["copper"], new Bool(true)],
+            [["silver"], new Bool(true)],
+            [["gold"], new Bool(true)],
+          ],
+          write: [],
+        },
+      },
+      public: [[["user"], new Bool(true)]],
+    },
+    effects: {},
+    checks: {},
+  },
   Product_Category: {
     fields: {
       parent: { type: "other", other: "Product_Category" },

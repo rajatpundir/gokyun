@@ -26,6 +26,7 @@ import { Path, PathFilter, Struct } from "./main/utils/variable";
 import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
+import * as SQLite from "expo-sqlite";
 
 declare global {
   namespace ReactNavigation {
@@ -91,9 +92,20 @@ const linking: LinkingOptions<NavigatorParams> = {
 
 const Stack = createNativeStackNavigator<NavigatorParams>();
 
+const db = SQLite.openDatabase("db.testDb");
+
 export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
+
+  React.useEffect(() => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL, done INTEGER, value TEXT);"
+      );
+    });
+  }, []);
+
   if (!isLoadingComplete) {
     return null;
   } else {

@@ -19,5 +19,26 @@ export async function get_variables(
     paths: HashSet<Path>;
   }>
 > {
-  return [];
+  return [
+    {
+      struct: struct,
+      id: new Decimal(1),
+      paths: HashSet.of(),
+    },
+    {
+      struct: struct,
+      id: new Decimal(12),
+      paths: HashSet.of(),
+    },
+    {
+      struct: struct,
+      id: new Decimal(13),
+      paths: HashSet.of(),
+    },
+    {
+      struct: struct,
+      id: new Decimal(14),
+      paths: HashSet.of(),
+    },
+  ];
 }

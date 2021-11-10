@@ -316,11 +316,13 @@ export type StrongEnum =
     };
 
 export class Path {
+  label: string;
   path: Vector<string>;
   value: Option<StrongEnum>;
   updatable: boolean = false;
 
-  constructor(path: Vector<string>, value: Option<StrongEnum>) {
+  constructor(label: string, path: Vector<string>, value: Option<StrongEnum>) {
+    this.label = label;
     this.path = path;
     this.value = value;
   }

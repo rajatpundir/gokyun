@@ -4,7 +4,11 @@
  */
 
 import * as React from "react";
-import { Text as DefaultText, View as DefaultView } from "react-native";
+import {
+  View as DefaultView,
+  Text as DefaultText,
+  TextInput as DefaultTextInput,
+} from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -27,14 +31,6 @@ type ThemeProps = {
   darkColor?: string;
 };
 
-export type TextProps = ThemeProps & DefaultText["props"];
-
-export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  return <DefaultText style={[{ color }, style]} {...otherProps} />;
-}
-
 export type ViewProps = ThemeProps & DefaultView["props"];
 
 export function View(props: ViewProps) {
@@ -46,8 +42,24 @@ export function View(props: ViewProps) {
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
 }
 
-export function MonoText(props: TextProps) {
-  return (
-    <Text {...props} style={[props.style, { fontFamily: "space-mono" }]} />
-  );
+export type TextProps = ThemeProps & DefaultText["props"];
+
+export function Text(props: TextProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  return <DefaultText style={[{ color }, style]} {...otherProps} />;
+}
+
+// export function MonoText(props: TextProps) {
+//   return (
+//     <Text {...props} style={[props.style, { fontFamily: "space-mono" }]} />
+//   );
+// }
+
+export type TextInputProps = ThemeProps & DefaultTextInput["props"];
+
+export function TextInput(props: TextInputProps) {
+  const { style, lightColor, darkColor, ...otherProps } = props;
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  return <DefaultTextInput style={[{ color }, style]} {...otherProps} />;
 }

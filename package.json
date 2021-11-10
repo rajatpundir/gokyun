@@ -26,6 +26,7 @@
     "expo-font": "~10.0.3",
     "expo-linking": "~2.4.2",
     "expo-splash-screen": "~0.13.5",
+    "expo-sqlite": "~10.0.3",
     "expo-status-bar": "~1.1.0",
     "expo-web-browser": "~10.0.3",
     "immer": "^9.0.6",
@@ -41,7 +42,8 @@
     "react-native-screens": "~3.8.0",
     "react-native-tab-view": "^3.1.1",
     "react-native-web": "0.17.1",
-    "use-immer": "^0.6.0"
+    "use-immer": "^0.6.0",
+    "zustand": "^3.6.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

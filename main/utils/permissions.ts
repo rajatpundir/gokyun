@@ -295,3 +295,22 @@ export function get_paths(
     return HashSet.ofIterable(it);
   });
 }
+
+export function log_permissions(
+  struct: Struct,
+  result: Result<[HashSet<Vector<string>>, HashSet<Vector<string>>]>
+) {
+  console.log("\n=======================");
+  console.log("STRUCT: ", struct.name);
+  if (unwrap(result)) {
+    const permissions = result.value;
+    console.log("\n=======================");
+    console.log("WRITE PERMISSIONS");
+    console.log(permissions[0].toArray().map((x) => x.toArray()));
+    console.log("\n=======================");
+    console.log("READ PERMISSIONS");
+    console.log(permissions[1].toArray().map((x) => x.toArray()));
+  } else {
+    console.log("Error printing permissions");
+  }
+}
