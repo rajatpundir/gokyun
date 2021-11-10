@@ -316,13 +316,11 @@ export type StrongEnum =
     };
 
 export class Path {
-  label: string;
   path: Vector<string>;
   value: Option<StrongEnum>;
   updatable: boolean = false;
 
-  constructor(label: string, path: Vector<string>, value: Option<StrongEnum>) {
-    this.label = label;
+  constructor(path: Vector<string>, value: Option<StrongEnum>) {
     this.path = path;
     this.value = value;
   }
@@ -340,5 +338,39 @@ export class Path {
 
   toString(): string {
     return String([this.path, this.value, this.updatable]);
+  }
+}
+
+export class PathFilter {
+  active: boolean;
+  label: string;
+  path: Vector<string>;
+  value: Option<StrongEnum | Vector<string>>;
+
+  constructor(
+    active: boolean,
+    label: string,
+    path: Vector<string>,
+    value: Option<StrongEnum | Vector<string>>
+  ) {
+    this.active = active;
+    this.label = label;
+    this.path = path;
+    this.value = value;
+  }
+
+  equals(other: Path): boolean {
+    if (!other) {
+      return false;
+    }
+    return this.path.equals(other.path);
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return String([this.path, this.value]);
   }
 }

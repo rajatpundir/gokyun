@@ -14,9 +14,10 @@ import { HashSet, Vector } from "prelude-ts";
 
 import { Action, State, unwrap } from "./prelude";
 import { useState } from "react";
-import { Path, Struct } from "./variable";
+import { Path, PathFilter, Struct } from "./variable";
 import { get_structs } from "./schema";
 import { useNavigation } from "@react-navigation/native";
+import { Immutable } from "immer";
 
 type ComponentProps = {
   state: State;
@@ -710,25 +711,23 @@ export function DateTime_Field(
   return null;
 }
 
-// Box probably requires implementing a full fledged list and filter support
-// A modal with top bar with filter button and a flatlist, maybe a bottom bar with some stats from query
-// Filter opens in an action sheet component
-// Possibility of Joins and Group Aggregates should be considered
-
-// Alternative: Just place a u64 picker as placeholder here for the time being.
 export function Box(
   props: TextInput["props"] &
     Text["props"] &
     ComponentProps & {
       display_path: ReadonlyArray<string>;
+      // permissions for other struct
       permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>];
       render_item: (
-        struct: Struct,
-        id: Decimal,
-        paths: HashSet<Path>,
-        selected: Decimal,
+        struct: Immutable<Struct>,
+        id: Immutable<Decimal>,
+        paths: Immutable<HashSet<Path>>,
+        selected: Immutable<Decimal>,
         set_selected: (selected: Decimal) => void
       ) => JSX.Element;
+      filters: Array<[boolean, HashSet<PathFilter>]>;
+      limit: Decimal;
+      offset: Decimal;
     }
 ): JSX.Element | null {
   const navigation = useNavigation();
@@ -752,11 +751,28 @@ export function Box(
                 .filter((x) => x.name === other_struct_name)
                 .single();
               if (other_struct.isSome()) {
+                const [selected, set_selected] = useState(
+                  new Decimal(value.value.value)
+                );
                 if (state.id !== undefined && path.get().updatable) {
                   const v = value.value.value;
                   return (
                     <>
-                      <Pressable onPress={() => {}}>
+                      <Pressable
+                        onPress={() => {
+                          navigation.navigate("VariablesModal", {
+                            struct: other_struct.get(),
+                            permissions: props.permissions,
+                            requested_paths: HashSet.of(),
+                            selected: selected,
+                            set_selected: set_selected,
+                            render_item: props.render_item,
+                            filters: props.filters,
+                            limit: props.limit,
+                            offset: props.offset,
+                          });
+                        }}
+                      >
                         <Text style={[{}, style]} {...otherProps}>
                           {display_value.value.value}
                         </Text>
@@ -765,13 +781,9 @@ export function Box(
                   );
                 } else {
                   return (
-                    <>
-                      <Pressable onPress={() => {}}>
-                        <Text style={[{}, style]} {...otherProps}>
-                          {display_value.value.value}
-                        </Text>
-                      </Pressable>
-                    </>
+                    <Text style={[{}, style]} {...otherProps}>
+                      {display_value.value.value}
+                    </Text>
                   );
                 }
               }

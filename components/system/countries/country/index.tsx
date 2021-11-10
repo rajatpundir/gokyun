@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { StyleSheet } from "react-native";
 import { useImmerReducer } from "use-immer";
 import { HashSet, Vector } from "prelude-ts";
 import { Struct } from "../../../../main/utils/variable";
@@ -39,3 +40,15 @@ export default function Component(props: {
     return <Text>Component will show or update or delete</Text>;
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 24,
+    backgroundColor: "grey",
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
+});

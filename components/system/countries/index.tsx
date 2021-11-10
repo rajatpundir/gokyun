@@ -7,7 +7,6 @@ import {
   StatusBar as ST,
   Button,
   TouchableOpacity,
-  Image,
   Pressable,
 } from "react-native";
 
@@ -15,15 +14,16 @@ import { StatusBar } from "expo-status-bar";
 
 import { Text, View } from "../../../main/themed";
 import { HashSet, Option } from "prelude-ts";
-import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
-import { Immutable, Draft } from "immer";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import { get_structs } from "../../../main/utils/schema";
 import { Struct } from "../../../main/utils/variable";
-import {
-  validate_ownership_path,
-  get_permissions,
-} from "../../../main/utils/permissions";
 import { NavigatorProps as ParentNavigatorProps } from "..";
+import { useCallback, useMemo, useRef } from "react";
+
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
@@ -69,6 +69,21 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
   //   console.log("---nothing---");
   // }
   const renderItem = ({ item }) => <Item title={item.title} />;
+
+  // ref
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ["25%", "50%"], []);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+
   return (
     <View
       style={{
@@ -97,6 +112,25 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       >
         <SimpleLineIcons name="plus" size={36} color="white" />
       </TouchableOpacity>
+      <BottomSheetModalProvider>
+        <View style={styles.container}>
+          <Button
+            onPress={handlePresentModalPress}
+            title="Present Modal"
+            color="black"
+          />
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={1}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View>
+              <Text>Awesome 🎉</Text>
+            </View>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
     </View>
   );
 }
