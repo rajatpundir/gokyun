@@ -206,8 +206,8 @@ export function generate_query(
   limit: Decimal,
   offset: Decimal,
   path_filters: PathFilters,
-  level: Decimal | undefined,
-  id: Decimal | undefined
+  id: Decimal | undefined,
+  level: Decimal | undefined
 ) {
   const value_injections: Array<string> = [];
   const join_count: number = fold(0, path_filters, (acc, val) =>
@@ -244,7 +244,7 @@ export function generate_query(
     return it;
   });
   console.log(select_stmt);
-  const [from_stmt, where_stmt] = apply(
+  var [from_stmt, where_stmt] = apply(
     ["FROM", "WHERE"],
     ([from_stmt, where_stmt]) => {
       for (let i = 0; i < join_count; i++) {
@@ -332,16 +332,18 @@ export function generate_query(
   console.log(where_stmt);
   console.log(value_injections);
   // Process path filtering by their ops and values/other_paths
-  const filters_stmt: ReadonlyArray<ReadonlyArray<string>> = [];
+  const filters_stmt: Array<Array<string>> = [];
   for (let path_filter of path_filters) {
     const path: ReadonlyArray<string> = path_filter[0];
     const val_ref: number = path_filter[0].length;
     const field_struct_name = path_filter[1];
+    // wrap the switch inside apply, to get a string | undefined back
     switch (field_struct_name) {
       case "str":
       case "lstr":
       case "clob": {
-        for (let filter of path_filter[3]) {
+        for (let [index, filter] of path_filter[3].entries()) {
+          var stmt: string | undefined = undefined;
           if (filter !== undefined) {
             const op = filter[0];
             switch (op) {
@@ -354,23 +356,31 @@ export function generate_query(
               case "like":
               case "glob": {
                 const value = filter[1];
-                if (typeof value === "object") {
-                  const referenced_val_ref = value.length;
-                  value;
-                } else {
-                  value;
-                }
+                stmt = apply(undefined, () => {
+                  if (typeof value === "object") {
+                    const referenced_val_ref = value.length;
+                    value;
+                    return "";
+                  } else {
+                    value;
+                    return "";
+                  }
+                });
                 break;
               }
               case "between":
               case "not_between": {
                 const value = filter[1];
-                if (typeof value === "object") {
-                  const referenced_val_ref = value.length;
-                  value;
-                } else {
-                  value;
-                }
+                stmt = apply(undefined, () => {
+                  if (typeof value === "object") {
+                    const referenced_val_ref = value.length;
+                    value;
+                    return "";
+                  } else {
+                    value;
+                    return "";
+                  }
+                });
                 break;
               }
               default: {
@@ -378,6 +388,14 @@ export function generate_query(
                 return _exhaustiveCheck;
               }
             }
+          }
+          if (stmt !== undefined) {
+            if (index > filters_stmt.length) {
+              for (let j = index - filters_stmt.length; j > 0; j--) {
+                filters_stmt.push([]);
+              }
+            }
+            filters_stmt[index].push(stmt);
           }
         }
         break;
@@ -390,9 +408,11 @@ export function generate_query(
       case "udouble":
       case "idecimal":
       case "udecimal": {
-        for (let filter of path_filter[3]) {
+        for (let [index, filter] of path_filter[3].entries()) {
+          var stmt: string | undefined = undefined;
           if (filter !== undefined) {
             const op = filter[0];
+            // wrap switch with apply to get a string value
             switch (op) {
               case "==":
               case "!=":
@@ -401,23 +421,70 @@ export function generate_query(
               case ">":
               case "<": {
                 const value = filter[1];
-                if (is_decimal(value)) {
-                  value;
-                } else {
-                  const referenced_val_ref = value.length;
-                  value;
-                }
+                stmt = apply(undefined, () => {
+                  if (is_decimal(value)) {
+                    value;
+                    return "";
+                  } else {
+                    const referenced_val_ref = value.length;
+                    value;
+                    return "";
+                  }
+                });
                 break;
               }
               case "between":
               case "not_between": {
                 const value = filter[1];
-                if (is_decimal(value)) {
-                  value;
-                } else {
-                  const referenced_val_ref = value.length;
-                  value;
-                }
+                stmt = apply(undefined, () => {
+                  if (is_decimal(value)) {
+                    value;
+                    return "";
+                  } else {
+                    const referenced_val_ref = value.length;
+                    value;
+                    return "";
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            filters_stmt[index].push("");
+          }
+          if (stmt !== undefined) {
+            if (index > filters_stmt.length) {
+              for (let j = index - filters_stmt.length; j > 0; j--) {
+                filters_stmt.push([]);
+              }
+            }
+            filters_stmt[index].push(stmt);
+          }
+        }
+        break;
+      }
+      case "bool": {
+        for (let [index, filter] of path_filter[3].entries()) {
+          var stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (typeof value === "object") {
+                    const referenced_val_ref = value.length;
+                    value;
+                    return "";
+                  } else {
+                    value;
+                    return "";
+                  }
+                });
                 break;
               }
               default: {
@@ -426,30 +493,13 @@ export function generate_query(
               }
             }
           }
-        }
-        break;
-      }
-      case "bool": {
-        for (let filter of path_filter[3]) {
-          if (filter !== undefined) {
-            const op = filter[0];
-            switch (op) {
-              case "==":
-              case "!=": {
-                const value = filter[1];
-                if (typeof value === "object") {
-                  const referenced_val_ref = value.length;
-                  value;
-                } else {
-                  value;
-                }
-                break;
-              }
-              default: {
-                const _exhaustiveCheck: never = op;
-                return _exhaustiveCheck;
+          if (stmt !== undefined) {
+            if (index > filters_stmt.length) {
+              for (let j = index - filters_stmt.length; j > 0; j--) {
+                filters_stmt.push([]);
               }
             }
+            filters_stmt[index].push(stmt);
           }
         }
         break;
@@ -457,7 +507,8 @@ export function generate_query(
       case "date":
       case "time":
       case "timestamp": {
-        for (let filter of path_filter[3]) {
+        for (let [index, filter] of path_filter[3].entries()) {
+          var stmt: string | undefined = undefined;
           if (filter !== undefined) {
             const op = filter[0];
             switch (op) {
@@ -468,38 +519,47 @@ export function generate_query(
               case ">":
               case "<": {
                 const value = filter[1];
-                if (value instanceof Date) {
-                  value;
-                } else {
-                  const referenced_val_ref = value.length;
-                  value;
-                }
+                stmt = apply(undefined, () => {
+                  if (value instanceof Date) {
+                    value;
+                  } else {
+                    const referenced_val_ref = value.length;
+                    value;
+                    return "";
+                  }
+                });
                 break;
               }
               case "between":
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                if (is_decimal(start_value)) {
-                  if (is_decimal(end_value)) {
-                    start_value;
-                    end_value;
+                stmt = apply(undefined, () => {
+                  if (is_decimal(start_value)) {
+                    if (is_decimal(end_value)) {
+                      start_value;
+                      end_value;
+                      return "";
+                    } else {
+                      const referenced_end_val_ref = end_value.length;
+                      start_value;
+                      end_value;
+                      return "";
+                    }
                   } else {
-                    const referenced_end_val_ref = end_value.length;
-                    start_value;
-                    end_value;
+                    const referenced_start_val_ref = start_value.length;
+                    if (is_decimal(end_value)) {
+                      start_value;
+                      end_value;
+                      return "";
+                    } else {
+                      const referenced_end_val_ref = end_value.length;
+                      start_value;
+                      end_value;
+                      return "";
+                    }
                   }
-                } else {
-                  const referenced_start_val_ref = start_value.length;
-                  if (is_decimal(end_value)) {
-                    start_value;
-                    end_value;
-                  } else {
-                    const referenced_end_val_ref = end_value.length;
-                    start_value;
-                    end_value;
-                  }
-                }
+                });
                 break;
               }
               default: {
@@ -507,6 +567,14 @@ export function generate_query(
                 return _exhaustiveCheck;
               }
             }
+          }
+          if (stmt !== undefined) {
+            if (index > filters_stmt.length) {
+              for (let j = index - filters_stmt.length; j > 0; j--) {
+                filters_stmt.push([]);
+              }
+            }
+            filters_stmt[index].push(stmt);
           }
         }
         break;
@@ -517,4 +585,7 @@ export function generate_query(
       }
     }
   }
+  where_stmt += ` AND (${filters_stmt
+    .map((x) => `(${x.join(" AND ")})`)
+    .join(" OR ")})`;
 }
