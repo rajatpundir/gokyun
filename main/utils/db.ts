@@ -201,48 +201,113 @@ type PathFilters = ReadonlyArray<
     ]
 >;
 
-function generate_query(
+export function generate_query(
   struct_name: string,
   limit: Decimal,
   offset: Decimal,
-  path_filters: PathFilters,
+  // path_filters: PathFilters,
+  join_count: number,
   level: Decimal | undefined,
   id: Decimal | undefined
 ) {
-  const selections: Array<string> = [
-    "v1.level",
-    "v1.struct_name",
-    "v1.id",
-    "v1.created_at",
-    "v1.updated_at",
-    "v1.requested_at",
-    "v1.last_accessed_at",
-    "v2.field_name",
-    "v2.field_struct_name",
-    "v2.text_value",
-    "v2.integer_value",
-    "v2.real_value",
-  ];
-  const stmt =
-    "SELECT v1.level, v1.struct_name, v1.id, v1.created_at, v1.updated_at, v1.requested_at, v1.last_accessed_at, v2.field_name, v2.field_struct_name, v2.text_value, v2.integer_value, v2.real_value";
-  const stmt2 =
-    "FROM vars AS v1 INNER JOIN vals AS v2 ON (v2.level = v1.level AND v2.field_struct_name = v1.struct_name AND v2.variable_id = v1.id )";
-  const stmt3 = "";
-  (" VARS AS v1 INNER JOIN VALS AS v2 ON (v2.level = v1.level AND v2.field_struct_name = v1.struct_name AND v2.variable_id = v1.id )");
-  ("WHERE ((v2.field_name = ? AND v2.field_struct_name = ? AND v2.integer_value IS NOT NULL AND v2.integer_value < [? | v4.integer_value] ))");
+  const value_injections: Array<string> = [];
+  // const join_count: number = fold(0, path_filters, (acc, val) =>
+  //   Math.min(acc, val[0].length)
+  // );
+  const select_stmt: string = apply("SELECT", (it) => {
+    const columns = [
+      [
+        "struct_name",
+        "id",
+        "created_at",
+        "updated_at",
+        "requested_at",
+        "last_accessed_at",
+      ],
+      ["field_struct_name", "text_value", "integer_value", "real_value"],
+    ];
+    for (let i = 0; i < join_count; i++) {
+      const [var_ref, val_ref] = [i * 2 + 1, i * 2 + 2];
+      if (it !== "SELECT") {
+        it += ", ";
+      }
+      it += fold(
+        ` v${var_ref}.level`,
+        columns[0],
+        (acc, val) => `${acc}, v${var_ref}.${val}`
+      );
+      it += fold(
+        `, v${val_ref}.field_name`,
+        columns[1],
+        (acc, val) => `${acc}, v${val_ref}.${val}`
+      );
+    }
+    return it;
+  });
+  console.log(select_stmt);
+  const [from_stmt, where_stmt] = apply(
+    ["FROM", "WHERE"],
+    ([from_stmt, where_stmt]) => {
+      for (let i = 0; i < join_count; i++) {
+        const [var_ref, val_ref] = [i * 2 + 1, i * 2 + 2];
+        if (i == 0) {
+          from_stmt += ` vars AS v${var_ref} LEFT JOIN vals as v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
+          if (level === undefined) {
+            if (id === undefined) {
+              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+            } else {
+              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+              value_injections.push(id.truncated().toString());
+            }
+          } else {
+            if (id === undefined) {
+              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+              value_injections.push(level.toString());
+            } else {
+              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+              value_injections.push(level.toString());
+              value_injections.push(id.truncated().toString());
+            }
+          }
+        } else {
+          from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${
+            var_ref - 1
+          }.field_struct_name AND v${var_ref}.id = v${
+            var_ref - 1
+          }.integer_value)`;
+          from_stmt += ` LEFT JOIN vals AS v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
+          where_stmt += ` AND v${var_ref - 1}.level >= v${var_ref}.level`;
+          if (level === undefined) {
+            if (id === undefined) {
+              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+            } else {
+              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+              value_injections.push(id.truncated().toString());
+            }
+          } else {
+            if (id === undefined) {
+              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+              value_injections.push(level.toString());
+            } else {
+              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
+              value_injections.push(struct_name);
+              value_injections.push(level.toString());
+              value_injections.push(id.truncated().toString());
+            }
+          }
+        }
+      }
+      return [from_stmt, where_stmt];
+    }
+  );
+  console.log(from_stmt);
+  console.log(where_stmt);
+  console.log(value_injections);
 }
-
-// // [ [ _id, _struct_name, _created_at, _updated_at, _requested_at, _last_accessed_at, [ [ ...path ], struct_name, value ] ] ]
-
-// const x = {
-//   level: 0,
-//   struct_name: "",
-//   id: 0,
-//   created_at: 0,
-//   updated_at: 0,
-//   requested_at: 0,
-//   last_accessed_at: 0,
-//   vals: [{
-//     path: 0 // Path contains some value
-//   }]
-// };

@@ -27,6 +27,7 @@ import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 import * as SQLite from "expo-sqlite";
+import { generate_query } from "./main/utils/db";
 
 declare global {
   namespace ReactNavigation {
@@ -98,13 +99,16 @@ export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
 
-  React.useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY NOT NULL, done INTEGER, value TEXT);"
-      );
-    });
-  }, []);
+  console.log(
+    generate_query(
+      "Wallet",
+      new Decimal(0),
+      new Decimal(0),
+      4,
+      undefined,
+      undefined
+    )
+  );
 
   if (!isLoadingComplete) {
     return null;
