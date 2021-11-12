@@ -2,6 +2,7 @@ import Mustache from "mustache";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
 import { Path, StrongEnum, Struct } from "./variable";
+import Decimal from "decimal.js";
 
 export type Language = "English";
 
@@ -56,6 +57,10 @@ export class CustomError {
   constructor(value: Message | Record<string, CustomError>) {
     this.value = value;
   }
+}
+
+export function is_decimal(value: any): value is Decimal {
+  return Decimal.isDecimal(value);
 }
 
 export class Ok<T> {

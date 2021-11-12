@@ -99,16 +99,16 @@ export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
 
-  console.log(
-    generate_query(
-      "Wallet",
-      new Decimal(0),
-      new Decimal(0),
-      4,
-      undefined,
-      undefined
-    )
-  );
+  // console.log(
+  //   generate_query(
+  //     "Wallet",
+  //     new Decimal(0),
+  //     new Decimal(0),
+  //     4,
+  //     undefined,
+  //     undefined
+  //   )
+  // );
 
   if (!isLoadingComplete) {
     return null;
