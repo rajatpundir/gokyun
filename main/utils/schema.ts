@@ -27,7 +27,7 @@ import {
   ToNum,
   ToText,
 } from "./lisp";
-import { errors, Message } from "./prelude";
+import { errors, ErrMsg } from "./errors";
 import {
   Field,
   Struct,
@@ -53,7 +53,7 @@ const schema: Record<
     uniqueness: ReadonlyArray<ReadonlyArray<string>>;
     permissions: StructPermissions;
     effects: StructEffects;
-    checks: Record<string, [BooleanLispExpression, Message]>;
+    checks: Record<string, [BooleanLispExpression, ErrMsg]>;
   }
 > = {
   Test: {
@@ -118,7 +118,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -182,7 +182,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -196,7 +196,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -230,7 +230,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -294,7 +294,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -308,7 +308,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -338,7 +338,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -401,7 +401,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -415,7 +415,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -444,7 +444,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -485,7 +485,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       // -90 to 90 for latitude and -180 to 180 for longitude
       location_is_within_bounds: [
@@ -508,7 +508,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -544,7 +544,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -573,7 +573,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -620,7 +620,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       nickname_is_not_empty: [
         new LogicalUnaryExpression(
@@ -634,7 +634,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -690,7 +690,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
     },
   },
@@ -763,7 +763,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -825,7 +825,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -887,7 +887,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1385,7 +1385,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1468,7 +1468,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -1482,7 +1482,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1562,7 +1562,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1653,7 +1653,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -1667,7 +1667,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1754,7 +1754,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1845,7 +1845,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -1859,7 +1859,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -1943,7 +1943,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       tag_count_is_less_than_system_tag_count: [
         new NumberComparatorExpression(
@@ -1953,7 +1953,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2031,7 +2031,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -2045,7 +2045,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2212,7 +2212,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       min_quantity_is_less_than_max_quantity: [
         new NumberComparatorExpression(
@@ -2222,7 +2222,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       min_price_is_less_than_max_price: [
         new NumberComparatorExpression(
@@ -2232,7 +2232,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2323,7 +2323,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -2337,7 +2337,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2446,7 +2446,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       alliance_product_family_property_is_the_same: [
         new NumberComparatorExpression(
@@ -2461,7 +2461,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
     },
   },
@@ -2571,7 +2571,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2643,7 +2643,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2730,7 +2730,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2814,7 +2814,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       tag_count_is_less_than_system_tag_count: [
         new NumberComparatorExpression(
@@ -2824,7 +2824,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -2902,7 +2902,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -2916,7 +2916,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -3004,7 +3004,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -3107,7 +3107,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       user_product_family_property_is_the_same: [
         new NumberComparatorExpression(
@@ -3122,7 +3122,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
     },
   },
@@ -3186,7 +3186,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       user_is_the_same: [
         new NumberComparatorExpression(
@@ -3203,7 +3203,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       quantity_is_within_bounds: [
         new LogicalBinaryExpression(
@@ -3233,7 +3233,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       price_is_within_bounds: [
         new LogicalBinaryExpression(
@@ -3263,7 +3263,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
     },
   },
@@ -3439,7 +3439,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       user_is_the_same: [
         new NumberComparatorExpression(
@@ -3449,7 +3449,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
       price_is_within_bounds: [
         new LogicalBinaryExpression(
@@ -3471,7 +3471,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
     },
   },
@@ -3551,7 +3551,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrUnexpected] as Message,
+        [errors.ErrUnexpected] as ErrMsg,
       ],
     },
   },
@@ -3638,7 +3638,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       min_price_is_less_than_max_price: [
         new NumberComparatorExpression(
@@ -3648,7 +3648,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -3723,7 +3723,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -3737,7 +3737,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -3784,7 +3784,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -3867,7 +3867,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -3881,7 +3881,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -3927,7 +3927,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -4013,7 +4013,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       language_is_not_english: [
         new LogicalUnaryExpression(
@@ -4027,7 +4027,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -4162,7 +4162,7 @@ const schema: Record<
             )
           )
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },
@@ -4234,7 +4234,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
       min_clan_loyalty_is_less_than_max_clan_loyalty: [
         new NumberComparatorExpression(
@@ -4244,7 +4244,7 @@ const schema: Record<
             [],
           ])
         ),
-        [errors.ErrEmptyField] as Message,
+        [errors.ErrEmptyField] as ErrMsg,
       ],
     },
   },

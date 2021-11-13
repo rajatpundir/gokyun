@@ -337,7 +337,6 @@ export function generate_query(
     const path: ReadonlyArray<string> = path_filter[0];
     const val_ref: number = path_filter[0].length;
     const field_struct_name = path_filter[1];
-    // wrap the switch inside apply, to get a string | undefined back
     switch (field_struct_name) {
       case "str":
       case "lstr":
@@ -358,27 +357,117 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (typeof value === "object") {
-                    const referenced_val_ref = value.length;
-                    value;
-                    return "";
+                    return apply([] as Array<string>, (path_constraints) => {
+                      for (let [
+                        path_field_index,
+                        path_field_name,
+                      ] of value.entries()) {
+                        value_injections.push(path_field_name);
+                        path_constraints.push(
+                          `v${path_field_index + 1}.field_name = ?`
+                        );
+                      }
+                      const referenced_val_ref = value.length;
+                      return `${path_constraints.join(
+                        " AND "
+                      )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} v${referenced_val_ref}.text_value`;
+                    });
                   } else {
-                    value;
-                    return "";
+                    value_injections.push(value);
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} ?`;
                   }
                 });
                 break;
               }
               case "between":
               case "not_between": {
-                const value = filter[1];
+                const start_value = filter[1][0];
+                const end_value = filter[1][1];
                 stmt = apply(undefined, () => {
-                  if (typeof value === "object") {
-                    const referenced_val_ref = value.length;
-                    value;
-                    return "";
+                  if (typeof start_value === "object") {
+                    if (typeof end_value === "object") {
+                      start_value;
+                      end_value;
+                      apply(
+                        [[], []] as [Array<string>, Array<string>],
+                        ([start_path_constraints, end_path_constraints]) => {
+                          for (let [
+                            path_field_index,
+                            path_field_name,
+                          ] of start_value.entries()) {
+                            value_injections.push(path_field_name);
+                            start_path_constraints.push(
+                              `v${path_field_index + 1}.field_name = ?`
+                            );
+                          }
+                          for (let [
+                            path_field_index,
+                            path_field_name,
+                          ] of end_value.entries()) {
+                            value_injections.push(path_field_name);
+                            end_path_constraints.push(
+                              `v${path_field_index + 1}.field_name = ?`
+                            );
+                          }
+                          const referenced_start_val_ref = start_value.length;
+                          const referenced_end_val_ref = end_value.length;
+                          return `${start_path_constraints.join(
+                            " AND "
+                          )} AND ${end_path_constraints.join(
+                            " AND "
+                          )} AND v${referenced_start_val_ref}.text_value IS NOT NULL AND v${referenced_end_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
+                            op === "not_between" ? "NOT BETWEEN" : op
+                          } v${referenced_start_val_ref}.text_value AND v${referenced_end_val_ref}.text_value`;
+                        }
+                      );
+                      return "";
+                    } else {
+                      return apply([] as Array<string>, (path_constraints) => {
+                        for (let [
+                          path_field_index,
+                          path_field_name,
+                        ] of start_value.entries()) {
+                          value_injections.push(path_field_name);
+                          path_constraints.push(
+                            `v${path_field_index + 1}.field_name = ?`
+                          );
+                        }
+                        value_injections.push(end_value);
+                        const referenced_val_ref = start_value.length;
+                        return `${path_constraints.join(
+                          " AND "
+                        )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } v${referenced_val_ref}.text_value AND ?`;
+                      });
+                    }
                   } else {
-                    value;
-                    return "";
+                    if (typeof end_value === "object") {
+                      return apply([] as Array<string>, (path_constraints) => {
+                        for (let [
+                          path_field_index,
+                          path_field_name,
+                        ] of end_value.entries()) {
+                          value_injections.push(path_field_name);
+                          path_constraints.push(
+                            `v${path_field_index + 1}.field_name = ?`
+                          );
+                        }
+                        value_injections.push(start_value);
+                        const referenced_val_ref = end_value.length;
+                        return `${path_constraints.join(
+                          " AND "
+                        )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } ? AND v${referenced_val_ref}.text_value`;
+                      });
+                    } else {
+                      value_injections.push(start_value);
+                      value_injections.push(end_value);
+                      return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
+                        op === "not_between" ? "NOT BETWEEN" : op
+                      } ? AND ?`;
+                    }
                   }
                 });
                 break;
@@ -412,7 +501,6 @@ export function generate_query(
           var stmt: string | undefined = undefined;
           if (filter !== undefined) {
             const op = filter[0];
-            // wrap switch with apply to get a string value
             switch (op) {
               case "==":
               case "!=":
@@ -585,6 +673,10 @@ export function generate_query(
       }
     }
   }
+  console.log(filters_stmt);
+  console.log(
+    ` AND (${filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")})`
+  );
   where_stmt += ` AND (${filters_stmt
     .map((x) => `(${x.join(" AND ")})`)
     .join(" OR ")})`;

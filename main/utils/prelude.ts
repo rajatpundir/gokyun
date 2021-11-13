@@ -1,66 +1,15 @@
-import Mustache from "mustache";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
 import { Path, StrongEnum, Struct } from "./variable";
 import Decimal from "decimal.js";
-
-export type Language = "English";
-
-export const languages = {
-  English: "English",
-};
-
-export type Message =
-  | ["ErrUnexpected"]
-  | ["ErrMissingSymbol"]
-  | ["ErrEmptyField"]
-  | ["CannotBeEmpty", { field: string }]; // template error example
-
-export const errors = {
-  ErrUnexpected: "ErrUnexpected",
-  ErrMissingSymbol: "ErrMissingSymbol",
-  ErrEmptyField: "ErrEmptyField",
-  CannotBeEmpty: "CannotBeEmpty",
-};
-
-export function to_string(message: Message, lang: Language): string {
-  switch (lang) {
-    case "English": {
-      switch (message[0]) {
-        case "ErrUnexpected":
-          return "Unexpected Error";
-        case "ErrMissingSymbol":
-          return "Symbol not found";
-        case "ErrEmptyField":
-          return "Field cannot be empty";
-        case "CannotBeEmpty": {
-          return Mustache.render(" Value for {{field}} cannot be empty", {
-            field: message[1].field,
-          });
-        }
-        default: {
-          const _exhaustiveCheck: never = message;
-          return _exhaustiveCheck;
-        }
-      }
-    }
-    default: {
-      const _exhaustiveCheck: never = lang;
-      return _exhaustiveCheck;
-    }
-  }
-}
+import { errors, ErrMsg } from "./errors";
 
 export class CustomError {
-  value: Message | Record<string, CustomError>;
+  value: ErrMsg | Record<string, CustomError>;
 
-  constructor(value: Message | Record<string, CustomError>) {
+  constructor(value: ErrMsg | Record<string, CustomError>) {
     this.value = value;
   }
-}
-
-export function is_decimal(value: any): value is Decimal {
-  return Decimal.isDecimal(value);
 }
 
 export class Ok<T> {
@@ -95,7 +44,7 @@ export function unwrap_array<T>(
     if (unwrap(result)) {
       results.push(result.value);
     } else {
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
   }
   return new Ok(results);
@@ -131,6 +80,10 @@ export function fold_prev<T, U>(
     }
     return acc;
   });
+}
+
+export function is_decimal(value: any): value is Decimal {
+  return Decimal.isDecimal(value);
 }
 
 export type State = Immutable<{
