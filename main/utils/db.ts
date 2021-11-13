@@ -4,6 +4,7 @@ import * as SQLite from "expo-sqlite";
 import React from "react";
 import { apply, fold, is_decimal } from "./prelude";
 import Decimal from "decimal.js";
+import { PathFilter } from "./variable";
 
 const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
   db.exec([{ sql: "PRAGMA journal_mode = WAL;", args: [] }], false, () =>
@@ -199,6 +200,13 @@ type PathFilters = ReadonlyArray<
         | undefined
       >
     ]
+  | [
+      ReadonlyArray<string>,
+      "other",
+      [Decimal, boolean] | undefined,
+      ReadonlyArray<["==" | "!=", Decimal | ReadonlyArray<string>] | undefined>,
+      string
+    ]
 >;
 
 export function generate_query(
@@ -213,6 +221,67 @@ export function generate_query(
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
+
+  const path_name_expression: string = Array.from(Array(join_count).keys())
+    .map((x) => {
+      const val_ref = x * 2 + 2;
+      return `IFNULL(v${val_ref}.field_name, "")`;
+    })
+    .join(` || "." || `);
+
+  const group_by_stmt = `GROUP BY (v1.level, v1.struct_name, v1.id, ${path_name_expression})`;
+
+  const path_value_pivots = path_filters.map((path_filter) => {
+    const path: ReadonlyArray<string> = path_filter[0];
+    const field_struct_name = path_filter[1];
+    switch (field_struct_name) {
+      case "str":
+      case "lstr":
+      case "clob": {
+        return `(case when ${path_name_expression} = "${path.join(
+          "."
+        )}" then v${path.length * 2}.text_field end) as "${path.join(".")}"`;
+      }
+      case "i32":
+      case "u32":
+      case "i64":
+      case "u64": {
+        return `(case when ${path_name_expression} = "${path.join(
+          "."
+        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
+      }
+      case "idouble":
+      case "udouble":
+      case "idecimal":
+      case "udecimal": {
+        return `(case when ${path_name_expression} = "${path.join(
+          "."
+        )}" then v${path.length * 2}.real_field end) as "${path.join(".")}"`;
+      }
+      case "bool": {
+        return `(case when ${path_name_expression} = "${path.join(
+          "."
+        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
+      }
+      case "date":
+      case "time":
+      case "timestamp": {
+        return `(case when ${path_name_expression} = "${path.join(
+          "."
+        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
+      }
+      case "other": {
+        return `(case when ${path_name_expression} = "${path.join(
+          "."
+        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
+      }
+      default: {
+        const _exhaustiveCheck: never = field_struct_name;
+        return _exhaustiveCheck;
+      }
+    }
+  });
+
   const select_stmt: string =
     "SELECT " +
     Array.from(Array(join_count).keys())
@@ -491,7 +560,11 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
-                    value_injections.push(value.toString());
+                    if (integer_fields.includes(field_struct_name)) {
+                      value_injections.push(value.truncated().toString());
+                    } else {
+                      value_injections.push(value.toString());
+                    }
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                       integer_fields.includes(field_struct_name)
                         ? "integer_value"
@@ -532,8 +605,15 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      value_injections.push(start_value.toString());
-                      value_injections.push(end_value.toString());
+                      if (integer_fields.includes(field_struct_name)) {
+                        value_injections.push(
+                          start_value.truncated().toString()
+                        );
+                        value_injections.push(end_value.truncated().toString());
+                      } else {
+                        value_injections.push(start_value.toString());
+                        value_injections.push(end_value.toString());
+                      }
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                         integer_fields.includes(field_struct_name)
                           ? "integer_value"
@@ -550,7 +630,13 @@ export function generate_query(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        value_injections.push(start_value.toString());
+                        if (integer_fields.includes(field_struct_name)) {
+                          value_injections.push(
+                            start_value.truncated().toString()
+                          );
+                        } else {
+                          value_injections.push(start_value.toString());
+                        }
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -581,7 +667,13 @@ export function generate_query(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        value_injections.push(end_value.toString());
+                        if (integer_fields.includes(field_struct_name)) {
+                          value_injections.push(
+                            end_value.truncated().toString()
+                          );
+                        } else {
+                          value_injections.push(end_value.toString());
+                        }
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -873,6 +965,57 @@ export function generate_query(
         }
         break;
       }
+      case "other": {
+        const field_struct_name = path_filter[4];
+        for (let [index, filter] of path_filter[3].entries()) {
+          var stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (is_decimal(value)) {
+                    value_injections.push(value.truncated().toString());
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
+                  } else {
+                    return apply([] as Array<string>, (path_constraints) => {
+                      for (let [
+                        path_field_index,
+                        path_field_name,
+                      ] of value.entries()) {
+                        value_injections.push(path_field_name);
+                        path_constraints.push(
+                          `v${path_field_index + 1}.field_name = ?`
+                        );
+                      }
+                      const referenced_val_ref = value.length;
+                      return `${path_constraints.join(
+                        " AND "
+                      )} AND v${referenced_val_ref}.field_struct_name = "${field_struct_name}" AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} v${referenced_val_ref}.integer_value`;
+                    });
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          if (stmt !== undefined) {
+            if (index > filters_stmt.length) {
+              for (let j = index - filters_stmt.length; j > 0; j--) {
+                filters_stmt.push([]);
+              }
+            }
+            filters_stmt[index].push(stmt);
+          }
+        }
+        break;
+      }
       default: {
         const _exhaustiveCheck: never = field_struct_name;
         return _exhaustiveCheck;
@@ -886,4 +1029,5 @@ export function generate_query(
   where_stmt += ` AND (${filters_stmt
     .map((x) => `(${x.join(" AND ")})`)
     .join(" OR ")})`;
+  const order_stmt = "ORDER BY ";
 }
