@@ -213,36 +213,18 @@ export function generate_query(
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
-  const select_stmt: string = apply("SELECT", (it) => {
-    const columns = [
-      [
-        "struct_name",
-        "id",
-        "created_at",
-        "updated_at",
-        "requested_at",
-        "last_accessed_at",
-      ],
-      ["field_struct_name", "text_value", "integer_value", "real_value"],
-    ];
-    for (let i = 0; i < join_count; i++) {
-      const [var_ref, val_ref] = [i * 2 + 1, i * 2 + 2];
-      if (it !== "SELECT") {
-        it += ", ";
-      }
-      it += fold(
-        ` v${var_ref}.level`,
-        columns[0],
-        (acc, val) => `${acc}, v${var_ref}.${val}`
-      );
-      it += fold(
-        `, v${val_ref}.field_name`,
-        columns[1],
-        (acc, val) => `${acc}, v${val_ref}.${val}`
-      );
-    }
-    return it;
-  });
+  const select_stmt: string =
+    "SELECT " +
+    Array.from(Array(join_count).keys())
+      .map((x) =>
+        apply(
+          [x * 2 + 1, x * 2 + 2] as [number, number],
+          ([var_ref, val_ref]) => {
+            return `v${var_ref}.level, v${var_ref}.struct_name, v${var_ref}.id, v${var_ref}.created_at, v${var_ref}.updated_at, v${var_ref}.requested_at, v${var_ref}.last_accessed_at, v${val_ref}.field_name, v${val_ref}.field_struct_name, v${val_ref}.text_value, v${val_ref}.integer_value, v${val_ref}.real_value`;
+          }
+        )
+      )
+      .join(", ");
   console.log(select_stmt);
   var [from_stmt, where_stmt] = apply(
     ["FROM", "WHERE"],
