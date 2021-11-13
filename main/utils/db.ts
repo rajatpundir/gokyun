@@ -386,9 +386,7 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (typeof start_value === "object") {
                     if (typeof end_value === "object") {
-                      start_value;
-                      end_value;
-                      apply(
+                      return apply(
                         [[], []] as [Array<string>, Array<string>],
                         ([start_path_constraints, end_path_constraints]) => {
                           for (let [
@@ -420,7 +418,6 @@ export function generate_query(
                           } v${referenced_start_val_ref}.text_value AND v${referenced_end_val_ref}.text_value`;
                         }
                       );
-                      return "";
                     } else {
                       return apply([] as Array<string>, (path_constraints) => {
                         for (let [
@@ -497,6 +494,7 @@ export function generate_query(
       case "udouble":
       case "idecimal":
       case "udecimal": {
+        const integer_fields = ["i32", "u32", "i64", "u64"];
         for (let [index, filter] of path_filter[3].entries()) {
           var stmt: string | undefined = undefined;
           if (filter !== undefined) {
@@ -511,27 +509,170 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
-                    value;
-                    return "";
+                    value_injections.push(value.toString());
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
+                      integer_fields.includes(field_struct_name)
+                        ? "integer_value"
+                        : "real_value"
+                    } ${op} ?`;
                   } else {
-                    const referenced_val_ref = value.length;
-                    value;
-                    return "";
+                    return apply([] as Array<string>, (path_constraints) => {
+                      for (let [
+                        path_field_index,
+                        path_field_name,
+                      ] of value.entries()) {
+                        value_injections.push(path_field_name);
+                        path_constraints.push(
+                          `v${path_field_index + 1}.field_name = ?`
+                        );
+                      }
+                      const referenced_val_ref = value.length;
+                      return `${path_constraints.join(
+                        " AND "
+                      )} AND (v${referenced_val_ref}.integer_value IS NOT NULL OR v${referenced_val_ref}.real_value IS NOT NULL) AND v${val_ref}.field_struct_name = "${field_struct_name}" AND (v${val_ref}.${
+                        integer_fields.includes(field_struct_name)
+                          ? "integer_value"
+                          : "real_value"
+                      } ${op} v${referenced_val_ref}.integer_value OR v${val_ref}.${
+                        integer_fields.includes(field_struct_name)
+                          ? "integer_value"
+                          : "real_value"
+                      } ${op} v${referenced_val_ref}.real_value)`;
+                    });
                   }
                 });
                 break;
               }
               case "between":
               case "not_between": {
-                const value = filter[1];
+                const start_value = filter[1][0];
+                const end_value = filter[1][1];
                 stmt = apply(undefined, () => {
-                  if (is_decimal(value)) {
-                    value;
-                    return "";
+                  if (is_decimal(start_value)) {
+                    if (is_decimal(end_value)) {
+                      value_injections.push(start_value.toString());
+                      value_injections.push(end_value.toString());
+                      return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
+                        integer_fields.includes(field_struct_name)
+                          ? "integer_value"
+                          : "real_value"
+                      } ${op === "not_between" ? "NOT BETWEEN" : op} ? AND ?`;
+                    } else {
+                      return apply([] as Array<string>, (path_constraints) => {
+                        for (let [
+                          path_field_index,
+                          path_field_name,
+                        ] of end_value.entries()) {
+                          value_injections.push(path_field_name);
+                          path_constraints.push(
+                            `v${path_field_index + 1}.field_name = ?`
+                          );
+                        }
+                        value_injections.push(start_value.toString());
+                        const referenced_val_ref = end_value.length;
+                        return `${path_constraints.join(
+                          " AND "
+                        )} AND (v${referenced_val_ref}.integer_value IS NOT NULL OR v${referenced_val_ref}.real_value IS NOT NULL) AND v${val_ref}.field_struct_name = "${field_struct_name}" AND ((v${val_ref}.${
+                          integer_fields.includes(field_struct_name)
+                            ? "integer_value"
+                            : "real_value"
+                        } ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } ? AND v${referenced_val_ref}.integer_value) OR (v${val_ref}.${
+                          integer_fields.includes(field_struct_name)
+                            ? "integer_value"
+                            : "real_value"
+                        } ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } ? AND v${referenced_val_ref}.real_value))`;
+                      });
+                    }
                   } else {
-                    const referenced_val_ref = value.length;
-                    value;
-                    return "";
+                    if (is_decimal(end_value)) {
+                      return apply([] as Array<string>, (path_constraints) => {
+                        for (let [
+                          path_field_index,
+                          path_field_name,
+                        ] of start_value.entries()) {
+                          value_injections.push(path_field_name);
+                          path_constraints.push(
+                            `v${path_field_index + 1}.field_name = ?`
+                          );
+                        }
+                        value_injections.push(end_value.toString());
+                        const referenced_val_ref = start_value.length;
+                        return `${path_constraints.join(
+                          " AND "
+                        )} AND (v${referenced_val_ref}.integer_value IS NOT NULL OR v${referenced_val_ref}.real_value IS NOT NULL) AND v${val_ref}.field_struct_name = "${field_struct_name}" AND ((v${val_ref}.${
+                          integer_fields.includes(field_struct_name)
+                            ? "integer_value"
+                            : "real_value"
+                        } ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } v${referenced_val_ref}.integer_value AND ?) OR (v${val_ref}.${
+                          integer_fields.includes(field_struct_name)
+                            ? "integer_value"
+                            : "real_value"
+                        } ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } v${referenced_val_ref}.real_value AND ?))`;
+                      });
+                    } else {
+                      return apply(
+                        [[], []] as [Array<string>, Array<string>],
+                        ([start_path_constraints, end_path_constraints]) => {
+                          for (let [
+                            path_field_index,
+                            path_field_name,
+                          ] of start_value.entries()) {
+                            value_injections.push(path_field_name);
+                            start_path_constraints.push(
+                              `v${path_field_index + 1}.field_name = ?`
+                            );
+                          }
+                          for (let [
+                            path_field_index,
+                            path_field_name,
+                          ] of end_value.entries()) {
+                            value_injections.push(path_field_name);
+                            end_path_constraints.push(
+                              `v${path_field_index + 1}.field_name = ?`
+                            );
+                          }
+                          const referenced_start_val_ref = start_value.length;
+                          const referenced_end_val_ref = end_value.length;
+                          return `${start_path_constraints.join(
+                            " AND "
+                          )} AND ${end_path_constraints.join(
+                            " AND "
+                          )} AND (v${referenced_start_val_ref}.integer_value IS NOT NULL OR v${referenced_start_val_ref}.real_value IS NOT NULL) AND (v${referenced_end_val_ref}.integer_value IS NOT NULL OR v${referenced_end_val_ref}.real_value IS NOT NULL) AND v${val_ref}.field_struct_name = "${field_struct_name}" AND ((v${val_ref}.${
+                            integer_fields.includes(field_struct_name)
+                              ? "integer_value"
+                              : "real_value"
+                          } ${
+                            op === "not_between" ? "NOT BETWEEN" : op
+                          } v${referenced_start_val_ref}.integer_value AND v${referenced_end_val_ref}.integer_value) OR (v${val_ref}.${
+                            integer_fields.includes(field_struct_name)
+                              ? "integer_value"
+                              : "real_value"
+                          } ${
+                            op === "not_between" ? "NOT BETWEEN" : op
+                          } v${referenced_start_val_ref}.integer_value AND v${referenced_end_val_ref}.real_value) OR (v${val_ref}.${
+                            integer_fields.includes(field_struct_name)
+                              ? "integer_value"
+                              : "real_value"
+                          } ${
+                            op === "not_between" ? "NOT BETWEEN" : op
+                          } v${referenced_start_val_ref}.real_value AND v${referenced_end_val_ref}.integer_value) OR (v${val_ref}.${
+                            integer_fields.includes(field_struct_name)
+                              ? "integer_value"
+                              : "real_value"
+                          } ${
+                            op === "not_between" ? "NOT BETWEEN" : op
+                          } v${referenced_start_val_ref}.real_value AND v${referenced_end_val_ref}.real_value))`;
+                        }
+                      );
+                    }
                   }
                 });
                 break;
@@ -565,12 +706,24 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (typeof value === "object") {
-                    const referenced_val_ref = value.length;
-                    value;
-                    return "";
+                    return apply([] as Array<string>, (path_constraints) => {
+                      for (let [
+                        path_field_index,
+                        path_field_name,
+                      ] of value.entries()) {
+                        value_injections.push(path_field_name);
+                        path_constraints.push(
+                          `v${path_field_index + 1}.field_name = ?`
+                        );
+                      }
+                      const referenced_val_ref = value.length;
+                      return `${path_constraints.join(
+                        " AND "
+                      )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} v${referenced_val_ref}.integer_value`;
+                    });
                   } else {
-                    value;
-                    return "";
+                    value_injections.push(value ? "1" : "0");
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   }
                 });
                 break;
@@ -609,11 +762,24 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (value instanceof Date) {
-                    value;
+                    value_injections.push(value.getTime().toString());
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   } else {
-                    const referenced_val_ref = value.length;
-                    value;
-                    return "";
+                    return apply([] as Array<string>, (path_constraints) => {
+                      for (let [
+                        path_field_index,
+                        path_field_name,
+                      ] of value.entries()) {
+                        value_injections.push(path_field_name);
+                        path_constraints.push(
+                          `v${path_field_index + 1}.field_name = ?`
+                        );
+                      }
+                      const referenced_val_ref = value.length;
+                      return `${path_constraints.join(
+                        " AND "
+                      )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} v${referenced_val_ref}.integer_value`;
+                    });
                   }
                 });
                 break;
@@ -625,26 +791,84 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      start_value;
-                      end_value;
-                      return "";
+                      value_injections.push(start_value.toString());
+                      value_injections.push(end_value.toString());
+                      return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${
+                        op === "not_between" ? "NOT BETWEEN" : op
+                      } ? AND ?`;
                     } else {
-                      const referenced_end_val_ref = end_value.length;
-                      start_value;
-                      end_value;
-                      return "";
+                      return apply([] as Array<string>, (path_constraints) => {
+                        for (let [
+                          path_field_index,
+                          path_field_name,
+                        ] of end_value.entries()) {
+                          value_injections.push(path_field_name);
+                          path_constraints.push(
+                            `v${path_field_index + 1}.field_name = ?`
+                          );
+                        }
+                        value_injections.push(start_value.toString());
+                        const referenced_val_ref = end_value.length;
+                        return `${path_constraints.join(
+                          " AND "
+                        )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND (v${val_ref}.integer_value ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } ? AND v${referenced_val_ref}.integer_value)`;
+                      });
                     }
                   } else {
-                    const referenced_start_val_ref = start_value.length;
                     if (is_decimal(end_value)) {
-                      start_value;
-                      end_value;
-                      return "";
+                      return apply([] as Array<string>, (path_constraints) => {
+                        for (let [
+                          path_field_index,
+                          path_field_name,
+                        ] of start_value.entries()) {
+                          value_injections.push(path_field_name);
+                          path_constraints.push(
+                            `v${path_field_index + 1}.field_name = ?`
+                          );
+                        }
+                        value_injections.push(end_value.toString());
+                        const referenced_val_ref = start_value.length;
+                        return `${path_constraints.join(
+                          " AND "
+                        )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND (v${val_ref}.integer_value ${
+                          op === "not_between" ? "NOT BETWEEN" : op
+                        } v${referenced_val_ref}.integer_value AND ?)`;
+                      });
                     } else {
-                      const referenced_end_val_ref = end_value.length;
-                      start_value;
-                      end_value;
-                      return "";
+                      return apply(
+                        [[], []] as [Array<string>, Array<string>],
+                        ([start_path_constraints, end_path_constraints]) => {
+                          for (let [
+                            path_field_index,
+                            path_field_name,
+                          ] of start_value.entries()) {
+                            value_injections.push(path_field_name);
+                            start_path_constraints.push(
+                              `v${path_field_index + 1}.field_name = ?`
+                            );
+                          }
+                          for (let [
+                            path_field_index,
+                            path_field_name,
+                          ] of end_value.entries()) {
+                            value_injections.push(path_field_name);
+                            end_path_constraints.push(
+                              `v${path_field_index + 1}.field_name = ?`
+                            );
+                          }
+                          const referenced_start_val_ref = start_value.length;
+                          const referenced_end_val_ref = end_value.length;
+                          return `${start_path_constraints.join(
+                            " AND "
+                          )} AND ${end_path_constraints.join(
+                            " AND "
+                          )} AND v${referenced_start_val_ref}.integer_value IS NOT NULL AND v${referenced_end_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND (v${val_ref}.integer_value ${
+                            op === "not_between" ? "NOT BETWEEN" : op
+                          } v${referenced_start_val_ref}.integer_value AND v${referenced_end_val_ref}.integer_value)`;
+                        }
+                      );
                     }
                   }
                 });
