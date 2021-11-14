@@ -457,17 +457,36 @@ export function generate_query(
       }
     });
   };
-
-  apply(undefined, () => {
-    for (let path_filter of path_filters) {
-      const path: ReadonlyArray<string> = path_filter[0];
-      const sort_options = path_filter[2];
-      if (sort_options !== undefined) {
+  apply(
+    path_filters
+      .map((path_filter) => ({
+        path: path_filter[0],
+        sort_option: path_filter[2],
+      }))
+      .filter((path_filter) => path_filter.sort_option !== undefined)
+      .sort((a, b) => {
+        if (a.sort_option !== undefined && b.sort_option !== undefined) {
+          if (a.sort_option[0] < b.sort_option[0]) {
+            return -1;
+          } else {
+            return 1;
+          }
+        }
+        return 0;
+      }),
+    (path_filters) => {
+      for (let path_filter of path_filters) {
+        if (path_filter.sort_option !== undefined) {
+          const path: ReadonlyArray<string> = path_filter.path;
+          const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
+          dependency_injections.push(path.join("."));
+          append_to_order_by_stmt("?");
+        }
       }
     }
-  });
-
+  );
   append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
+  console.log(order_by_stmt);
 
   var [from_stmt, where_stmt] = apply(
     ["FROM", "WHERE"],
