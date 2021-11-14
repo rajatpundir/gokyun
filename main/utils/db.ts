@@ -5,6 +5,7 @@ import React from "react";
 import { apply, fold, is_decimal } from "./prelude";
 import Decimal from "decimal.js";
 import { PathFilter } from "./variable";
+import { HashSet } from "prelude-ts";
 
 const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
   db.exec([{ sql: "PRAGMA journal_mode = WAL;", args: [] }], false, () =>
@@ -209,92 +210,265 @@ type PathFilters = ReadonlyArray<
     ]
 >;
 
+// [ [...], '_value', '_max', '_min', '_avg', '_count' ]
+// Aggregate functions wont work since it requires existing statement to be wrapped by another SELECT and then doing aggregate there
+// This is because aggregate functions work inside the group
+// use max on rows inside groups to eliminate nulls
+
 export function generate_query(
   struct_name: string,
-  limit: Decimal,
-  offset: Decimal,
+  variable_filters: {
+    level: Decimal | undefined;
+    id: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+      | ["between" | "not_between", [Decimal, Decimal]]
+    >;
+    active: ReadonlyArray<["==" | "!=", boolean]>;
+    created_at: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+    >;
+    updated_at: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+    >;
+  },
   path_filters: PathFilters,
-  id: Decimal | undefined,
-  level: Decimal | undefined
+  limit: Decimal,
+  offset: Decimal
 ) {
-  const value_injections: Array<string> = [];
+  const dependency_injections: Array<string> = [];
+  const group_by_stmt: string = "GROUP BY (v1.level, v1.struct_name, v1.id)";
+  var select_stmt: string =
+    "SELECT v1.level AS _level, v1.struct_name AS _struct_name, v1.id AS _id, v1.active AS _active, v1.created_at AS _created_at, v1.updated_at AS _updated_at";
+
+  const append_to_select_stmt = (stmt: string) => {
+    select_stmt += `, ${stmt}`;
+  };
+
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
 
-  const path_name_expression: string = Array.from(Array(join_count).keys())
-    .map((x) => {
-      const val_ref = x * 2 + 2;
-      return `IFNULL(v${val_ref}.field_name, "")`;
-    })
-    .join(` || "." || `);
+  apply(undefined, () => {
+    const path_name_expression: string = Array.from(Array(join_count).keys())
+      .map((x) => {
+        const val_ref = x * 2 + 2;
+        return `IFNULL(v${val_ref}.field_name, "")`;
+      })
+      .join(` || "." || `);
+    append_to_select_stmt(`${path_name_expression} AS path_name_expression`);
+    path_filters.map((path_filter) => {
+      const path: ReadonlyArray<string> = path_filter[0];
+      const val_ref: number = path.length * 2;
+      const field_struct_name = path_filter[1];
+      dependency_injections.push(path.join("."));
+      dependency_injections.push(path.join("."));
+      const stmt = apply(undefined, () => {
+        switch (field_struct_name) {
+          case "str":
+          case "lstr":
+          case "clob": {
+            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.text_value) END) AS ?`;
+          }
+          case "i32":
+          case "u32":
+          case "i64":
+          case "u64": {
+            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+          }
+          case "idouble":
+          case "udouble":
+          case "idecimal":
+          case "udecimal": {
+            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.real_value) END) AS ?`;
+          }
+          case "bool": {
+            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+          }
+          case "date":
+          case "time":
+          case "timestamp": {
+            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+          }
+          case "other": {
+            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = field_struct_name;
+            return _exhaustiveCheck;
+          }
+        }
+      });
+      append_to_select_stmt(stmt);
+    });
+  });
+  console.log(select_stmt);
 
-  const group_by_stmt = `GROUP BY (v1.level, v1.struct_name, v1.id, ${path_name_expression})`;
+  var where_stmt: string = "WHERE ";
+  const append_to_where_stmt = (stmt: string) => {
+    where_stmt += apply(undefined, () => {
+      if (where_stmt === "WHERE ") {
+        return `(${stmt})`;
+      } else {
+        return ` AND (${stmt})`;
+      }
+    });
+  };
 
-  const path_value_pivots = path_filters.map((path_filter) => {
-    const path: ReadonlyArray<string> = path_filter[0];
-    const field_struct_name = path_filter[1];
-    switch (field_struct_name) {
-      case "str":
-      case "lstr":
-      case "clob": {
-        return `(case when ${path_name_expression} = "${path.join(
-          "."
-        )}" then v${path.length * 2}.text_field end) as "${path.join(".")}"`;
+  if (variable_filters.level !== undefined) {
+    const value: Decimal = variable_filters.level;
+    dependency_injections.push(value.truncated().toString());
+    stmt = "v1.level = ?";
+    append_to_where_stmt(stmt);
+  }
+  apply(undefined, () => {
+    stmt = variable_filters.id
+      .map((variable_filter) => {
+        const op = variable_filter[0];
+        switch (op) {
+          case "==":
+          case "!=":
+          case ">=":
+          case "<=":
+          case ">":
+          case "<": {
+            const value = variable_filter[1];
+            dependency_injections.push(value.truncated().toString());
+            return `v1.id ${op} ?`;
+          }
+          case "between":
+          case "not_between": {
+            const start_value = variable_filter[1][0];
+            const end_value = variable_filter[1][1];
+            dependency_injections.push(start_value.truncated().toString());
+            dependency_injections.push(end_value.truncated().toString());
+            return `v1.id BETWEEN ? AND ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      })
+      .join(", ");
+    if (stmt !== "") {
+      append_to_where_stmt(stmt);
+    }
+  });
+  apply(undefined, () => {
+    stmt = variable_filters.active
+      .map((variable_filter) => {
+        const op = variable_filter[0];
+        switch (op) {
+          case "==":
+          case "!=": {
+            const value = variable_filter[1];
+            dependency_injections.push(value ? "1" : "0");
+            return `v1.active ${op} ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      })
+      .join(", ");
+    if (stmt !== "") {
+      append_to_where_stmt(stmt);
+    }
+  });
+  apply(undefined, () => {
+    stmt = variable_filters.created_at
+      .map((variable_filter) => {
+        const op = variable_filter[0];
+        switch (op) {
+          case "==":
+          case "!=":
+          case ">=":
+          case "<=":
+          case ">":
+          case "<": {
+            const value = variable_filter[1];
+            dependency_injections.push(value.getTime().toString());
+            return `v1.created_at ${op} ?`;
+          }
+          case "between":
+          case "not_between": {
+            const start_value = variable_filter[1][0];
+            const end_value = variable_filter[1][1];
+            dependency_injections.push(start_value.getTime().toString());
+            dependency_injections.push(end_value.getTime().toString());
+            return `v1.created_at BETWEEN ? AND ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      })
+      .join(", ");
+    if (stmt !== "") {
+      append_to_where_stmt(stmt);
+    }
+  });
+  apply(undefined, () => {
+    stmt = variable_filters.updated_at
+      .map((variable_filter) => {
+        const op = variable_filter[0];
+        switch (op) {
+          case "==":
+          case "!=":
+          case ">=":
+          case "<=":
+          case ">":
+          case "<": {
+            const value = variable_filter[1];
+            dependency_injections.push(value.getTime().toString());
+            return `v1.updated_at ${op} ?`;
+          }
+          case "between":
+          case "not_between": {
+            const start_value = variable_filter[1][0];
+            const end_value = variable_filter[1][1];
+            dependency_injections.push(start_value.getTime().toString());
+            dependency_injections.push(end_value.getTime().toString());
+            return `v1.updated_at BETWEEN ? AND ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      })
+      .join(", ");
+    if (stmt !== "") {
+      append_to_where_stmt(stmt);
+    }
+  });
+
+  var order_by_stmt: string = "ORDER BY ";
+  const append_to_order_by_stmt = (stmt: string) => {
+    order_by_stmt += apply(undefined, () => {
+      if (order_by_stmt === "ORDER BY ") {
+        return stmt;
+      } else {
+        return `, ${stmt}`;
       }
-      case "i32":
-      case "u32":
-      case "i64":
-      case "u64": {
-        return `(case when ${path_name_expression} = "${path.join(
-          "."
-        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
-      }
-      case "idouble":
-      case "udouble":
-      case "idecimal":
-      case "udecimal": {
-        return `(case when ${path_name_expression} = "${path.join(
-          "."
-        )}" then v${path.length * 2}.real_field end) as "${path.join(".")}"`;
-      }
-      case "bool": {
-        return `(case when ${path_name_expression} = "${path.join(
-          "."
-        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
-      }
-      case "date":
-      case "time":
-      case "timestamp": {
-        return `(case when ${path_name_expression} = "${path.join(
-          "."
-        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
-      }
-      case "other": {
-        return `(case when ${path_name_expression} = "${path.join(
-          "."
-        )}" then v${path.length * 2}.integer_field end) as "${path.join(".")}"`;
-      }
-      default: {
-        const _exhaustiveCheck: never = field_struct_name;
-        return _exhaustiveCheck;
+    });
+  };
+
+  apply(undefined, () => {
+    for (let path_filter of path_filters) {
+      const path: ReadonlyArray<string> = path_filter[0];
+      const sort_options = path_filter[2];
+      if (sort_options !== undefined) {
       }
     }
   });
 
-  const select_stmt: string =
-    "SELECT " +
-    Array.from(Array(join_count).keys())
-      .map((x) =>
-        apply(
-          [x * 2 + 1, x * 2 + 2] as [number, number],
-          ([var_ref, val_ref]) => {
-            return `v${var_ref}.level, v${var_ref}.struct_name, v${var_ref}.id, v${var_ref}.created_at, v${var_ref}.updated_at, v${var_ref}.requested_at, v${var_ref}.last_accessed_at, v${val_ref}.field_name, v${val_ref}.field_struct_name, v${val_ref}.text_value, v${val_ref}.integer_value, v${val_ref}.real_value`;
-          }
-        )
-      )
-      .join(", ");
-  console.log(select_stmt);
+  append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
+
   var [from_stmt, where_stmt] = apply(
     ["FROM", "WHERE"],
     ([from_stmt, where_stmt]) => {
@@ -306,22 +480,22 @@ export function generate_query(
           if (level === undefined) {
             if (id === undefined) {
               where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
+              dependency_injections.push(struct_name);
             } else {
               where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
-              value_injections.push(id.truncated().toString());
+              dependency_injections.push(struct_name);
+              dependency_injections.push(id.truncated().toString());
             }
           } else {
             if (id === undefined) {
               where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
-              value_injections.push(level.toString());
+              dependency_injections.push(struct_name);
+              dependency_injections.push(level.toString());
             } else {
               where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
-              value_injections.push(level.toString());
-              value_injections.push(id.truncated().toString());
+              dependency_injections.push(struct_name);
+              dependency_injections.push(level.toString());
+              dependency_injections.push(id.truncated().toString());
             }
           }
         } else {
@@ -335,22 +509,22 @@ export function generate_query(
           if (level === undefined) {
             if (id === undefined) {
               where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
+              dependency_injections.push(struct_name);
             } else {
               where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
-              value_injections.push(id.truncated().toString());
+              dependency_injections.push(struct_name);
+              dependency_injections.push(id.truncated().toString());
             }
           } else {
             if (id === undefined) {
               where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
-              value_injections.push(level.toString());
+              dependency_injections.push(struct_name);
+              dependency_injections.push(level.toString());
             } else {
               where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              value_injections.push(struct_name);
-              value_injections.push(level.toString());
-              value_injections.push(id.truncated().toString());
+              dependency_injections.push(struct_name);
+              dependency_injections.push(level.toString());
+              dependency_injections.push(id.truncated().toString());
             }
           }
         }
@@ -358,8 +532,8 @@ export function generate_query(
         apply(
           fold("", path_filters, (acc, val) => {
             if (i < val[0].length) {
-              value_injections.push(val[0][i]);
-              value_injections.push(val[1]);
+              dependency_injections.push(val[0][i]);
+              dependency_injections.push(val[1]);
               if (acc === "") {
                 return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
               } else {
@@ -381,7 +555,7 @@ export function generate_query(
   );
   console.log(from_stmt);
   console.log(where_stmt);
-  console.log(value_injections);
+  console.log(dependency_injections);
   // Process path filtering by their ops and values/other_paths
   const filters_stmt: Array<Array<string>> = [];
   for (let path_filter of path_filters) {
@@ -413,7 +587,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        value_injections.push(path_field_name);
+                        dependency_injections.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -424,7 +598,7 @@ export function generate_query(
                       )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} v${referenced_val_ref}.text_value`;
                     });
                   } else {
-                    value_injections.push(value);
+                    dependency_injections.push(value);
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} ?`;
                   }
                 });
@@ -444,7 +618,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            value_injections.push(path_field_name);
+                            dependency_injections.push(path_field_name);
                             start_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -453,7 +627,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            value_injections.push(path_field_name);
+                            dependency_injections.push(path_field_name);
                             end_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -475,12 +649,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          value_injections.push(path_field_name);
+                          dependency_injections.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        value_injections.push(end_value);
+                        dependency_injections.push(end_value);
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -496,12 +670,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          value_injections.push(path_field_name);
+                          dependency_injections.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        value_injections.push(start_value);
+                        dependency_injections.push(start_value);
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -510,8 +684,8 @@ export function generate_query(
                         } ? AND v${referenced_val_ref}.text_value`;
                       });
                     } else {
-                      value_injections.push(start_value);
-                      value_injections.push(end_value);
+                      dependency_injections.push(start_value);
+                      dependency_injections.push(end_value);
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
                         op === "not_between" ? "NOT BETWEEN" : op
                       } ? AND ?`;
@@ -561,9 +735,9 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
                     if (integer_fields.includes(field_struct_name)) {
-                      value_injections.push(value.truncated().toString());
+                      dependency_injections.push(value.truncated().toString());
                     } else {
-                      value_injections.push(value.toString());
+                      dependency_injections.push(value.toString());
                     }
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                       integer_fields.includes(field_struct_name)
@@ -576,7 +750,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        value_injections.push(path_field_name);
+                        dependency_injections.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -606,13 +780,15 @@ export function generate_query(
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
                       if (integer_fields.includes(field_struct_name)) {
-                        value_injections.push(
+                        dependency_injections.push(
                           start_value.truncated().toString()
                         );
-                        value_injections.push(end_value.truncated().toString());
+                        dependency_injections.push(
+                          end_value.truncated().toString()
+                        );
                       } else {
-                        value_injections.push(start_value.toString());
-                        value_injections.push(end_value.toString());
+                        dependency_injections.push(start_value.toString());
+                        dependency_injections.push(end_value.toString());
                       }
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                         integer_fields.includes(field_struct_name)
@@ -625,17 +801,17 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          value_injections.push(path_field_name);
+                          dependency_injections.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
                         if (integer_fields.includes(field_struct_name)) {
-                          value_injections.push(
+                          dependency_injections.push(
                             start_value.truncated().toString()
                           );
                         } else {
-                          value_injections.push(start_value.toString());
+                          dependency_injections.push(start_value.toString());
                         }
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
@@ -662,17 +838,17 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          value_injections.push(path_field_name);
+                          dependency_injections.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
                         if (integer_fields.includes(field_struct_name)) {
-                          value_injections.push(
+                          dependency_injections.push(
                             end_value.truncated().toString()
                           );
                         } else {
-                          value_injections.push(end_value.toString());
+                          dependency_injections.push(end_value.toString());
                         }
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
@@ -699,7 +875,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            value_injections.push(path_field_name);
+                            dependency_injections.push(path_field_name);
                             start_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -708,7 +884,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            value_injections.push(path_field_name);
+                            dependency_injections.push(path_field_name);
                             end_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -785,7 +961,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        value_injections.push(path_field_name);
+                        dependency_injections.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -796,7 +972,7 @@ export function generate_query(
                       )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} v${referenced_val_ref}.integer_value`;
                     });
                   } else {
-                    value_injections.push(value ? "1" : "0");
+                    dependency_injections.push(value ? "1" : "0");
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   }
                 });
@@ -836,7 +1012,7 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (value instanceof Date) {
-                    value_injections.push(value.getTime().toString());
+                    dependency_injections.push(value.getTime().toString());
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
@@ -844,7 +1020,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        value_injections.push(path_field_name);
+                        dependency_injections.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -865,8 +1041,8 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      value_injections.push(start_value.toString());
-                      value_injections.push(end_value.toString());
+                      dependency_injections.push(start_value.toString());
+                      dependency_injections.push(end_value.toString());
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${
                         op === "not_between" ? "NOT BETWEEN" : op
                       } ? AND ?`;
@@ -876,12 +1052,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          value_injections.push(path_field_name);
+                          dependency_injections.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        value_injections.push(start_value.toString());
+                        dependency_injections.push(start_value.toString());
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -897,12 +1073,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          value_injections.push(path_field_name);
+                          dependency_injections.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        value_injections.push(end_value.toString());
+                        dependency_injections.push(end_value.toString());
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -918,7 +1094,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            value_injections.push(path_field_name);
+                            dependency_injections.push(path_field_name);
                             start_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -927,7 +1103,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            value_injections.push(path_field_name);
+                            dependency_injections.push(path_field_name);
                             end_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -977,7 +1153,7 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
-                    value_injections.push(value.truncated().toString());
+                    dependency_injections.push(value.truncated().toString());
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
@@ -985,7 +1161,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        value_injections.push(path_field_name);
+                        dependency_injections.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -1029,5 +1205,4 @@ export function generate_query(
   where_stmt += ` AND (${filters_stmt
     .map((x) => `(${x.join(" AND ")})`)
     .join(" OR ")})`;
-  const order_stmt = "ORDER BY ";
 }
