@@ -210,10 +210,22 @@ type PathFilters = ReadonlyArray<
     ]
 >;
 
-// [ [...], '_value', '_max', '_min', '_avg', '_count' ]
-// Aggregate functions wont work since it requires existing statement to be wrapped by another SELECT and then doing aggregate there
-// This is because aggregate functions work inside the group
-// use max on rows inside groups to eliminate nulls
+// For diff application, create separate table for level, where each level defaults to inactive
+// You may create an inactive level and then keep writing to it
+// When querying from inactive level, changes to inactive level itself will also be applied
+// If level is stated, then activeness of first level will be treated as active
+// The above is to facilitate working of functions, etc where they need to work upon a mutable state
+// However, it is also possible, a transaction can be used to remedy the above and all levels can be treated as active
+// But if request fails then we can make the level inactive and query from it, which will be equivalent to having a draft.
+// On other hand and on top of above, functions could run inside a db transaction to avoid inconsistent levels.
+
+// when querying variables, max level that is active is chosen if level is not stated.
+// Thought to be put about variables valid upto certain level
+// To consider creation of separate table that marks removal of variable at certain level.
+// With a new table, joins can be composed much more naturally.
+// NOT EXISTS removed_variables(v.level -1, v.struct_name, v.id)
+// Having a separate table for removed variables, eliminates need for deleted column in variables, which seemed weak.
+// For correct continuity, a summed up column of levels could be used and max could be selected.
 
 export function generate_query(
   struct_name: string,
@@ -468,8 +480,18 @@ export function generate_query(
         if (a.sort_option !== undefined && b.sort_option !== undefined) {
           if (a.sort_option[0] < b.sort_option[0]) {
             return -1;
-          } else {
+          } else if (a.sort_option[0] > b.sort_option[0]) {
             return 1;
+          } else {
+            const path_a: string = a.path.join(".");
+            const path_b: string = a.path.join(".");
+            if (path_a < path_b) {
+              return -1;
+            } else if (path_a > path_b) {
+              return 1;
+            } else {
+              return 0;
+            }
           }
         }
         return 0;
@@ -480,7 +502,7 @@ export function generate_query(
           const path: ReadonlyArray<string> = path_filter.path;
           const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
           dependency_injections.push(path.join("."));
-          append_to_order_by_stmt("?");
+          append_to_order_by_stmt(`? ${sort_order}`);
         }
       }
     }
@@ -488,90 +510,42 @@ export function generate_query(
   append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
   console.log(order_by_stmt);
 
-  var [from_stmt, where_stmt] = apply(
-    ["FROM", "WHERE"],
-    ([from_stmt, where_stmt]) => {
-      for (let i = 0; i < join_count; i++) {
-        const [var_ref, val_ref] = [i * 2 + 1, i * 2 + 2];
-        // Join tables
-        if (i == 0) {
-          from_stmt += ` vars AS v${var_ref} LEFT JOIN vals as v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
-          if (level === undefined) {
-            if (id === undefined) {
-              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
+  var from_stmt = apply("FROM", (from_stmt) => {
+    for (let i = 0; i < join_count; i++) {
+      const [var_ref, val_ref] = [i * 2 + 1, i * 2 + 2];
+      // Join tables
+      if (i !== 0) {
+        from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${
+          var_ref - 1
+        }.field_struct_name AND v${var_ref}.id = v${
+          var_ref - 1
+        }.integer_value)`;
+        from_stmt += ` LEFT JOIN vals AS v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
+        where_stmt += ` AND v${var_ref - 1}.level >= v${var_ref}.level`;
+      }
+      // Filter field by names and their struct names
+      apply(
+        fold("", path_filters, (acc, val) => {
+          if (i < val[0].length) {
+            dependency_injections.push(val[0][i]);
+            dependency_injections.push(val[1]);
+            if (acc === "") {
+              return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
             } else {
-              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-              dependency_injections.push(id.truncated().toString());
-            }
-          } else {
-            if (id === undefined) {
-              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-              dependency_injections.push(level.toString());
-            } else {
-              where_stmt += ` v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-              dependency_injections.push(level.toString());
-              dependency_injections.push(id.truncated().toString());
+              return ` ${acc} OR (v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
             }
           }
-        } else {
-          from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${
-            var_ref - 1
-          }.field_struct_name AND v${var_ref}.id = v${
-            var_ref - 1
-          }.integer_value)`;
-          from_stmt += ` LEFT JOIN vals AS v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
-          where_stmt += ` AND v${var_ref - 1}.level >= v${var_ref}.level`;
-          if (level === undefined) {
-            if (id === undefined) {
-              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-            } else {
-              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-              dependency_injections.push(id.truncated().toString());
-            }
-          } else {
-            if (id === undefined) {
-              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-              dependency_injections.push(level.toString());
-            } else {
-              where_stmt += ` AND v${var_ref}.struct_name = ? AND v${var_ref}.level = ? AND v${var_ref}.id = ? AND v${var_ref}.deleted = FALSE`;
-              dependency_injections.push(struct_name);
-              dependency_injections.push(level.toString());
-              dependency_injections.push(id.truncated().toString());
-            }
+          return acc;
+        }),
+        (field_name_filter_stmt) => {
+          if (field_name_filter_stmt !== "") {
+            append_to_where_stmt(field_name_filter_stmt);
           }
         }
-        // Filter field by names and their struct names
-        apply(
-          fold("", path_filters, (acc, val) => {
-            if (i < val[0].length) {
-              dependency_injections.push(val[0][i]);
-              dependency_injections.push(val[1]);
-              if (acc === "") {
-                return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
-              } else {
-                return ` ${acc} OR (v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
-              }
-            }
-            return acc;
-          }),
-          (field_name_filter_stmt) => {
-            if (field_name_filter_stmt !== "") {
-              where_stmt += ` AND (${field_name_filter_stmt})`;
-            }
-            console.log(field_name_filter_stmt);
-          }
-        );
-      }
-      return [from_stmt, where_stmt];
+      );
     }
-  );
+    return from_stmt;
+  });
   console.log(from_stmt);
   console.log(where_stmt);
   console.log(dependency_injections);
