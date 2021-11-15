@@ -249,9 +249,8 @@ export function generate_query(
     >;
   },
   path_filters: PathFilters,
-  limit: Decimal,
-  offset: Decimal
-): string {
+  limit_offset: [Decimal, Decimal]
+): [string, ReadonlyArray<string>] {
   const dependency_injections: Array<string> = [];
 
   const join_count: number = fold(0, path_filters, (acc, val) =>
@@ -1194,10 +1193,18 @@ export function generate_query(
   append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
   console.log(order_by_stmt);
 
-  const limit_offset_stmt: string = `LIMIT ${limit
-    .truncated()
-    .toString()} OFFSET ${offset.truncated().toString()}`;
+  const limit_offset_stmt: string = apply(undefined, () => {
+    if (limit_offset !== undefined) {
+      return `LIMIT ${limit_offset[0]
+        .truncated()
+        .toString()} OFFSET ${limit_offset[1].truncated().toString()}`;
+    }
+    return "";
+  });
   console.log(limit_offset_stmt);
 
-  return `${select_stmt} ${from_stmt} ${where_stmt} ${group_by_stmt} ${order_by_stmt} ${limit_offset_stmt}`;
+  const final_stmt = `${select_stmt} ${from_stmt} ${where_stmt} ${group_by_stmt} ${order_by_stmt} ${limit_offset_stmt};`;
+  console.log(final_stmt);
+
+  return [final_stmt, dependency_injections];
 }
