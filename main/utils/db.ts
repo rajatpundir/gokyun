@@ -248,19 +248,18 @@ export function generate_query(
   path_filters: PathFilters,
   limit: Decimal,
   offset: Decimal
-) {
+): string {
   const dependency_injections: Array<string> = [];
   const group_by_stmt: string = "GROUP BY (v1.level, v1.struct_name, v1.id)";
-  var select_stmt: string =
-    "SELECT v1.level AS _level, v1.struct_name AS _struct_name, v1.id AS _id, v1.active AS _active, v1.created_at AS _created_at, v1.updated_at AS _updated_at";
-
-  const append_to_select_stmt = (stmt: string) => {
-    select_stmt += `, ${stmt}`;
-  };
-
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
+
+  var select_stmt: string =
+    "SELECT v1.level AS _level, v1.struct_name AS _struct_name, v1.id AS _id, v1.active AS _active, v1.created_at AS _created_at, v1.updated_at AS _updated_at";
+  const append_to_select_stmt = (stmt: string) => {
+    select_stmt += `, ${stmt}`;
+  };
 
   apply(undefined, () => {
     const path_name_expression: string = Array.from(Array(join_count).keys())
@@ -334,6 +333,47 @@ export function generate_query(
     stmt = "v1.level = ?";
     append_to_where_stmt(stmt);
   }
+
+  var from_stmt: string =
+    "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
+  const append_to_from_stmt = (var_ref: number) => {
+    const prev_val_ref = var_ref - 1;
+    const val_ref = var_ref + 1;
+    from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
+    from_stmt += ` LEFT JOIN vals as v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
+    append_to_where_stmt(`v${prev_val_ref}.level >= v${var_ref}.level`);
+  };
+  for (let i = 0; i < join_count; i++) {
+    const var_ref = i * 2 + 1;
+    append_to_from_stmt(var_ref);
+    const val_ref = var_ref + 1;
+    apply(
+      fold("", path_filters, (acc, path_filter) => {
+        const path: ReadonlyArray<string> = path_filter[0];
+        const field_struct_name = path_filter[1];
+        if (i < path.length) {
+          dependency_injections.push(path[i]);
+          dependency_injections.push(field_struct_name);
+          if (acc === "") {
+            return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
+          } else {
+            return ` ${acc} OR (v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
+          }
+        }
+        return acc;
+      }),
+      (field_name_filter_stmt) => {
+        if (field_name_filter_stmt !== "") {
+          append_to_where_stmt(field_name_filter_stmt);
+        }
+      }
+    );
+  }
+  console.log(from_stmt);
+
+  // Process path filtering by their ops and values/other_paths
+  const filters_stmt: Array<Array<string>> = [];
+
   apply(undefined, () => {
     stmt = variable_filters.id
       .map((variable_filter) => {
@@ -459,98 +499,6 @@ export function generate_query(
     }
   });
 
-  var order_by_stmt: string = "ORDER BY ";
-  const append_to_order_by_stmt = (stmt: string) => {
-    order_by_stmt += apply(undefined, () => {
-      if (order_by_stmt === "ORDER BY ") {
-        return stmt;
-      } else {
-        return `, ${stmt}`;
-      }
-    });
-  };
-  apply(
-    path_filters
-      .map((path_filter) => ({
-        path: path_filter[0],
-        sort_option: path_filter[2],
-      }))
-      .filter((path_filter) => path_filter.sort_option !== undefined)
-      .sort((a, b) => {
-        if (a.sort_option !== undefined && b.sort_option !== undefined) {
-          if (a.sort_option[0] < b.sort_option[0]) {
-            return -1;
-          } else if (a.sort_option[0] > b.sort_option[0]) {
-            return 1;
-          } else {
-            const path_a: string = a.path.join(".");
-            const path_b: string = a.path.join(".");
-            if (path_a < path_b) {
-              return -1;
-            } else if (path_a > path_b) {
-              return 1;
-            } else {
-              return 0;
-            }
-          }
-        }
-        return 0;
-      }),
-    (path_filters) => {
-      for (let path_filter of path_filters) {
-        if (path_filter.sort_option !== undefined) {
-          const path: ReadonlyArray<string> = path_filter.path;
-          const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
-          dependency_injections.push(path.join("."));
-          append_to_order_by_stmt(`? ${sort_order}`);
-        }
-      }
-    }
-  );
-  append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
-  console.log(order_by_stmt);
-
-  var from_stmt = apply("FROM", (from_stmt) => {
-    for (let i = 0; i < join_count; i++) {
-      const [var_ref, val_ref] = [i * 2 + 1, i * 2 + 2];
-      // Join tables
-      if (i !== 0) {
-        from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${
-          var_ref - 1
-        }.field_struct_name AND v${var_ref}.id = v${
-          var_ref - 1
-        }.integer_value)`;
-        from_stmt += ` LEFT JOIN vals AS v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
-        where_stmt += ` AND v${var_ref - 1}.level >= v${var_ref}.level`;
-      }
-      // Filter field by names and their struct names
-      apply(
-        fold("", path_filters, (acc, val) => {
-          if (i < val[0].length) {
-            dependency_injections.push(val[0][i]);
-            dependency_injections.push(val[1]);
-            if (acc === "") {
-              return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
-            } else {
-              return ` ${acc} OR (v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
-            }
-          }
-          return acc;
-        }),
-        (field_name_filter_stmt) => {
-          if (field_name_filter_stmt !== "") {
-            append_to_where_stmt(field_name_filter_stmt);
-          }
-        }
-      );
-    }
-    return from_stmt;
-  });
-  console.log(from_stmt);
-  console.log(where_stmt);
-  console.log(dependency_injections);
-  // Process path filtering by their ops and values/other_paths
-  const filters_stmt: Array<Array<string>> = [];
   for (let path_filter of path_filters) {
     const path: ReadonlyArray<string> = path_filter[0];
     const val_ref: number = path_filter[0].length;
@@ -1198,4 +1146,62 @@ export function generate_query(
   where_stmt += ` AND (${filters_stmt
     .map((x) => `(${x.join(" AND ")})`)
     .join(" OR ")})`;
+
+  var order_by_stmt: string = "ORDER BY ";
+  const append_to_order_by_stmt = (stmt: string) => {
+    order_by_stmt += apply(undefined, () => {
+      if (order_by_stmt === "ORDER BY ") {
+        return stmt;
+      } else {
+        return `, ${stmt}`;
+      }
+    });
+  };
+  apply(
+    path_filters
+      .map((path_filter) => ({
+        path: path_filter[0],
+        sort_option: path_filter[2],
+      }))
+      .filter((path_filter) => path_filter.sort_option !== undefined)
+      .sort((a, b) => {
+        if (a.sort_option !== undefined && b.sort_option !== undefined) {
+          if (a.sort_option[0] < b.sort_option[0]) {
+            return -1;
+          } else if (a.sort_option[0] > b.sort_option[0]) {
+            return 1;
+          } else {
+            const path_a: string = a.path.join(".");
+            const path_b: string = a.path.join(".");
+            if (path_a < path_b) {
+              return -1;
+            } else if (path_a > path_b) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        }
+        return 0;
+      }),
+    (path_filters) => {
+      for (let path_filter of path_filters) {
+        if (path_filter.sort_option !== undefined) {
+          const path: ReadonlyArray<string> = path_filter.path;
+          const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
+          dependency_injections.push(path.join("."));
+          append_to_order_by_stmt(`? ${sort_order}`);
+        }
+      }
+    }
+  );
+  append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
+  console.log(order_by_stmt);
+
+  const limit_offset_stmt: string = `LIMIT ${limit
+    .truncated()
+    .toString()} OFFSET ${offset.truncated().toString()}`;
+  console.log(limit_offset_stmt);
+
+  return `${select_stmt} ${from_stmt} ${where_stmt} ${group_by_stmt} ${order_by_stmt} ${limit_offset_stmt}`;
 }
