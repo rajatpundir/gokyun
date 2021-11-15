@@ -4,8 +4,6 @@ import * as SQLite from "expo-sqlite";
 import React from "react";
 import { apply, fold, is_decimal } from "./prelude";
 import Decimal from "decimal.js";
-import { PathFilter } from "./variable";
-import { HashSet } from "prelude-ts";
 
 const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
   db.exec([{ sql: "PRAGMA journal_mode = WAL;", args: [] }], false, () =>
@@ -21,6 +19,8 @@ const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
   return db;
 });
 
+// Remove last_accessed_at since it is not that useful
+// requested_at would be continously updated for lst accessed fields and is sufficient
 export function useDB() {
   const [db_updation_toggle, set_db_updation_toggle] = useState(
     getState().db_updation_toggle
@@ -231,18 +231,21 @@ export function generate_query(
   struct_name: string,
   variable_filters: {
     level: Decimal | undefined;
+    active: boolean;
     id: ReadonlyArray<
       | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
       | ["between" | "not_between", [Decimal, Decimal]]
+      | undefined
     >;
-    active: ReadonlyArray<["==" | "!=", boolean]>;
     created_at: ReadonlyArray<
       | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
       | ["between" | "not_between", [Date, Date]]
+      | undefined
     >;
     updated_at: ReadonlyArray<
       | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
       | ["between" | "not_between", [Date, Date]]
+      | undefined
     >;
   },
   path_filters: PathFilters,
@@ -250,7 +253,7 @@ export function generate_query(
   offset: Decimal
 ): string {
   const dependency_injections: Array<string> = [];
-  const group_by_stmt: string = "GROUP BY (v1.level, v1.struct_name, v1.id)";
+
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
@@ -333,14 +336,15 @@ export function generate_query(
     stmt = "v1.level = ?";
     append_to_where_stmt(stmt);
   }
+  append_to_where_stmt(`v1.active = ${variable_filters.active ? "1" : "0"}`);
 
   var from_stmt: string =
     "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
   const append_to_from_stmt = (var_ref: number) => {
     const prev_val_ref = var_ref - 1;
-    const val_ref = var_ref + 1;
+    const next_val_ref = var_ref + 1;
     from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
-    from_stmt += ` LEFT JOIN vals as v${val_ref} ON (v${val_ref}.level = v${var_ref}.level AND v${val_ref}.struct_name = v${var_ref}.struct_name AND v${val_ref}.variable_id = v${var_ref}.id)`;
+    from_stmt += ` LEFT JOIN vals as v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
     append_to_where_stmt(`v${prev_val_ref}.level >= v${var_ref}.level`);
   };
   for (let i = 0; i < join_count; i++) {
@@ -373,132 +377,126 @@ export function generate_query(
 
   // Process path filtering by their ops and values/other_paths
   const filters_stmt: Array<Array<string>> = [];
-
-  apply(undefined, () => {
-    stmt = variable_filters.id
-      .map((variable_filter) => {
-        const op = variable_filter[0];
-        switch (op) {
-          case "==":
-          case "!=":
-          case ">=":
-          case "<=":
-          case ">":
-          case "<": {
-            const value = variable_filter[1];
-            dependency_injections.push(value.truncated().toString());
-            return `v1.id ${op} ?`;
-          }
-          case "between":
-          case "not_between": {
-            const start_value = variable_filter[1][0];
-            const end_value = variable_filter[1][1];
-            dependency_injections.push(start_value.truncated().toString());
-            dependency_injections.push(end_value.truncated().toString());
-            return `v1.id BETWEEN ? AND ?`;
-          }
-          default: {
-            const _exhaustiveCheck: never = op;
-            return _exhaustiveCheck;
+  for (let [index, filter] of variable_filters.id.entries()) {
+    var stmt: string | undefined = undefined;
+    if (filter !== undefined) {
+      const op = filter[0];
+      switch (op) {
+        case "==":
+        case "!=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<": {
+          const value = filter[1];
+          dependency_injections.push(value.truncated().toString());
+          stmt = `v1.id ${op} ?`;
+          break;
+        }
+        case "between":
+        case "not_between": {
+          const start_value = filter[1][0];
+          const end_value = filter[1][1];
+          dependency_injections.push(start_value.truncated().toString());
+          dependency_injections.push(end_value.truncated().toString());
+          stmt = `v1.id BETWEEN ? AND ?`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = op;
+          return _exhaustiveCheck;
+        }
+      }
+      if (stmt !== undefined) {
+        if (index >= filters_stmt.length) {
+          for (let j = index - filters_stmt.length; j > 0; j--) {
+            filters_stmt.push([]);
           }
         }
-      })
-      .join(", ");
-    if (stmt !== "") {
-      append_to_where_stmt(stmt);
+        filters_stmt[index].push(stmt);
+      }
     }
-  });
-  apply(undefined, () => {
-    stmt = variable_filters.active
-      .map((variable_filter) => {
-        const op = variable_filter[0];
-        switch (op) {
-          case "==":
-          case "!=": {
-            const value = variable_filter[1];
-            dependency_injections.push(value ? "1" : "0");
-            return `v1.active ${op} ?`;
-          }
-          default: {
-            const _exhaustiveCheck: never = op;
-            return _exhaustiveCheck;
+  }
+  for (let [index, filter] of variable_filters.created_at.entries()) {
+    var stmt: string | undefined = undefined;
+    if (filter !== undefined) {
+      const op = filter[0];
+      switch (op) {
+        case "==":
+        case "!=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<": {
+          const value = filter[1];
+          dependency_injections.push(value.getTime().toString());
+          stmt = `v1.created_at ${op} ?`;
+          break;
+        }
+        case "between":
+        case "not_between": {
+          const start_value = filter[1][0];
+          const end_value = filter[1][1];
+          dependency_injections.push(start_value.getTime().toString());
+          dependency_injections.push(end_value.getTime().toString());
+          stmt = `v1.created_at BETWEEN ? AND ?`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = op;
+          return _exhaustiveCheck;
+        }
+      }
+      if (stmt !== undefined) {
+        if (index >= filters_stmt.length) {
+          for (let j = index - filters_stmt.length; j > 0; j--) {
+            filters_stmt.push([]);
           }
         }
-      })
-      .join(", ");
-    if (stmt !== "") {
-      append_to_where_stmt(stmt);
+        filters_stmt[index].push(stmt);
+      }
     }
-  });
-  apply(undefined, () => {
-    stmt = variable_filters.created_at
-      .map((variable_filter) => {
-        const op = variable_filter[0];
-        switch (op) {
-          case "==":
-          case "!=":
-          case ">=":
-          case "<=":
-          case ">":
-          case "<": {
-            const value = variable_filter[1];
-            dependency_injections.push(value.getTime().toString());
-            return `v1.created_at ${op} ?`;
-          }
-          case "between":
-          case "not_between": {
-            const start_value = variable_filter[1][0];
-            const end_value = variable_filter[1][1];
-            dependency_injections.push(start_value.getTime().toString());
-            dependency_injections.push(end_value.getTime().toString());
-            return `v1.created_at BETWEEN ? AND ?`;
-          }
-          default: {
-            const _exhaustiveCheck: never = op;
-            return _exhaustiveCheck;
+  }
+  for (let [index, filter] of variable_filters.updated_at.entries()) {
+    var stmt: string | undefined = undefined;
+    if (filter !== undefined) {
+      const op = filter[0];
+      switch (op) {
+        case "==":
+        case "!=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<": {
+          const value = filter[1];
+          dependency_injections.push(value.getTime().toString());
+          stmt = `v1.updated_at ${op} ?`;
+          break;
+        }
+        case "between":
+        case "not_between": {
+          const start_value = filter[1][0];
+          const end_value = filter[1][1];
+          dependency_injections.push(start_value.getTime().toString());
+          dependency_injections.push(end_value.getTime().toString());
+          stmt = `v1.updated_at BETWEEN ? AND ?`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = op;
+          return _exhaustiveCheck;
+        }
+      }
+      if (stmt !== undefined) {
+        if (index >= filters_stmt.length) {
+          for (let j = index - filters_stmt.length; j > 0; j--) {
+            filters_stmt.push([]);
           }
         }
-      })
-      .join(", ");
-    if (stmt !== "") {
-      append_to_where_stmt(stmt);
+        filters_stmt[index].push(stmt);
+      }
     }
-  });
-  apply(undefined, () => {
-    stmt = variable_filters.updated_at
-      .map((variable_filter) => {
-        const op = variable_filter[0];
-        switch (op) {
-          case "==":
-          case "!=":
-          case ">=":
-          case "<=":
-          case ">":
-          case "<": {
-            const value = variable_filter[1];
-            dependency_injections.push(value.getTime().toString());
-            return `v1.updated_at ${op} ?`;
-          }
-          case "between":
-          case "not_between": {
-            const start_value = variable_filter[1][0];
-            const end_value = variable_filter[1][1];
-            dependency_injections.push(start_value.getTime().toString());
-            dependency_injections.push(end_value.getTime().toString());
-            return `v1.updated_at BETWEEN ? AND ?`;
-          }
-          default: {
-            const _exhaustiveCheck: never = op;
-            return _exhaustiveCheck;
-          }
-        }
-      })
-      .join(", ");
-    if (stmt !== "") {
-      append_to_where_stmt(stmt);
-    }
-  });
-
+  }
   for (let path_filter of path_filters) {
     const path: ReadonlyArray<string> = path_filter[0];
     const val_ref: number = path_filter[0].length;
@@ -642,7 +640,7 @@ export function generate_query(
             }
           }
           if (stmt !== undefined) {
-            if (index > filters_stmt.length) {
+            if (index >= filters_stmt.length) {
               for (let j = index - filters_stmt.length; j > 0; j--) {
                 filters_stmt.push([]);
               }
@@ -876,7 +874,7 @@ export function generate_query(
             filters_stmt[index].push("");
           }
           if (stmt !== undefined) {
-            if (index > filters_stmt.length) {
+            if (index >= filters_stmt.length) {
               for (let j = index - filters_stmt.length; j > 0; j--) {
                 filters_stmt.push([]);
               }
@@ -926,7 +924,7 @@ export function generate_query(
             }
           }
           if (stmt !== undefined) {
-            if (index > filters_stmt.length) {
+            if (index >= filters_stmt.length) {
               for (let j = index - filters_stmt.length; j > 0; j--) {
                 filters_stmt.push([]);
               }
@@ -1072,7 +1070,7 @@ export function generate_query(
             }
           }
           if (stmt !== undefined) {
-            if (index > filters_stmt.length) {
+            if (index >= filters_stmt.length) {
               for (let j = index - filters_stmt.length; j > 0; j--) {
                 filters_stmt.push([]);
               }
@@ -1123,7 +1121,7 @@ export function generate_query(
             }
           }
           if (stmt !== undefined) {
-            if (index > filters_stmt.length) {
+            if (index >= filters_stmt.length) {
               for (let j = index - filters_stmt.length; j > 0; j--) {
                 filters_stmt.push([]);
               }
@@ -1139,13 +1137,11 @@ export function generate_query(
       }
     }
   }
-  console.log(filters_stmt);
-  console.log(
-    ` AND (${filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")})`
+  append_to_where_stmt(
+    `${filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`
   );
-  where_stmt += ` AND (${filters_stmt
-    .map((x) => `(${x.join(" AND ")})`)
-    .join(" OR ")})`;
+
+  const group_by_stmt: string = "GROUP BY (v1.level, v1.struct_name, v1.id)";
 
   var order_by_stmt: string = "ORDER BY ";
   const append_to_order_by_stmt = (stmt: string) => {
