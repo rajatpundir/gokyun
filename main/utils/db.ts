@@ -6,21 +6,47 @@ import { apply, fold, is_decimal } from "./prelude";
 import Decimal from "decimal.js";
 
 const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
-  db.exec([{ sql: "PRAGMA journal_mode = WAL;", args: [] }], false, () =>
-    console.log("PRAGMA journal_mode = WAL;")
+  db.exec(
+    [
+      { sql: "PRAGMA journal_mode = WAL;", args: [] },
+      { sql: "PRAGMA synchronous = 1;", args: [] },
+      { sql: "PRAGMA foreign_keys = ON;", args: [] },
+      { sql: "VACUUM;", args: [] },
+      {
+        sql: `CREATE TABLE IF NOT EXISTS "LEVEL" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("id"));`,
+        args: [],
+      },
+      {
+        sql: `CREATE TABLE IF NOT EXISTS "REMOVED_VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL, "id" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVEL"("id") ON DELETE CASCADE);`,
+        args: [],
+      },
+      {
+        sql: `CREATE TABLE IF NOT EXISTS "VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "id" INTEGER NOT NULL, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, "updated_at" INTEGER NOT NULL, "requested_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVEL"("id") ON DELETE CASCADE);`,
+        args: [],
+      },
+      {
+        sql: `CREATE TABLE IF NOT EXISTS "VALS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "variable_id" INTEGER NOT NULL, "field_name" TEXT NOT NULL COLLATE BINARY, "field_struct_name" TEXT NOT NULL COLLATE BINARY, "text_value" TEXT COLLATE NOCASE, "integer_value" INTEGER, "real_value" INTEGER, CONSTRAINT "PK" UNIQUE("level","struct_name","variable_id","field_name"), CONSTRAINT "FK" FOREIGN KEY("level","struct_name","variable_id") REFERENCES "VARS"("level","struct_name","id") ON DELETE CASCADE, CHECK (text_value IS NOT NULL OR integer_value IS NOT NULL OR real_value IS NOT NULL));`,
+        args: [],
+      },
+      {
+        sql: `REPLACE INTO "LEVEL"("id", "active", "created_at") VALUES (?, ?, ?);`,
+        args: [0, 1, 0],
+      },
+      {
+        sql: `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        args: [0, "A", 1, 1, 0, 0, 0],
+      },
+      {
+        sql: `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
+        args: [0, "A", 1, "x", "i32", 62],
+      },
+    ],
+    false,
+    () => console.log("Successfully run statements")
   );
-  db.exec([{ sql: "PRAGMA synchronous = 1;", args: [] }], false, () =>
-    console.log("PRAGMA synchronous = 1;")
-  );
-  db.exec([{ sql: "PRAGMA foreign_keys = ON;", args: [] }], false, () =>
-    console.log("PRAGMA foreign_keys = ON;")
-  );
-  db.exec([{ sql: "VACUUM;", args: [] }], false, () => console.log("VACUUM"));
   return db;
 });
 
-// Remove last_accessed_at since it is not that useful
-// requested_at would be continously updated for lst accessed fields and is sufficient
 export function useDB() {
   const [db_updation_toggle, set_db_updation_toggle] = useState(
     getState().db_updation_toggle
@@ -38,7 +64,6 @@ export function useDB() {
             ["created_at", "INTEGER"],
             ["updated_at", "INTEGER"],
             ["requested_at", "INTEGER"],
-            ["last_accessed_at", "INTEGER"],
           ],
           unique_constraints: [["id"]],
         });
@@ -258,7 +283,7 @@ export function generate_query(
   );
 
   var select_stmt: string =
-    "SELECT v1.level AS _level, v1.struct_name AS _struct_name, v1.id AS _id, v1.active AS _active, v1.created_at AS _created_at, v1.updated_at AS _updated_at";
+    "SELECT v1.level AS _level, v1.struct_name AS _struct_name, v1.id AS _id, v1.active AS _active, v1.created_at AS _created_at, v1.updated_at AS _updated_at, v1.requested_at AS _requested_at";
   const append_to_select_stmt = (stmt: string) => {
     select_stmt += `, ${stmt}`;
   };
