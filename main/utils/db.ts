@@ -253,7 +253,7 @@ type SelectQuery = {
   args: ReadonlyArray<string>;
 };
 
-export function generate_query(
+export function get_select_query(
   struct_name: string,
   variable_filters: {
     active: boolean;
@@ -294,16 +294,21 @@ export function generate_query(
     });
   };
   apply(undefined, () => {
-    for (let i of Array.from(Array(join_count).keys())) {
-      const var_ref = i * 2 + 1;
-      append_to_select_stmt(`MAX(v${var_ref}.level) AS _level_${var_ref}`);
-    }
+    append_to_select_stmt("MAX(v1.level) AS _level");
     append_to_select_stmt("v1.struct_name AS _struct_name");
     append_to_select_stmt("v1.id AS _id");
     append_to_select_stmt("v1.active AS _active");
     append_to_select_stmt("v1.created_at AS _created_at");
     append_to_select_stmt("v1.updated_at AS _updated_at");
     append_to_select_stmt("v1.requested_at AS _requested_at");
+    for (let i of Array.from(Array(join_count).keys())) {
+      const var_ref = i * 2 + 1;
+      append_to_select_stmt(`MAX(v${var_ref}.level) AS _level_${var_ref}`);
+      append_to_select_stmt(
+        `v${var_ref}.struct_name AS _struct_name_${var_ref}`
+      );
+      append_to_select_stmt(`v${var_ref}.id AS _id_${var_ref}`);
+    }
   });
   apply(undefined, () => {
     const path_name_expression: string = Array.from(Array(join_count).keys())
@@ -388,14 +393,9 @@ export function generate_query(
     const next_val_ref = var_ref + 1;
     from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
     from_stmt += ` LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
-    from_stmt += ` INNER JOIN levels AS l${var_ref} ON (l${var_ref}.id = v${var_ref}.level)`;
-    append_to_where_stmt(`v${prev_val_ref}.level >= v${var_ref}.level`);
-    append_to_where_stmt(`l${var_ref}.active = 1`);
     append_to_where_stmt(
-      `NOT EXISTS(SELECT 1 FROM removed_vars AS r${var_ref} INNER JOIN levels AS rl${var_ref} ON (r${var_ref}.level = rl${var_ref}.id) WHERE (rl${var_ref}.active = 1  AND r${prev_val_ref}.level >= r${var_ref}.level AND r${var_ref}.level > v${var_ref}.level AND r${var_ref}.struct_name = v${var_ref}.struct_name AND r${var_ref}.id = v${var_ref}.id))`
+      `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND rv${prev_val_ref}.level >= rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
     );
-    // MAX(LEVEL) GROUP BY LEVEL, should be preserved at each step
-    // Make the group by dynamic, and add MAX(v[n].level) to select
   };
   for (let i = 0; i < join_count; i++) {
     const var_ref = i * 2 + 1;
@@ -1276,3 +1276,10 @@ export function generate_query(
     args: args,
   };
 }
+
+// To Implement:
+// Create Level
+// Replace varibale and paths in level
+// Remove variable in level
+// Activate level
+// Deactivate level

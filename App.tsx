@@ -27,7 +27,7 @@ import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 import * as SQLite from "expo-sqlite";
-import { generate_query } from "./main/utils/db";
+import { get_select_query } from "./main/utils/db";
 
 declare global {
   namespace ReactNavigation {
