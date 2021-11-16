@@ -5,23 +5,29 @@ import React from "react";
 import { apply, fold, is_decimal } from "./prelude";
 import Decimal from "decimal.js";
 
-const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
+const db_name: string = "db.testDb";
+
+const db = apply(SQLite.openDatabase(db_name), (db) => {
   db.exec(
     [
       { sql: "PRAGMA journal_mode = WAL;", args: [] },
       { sql: "PRAGMA synchronous = 1;", args: [] },
       { sql: "PRAGMA foreign_keys = ON;", args: [] },
       { sql: "VACUUM;", args: [] },
+      { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
+      { sql: `DROP TABLE IF EXISTS "REMOVED_VARS";`, args: [] },
+      { sql: `DROP TABLE IF EXISTS "VARS";`, args: [] },
+      { sql: `DROP TABLE IF EXISTS "VALS";`, args: [] },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "LEVEL" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("id"));`,
+        sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
         args: [],
       },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "REMOVED_VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL, "id" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVEL"("id") ON DELETE CASCADE);`,
+        sql: `CREATE TABLE IF NOT EXISTS "REMOVED_VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL, "id" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVELS"("id") ON DELETE CASCADE);`,
         args: [],
       },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "id" INTEGER NOT NULL, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, "updated_at" INTEGER NOT NULL, "requested_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVEL"("id") ON DELETE CASCADE);`,
+        sql: `CREATE TABLE IF NOT EXISTS "VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "id" INTEGER NOT NULL, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, "updated_at" INTEGER NOT NULL, "requested_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVELS"("id") ON DELETE CASCADE);`,
         args: [],
       },
       {
@@ -29,7 +35,7 @@ const db = apply(SQLite.openDatabase("db.testDb"), (db) => {
         args: [],
       },
       {
-        sql: `REPLACE INTO "LEVEL"("id", "active", "created_at") VALUES (?, ?, ?);`,
+        sql: `REPLACE INTO "LEVELS"("id", "active", "created_at") VALUES (?, ?, ?);`,
         args: [0, 1, 0],
       },
       {
@@ -235,28 +241,23 @@ type PathFilters = ReadonlyArray<
     ]
 >;
 
-// For diff application, create separate table for level, where each level defaults to inactive
-// You may create an inactive level and then keep writing to it
-// When querying from inactive level, changes to inactive level itself will also be applied
-// If level is stated, then activeness of first level will be treated as active
-// The above is to facilitate working of functions, etc where they need to work upon a mutable state
-// However, it is also possible, a transaction can be used to remedy the above and all levels can be treated as active
-// But if request fails then we can make the level inactive and query from it, which will be equivalent to having a draft.
-// On other hand and on top of above, functions could run inside a db transaction to avoid inconsistent levels.
-
-// when querying variables, max level that is active is chosen if level is not stated.
-// Thought to be put about variables valid upto certain level
-// To consider creation of separate table that marks removal of variable at certain level.
-// With a new table, joins can be composed much more naturally.
-// NOT EXISTS removed_variables(v.level -1, v.struct_name, v.id)
-// Having a separate table for removed variables, eliminates need for deleted column in variables, which seemed weak.
-// For correct continuity, a summed up column of levels could be used and max could be selected.
+type SelectQuery = {
+  type: "select";
+  select_stmt: string;
+  from_stmt: string;
+  where_stmt: string;
+  group_by_stmt: string;
+  order_by_stmt: string;
+  limit_offset_stmt: string;
+  stmt: string;
+  args: ReadonlyArray<string>;
+};
 
 export function generate_query(
   struct_name: string,
   variable_filters: {
-    level: Decimal | undefined;
     active: boolean;
+    level: Decimal | undefined;
     id: ReadonlyArray<
       | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
       | ["between" | "not_between", [Decimal, Decimal]]
@@ -275,19 +276,35 @@ export function generate_query(
   },
   path_filters: PathFilters,
   limit_offset: [Decimal, Decimal]
-): [string, ReadonlyArray<string>] {
-  const dependency_injections: Array<string> = [];
+): SelectQuery {
+  const args: Array<string> = [];
 
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
 
-  var select_stmt: string =
-    "SELECT v1.level AS _level, v1.struct_name AS _struct_name, v1.id AS _id, v1.active AS _active, v1.created_at AS _created_at, v1.updated_at AS _updated_at, v1.requested_at AS _requested_at";
+  var select_stmt: string = "SELECT ";
   const append_to_select_stmt = (stmt: string) => {
-    select_stmt += `, ${stmt}`;
+    select_stmt += apply(undefined, () => {
+      if (select_stmt === "SELECT ") {
+        return `${stmt}`;
+      } else {
+        return `, ${stmt}`;
+      }
+    });
   };
-
+  apply(undefined, () => {
+    for (let i of Array.from(Array(join_count).keys())) {
+      const var_ref = i * 2 + 1;
+      append_to_select_stmt(`MAX(v${var_ref}.level) AS _level_${var_ref}`);
+    }
+    append_to_select_stmt("v1.struct_name AS _struct_name");
+    append_to_select_stmt("v1.id AS _id");
+    append_to_select_stmt("v1.active AS _active");
+    append_to_select_stmt("v1.created_at AS _created_at");
+    append_to_select_stmt("v1.updated_at AS _updated_at");
+    append_to_select_stmt("v1.requested_at AS _requested_at");
+  });
   apply(undefined, () => {
     const path_name_expression: string = Array.from(Array(join_count).keys())
       .map((x) => {
@@ -300,8 +317,8 @@ export function generate_query(
       const path: ReadonlyArray<string> = path_filter[0];
       const val_ref: number = path.length * 2;
       const field_struct_name = path_filter[1];
-      dependency_injections.push(path.join("."));
-      dependency_injections.push(path.join("."));
+      args.push(path.join("."));
+      args.push(path.join("."));
       const stmt = apply(undefined, () => {
         switch (field_struct_name) {
           case "str":
@@ -356,10 +373,12 @@ export function generate_query(
 
   if (variable_filters.level !== undefined) {
     const value: Decimal = variable_filters.level;
-    dependency_injections.push(value.truncated().toString());
+    args.push(value.truncated().toString());
     stmt = "v1.level = ?";
     append_to_where_stmt(stmt);
   }
+  args.push(struct_name);
+  append_to_where_stmt(`v1.struct_name = ?`);
   append_to_where_stmt(`v1.active = ${variable_filters.active ? "1" : "0"}`);
 
   var from_stmt: string =
@@ -368,8 +387,15 @@ export function generate_query(
     const prev_val_ref = var_ref - 1;
     const next_val_ref = var_ref + 1;
     from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
-    from_stmt += ` LEFT JOIN vals as v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
+    from_stmt += ` LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
+    from_stmt += ` INNER JOIN levels AS l${var_ref} ON (l${var_ref}.id = v${var_ref}.level)`;
     append_to_where_stmt(`v${prev_val_ref}.level >= v${var_ref}.level`);
+    append_to_where_stmt(`l${var_ref}.active = 1`);
+    append_to_where_stmt(
+      `NOT EXISTS(SELECT 1 FROM removed_vars AS r${var_ref} INNER JOIN levels AS rl${var_ref} ON (r${var_ref}.level = rl${var_ref}.id) WHERE (rl${var_ref}.active = 1  AND r${prev_val_ref}.level >= r${var_ref}.level AND r${var_ref}.level > v${var_ref}.level AND r${var_ref}.struct_name = v${var_ref}.struct_name AND r${var_ref}.id = v${var_ref}.id))`
+    );
+    // MAX(LEVEL) GROUP BY LEVEL, should be preserved at each step
+    // Make the group by dynamic, and add MAX(v[n].level) to select
   };
   for (let i = 0; i < join_count; i++) {
     const var_ref = i * 2 + 1;
@@ -380,8 +406,8 @@ export function generate_query(
         const path: ReadonlyArray<string> = path_filter[0];
         const field_struct_name = path_filter[1];
         if (i < path.length) {
-          dependency_injections.push(path[i]);
-          dependency_injections.push(field_struct_name);
+          args.push(path[i]);
+          args.push(field_struct_name);
           if (acc === "") {
             return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
           } else {
@@ -413,7 +439,7 @@ export function generate_query(
         case ">":
         case "<": {
           const value = filter[1];
-          dependency_injections.push(value.truncated().toString());
+          args.push(value.truncated().toString());
           stmt = `v1.id ${op} ?`;
           break;
         }
@@ -421,8 +447,8 @@ export function generate_query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          dependency_injections.push(start_value.truncated().toString());
-          dependency_injections.push(end_value.truncated().toString());
+          args.push(start_value.truncated().toString());
+          args.push(end_value.truncated().toString());
           stmt = `v1.id BETWEEN ? AND ?`;
           break;
         }
@@ -453,7 +479,7 @@ export function generate_query(
         case ">":
         case "<": {
           const value = filter[1];
-          dependency_injections.push(value.getTime().toString());
+          args.push(value.getTime().toString());
           stmt = `v1.created_at ${op} ?`;
           break;
         }
@@ -461,8 +487,8 @@ export function generate_query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          dependency_injections.push(start_value.getTime().toString());
-          dependency_injections.push(end_value.getTime().toString());
+          args.push(start_value.getTime().toString());
+          args.push(end_value.getTime().toString());
           stmt = `v1.created_at BETWEEN ? AND ?`;
           break;
         }
@@ -493,7 +519,7 @@ export function generate_query(
         case ">":
         case "<": {
           const value = filter[1];
-          dependency_injections.push(value.getTime().toString());
+          args.push(value.getTime().toString());
           stmt = `v1.updated_at ${op} ?`;
           break;
         }
@@ -501,8 +527,8 @@ export function generate_query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          dependency_injections.push(start_value.getTime().toString());
-          dependency_injections.push(end_value.getTime().toString());
+          args.push(start_value.getTime().toString());
+          args.push(end_value.getTime().toString());
           stmt = `v1.updated_at BETWEEN ? AND ?`;
           break;
         }
@@ -550,7 +576,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        dependency_injections.push(path_field_name);
+                        args.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -561,7 +587,7 @@ export function generate_query(
                       )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} v${referenced_val_ref}.text_value`;
                     });
                   } else {
-                    dependency_injections.push(value);
+                    args.push(value);
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} ?`;
                   }
                 });
@@ -581,7 +607,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            dependency_injections.push(path_field_name);
+                            args.push(path_field_name);
                             start_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -590,7 +616,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            dependency_injections.push(path_field_name);
+                            args.push(path_field_name);
                             end_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -612,12 +638,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          dependency_injections.push(path_field_name);
+                          args.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        dependency_injections.push(end_value);
+                        args.push(end_value);
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -633,12 +659,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          dependency_injections.push(path_field_name);
+                          args.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        dependency_injections.push(start_value);
+                        args.push(start_value);
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -647,8 +673,8 @@ export function generate_query(
                         } ? AND v${referenced_val_ref}.text_value`;
                       });
                     } else {
-                      dependency_injections.push(start_value);
-                      dependency_injections.push(end_value);
+                      args.push(start_value);
+                      args.push(end_value);
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
                         op === "not_between" ? "NOT BETWEEN" : op
                       } ? AND ?`;
@@ -698,9 +724,9 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
                     if (integer_fields.includes(field_struct_name)) {
-                      dependency_injections.push(value.truncated().toString());
+                      args.push(value.truncated().toString());
                     } else {
-                      dependency_injections.push(value.toString());
+                      args.push(value.toString());
                     }
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                       integer_fields.includes(field_struct_name)
@@ -713,7 +739,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        dependency_injections.push(path_field_name);
+                        args.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -743,15 +769,11 @@ export function generate_query(
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
                       if (integer_fields.includes(field_struct_name)) {
-                        dependency_injections.push(
-                          start_value.truncated().toString()
-                        );
-                        dependency_injections.push(
-                          end_value.truncated().toString()
-                        );
+                        args.push(start_value.truncated().toString());
+                        args.push(end_value.truncated().toString());
                       } else {
-                        dependency_injections.push(start_value.toString());
-                        dependency_injections.push(end_value.toString());
+                        args.push(start_value.toString());
+                        args.push(end_value.toString());
                       }
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                         integer_fields.includes(field_struct_name)
@@ -764,17 +786,15 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          dependency_injections.push(path_field_name);
+                          args.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
                         if (integer_fields.includes(field_struct_name)) {
-                          dependency_injections.push(
-                            start_value.truncated().toString()
-                          );
+                          args.push(start_value.truncated().toString());
                         } else {
-                          dependency_injections.push(start_value.toString());
+                          args.push(start_value.toString());
                         }
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
@@ -801,17 +821,15 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          dependency_injections.push(path_field_name);
+                          args.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
                         if (integer_fields.includes(field_struct_name)) {
-                          dependency_injections.push(
-                            end_value.truncated().toString()
-                          );
+                          args.push(end_value.truncated().toString());
                         } else {
-                          dependency_injections.push(end_value.toString());
+                          args.push(end_value.toString());
                         }
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
@@ -838,7 +856,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            dependency_injections.push(path_field_name);
+                            args.push(path_field_name);
                             start_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -847,7 +865,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            dependency_injections.push(path_field_name);
+                            args.push(path_field_name);
                             end_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -924,7 +942,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        dependency_injections.push(path_field_name);
+                        args.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -935,7 +953,7 @@ export function generate_query(
                       )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} v${referenced_val_ref}.integer_value`;
                     });
                   } else {
-                    dependency_injections.push(value ? "1" : "0");
+                    args.push(value ? "1" : "0");
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   }
                 });
@@ -975,7 +993,7 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (value instanceof Date) {
-                    dependency_injections.push(value.getTime().toString());
+                    args.push(value.getTime().toString());
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
@@ -983,7 +1001,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        dependency_injections.push(path_field_name);
+                        args.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -1004,8 +1022,8 @@ export function generate_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      dependency_injections.push(start_value.toString());
-                      dependency_injections.push(end_value.toString());
+                      args.push(start_value.toString());
+                      args.push(end_value.toString());
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${
                         op === "not_between" ? "NOT BETWEEN" : op
                       } ? AND ?`;
@@ -1015,12 +1033,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          dependency_injections.push(path_field_name);
+                          args.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        dependency_injections.push(start_value.toString());
+                        args.push(start_value.toString());
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -1036,12 +1054,12 @@ export function generate_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          dependency_injections.push(path_field_name);
+                          args.push(path_field_name);
                           path_constraints.push(
                             `v${path_field_index + 1}.field_name = ?`
                           );
                         }
-                        dependency_injections.push(end_value.toString());
+                        args.push(end_value.toString());
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
@@ -1057,7 +1075,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            dependency_injections.push(path_field_name);
+                            args.push(path_field_name);
                             start_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -1066,7 +1084,7 @@ export function generate_query(
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            dependency_injections.push(path_field_name);
+                            args.push(path_field_name);
                             end_path_constraints.push(
                               `v${path_field_index + 1}.field_name = ?`
                             );
@@ -1116,7 +1134,7 @@ export function generate_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
-                    dependency_injections.push(value.truncated().toString());
+                    args.push(value.truncated().toString());
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
@@ -1124,7 +1142,7 @@ export function generate_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        dependency_injections.push(path_field_name);
+                        args.push(path_field_name);
                         path_constraints.push(
                           `v${path_field_index + 1}.field_name = ?`
                         );
@@ -1165,7 +1183,22 @@ export function generate_query(
     `${filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`
   );
 
-  const group_by_stmt: string = "GROUP BY (v1.level, v1.struct_name, v1.id)";
+  var group_by_stmt: string = "GROUP BY ";
+  const append_to_group_by_stmt = (stmt: string) => {
+    group_by_stmt += apply(undefined, () => {
+      if (group_by_stmt === "GROUP BY ") {
+        return `${stmt}`;
+      } else {
+        return `, ${stmt}`;
+      }
+    });
+  };
+  for (let i of Array.from(Array(join_count).keys())) {
+    const var_ref = i * 2 + 1;
+    append_to_group_by_stmt(`v${var_ref}.level`);
+    append_to_group_by_stmt(`v${var_ref}.struct_name`);
+    append_to_group_by_stmt(`v${var_ref}.id`);
+  }
 
   var order_by_stmt: string = "ORDER BY ";
   const append_to_order_by_stmt = (stmt: string) => {
@@ -1209,7 +1242,7 @@ export function generate_query(
         if (path_filter.sort_option !== undefined) {
           const path: ReadonlyArray<string> = path_filter.path;
           const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
-          dependency_injections.push(path.join("."));
+          args.push(path.join("."));
           append_to_order_by_stmt(`? ${sort_order}`);
         }
       }
@@ -1231,5 +1264,15 @@ export function generate_query(
   const final_stmt = `${select_stmt} ${from_stmt} ${where_stmt} ${group_by_stmt} ${order_by_stmt} ${limit_offset_stmt};`;
   console.log(final_stmt);
 
-  return [final_stmt, dependency_injections];
+  return {
+    type: "select",
+    select_stmt: select_stmt,
+    from_stmt: from_stmt,
+    where_stmt: where_stmt,
+    group_by_stmt: group_by_stmt,
+    order_by_stmt: order_by_stmt,
+    limit_offset_stmt: limit_offset_stmt,
+    stmt: final_stmt,
+    args: args,
+  };
 }
