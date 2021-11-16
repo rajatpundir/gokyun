@@ -5,11 +5,10 @@ import {
   Ok,
   Err,
   CustomError,
-  errors,
-  Message,
   fold,
   fold_prev,
 } from "./prelude";
+import { ErrMsg, errors } from "./errors";
 
 type LispResult = Num | Deci | Text | Bool;
 
@@ -319,7 +318,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value + v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -334,7 +333,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value * v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -349,7 +348,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value - v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -364,7 +363,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value / v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -379,7 +378,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value % v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -500,7 +499,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value + v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -515,7 +514,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value * v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -530,7 +529,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value - v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -545,7 +544,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value / v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -560,7 +559,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
               return new Ok(new Num(acc.value.value % v.value.value));
             }
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as Message));
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       );
       return result;
@@ -737,7 +736,7 @@ export class NumberComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThan) {
       let v = args[0].get_number(symbols);
       if (unwrap(v)) {
@@ -765,7 +764,7 @@ export class NumberComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThan) {
       let v = args[0].get_number(symbols);
       if (unwrap(v)) {
@@ -793,7 +792,7 @@ export class NumberComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThanEquals) {
       let v = args[0].get_number(symbols);
       if (unwrap(v)) {
@@ -821,7 +820,7 @@ export class NumberComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThanEquals) {
       let v = args[0].get_number(symbols);
       if (unwrap(v)) {
@@ -849,7 +848,7 @@ export class NumberComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else {
       const _exhaustiveCheck: never = this.value;
       return _exhaustiveCheck;
@@ -977,7 +976,7 @@ export class DecimalComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThan) {
       let v = args[0].get_decimal(symbols);
       if (unwrap(v)) {
@@ -1005,7 +1004,7 @@ export class DecimalComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThan) {
       let v = args[0].get_decimal(symbols);
       if (unwrap(v)) {
@@ -1033,7 +1032,7 @@ export class DecimalComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThanEquals) {
       let v = args[0].get_decimal(symbols);
       if (unwrap(v)) {
@@ -1061,7 +1060,7 @@ export class DecimalComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThanEquals) {
       let v = args[0].get_decimal(symbols);
       if (unwrap(v)) {
@@ -1089,7 +1088,7 @@ export class DecimalComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else {
       const _exhaustiveCheck: never = this.value;
       return _exhaustiveCheck;
@@ -1217,7 +1216,7 @@ export class TextComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThan) {
       let v = args[0].get_text(symbols);
       if (unwrap(v)) {
@@ -1245,7 +1244,7 @@ export class TextComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThan) {
       let v = args[0].get_text(symbols);
       if (unwrap(v)) {
@@ -1273,7 +1272,7 @@ export class TextComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThanEquals) {
       let v = args[0].get_text(symbols);
       if (unwrap(v)) {
@@ -1301,7 +1300,7 @@ export class TextComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThanEquals) {
       let v = args[0].get_text(symbols);
       if (unwrap(v)) {
@@ -1329,7 +1328,7 @@ export class TextComparatorExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else {
       const _exhaustiveCheck: never = this.value;
       return _exhaustiveCheck;
@@ -1474,7 +1473,7 @@ export class LogicalBinaryExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof Or) {
       let v = args[0].get_boolean(symbols);
       if (unwrap(v)) {
@@ -1502,7 +1501,7 @@ export class LogicalBinaryExpression implements ToBoolean {
           return result;
         }
       }
-      return new Err(new CustomError([errors.ErrUnexpected] as Message));
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else {
       const _exhaustiveCheck: never = this.value;
       return _exhaustiveCheck;
@@ -1595,7 +1594,7 @@ export class LogicalUnaryExpression implements ToBoolean {
     if (unwrap(v)) {
       return new Ok(new Bool(!v.value.value));
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   serialize(): any {
@@ -1708,7 +1707,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
@@ -1726,7 +1725,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
@@ -1739,7 +1738,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
@@ -1752,7 +1751,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
@@ -1793,7 +1792,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
       let otherwise: Result<LispResult> = args[2].get_result(symbols);
       return otherwise;
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   serialize(): any {
@@ -2015,7 +2014,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
@@ -2033,7 +2032,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
@@ -2046,7 +2045,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
@@ -2059,7 +2058,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
@@ -2084,7 +2083,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
         }
       }
     }
-    return new Err(new CustomError([errors.ErrUnexpected] as Message));
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   serialize(): any {

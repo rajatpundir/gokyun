@@ -4,6 +4,10 @@ import * as SQLite from "expo-sqlite";
 import React from "react";
 import { apply, fold, is_decimal } from "./prelude";
 import Decimal from "decimal.js";
+import { Deci } from "./lisp";
+import { HashSet } from "prelude-ts";
+import { Path, StrongEnum } from "./variable";
+import { toExpression } from "@babel/types";
 
 const db_name: string = "db.testDb";
 
@@ -19,7 +23,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       { sql: `DROP TABLE IF EXISTS "VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VALS";`, args: [] },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
+        sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL DEFAULT 0, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
         args: [],
       },
       {
@@ -1278,8 +1282,400 @@ export function get_select_query(
 }
 
 // To Implement:
+
 // Create Level
-// Replace varibale and paths in level
-// Remove variable in level
+function create_level(tx: SQLite.SQLTransaction) {
+  tx.executeSql(
+    `INSERT INTO "LEVELS"("created_at") VALUES (?);`,
+    [new Date().getTime().toString()],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+}
+
 // Activate level
+function activate_level(tx: SQLite.SQLTransaction, id: Decimal) {
+  tx.executeSql(
+    `UPDATE "LEVELS" SET active = 0 WHERE id = ?;`,
+    [id.truncated().toString()],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+}
+
 // Deactivate level
+function deactivate_level(tx: SQLite.SQLTransaction, id: Decimal) {
+  tx.executeSql(
+    `UPDATE "LEVELS" SET active = 1 WHERE id = ?;`,
+    [id.truncated().toString()],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+}
+
+// Drop level
+function remove_level(tx: SQLite.SQLTransaction, id: Decimal) {
+  tx.executeSql(
+    `DELETE FROM "LEVELS" WHERE id = ?;`,
+    [id.truncated().toString()],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+}
+
+// Remove variable in level
+function replace_variables(
+  tx: SQLite.SQLTransaction,
+  level: Decimal,
+  requested_at: Date,
+  variables: ReadonlyArray<{
+    struct_name: string;
+    id: Decimal;
+    active: boolean;
+    created_at: Date;
+    updated_at: Date;
+  }>
+) {
+  for (let variable of variables) {
+    tx.executeSql(
+      `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+      [
+        level.truncated().toString(),
+        variable.struct_name,
+        variable.id.truncated().toString(),
+        variable.active ? "1" : "0",
+        variable.created_at.getTime().toString(),
+        variable.updated_at.getTime().toString(),
+        requested_at.getTime().toString(),
+      ],
+      (_tx, _resultSet) => {
+        console.log(_resultSet, _tx);
+      },
+      (_tx, _error) => {
+        console.log(_error, _tx);
+        // Check the significance of below returned boolean is as assumed
+        return false;
+      }
+    );
+  }
+}
+
+// Delete variables at level 0
+function delete_variables(
+  tx: SQLite.SQLTransaction,
+  struct_name: string,
+  ids: ReadonlyArray<Decimal>
+) {
+  for (let id of ids) {
+    tx.executeSql(
+      `DELETE FROM "REMOVED_VARS" WHERE level = ? AND struct_name = ? AND id = 0;`,
+      [struct_name, id.truncated().toString()],
+      (_tx, _resultSet) => {
+        console.log(_resultSet, _tx);
+      },
+      (_tx, _error) => {
+        console.log(_error, _tx);
+        // Check the significance of below returned boolean is as assumed
+        return false;
+      }
+    );
+  }
+}
+
+function remove_variables(
+  tx: SQLite.SQLTransaction,
+  level: Decimal,
+  struct_name: string,
+  ids: ReadonlyArray<Decimal>
+) {
+  for (let id of ids) {
+    tx.executeSql(
+      `REPLACE INTO "REOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
+      [level.truncated().toString(), struct_name, id.truncated().toString()],
+      (_tx, _resultSet) => {
+        console.log(_resultSet, _tx);
+      },
+      (_tx, _error) => {
+        console.log(_error, _tx);
+        // Check the significance of below returned boolean is as assumed
+        return false;
+      }
+    );
+  }
+}
+
+// Note.
+// We wont be able to write paths above length 1 since missing pieces in between will be missing
+// Hence, there is a requirement to update the structure of path representation
+// Where each field except last, must point to a other struct containg other_struct_name and other_id
+function replace_paths(
+  tx: SQLite.SQLTransaction,
+  level: Decimal,
+  requested_at: Date,
+  struct_name: string,
+  id: Decimal,
+  active: boolean,
+  created_at: Date,
+  updated_at: Date,
+  paths: ReadonlyArray<
+    [
+      ReadonlyArray<
+        [
+          string,
+          {
+            active: boolean;
+            created_at: Date;
+            updated_at: Date;
+            value: {
+              type: "other";
+              other: string;
+              value: Decimal;
+            };
+          }
+        ]
+      >,
+      [string, StrongEnum]
+    ]
+  >
+) {
+  tx.executeSql(
+    `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+    [
+      level.truncated().toString(),
+      struct_name,
+      id.truncated().toString(),
+      active ? "1" : "0",
+      created_at.getTime().toString(),
+      updated_at.getTime().toString(),
+      requested_at.getTime().toString(),
+    ],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  for (let [path, [leaf_field_name, leaf_value]] of paths) {
+    var ref_struct_name = struct_name;
+    var ref_id: Decimal = id.truncated();
+    for (let [field_name, next_var] of path) {
+      tx.executeSql(
+        `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
+        [
+          level.truncated().toString(),
+          ref_struct_name,
+          ref_id.truncated().toString(),
+          field_name,
+          next_var.value.other,
+          next_var.value.value.truncated().toString(),
+        ],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      ref_struct_name = next_var.value.other;
+      ref_id = next_var.value.value.truncated();
+      tx.executeSql(
+        `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        [
+          level.truncated().toString(),
+          ref_struct_name,
+          ref_id.truncated().toString(),
+          next_var.active ? "1" : "0",
+          next_var.created_at.getTime().toString(),
+          next_var.updated_at.getTime().toString(),
+          requested_at.getTime().toString(),
+        ],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+    }
+    const leaf_value_type = leaf_value.type;
+    switch (leaf_value_type) {
+      case "str":
+      case "lstr":
+      case "clob": {
+        tx.executeSql(
+          `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "text_value") VALUES (?, ?, ?, ?, ?, ?);`,
+          [
+            level.truncated().toString(),
+            ref_struct_name,
+            ref_id.truncated().toString(),
+            leaf_field_name,
+            leaf_value_type,
+            leaf_value.value,
+          ],
+          (_tx, _resultSet) => {
+            console.log(_resultSet, _tx);
+          },
+          (_tx, _error) => {
+            console.log(_error, _tx);
+            // Check the significance of below returned boolean is as assumed
+            return false;
+          }
+        );
+        break;
+      }
+      case "i32":
+      case "u32":
+      case "i64":
+      case "u64": {
+        tx.executeSql(
+          `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
+          [
+            level.truncated().toString(),
+            ref_struct_name,
+            ref_id.truncated().toString(),
+            leaf_field_name,
+            leaf_value_type,
+            leaf_value.value.truncated().toString(),
+          ],
+          (_tx, _resultSet) => {
+            console.log(_resultSet, _tx);
+          },
+          (_tx, _error) => {
+            console.log(_error, _tx);
+            // Check the significance of below returned boolean is as assumed
+            return false;
+          }
+        );
+        break;
+      }
+      case "idouble":
+      case "udouble":
+      case "idecimal":
+      case "udecimal": {
+        tx.executeSql(
+          `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "real_value") VALUES (?, ?, ?, ?, ?, ?);`,
+          [
+            level.truncated().toString(),
+            ref_struct_name,
+            ref_id.truncated().toString(),
+            leaf_field_name,
+            leaf_value_type,
+            leaf_value.value.toString(),
+          ],
+          (_tx, _resultSet) => {
+            console.log(_resultSet, _tx);
+          },
+          (_tx, _error) => {
+            console.log(_error, _tx);
+            // Check the significance of below returned boolean is as assumed
+            return false;
+          }
+        );
+        break;
+      }
+      case "bool": {
+        tx.executeSql(
+          `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
+          [
+            level.truncated().toString(),
+            ref_struct_name,
+            ref_id.truncated().toString(),
+            leaf_field_name,
+            leaf_value_type,
+            leaf_value.value ? "1" : "0",
+          ],
+          (_tx, _resultSet) => {
+            console.log(_resultSet, _tx);
+          },
+          (_tx, _error) => {
+            console.log(_error, _tx);
+            // Check the significance of below returned boolean is as assumed
+            return false;
+          }
+        );
+        break;
+      }
+      case "date":
+      case "time":
+      case "timestamp": {
+        tx.executeSql(
+          `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
+          [
+            level.truncated().toString(),
+            ref_struct_name,
+            ref_id.truncated().toString(),
+            leaf_field_name,
+            leaf_value_type,
+            leaf_value.value.getTime().toString(),
+          ],
+          (_tx, _resultSet) => {
+            console.log(_resultSet, _tx);
+          },
+          (_tx, _error) => {
+            console.log(_error, _tx);
+            // Check the significance of below returned boolean is as assumed
+            return false;
+          }
+        );
+        break;
+      }
+      case "other": {
+        tx.executeSql(
+          `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
+          [
+            level.truncated().toString(),
+            ref_struct_name,
+            ref_id.truncated().toString(),
+            leaf_field_name,
+            leaf_value.other,
+            leaf_value.value.truncated().toString(),
+          ],
+          (_tx, _resultSet) => {
+            console.log(_resultSet, _tx);
+          },
+          (_tx, _error) => {
+            console.log(_error, _tx);
+            // Check the significance of below returned boolean is as assumed
+            return false;
+          }
+        );
+        break;
+      }
+      default: {
+        const _exhaustiveCheck: never = leaf_value_type;
+        return _exhaustiveCheck;
+      }
+    }
+  }
+}
