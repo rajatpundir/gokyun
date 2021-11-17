@@ -10,13 +10,15 @@ export type ErrMsg =
   | ["ErrUnexpected"]
   | ["ErrMissingSymbol"]
   | ["ErrEmptyField"]
-  | ["CannotBeEmpty", { field: string }]; // template error example
+  | ["CannotBeEmpty", { field: string }] // template error example
+  | ["CustomMsg", { msg: string }];
 
 export const errors = {
   ErrUnexpected: "ErrUnexpected",
   ErrMissingSymbol: "ErrMissingSymbol",
   ErrEmptyField: "ErrEmptyField",
   CannotBeEmpty: "CannotBeEmpty",
+  CustomMsg: "CustomMsg",
 };
 
 export function to_string(message: ErrMsg, lang: Language): string {
@@ -32,6 +34,11 @@ export function to_string(message: ErrMsg, lang: Language): string {
         case "CannotBeEmpty": {
           return Mustache.render(" Value for {{field}} cannot be empty", {
             field: message[1].field,
+          });
+        }
+        case "CustomMsg": {
+          return Mustache.render(" Value for {{field}} cannot be empty", {
+            field: message[1].msg,
           });
         }
         default: {

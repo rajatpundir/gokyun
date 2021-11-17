@@ -2,12 +2,39 @@ import { useState } from "react";
 import { getState, subscribe } from "./store";
 import * as SQLite from "expo-sqlite";
 import React from "react";
-import { apply, fold, is_decimal, Option } from "./prelude";
+import {
+  apply,
+  CustomError,
+  Err,
+  fold,
+  is_decimal,
+  Ok,
+  Option,
+  Result,
+} from "./prelude";
 import Decimal from "decimal.js";
 import { StrongEnum } from "./variable";
 import * as FileSystem from "expo-file-system";
+import { ErrMsg, errors } from "./errors";
 
-const db_name: string = "db.testDb";
+const db_name: string = "test1.db";
+
+function execute_transaction(
+  sql: string,
+  args: Array<string>
+): Promise<SQLite.SQLResultSet> {
+  return new Promise((resolve, reject) => {
+    db.transaction(
+      async (tx) => {
+        tx.executeSql(sql, args, (_, result_set) => resolve(result_set));
+      },
+      (err) => {
+        console.log("TRANSACTION ERROR: ", sql, args, err);
+        reject(String(err));
+      }
+    );
+  });
+}
 
 const db = apply(SQLite.openDatabase(db_name), (db) => {
   db.exec(
@@ -20,6 +47,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       { sql: `DROP TABLE IF EXISTS "REMOVED_VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VALS";`, args: [] },
+      // { sql: `DROP TABLE IF EXISTS "PARAMS";`, args: [] },
       {
         sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL DEFAULT 0, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
         args: [],
@@ -33,12 +61,12 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
         args: [],
       },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "VALS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "variable_id" INTEGER NOT NULL, "field_name" TEXT NOT NULL COLLATE BINARY, "field_struct_name" TEXT NOT NULL COLLATE BINARY, "text_value" TEXT COLLATE NOCASE, "integer_value" INTEGER, "real_value" INTEGER, CONSTRAINT "PK" UNIQUE("level","struct_name","variable_id","field_name"), CONSTRAINT "FK" FOREIGN KEY("level","struct_name","variable_id") REFERENCES "VARS"("level","struct_name","id") ON DELETE CASCADE, CHECK ((IIF(text_value IS NULL, 0, 1) + IIF(integer_value IS NULL, 0, 1) + IIF(real_value IS NULL, 0, 1)) == 1));`,
+        sql: `CREATE TABLE IF NOT EXISTS "VALS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "variable_id" INTEGER NOT NULL, "field_name" TEXT NOT NULL COLLATE BINARY, "field_struct_name" TEXT NOT NULL COLLATE BINARY, "text_value" TEXT COLLATE NOCASE, "integer_value" INTEGER, "real_value" INTEGER, CONSTRAINT "PK" UNIQUE("level","struct_name","variable_id","field_name"), CONSTRAINT "FK" FOREIGN KEY("level","struct_name","variable_id") REFERENCES "VARS"("level","struct_name","id") ON DELETE CASCADE, CHECK (((CASE WHEN text_value IS NULL THEN 0 ELSE 1 END) + (CASE WHEN integer_value IS NULL THEN 0 ELSE 1 END) + (CASE WHEN real_value IS NULL THEN 0 ELSE 1 END)) == 1));`,
         args: [],
       },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "PARAMS" ("name"	TEXT NOT NULL UNIQUE, "field_struct_name" TEXT NOT NULL, "text_value"	TEXT, "integer_value" INTEGER, "real_value" REAL, CHECK ((IIF(text_value IS NULL, 0, 1) + IIF(integer_value IS NULL, 0, 1) + IIF(real_value IS NULL, 0, 1)) == 1));`,
-        args: [0, 1, 0],
+        sql: `CREATE TABLE IF NOT EXISTS "PARAMS" ("name"	TEXT NOT NULL UNIQUE, "field_struct_name" TEXT NOT NULL, "text_value"	TEXT, "integer_value" INTEGER, "real_value" REAL, CHECK (((CASE WHEN text_value IS NULL THEN 0 ELSE 1 END) + (CASE WHEN integer_value IS NULL THEN 0 ELSE 1 END) + (CASE WHEN real_value IS NULL THEN 0 ELSE 1 END)) == 1));`,
+        args: [],
       },
       {
         sql: `REPLACE INTO "LEVELS"("id", "active", "created_at") VALUES (?, ?, ?);`,
@@ -54,7 +82,9 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       },
     ],
     false,
-    () => console.log("Successfully run statements")
+    () => {
+      // console.log("Successfully run statements")
+    }
   );
   return db;
 });
@@ -66,28 +96,28 @@ export function useDB() {
   subscribe((store) => {
     set_db_updation_toggle(store.db_updation_toggle);
   });
-  React.useEffect(() => {
-    db.transaction(
-      (tx) => {
-        // create_table(tx, {
-        //   table_name: "VARIABLES",
-        //   columns: [
-        //     ["id", "INTEGER"],
-        //     ["created_at", "INTEGER"],
-        //     ["updated_at", "INTEGER"],
-        //     ["requested_at", "INTEGER"],
-        //   ],
-        //   unique_constraints: [["id"]],
-        // });
-      },
-      (_error) => {
-        console.log("Unable to execute transaction");
-      },
-      () => {
-        console.log("Transaction was successfully executed");
-      }
-    );
-  }, []);
+  // React.useEffect(() => {
+  //   db.transaction(
+  //     (tx) => {
+  //       // create_table(tx, {
+  //       //   table_name: "VARIABLES",
+  //       //   columns: [
+  //       //     ["id", "INTEGER"],
+  //       //     ["created_at", "INTEGER"],
+  //       //     ["updated_at", "INTEGER"],
+  //       //     ["requested_at", "INTEGER"],
+  //       //   ],
+  //       //   unique_constraints: [["id"]],
+  //       // });
+  //     },
+  //     (_error) => {
+  //       console.log("Unable to execute transaction");
+  //     },
+  //     () => {
+  //       console.log("Transaction was successfully executed");
+  //     }
+  //   );
+  // }, []);
   return db;
 }
 
@@ -1233,7 +1263,7 @@ export function get_select_query(
 // To Implement:
 
 // Create Level
-function create_level(tx: SQLite.SQLTransaction) {
+export function create_level(tx: SQLite.SQLTransaction) {
   tx.executeSql(
     `INSERT INTO "LEVELS"("created_at") VALUES (?);`,
     [new Date().getTime().toString()],
@@ -1249,7 +1279,7 @@ function create_level(tx: SQLite.SQLTransaction) {
 }
 
 // Activate level
-function activate_level(tx: SQLite.SQLTransaction, id: Decimal) {
+export function activate_level(tx: SQLite.SQLTransaction, id: Decimal) {
   tx.executeSql(
     `UPDATE "LEVELS" SET active = 0 WHERE id = ?;`,
     [id.truncated().toString()],
@@ -1265,7 +1295,7 @@ function activate_level(tx: SQLite.SQLTransaction, id: Decimal) {
 }
 
 // Deactivate level
-function deactivate_level(tx: SQLite.SQLTransaction, id: Decimal) {
+export function deactivate_level(tx: SQLite.SQLTransaction, id: Decimal) {
   tx.executeSql(
     `UPDATE "LEVELS" SET active = 1 WHERE id = ?;`,
     [id.truncated().toString()],
@@ -1281,7 +1311,7 @@ function deactivate_level(tx: SQLite.SQLTransaction, id: Decimal) {
 }
 
 // Drop level
-function remove_level(tx: SQLite.SQLTransaction, id: Decimal) {
+export function remove_level(tx: SQLite.SQLTransaction, id: Decimal) {
   tx.executeSql(
     `DELETE FROM "LEVELS" WHERE id = ?;`,
     [id.truncated().toString()],
@@ -1297,7 +1327,7 @@ function remove_level(tx: SQLite.SQLTransaction, id: Decimal) {
 }
 
 // Remove variable in level
-function replace_variables(
+export function replace_variables(
   tx: SQLite.SQLTransaction,
   level: Decimal,
   requested_at: Date,
@@ -1334,7 +1364,7 @@ function replace_variables(
 }
 
 // Delete variables at level 0
-function delete_variables(
+export function delete_variables(
   tx: SQLite.SQLTransaction,
   struct_name: string,
   ids: ReadonlyArray<Decimal>
@@ -1355,7 +1385,7 @@ function delete_variables(
   }
 }
 
-function remove_variables(
+export function remove_variables(
   tx: SQLite.SQLTransaction,
   level: Decimal,
   struct_name: string,
@@ -1381,7 +1411,7 @@ function remove_variables(
 // We wont be able to write paths above length 1 since missing pieces in between will be missing
 // Hence, there is a requirement to update the structure of path representation
 // Where each field except last, must point to a other struct containg other_struct_name and other_id
-function replace_paths(
+export function replace_paths(
   tx: SQLite.SQLTransaction,
   level: Decimal,
   requested_at: Date,
@@ -1629,8 +1659,7 @@ function replace_paths(
   }
 }
 
-function replace_param(
-  tx: SQLite.SQLTransaction,
+export async function replace_param(
   name: string,
   value:
     | {
@@ -1662,222 +1691,189 @@ function replace_param(
         other: string;
         value: Decimal;
       }
-) {
-  switch (value.type) {
-    case "str":
-    case "lstr":
-    case "clob": {
-      tx.executeSql(
-        `REPLACE INTO "PARAMS"("name", "field_struct_name", "text_value") VALUES (?, ?, ?);`,
-        [name, value.type, value.value],
-        (_tx, _resultSet) => {
-          console.log(_resultSet, _tx);
-        },
-        (_tx, _error) => {
-          console.log(_error, _tx);
-          // Check the significance of below returned boolean is as assumed
-          return false;
-        }
-      );
-      break;
+): Promise<Result<boolean>> {
+  try {
+    switch (value.type) {
+      case "str":
+      case "lstr":
+      case "clob": {
+        await execute_transaction(
+          `REPLACE INTO "PARAMS"("name", "field_struct_name", "text_value") VALUES (?, ?, ?);`,
+          [name, value.type, value.value]
+        );
+        break;
+      }
+      case "i32":
+      case "u32":
+      case "i64":
+      case "u64": {
+        await execute_transaction(
+          `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+          [name, value.type, value.value.truncated().toString()]
+        );
+        break;
+      }
+      case "idouble":
+      case "udouble":
+      case "idecimal":
+      case "udecimal": {
+        await execute_transaction(
+          `REPLACE INTO "PARAMS"("name", "field_struct_name", "real_value") VALUES (?, ?, ?);`,
+          [name, value.type, value.value.toString()]
+        );
+        break;
+      }
+      case "bool": {
+        await execute_transaction(
+          `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+          [name, value.type, value.value ? "1" : "0"]
+        );
+        break;
+      }
+      case "date":
+      case "time":
+      case "timestamp": {
+        await execute_transaction(
+          `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+          [name, value.type, value.value.getTime().toString()]
+        );
+        break;
+      }
+      case "other": {
+        await execute_transaction(
+          `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+          [name, value.other, value.value.truncated().toString()]
+        );
+        break;
+      }
+      default: {
+        const _exhaustiveCheck: never = value;
+        return _exhaustiveCheck;
+      }
     }
-    case "i32":
-    case "u32":
-    case "i64":
-    case "u64": {
-      tx.executeSql(
-        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
-        [name, value.type, value.value.truncated().toString()],
-        (_tx, _resultSet) => {
-          console.log(_resultSet, _tx);
-        },
-        (_tx, _error) => {
-          console.log(_error, _tx);
-          // Check the significance of below returned boolean is as assumed
-          return false;
-        }
-      );
-      break;
-    }
-    case "idouble":
-    case "udouble":
-    case "idecimal":
-    case "udecimal": {
-      tx.executeSql(
-        `REPLACE INTO "PARAMS"("name", "field_struct_name", "real_value") VALUES (?, ?, ?);`,
-        [name, value.type, value.value.toString()],
-        (_tx, _resultSet) => {
-          console.log(_resultSet, _tx);
-        },
-        (_tx, _error) => {
-          console.log(_error, _tx);
-          // Check the significance of below returned boolean is as assumed
-          return false;
-        }
-      );
-      break;
-    }
-    case "bool": {
-      tx.executeSql(
-        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
-        [name, value.type, value.value ? "1" : "0"],
-        (_tx, _resultSet) => {
-          console.log(_resultSet, _tx);
-        },
-        (_tx, _error) => {
-          console.log(_error, _tx);
-          // Check the significance of below returned boolean is as assumed
-          return false;
-        }
-      );
-      break;
-    }
-    case "date":
-    case "time":
-    case "timestamp": {
-      tx.executeSql(
-        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
-        [name, value.type, value.value.getTime().toString()],
-        (_tx, _resultSet) => {
-          console.log(_resultSet, _tx);
-        },
-        (_tx, _error) => {
-          console.log(_error, _tx);
-          // Check the significance of below returned boolean is as assumed
-          return false;
-        }
-      );
-      break;
-    }
-    case "other": {
-      tx.executeSql(
-        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
-        [name, value.other, value.value.truncated().toString()],
-        (_tx, _resultSet) => {
-          console.log(_resultSet, _tx);
-        },
-        (_tx, _error) => {
-          console.log(_error, _tx);
-          // Check the significance of below returned boolean is as assumed
-          return false;
-        }
-      );
-      break;
-    }
-    default: {
-      const _exhaustiveCheck: never = value;
-      return _exhaustiveCheck;
-    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
+  return new Ok(true);
 }
 
-function get_param_text(
-  tx: SQLite.SQLTransaction,
+export async function get_param_text(name: string): Promise<Result<string>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT name, field_struct_name, text_value FROM params WHERE name = ? AND text_value IS NOT NULL`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("text_value" in result) {
+        return new Ok(String(result["text_value"]));
+      }
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+}
+
+export async function get_param_integer(
   name: string
-): Option<string> {
-  tx.executeSql(
-    `SELECT name, field_struct_name, text_value FROM params WHERE name = ? AND text_value IS NOT NULL`,
-    [name],
-    (_tx, _resultSet) => {
-      console.log(_resultSet, _tx);
-    },
-    (_tx, _error) => {
-      console.log(_error, _tx);
-      // Check the significance of below returned boolean is as assumed
-      return false;
+): Promise<Result<Decimal>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("integer_value" in result) {
+        return new Ok(new Decimal(result["integer_value"]).truncated());
+      }
     }
-  );
-  return undefined;
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-function get_param_integer(
-  tx: SQLite.SQLTransaction,
+export async function get_param_decimal(
   name: string
-): Option<Decimal> {
-  tx.executeSql(
-    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
-    [name],
-    (_tx, _resultSet) => {
-      console.log(_resultSet, _tx);
-    },
-    (_tx, _error) => {
-      console.log(_error, _tx);
-      // Check the significance of below returned boolean is as assumed
-      return false;
+): Promise<Result<Decimal>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT name, field_struct_name, real_value FROM params WHERE name = ? AND real_value IS NOT NULL`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("real_value" in result) {
+        return new Ok(new Decimal(result["real_value"]));
+      }
     }
-  );
-  return undefined;
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-function get_param_decimal(
-  tx: SQLite.SQLTransaction,
+export async function get_param_boolean(
   name: string
-): Option<Decimal> {
-  tx.executeSql(
-    `SELECT name, field_struct_name, real_value FROM params WHERE name = ? AND real_value IS NOT NULL`,
-    [name],
-    (_tx, _resultSet) => {
-      console.log(_resultSet, _tx);
-    },
-    (_tx, _error) => {
-      console.log(_error, _tx);
-      // Check the significance of below returned boolean is as assumed
-      return false;
+): Promise<Result<boolean>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("integer_value" in result) {
+        return new Ok(new Decimal(result["integer_value"]) === new Decimal(1));
+      }
     }
-  );
-  return undefined;
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-function get_param_boolean(
-  tx: SQLite.SQLTransaction,
+export async function get_param_date(name: string): Promise<Result<Date>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("integer_value" in result) {
+        return new Ok(
+          new Date(new Decimal(result["integer_value"]).truncated().toNumber())
+        );
+      }
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+}
+
+export async function get_param_other(
   name: string
-): Option<boolean> {
-  tx.executeSql(
-    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
-    [name],
-    (_tx, _resultSet) => {
-      console.log(_resultSet, _tx);
-    },
-    (_tx, _error) => {
-      console.log(_error, _tx);
-      // Check the significance of below returned boolean is as assumed
-      return false;
+): Promise<Result<[string, Decimal]>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("field_struct_name" in result && "integer_value" in result) {
+        return new Ok([
+          String(result["field_struct_name"]),
+          new Decimal(result["integer_value"]).truncated(),
+        ] as [string, Decimal]);
+      }
     }
-  );
-  return undefined;
-}
-
-function get_param_date(tx: SQLite.SQLTransaction, name: string): Option<Date> {
-  tx.executeSql(
-    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
-    [name],
-    (_tx, _resultSet) => {
-      console.log(_resultSet, _tx);
-    },
-    (_tx, _error) => {
-      console.log(_error, _tx);
-      // Check the significance of below returned boolean is as assumed
-      return false;
-    }
-  );
-  return undefined;
-}
-
-function get_param_other(
-  tx: SQLite.SQLTransaction,
-  name: string
-): Option<[string, Decimal]> {
-  tx.executeSql(
-    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
-    [name],
-    (_tx, _resultSet) => {
-      console.log(_resultSet, _tx);
-    },
-    (_tx, _error) => {
-      console.log(_error, _tx);
-      // Check the significance of below returned boolean is as assumed
-      return false;
-    }
-  );
-  return undefined;
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

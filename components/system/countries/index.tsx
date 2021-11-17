@@ -87,14 +87,14 @@ const struct: Option<Struct> = get_structs()
 export default function Component(props: ParentNavigatorProps<"Countries">) {
   const navigation = useNavigation();
 
-  if (struct.isSome()) {
-    log_permissions(
-      struct.get(),
-      get_permissions(struct.get(), [["user"]], [])
-    );
-  } else {
-    console.log("---nothing---");
-  }
+  // if (struct.isSome()) {
+  //   log_permissions(
+  //     struct.get(),
+  //     get_permissions(struct.get(), [["user"]], [])
+  //   );
+  // } else {
+  //   console.log("---nothing---");
+  // }
 
   return (
     <View
@@ -103,9 +103,9 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
         flexGrow: 1,
       }}
     >
-      <A />
+      {/* <A />
       <B />
-      <A />
+      <A /> */}
       <Pressable
         onPress={() => {
           if (struct.isSome()) {

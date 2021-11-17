@@ -26,8 +26,12 @@ import { Path, PathFilter, Struct } from "./main/utils/variable";
 import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
-import * as SQLite from "expo-sqlite";
-import { get_select_query } from "./main/utils/db";
+import {
+  get_param_other,
+  get_param_text,
+  replace_param,
+  useDB,
+} from "./main/utils/db";
 
 declare global {
   namespace ReactNavigation {
@@ -93,22 +97,31 @@ const linking: LinkingOptions<NavigatorParams> = {
 
 const Stack = createNativeStackNavigator<NavigatorParams>();
 
-const db = SQLite.openDatabase("db.testDb");
-
 export default function App() {
+  const db = useDB();
+
+  React.useEffect(() => {
+    const x = async () => {
+      const x = await get_param_text("abc");
+      console.log("x", x);
+      console.log("========1=======");
+      console.log(
+        await replace_param("abc", {
+          type: "other",
+          other: "ytu8788",
+          value: new Decimal(99),
+        })
+      );
+      console.log("=======2========");
+      console.log(await get_param_other("abc"));
+      console.log("========3=======");
+      console.log(await get_param_other("ytu8788"));
+    };
+    x();
+  }, []);
+
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
-
-  // console.log(
-  //   generate_query(
-  //     "Wallet",
-  //     new Decimal(0),
-  //     new Decimal(0),
-  //     4,
-  //     undefined,
-  //     undefined
-  //   )
-  // );
 
   if (!isLoadingComplete) {
     return null;
