@@ -2,12 +2,10 @@ import { useState } from "react";
 import { getState, subscribe } from "./store";
 import * as SQLite from "expo-sqlite";
 import React from "react";
-import { apply, fold, is_decimal } from "./prelude";
+import { apply, fold, is_decimal, Option } from "./prelude";
 import Decimal from "decimal.js";
-import { Deci } from "./lisp";
-import { HashSet } from "prelude-ts";
-import { Path, StrongEnum } from "./variable";
-import { toExpression } from "@babel/types";
+import { StrongEnum } from "./variable";
+import * as FileSystem from "expo-file-system";
 
 const db_name: string = "db.testDb";
 
@@ -35,8 +33,12 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
         args: [],
       },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "VALS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "variable_id" INTEGER NOT NULL, "field_name" TEXT NOT NULL COLLATE BINARY, "field_struct_name" TEXT NOT NULL COLLATE BINARY, "text_value" TEXT COLLATE NOCASE, "integer_value" INTEGER, "real_value" INTEGER, CONSTRAINT "PK" UNIQUE("level","struct_name","variable_id","field_name"), CONSTRAINT "FK" FOREIGN KEY("level","struct_name","variable_id") REFERENCES "VARS"("level","struct_name","id") ON DELETE CASCADE, CHECK (text_value IS NOT NULL OR integer_value IS NOT NULL OR real_value IS NOT NULL));`,
+        sql: `CREATE TABLE IF NOT EXISTS "VALS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "variable_id" INTEGER NOT NULL, "field_name" TEXT NOT NULL COLLATE BINARY, "field_struct_name" TEXT NOT NULL COLLATE BINARY, "text_value" TEXT COLLATE NOCASE, "integer_value" INTEGER, "real_value" INTEGER, CONSTRAINT "PK" UNIQUE("level","struct_name","variable_id","field_name"), CONSTRAINT "FK" FOREIGN KEY("level","struct_name","variable_id") REFERENCES "VARS"("level","struct_name","id") ON DELETE CASCADE, CHECK ((IIF(text_value IS NULL, 0, 1) + IIF(integer_value IS NULL, 0, 1) + IIF(real_value IS NULL, 0, 1)) == 1));`,
         args: [],
+      },
+      {
+        sql: `CREATE TABLE IF NOT EXISTS "PARAMS" ("name"	TEXT NOT NULL UNIQUE, "field_struct_name" TEXT NOT NULL, "text_value"	TEXT, "integer_value" INTEGER, "real_value" REAL, CHECK ((IIF(text_value IS NULL, 0, 1) + IIF(integer_value IS NULL, 0, 1) + IIF(real_value IS NULL, 0, 1)) == 1));`,
+        args: [0, 1, 0],
       },
       {
         sql: `REPLACE INTO "LEVELS"("id", "active", "created_at") VALUES (?, ?, ?);`,
@@ -67,16 +69,16 @@ export function useDB() {
   React.useEffect(() => {
     db.transaction(
       (tx) => {
-        create_table(tx, {
-          table_name: "VARIABLES",
-          columns: [
-            ["id", "INTEGER"],
-            ["created_at", "INTEGER"],
-            ["updated_at", "INTEGER"],
-            ["requested_at", "INTEGER"],
-          ],
-          unique_constraints: [["id"]],
-        });
+        // create_table(tx, {
+        //   table_name: "VARIABLES",
+        //   columns: [
+        //     ["id", "INTEGER"],
+        //     ["created_at", "INTEGER"],
+        //     ["updated_at", "INTEGER"],
+        //     ["requested_at", "INTEGER"],
+        //   ],
+        //   unique_constraints: [["id"]],
+        // });
       },
       (_error) => {
         console.log("Unable to execute transaction");
@@ -87,59 +89,6 @@ export function useDB() {
     );
   }, []);
   return db;
-}
-
-function create_table(
-  tx: SQLite.SQLTransaction,
-  table: {
-    table_name: string;
-    columns: ReadonlyArray<[string, "INTEGER" | "REAL" | "TEXT"]>;
-    unique_constraints: ReadonlyArray<ReadonlyArray<string>>;
-  }
-) {
-  tx.executeSql(
-    fold(
-      `CREATE TABLE IF NOT EXISTS ${table.table_name} (`,
-      table.columns,
-      (acc, val) => acc + `, ${val[0]} ${val[1]}`
-    ) +
-      fold(
-        "",
-        table.unique_constraints,
-        (acc, val) =>
-          acc + `, UNQUE(${fold("", val, (acc, val) => acc + `, ${val}`)})`
-      ) +
-      ");",
-    [],
-    (_tx, _resultSet) => {
-      console.log("Successfully created table: ", table.table_name);
-    },
-    (_tx, _error) => {
-      console.log("Unable to create table: ", table.table_name);
-      // Check the significance of below returned boolean is as assumed
-      return false;
-    }
-  );
-}
-
-function replace_row(
-  _tx: SQLite.SQLTransaction,
-  table: {
-    table_name: string;
-    values: ReadonlyArray<[string, Decimal | number | string]>;
-  }
-) {
-  // REPLACE INTO table(column_list) VALUES(value_list);
-}
-
-function delete_row(
-  _tx: SQLite.SQLTransaction,
-  table: {
-    table_name: string;
-    values: ReadonlyArray<[string, Decimal | number | string]>;
-  }
-) {
-  //DELETE FROM table WHERE search_condition;
 }
 
 type PathFilters = ReadonlyArray<
@@ -1678,4 +1627,257 @@ function replace_paths(
       }
     }
   }
+}
+
+function replace_param(
+  tx: SQLite.SQLTransaction,
+  name: string,
+  value:
+    | {
+        type: "str" | "lstr" | "clob";
+        value: string;
+      }
+    | {
+        type:
+          | "i32"
+          | "u32"
+          | "i64"
+          | "u64"
+          | "idouble"
+          | "udouble"
+          | "idecimal"
+          | "udecimal";
+        value: Decimal;
+      }
+    | {
+        type: "bool";
+        value: boolean;
+      }
+    | {
+        type: "date" | "time" | "timestamp";
+        value: Date;
+      }
+    | {
+        type: "other";
+        other: string;
+        value: Decimal;
+      }
+) {
+  switch (value.type) {
+    case "str":
+    case "lstr":
+    case "clob": {
+      tx.executeSql(
+        `REPLACE INTO "PARAMS"("name", "field_struct_name", "text_value") VALUES (?, ?, ?);`,
+        [name, value.type, value.value],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      break;
+    }
+    case "i32":
+    case "u32":
+    case "i64":
+    case "u64": {
+      tx.executeSql(
+        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+        [name, value.type, value.value.truncated().toString()],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      break;
+    }
+    case "idouble":
+    case "udouble":
+    case "idecimal":
+    case "udecimal": {
+      tx.executeSql(
+        `REPLACE INTO "PARAMS"("name", "field_struct_name", "real_value") VALUES (?, ?, ?);`,
+        [name, value.type, value.value.toString()],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      break;
+    }
+    case "bool": {
+      tx.executeSql(
+        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+        [name, value.type, value.value ? "1" : "0"],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      break;
+    }
+    case "date":
+    case "time":
+    case "timestamp": {
+      tx.executeSql(
+        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+        [name, value.type, value.value.getTime().toString()],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      break;
+    }
+    case "other": {
+      tx.executeSql(
+        `REPLACE INTO "PARAMS"("name", "field_struct_name", "integer_value") VALUES (?, ?, ?);`,
+        [name, value.other, value.value.truncated().toString()],
+        (_tx, _resultSet) => {
+          console.log(_resultSet, _tx);
+        },
+        (_tx, _error) => {
+          console.log(_error, _tx);
+          // Check the significance of below returned boolean is as assumed
+          return false;
+        }
+      );
+      break;
+    }
+    default: {
+      const _exhaustiveCheck: never = value;
+      return _exhaustiveCheck;
+    }
+  }
+}
+
+function get_param_text(
+  tx: SQLite.SQLTransaction,
+  name: string
+): Option<string> {
+  tx.executeSql(
+    `SELECT name, field_struct_name, text_value FROM params WHERE name = ? AND text_value IS NOT NULL`,
+    [name],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  return undefined;
+}
+
+function get_param_integer(
+  tx: SQLite.SQLTransaction,
+  name: string
+): Option<Decimal> {
+  tx.executeSql(
+    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+    [name],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  return undefined;
+}
+
+function get_param_decimal(
+  tx: SQLite.SQLTransaction,
+  name: string
+): Option<Decimal> {
+  tx.executeSql(
+    `SELECT name, field_struct_name, real_value FROM params WHERE name = ? AND real_value IS NOT NULL`,
+    [name],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  return undefined;
+}
+
+function get_param_boolean(
+  tx: SQLite.SQLTransaction,
+  name: string
+): Option<boolean> {
+  tx.executeSql(
+    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+    [name],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  return undefined;
+}
+
+function get_param_date(tx: SQLite.SQLTransaction, name: string): Option<Date> {
+  tx.executeSql(
+    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+    [name],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  return undefined;
+}
+
+function get_param_other(
+  tx: SQLite.SQLTransaction,
+  name: string
+): Option<[string, Decimal]> {
+  tx.executeSql(
+    `SELECT name, field_struct_name, integer_value FROM params WHERE name = ? AND integer_value IS NOT NULL`,
+    [name],
+    (_tx, _resultSet) => {
+      console.log(_resultSet, _tx);
+    },
+    (_tx, _error) => {
+      console.log(_error, _tx);
+      // Check the significance of below returned boolean is as assumed
+      return false;
+    }
+  );
+  return undefined;
 }

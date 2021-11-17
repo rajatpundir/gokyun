@@ -1,12 +1,11 @@
 import { HashSet, Vector } from "prelude-ts";
+import { ErrMsg, errors } from "./errors";
 import {
   Result,
   Ok,
   unwrap,
   Err,
   CustomError,
-  errors,
-  Message,
   unwrap_array,
   apply,
 } from "./prelude";
@@ -49,7 +48,7 @@ export function validate_ownership_path(
       }
     }
   }
-  return new Err(new CustomError([errors.ErrUnexpected] as Message));
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
 export function get_permissions(
@@ -106,7 +105,7 @@ export function get_permissions(
           ...(nested_read_permissions as Array<Array<string>>)
         );
       } else {
-        return new Err(new CustomError([errors.ErrUnexpected] as Message));
+        return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
       }
     }
     for (let borrow_field_name of allowed_borrow_fields) {
@@ -141,7 +140,7 @@ export function get_permissions(
               ...(nested_read_permissions as Array<Array<string>>)
             );
           } else {
-            return new Err(new CustomError([errors.ErrUnexpected] as Message));
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         }
       }
@@ -152,7 +151,7 @@ export function get_permissions(
       HashSet.ofIterable(read_permissions.map((x) => Vector.ofIterable(x))),
     ]);
   }
-  return new Err(new CustomError([errors.ErrUnexpected] as Message));
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
 function get_permissions_for_owned_field(
@@ -242,13 +241,11 @@ function get_permissions_for_owned_field(
                 ] as [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]);
               }
             } else {
-              return new Err(
-                new CustomError([errors.ErrUnexpected] as Message)
-              );
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           }
         }
-        return new Err(new CustomError([errors.ErrUnexpected] as Message));
+        return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
       }
       if (borrow) {
         return new Ok([[], [...write_permissions, ...read_permissions]] as [
@@ -263,7 +260,7 @@ function get_permissions_for_owned_field(
       }
     }
   }
-  return new Err(new CustomError([errors.ErrUnexpected] as Message));
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
 export function get_paths(

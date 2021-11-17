@@ -1,8 +1,8 @@
 import { Vector, HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
-import { Message } from "./prelude";
 import { Option } from "./prelude";
+import { ErrMsg } from "./errors";
 
 // Ownership states multiple ways to prove ownership of a struct
 // Permissions are matched against proven ownerships to get allowed operations
@@ -51,7 +51,7 @@ export class Struct {
   uniqueness: ReadonlyArray<ReadonlyArray<string>>;
   permissions: StructPermissions;
   effects: StructEffects;
-  checks: Record<string, [BooleanLispExpression, Message]>;
+  checks: Record<string, [BooleanLispExpression, ErrMsg]>;
 
   constructor(
     name: string,
@@ -59,7 +59,7 @@ export class Struct {
     uniqueness: ReadonlyArray<ReadonlyArray<string>>,
     permissions: StructPermissions,
     effects: StructEffects,
-    checks: Record<string, [BooleanLispExpression, Message]>
+    checks: Record<string, [BooleanLispExpression, ErrMsg]>
   ) {
     this.name = name;
     this.fields = fields;
