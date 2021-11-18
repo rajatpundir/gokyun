@@ -36,7 +36,7 @@ import {
   get_param_text,
   remove_level,
   replace_param,
-  replace_paths,
+  replace_variable,
   useDB,
 } from "./main/utils/db";
 import { unwrap } from "./main/utils/prelude";
@@ -128,7 +128,7 @@ export default function App() {
       console.log("BEFORE REMOVED_VARS: ", q4);
       console.log("===============");
 
-      await replace_paths(
+      await replace_variable(
         new Decimal(1),
         new Date(),
         "A",

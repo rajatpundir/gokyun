@@ -1291,74 +1291,7 @@ export async function remove_level(id: Decimal): Promise<Result<[]>> {
   return new Ok([] as []);
 }
 
-export async function replace_variables(
-  level: Decimal,
-  requested_at: Date,
-  variables: ReadonlyArray<{
-    struct_name: string;
-    id: Decimal;
-    active: boolean;
-    created_at: Date;
-    updated_at: Date;
-  }>
-): Promise<Result<[]>> {
-  try {
-    for (let variable of variables) {
-      await execute_transaction(
-        `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
-        [
-          level.truncated().toString(),
-          variable.struct_name,
-          variable.id.truncated().toString(),
-          variable.active ? "1" : "0",
-          variable.created_at.getTime().toString(),
-          variable.updated_at.getTime().toString(),
-          requested_at.getTime().toString(),
-        ]
-      );
-    }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function delete_variables(
-  struct_name: string,
-  ids: ReadonlyArray<Decimal>
-): Promise<Result<[]>> {
-  try {
-    for (let id of ids) {
-      await execute_transaction(
-        `DELETE FROM "REMOVED_VARS" WHERE level = ? AND struct_name = ? AND id = 0;`,
-        [struct_name, id.truncated().toString()]
-      );
-    }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function remove_variables(
-  level: Decimal,
-  struct_name: string,
-  ids: ReadonlyArray<Decimal>
-): Promise<Result<[]>> {
-  try {
-    for (let id of ids) {
-      await execute_transaction(
-        `REPLACE INTO "REOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
-        [level.truncated().toString(), struct_name, id.truncated().toString()]
-      );
-    }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function replace_paths(
+export async function replace_variable(
   level: Decimal,
   requested_at: Date,
   struct_name: string,
@@ -1531,6 +1464,91 @@ export async function replace_paths(
           return _exhaustiveCheck;
         }
       }
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Ok([] as []);
+}
+
+export async function replace_variables(
+  level: Decimal,
+  requested_at: Date,
+  struct_name: string,
+  variables: ReadonlyArray<{
+    id: Decimal;
+    active: boolean;
+    created_at: Date;
+    updated_at: Date;
+    paths: Array<
+      [
+        Array<
+          [
+            string,
+            {
+              active: boolean;
+              created_at: Date;
+              updated_at: Date;
+              value: {
+                type: "other";
+                other: string;
+                value: Decimal;
+              };
+            }
+          ]
+        >,
+        [string, StrongEnum]
+      ]
+    >;
+  }>
+): Promise<Result<[]>> {
+  try {
+    for (let variable of variables) {
+      await replace_variable(
+        level,
+        requested_at,
+        struct_name,
+        variable.id,
+        variable.active,
+        variable.created_at,
+        variable.updated_at,
+        variable.paths
+      );
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Ok([] as []);
+}
+
+export async function remove_variables(
+  level: Decimal,
+  struct_name: string,
+  ids: ReadonlyArray<Decimal>
+): Promise<Result<[]>> {
+  try {
+    for (let id of ids) {
+      await execute_transaction(
+        `REPLACE INTO "REOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
+        [level.truncated().toString(), struct_name, id.truncated().toString()]
+      );
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Ok([] as []);
+}
+
+export async function delete_variables(
+  struct_name: string,
+  ids: ReadonlyArray<Decimal>
+): Promise<Result<[]>> {
+  try {
+    for (let id of ids) {
+      await execute_transaction(
+        `DELETE FROM "REMOVED_VARS" WHERE level = ? AND struct_name = ? AND id = 0;`,
+        [struct_name, id.truncated().toString()]
+      );
     }
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
