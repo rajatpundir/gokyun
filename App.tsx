@@ -35,8 +35,10 @@ import {
   get_param_other,
   get_param_text,
   remove_level,
+  remove_variables,
   replace_param,
   replace_variable,
+  replace_variables,
   useDB,
 } from "./main/utils/db";
 import { unwrap } from "./main/utils/prelude";
@@ -128,52 +130,101 @@ export default function App() {
       console.log("BEFORE REMOVED_VARS: ", q4);
       console.log("===============");
 
-      await replace_variable(
-        new Decimal(1),
-        new Date(),
-        "A",
-        new Decimal(1),
-        true,
-        new Date(),
-        new Date(),
-        [
-          [
-            [],
+      await create_level(new Decimal(1));
+
+      await replace_variables(new Decimal(0), new Date(), "A", [
+        {
+          id: new Decimal(1),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
             [
-              "a",
-              {
-                type: "str",
-                value: "wwwahhaatt",
-              },
-            ],
-          ],
-          [
-            [
+              [],
               [
-                "c",
+                "a",
                 {
-                  active: true,
-                  created_at: new Date(),
-                  updated_at: new Date(),
-                  value: {
-                    type: "other",
-                    other: "B",
-                    value: new Decimal(9),
-                  },
+                  type: "str",
+                  value: "wwwahhaatt",
                 },
               ],
             ],
             [
-              "x",
-              {
-                type: "other",
-                other: "W",
-                value: new Decimal(99),
-              },
+              [
+                [
+                  "c",
+                  {
+                    active: true,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    value: {
+                      type: "other",
+                      other: "B",
+                      value: new Decimal(9),
+                    },
+                  },
+                ],
+              ],
+              [
+                "x",
+                {
+                  type: "other",
+                  other: "W",
+                  value: new Decimal(99),
+                },
+              ],
             ],
           ],
-        ]
-      );
+        },
+        {
+          id: new Decimal(2),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "a",
+                {
+                  type: "str",
+                  value: "wwwahhaatt",
+                },
+              ],
+            ],
+            [
+              [
+                [
+                  "c",
+                  {
+                    active: true,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    value: {
+                      type: "other",
+                      other: "B",
+                      value: new Decimal(9),
+                    },
+                  },
+                ],
+              ],
+              [
+                "x",
+                {
+                  type: "other",
+                  other: "W",
+                  value: new Decimal(99),
+                },
+              ],
+            ],
+          ],
+        },
+      ]);
+
+      await remove_variables(new Decimal(0), "A", [
+        new Decimal(1),
+        new Decimal(2),
+      ]);
 
       console.log("===============");
       const w = await execute_transaction("SELECT * FROM LEVELS", []);

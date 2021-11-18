@@ -24,7 +24,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       { sql: "PRAGMA synchronous = 1;", args: [] },
       { sql: "PRAGMA foreign_keys = ON;", args: [] },
       { sql: "VACUUM;", args: [] },
-      // { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
+      { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "REMOVED_VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VALS";`, args: [] },
@@ -1527,28 +1527,20 @@ export async function remove_variables(
   ids: ReadonlyArray<Decimal>
 ): Promise<Result<[]>> {
   try {
-    for (let id of ids) {
-      await execute_transaction(
-        `REPLACE INTO "REOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
-        [level.truncated().toString(), struct_name, id.truncated().toString()]
-      );
-    }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function delete_variables(
-  struct_name: string,
-  ids: ReadonlyArray<Decimal>
-): Promise<Result<[]>> {
-  try {
-    for (let id of ids) {
-      await execute_transaction(
-        `DELETE FROM "REMOVED_VARS" WHERE level = ? AND struct_name = ? AND id = 0;`,
-        [struct_name, id.truncated().toString()]
-      );
+    if (level.equals(0)) {
+      for (let id of ids) {
+        await execute_transaction(
+          `DELETE FROM "VARS" WHERE level = 0 AND struct_name = ? AND id = ?;`,
+          [struct_name, id.truncated().toString()]
+        );
+      }
+    } else {
+      for (let id of ids) {
+        await execute_transaction(
+          `REPLACE INTO "REMOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
+          [level.truncated().toString(), struct_name, id.truncated().toString()]
+        );
+      }
     }
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
