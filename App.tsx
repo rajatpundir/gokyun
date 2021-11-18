@@ -223,7 +223,8 @@ export default function App() {
         },
         [
           [["a"], "str", undefined, []],
-          [["c"], "i32", undefined, []],
+          [["c"], "other", undefined, [], "B"],
+          [["c", "x"], "other", undefined, [], "B"],
         ],
         [new Decimal(10), new Decimal(0)]
       );
