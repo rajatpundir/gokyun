@@ -22,16 +22,24 @@ import {
 } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
 import { VariablesModal } from "./main/utils/variables_modal";
-import { Path, PathFilter, Struct } from "./main/utils/variable";
+import { Path, PathFilter, StrongEnum, Struct } from "./main/utils/variable";
 import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 import {
+  activate_level,
+  create_level,
+  deactivate_level,
+  execute_transaction,
+  get_max_level,
   get_param_other,
   get_param_text,
+  remove_level,
   replace_param,
+  replace_paths,
   useDB,
 } from "./main/utils/db";
+import { unwrap } from "./main/utils/prelude";
 
 declare global {
   namespace ReactNavigation {
@@ -101,21 +109,85 @@ export default function App() {
   const db = useDB();
 
   React.useEffect(() => {
+    // TODO:
+    // Test DB
+    // Put some dummy data in DB
+    // Make VariablesModal work with dummy data
     const x = async () => {
-      const x = await get_param_text("abc");
-      console.log("x", x);
-      console.log("========1=======");
-      console.log(
-        await replace_param("abc", {
-          type: "other",
-          other: "ytu8788",
-          value: new Decimal(99),
-        })
+      console.log("===============");
+      const q = await execute_transaction("SELECT * FROM LEVELS", []);
+      console.log("BEFORE LEVELS: ", q);
+      console.log("===============");
+      const q2 = await execute_transaction("SELECT * FROM VARS", []);
+      console.log("BEFORE VARS: ", q2);
+      console.log("===============");
+      const q3 = await execute_transaction("SELECT * FROM VALS", []);
+      console.log("BEFORE VALS: ", q3);
+      console.log("===============");
+      const q4 = await execute_transaction("SELECT * FROM REMOVED_VARS", []);
+      console.log("BEFORE REMOVED_VARS: ", q4);
+      console.log("===============");
+
+      await replace_paths(
+        new Decimal(1),
+        new Date(),
+        "A",
+        new Decimal(1),
+        true,
+        new Date(),
+        new Date(),
+        [
+          [
+            [],
+            [
+              "a",
+              {
+                type: "str",
+                value: "wwwahhaatt",
+              },
+            ],
+          ],
+          [
+            [
+              [
+                "c",
+                {
+                  active: true,
+                  created_at: new Date(),
+                  updated_at: new Date(),
+                  value: {
+                    type: "other",
+                    other: "B",
+                    value: new Decimal(9),
+                  },
+                },
+              ],
+            ],
+            [
+              "x",
+              {
+                type: "other",
+                other: "W",
+                value: new Decimal(99),
+              },
+            ],
+          ],
+        ]
       );
-      console.log("=======2========");
-      console.log(await get_param_other("abc"));
-      console.log("========3=======");
-      console.log(await get_param_other("ytu8788"));
+
+      console.log("===============");
+      const w = await execute_transaction("SELECT * FROM LEVELS", []);
+      console.log("AFTER LEVELS: ", w);
+      console.log("===============");
+      const w2 = await execute_transaction("SELECT * FROM VARS", []);
+      console.log("AFTER VARS: ", w2);
+      console.log("===============");
+      const w3 = await execute_transaction("SELECT * FROM VALS", []);
+      console.log("AFTER VALS: ", w3);
+      console.log("===============");
+      const w4 = await execute_transaction("SELECT * FROM REMOVED_VARS", []);
+      console.log("AFTER REMOVED_VARS: ", w4);
+      console.log("===============");
     };
     x();
   }, []);

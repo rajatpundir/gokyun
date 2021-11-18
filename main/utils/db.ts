@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { getState, subscribe } from "./store";
 import * as SQLite from "expo-sqlite";
-import React from "react";
 import {
   apply,
   CustomError,
@@ -9,7 +8,6 @@ import {
   fold,
   is_decimal,
   Ok,
-  Option,
   Result,
 } from "./prelude";
 import Decimal from "decimal.js";
@@ -26,11 +24,11 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       { sql: "PRAGMA synchronous = 1;", args: [] },
       { sql: "PRAGMA foreign_keys = ON;", args: [] },
       { sql: "VACUUM;", args: [] },
-      { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
+      // { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "REMOVED_VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VALS";`, args: [] },
-      // { sql: `DROP TABLE IF EXISTS "PARAMS";`, args: [] },
+      { sql: `DROP TABLE IF EXISTS "PARAMS";`, args: [] },
       {
         sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL DEFAULT 0, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
         args: [],
@@ -55,14 +53,6 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
         sql: `REPLACE INTO "LEVELS"("id", "active", "created_at") VALUES (?, ?, ?);`,
         args: [0, 1, 0],
       },
-      {
-        sql: `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
-        args: [0, "A", 1, 1, 0, 0, 0],
-      },
-      {
-        sql: `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
-        args: [0, "A", 1, "x", "i32", 62],
-      },
     ],
     false,
     () => {
@@ -82,7 +72,7 @@ export function useDB() {
   return db;
 }
 
-function execute_transaction(
+export function execute_transaction(
   sql: string,
   args: Array<string>
 ): Promise<SQLite.SQLResultSet> {
@@ -1238,11 +1228,29 @@ export function get_select_query(
   };
 }
 
-export async function create_level(): Promise<Result<[]>> {
+export async function get_max_level(): Promise<Result<Decimal>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT MAX("id") AS "max_id" FROM "LEVELS";`,
+      []
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("max_id" in result) {
+        return new Ok(new Decimal(result["max_id"]).truncated());
+      }
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+}
+
+export async function create_level(id: Decimal): Promise<Result<[]>> {
   try {
     await execute_transaction(
-      `INSERT INTO "LEVELS"("created_at") VALUES (?);`,
-      [new Date().getTime().toString()]
+      `INSERT INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
+      [id.truncated().toString(), new Date().getTime().toString()]
     );
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
@@ -1252,7 +1260,7 @@ export async function create_level(): Promise<Result<[]>> {
 
 export async function activate_level(id: Decimal): Promise<Result<[]>> {
   try {
-    await execute_transaction(`UPDATE "LEVELS" SET active = 0 WHERE id = ?;`, [
+    await execute_transaction(`UPDATE "LEVELS" SET active = 1 WHERE id = ?;`, [
       id.truncated().toString(),
     ]);
   } catch (err) {
@@ -1263,7 +1271,7 @@ export async function activate_level(id: Decimal): Promise<Result<[]>> {
 
 export async function deactivate_level(id: Decimal): Promise<Result<[]>> {
   try {
-    await execute_transaction(`UPDATE "LEVELS" SET active = 1 WHERE id = ?;`, [
+    await execute_transaction(`UPDATE "LEVELS" SET active = 0 WHERE id = ?;`, [
       id.truncated().toString(),
     ]);
   } catch (err) {
@@ -1358,9 +1366,9 @@ export async function replace_paths(
   active: boolean,
   created_at: Date,
   updated_at: Date,
-  paths: ReadonlyArray<
+  paths: Array<
     [
-      ReadonlyArray<
+      Array<
         [
           string,
           {
