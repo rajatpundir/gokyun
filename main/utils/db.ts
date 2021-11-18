@@ -192,18 +192,6 @@ type PathFilters = ReadonlyArray<
     ]
 >;
 
-type SelectQuery = {
-  type: "select";
-  select_stmt: string;
-  from_stmt: string;
-  where_stmt: string;
-  group_by_stmt: string;
-  order_by_stmt: string;
-  limit_offset_stmt: string;
-  stmt: string;
-  args: ReadonlyArray<string>;
-};
-
 export function get_select_query(
   struct_name: string,
   variable_filters: {
@@ -227,9 +215,7 @@ export function get_select_query(
   },
   path_filters: PathFilters,
   limit_offset: [Decimal, Decimal]
-): SelectQuery {
-  const args: Array<string> = [];
-
+): string {
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.min(acc, val[0].length)
   );
@@ -262,48 +248,59 @@ export function get_select_query(
     }
   });
   apply(undefined, () => {
-    const path_name_expression: string = Array.from(Array(join_count).keys())
+    const path_name_expression: string = Array.from(
+      Array(join_count + 1).keys()
+    )
       .map((x) => {
         const val_ref = x * 2 + 2;
-        return `IFNULL(v${val_ref}.field_name, "")`;
+        return `IFNULL(v${val_ref}.field_name, '')`;
       })
       .join(` || "." || `);
-    append_to_select_stmt(`${path_name_expression} AS path_name_expression`);
     path_filters.map((path_filter) => {
       const path: ReadonlyArray<string> = path_filter[0];
       const val_ref: number = path.length * 2;
       const field_struct_name = path_filter[1];
-      args.push(path.join("."));
-      args.push(path.join("."));
       const stmt = apply(undefined, () => {
         switch (field_struct_name) {
           case "str":
           case "lstr":
           case "clob": {
-            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.text_value) END) AS ?`;
+            return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+              "."
+            )}') THEN (v${val_ref}.text_value) END) AS '${path.join(".")}'`;
           }
           case "i32":
           case "u32":
           case "i64":
           case "u64": {
-            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+            return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${path.join(".")}'`;
           }
           case "idouble":
           case "udouble":
           case "idecimal":
           case "udecimal": {
-            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.real_value) END) AS ?`;
+            return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+              "."
+            )}') THEN (v${val_ref}.real_value) END) AS '${path.join(".")}'`;
           }
           case "bool": {
-            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+            return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${path.join(".")}'`;
           }
           case "date":
           case "time":
           case "timestamp": {
-            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+            return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${path.join(".")}'`;
           }
           case "other": {
-            return `MAX(CASE WHEN (path_name_expression = ?) THEN (v${val_ref}.integer_value) END) AS ?`;
+            return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${path.join(".")}'`;
           }
           default: {
             const _exhaustiveCheck: never = field_struct_name;
@@ -314,7 +311,7 @@ export function get_select_query(
       append_to_select_stmt(stmt);
     });
   });
-  console.log(select_stmt);
+  // console.log(select_stmt);
 
   var where_stmt: string = "WHERE ";
   const append_to_where_stmt = (stmt: string) => {
@@ -329,12 +326,10 @@ export function get_select_query(
 
   if (variable_filters.level !== undefined) {
     const value: Decimal = variable_filters.level;
-    args.push(value.truncated().toString());
-    stmt = "v1.level = ?";
+    stmt = `v1.level = '${value.truncated().toString()}'`;
     append_to_where_stmt(stmt);
   }
-  args.push(struct_name);
-  append_to_where_stmt(`v1.struct_name = ?`);
+  append_to_where_stmt(`v1.struct_name = '${struct_name}'`);
   append_to_where_stmt(`v1.active = ${variable_filters.active ? "1" : "0"}`);
 
   var from_stmt: string =
@@ -357,12 +352,10 @@ export function get_select_query(
         const path: ReadonlyArray<string> = path_filter[0];
         const field_struct_name = path_filter[1];
         if (i < path.length) {
-          args.push(path[i]);
-          args.push(field_struct_name);
           if (acc === "") {
-            return `(v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
+            return `(v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = '${field_struct_name}')`;
           } else {
-            return ` ${acc} OR (v${val_ref}.field_name = ? AND v${val_ref}.field_struct_name = ?)`;
+            return ` ${acc} OR (v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = ${field_struct_name})`;
           }
         }
         return acc;
@@ -374,7 +367,7 @@ export function get_select_query(
       }
     );
   }
-  console.log(from_stmt);
+  // console.log(from_stmt);
 
   // Process path filtering by their ops and values/other_paths
   const filters_stmt: Array<Array<string>> = [];
@@ -390,17 +383,16 @@ export function get_select_query(
         case ">":
         case "<": {
           const value = filter[1];
-          args.push(value.truncated().toString());
-          stmt = `v1.id ${op} ?`;
+          stmt = `v1.id ${op} '${value.truncated().toString()}'`;
           break;
         }
         case "between":
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          args.push(start_value.truncated().toString());
-          args.push(end_value.truncated().toString());
-          stmt = `v1.id BETWEEN ? AND ?`;
+          stmt = `v1.id BETWEEN '${start_value
+            .truncated()
+            .toString()}' AND '${end_value.truncated().toString()}'`;
           break;
         }
         default: {
@@ -430,17 +422,16 @@ export function get_select_query(
         case ">":
         case "<": {
           const value = filter[1];
-          args.push(value.getTime().toString());
-          stmt = `v1.created_at ${op} ?`;
+          stmt = `v1.created_at ${op} '${value.getTime().toString()}'`;
           break;
         }
         case "between":
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          args.push(start_value.getTime().toString());
-          args.push(end_value.getTime().toString());
-          stmt = `v1.created_at BETWEEN ? AND ?`;
+          stmt = `v1.created_at BETWEEN '${start_value
+            .getTime()
+            .toString()}' AND '${end_value.getTime().toString()}'`;
           break;
         }
         default: {
@@ -470,17 +461,16 @@ export function get_select_query(
         case ">":
         case "<": {
           const value = filter[1];
-          args.push(value.getTime().toString());
-          stmt = `v1.updated_at ${op} ?`;
+          stmt = `v1.updated_at ${op} '${value.getTime().toString()}'`;
           break;
         }
         case "between":
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          args.push(start_value.getTime().toString());
-          args.push(end_value.getTime().toString());
-          stmt = `v1.updated_at BETWEEN ? AND ?`;
+          stmt = `v1.updated_at BETWEEN '${start_value
+            .getTime()
+            .toString()}' AND '${end_value.getTime().toString()}'`;
           break;
         }
         default: {
@@ -527,9 +517,10 @@ export function get_select_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        args.push(path_field_name);
                         path_constraints.push(
-                          `v${path_field_index + 1}.field_name = ?`
+                          `v${
+                            path_field_index + 1
+                          }.field_name = '${path_field_name}'`
                         );
                       }
                       const referenced_val_ref = value.length;
@@ -538,8 +529,7 @@ export function get_select_query(
                       )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} v${referenced_val_ref}.text_value`;
                     });
                   } else {
-                    args.push(value);
-                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${op} ?`;
+                    return `v${val_ref}.field_struct_name = '${field_struct_name}' AND v${val_ref}.text_value ${op} '${value}`;
                   }
                 });
                 break;
@@ -558,18 +548,20 @@ export function get_select_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            args.push(path_field_name);
                             start_path_constraints.push(
-                              `v${path_field_index + 1}.field_name = ?`
+                              `v${
+                                path_field_index + 1
+                              }.field_name = '${path_field_name}'`
                             );
                           }
                           for (let [
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            args.push(path_field_name);
                             end_path_constraints.push(
-                              `v${path_field_index + 1}.field_name = ?`
+                              `v${
+                                path_field_index + 1
+                              }.field_name = '${path_field_name}'`
                             );
                           }
                           const referenced_start_val_ref = start_value.length;
@@ -589,18 +581,18 @@ export function get_select_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          args.push(path_field_name);
                           path_constraints.push(
-                            `v${path_field_index + 1}.field_name = ?`
+                            `v${
+                              path_field_index + 1
+                            }.field_name = '${path_field_name}'`
                           );
                         }
-                        args.push(end_value);
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
                         )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
                           op === "not_between" ? "NOT BETWEEN" : op
-                        } v${referenced_val_ref}.text_value AND ?`;
+                        } v${referenced_val_ref}.text_value AND '${end_value}'`;
                       });
                     }
                   } else {
@@ -610,25 +602,23 @@ export function get_select_query(
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          args.push(path_field_name);
                           path_constraints.push(
-                            `v${path_field_index + 1}.field_name = ?`
+                            `v${
+                              path_field_index + 1
+                            }.field_name = '${path_field_name}'`
                           );
                         }
-                        args.push(start_value);
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
                         )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
                           op === "not_between" ? "NOT BETWEEN" : op
-                        } ? AND v${referenced_val_ref}.text_value`;
+                        } '${start_value}' AND v${referenced_val_ref}.text_value`;
                       });
                     } else {
-                      args.push(start_value);
-                      args.push(end_value);
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.text_value ${
                         op === "not_between" ? "NOT BETWEEN" : op
-                      } ? AND ?`;
+                      } '${start_value}' AND '${end_value}'`;
                     }
                   }
                 });
@@ -674,25 +664,27 @@ export function get_select_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
-                    if (integer_fields.includes(field_struct_name)) {
-                      args.push(value.truncated().toString());
-                    } else {
-                      args.push(value.toString());
-                    }
                     return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                       integer_fields.includes(field_struct_name)
                         ? "integer_value"
                         : "real_value"
-                    } ${op} ?`;
+                    } ${op} '${apply(undefined, () => {
+                      if (integer_fields.includes(field_struct_name)) {
+                        return value.truncated().toString();
+                      } else {
+                        return value.toString();
+                      }
+                    })}'`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
                       for (let [
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        args.push(path_field_name);
                         path_constraints.push(
-                          `v${path_field_index + 1}.field_name = ?`
+                          `v${
+                            path_field_index + 1
+                          }.field_name = '${path_field_name}'`
                         );
                       }
                       const referenced_val_ref = value.length;
@@ -719,33 +711,37 @@ export function get_select_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      if (integer_fields.includes(field_struct_name)) {
-                        args.push(start_value.truncated().toString());
-                        args.push(end_value.truncated().toString());
-                      } else {
-                        args.push(start_value.toString());
-                        args.push(end_value.toString());
-                      }
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.${
                         integer_fields.includes(field_struct_name)
                           ? "integer_value"
                           : "real_value"
-                      } ${op === "not_between" ? "NOT BETWEEN" : op} ? AND ?`;
+                      } ${op === "not_between" ? "NOT BETWEEN" : op} '${apply(
+                        undefined,
+                        () => {
+                          if (integer_fields.includes(field_struct_name)) {
+                            return start_value.truncated().toString();
+                          } else {
+                            return start_value.toString();
+                          }
+                        }
+                      )}' AND '${apply(undefined, () => {
+                        if (integer_fields.includes(field_struct_name)) {
+                          return end_value.truncated().toString();
+                        } else {
+                          return end_value.toString();
+                        }
+                      })}'`;
                     } else {
                       return apply([] as Array<string>, (path_constraints) => {
                         for (let [
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          args.push(path_field_name);
                           path_constraints.push(
-                            `v${path_field_index + 1}.field_name = ?`
+                            `v${
+                              path_field_index + 1
+                            }.field_name = '${path_field_name}'`
                           );
-                        }
-                        if (integer_fields.includes(field_struct_name)) {
-                          args.push(start_value.truncated().toString());
-                        } else {
-                          args.push(start_value.toString());
                         }
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
@@ -760,9 +756,16 @@ export function get_select_query(
                           integer_fields.includes(field_struct_name)
                             ? "integer_value"
                             : "real_value"
-                        } ${
-                          op === "not_between" ? "NOT BETWEEN" : op
-                        } ? AND v${referenced_val_ref}.real_value))`;
+                        } ${op === "not_between" ? "NOT BETWEEN" : op} '${apply(
+                          undefined,
+                          () => {
+                            if (integer_fields.includes(field_struct_name)) {
+                              return start_value.truncated().toString();
+                            } else {
+                              return start_value.toString();
+                            }
+                          }
+                        )}' AND v${referenced_val_ref}.real_value))`;
                       });
                     }
                   } else {
@@ -772,15 +775,11 @@ export function get_select_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          args.push(path_field_name);
                           path_constraints.push(
-                            `v${path_field_index + 1}.field_name = ?`
+                            `v${
+                              path_field_index + 1
+                            }.field_name = '${path_field_name}'`
                           );
-                        }
-                        if (integer_fields.includes(field_struct_name)) {
-                          args.push(end_value.truncated().toString());
-                        } else {
-                          args.push(end_value.toString());
                         }
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
@@ -797,7 +796,16 @@ export function get_select_query(
                             : "real_value"
                         } ${
                           op === "not_between" ? "NOT BETWEEN" : op
-                        } v${referenced_val_ref}.real_value AND ?))`;
+                        } v${referenced_val_ref}.real_value AND '${apply(
+                          undefined,
+                          () => {
+                            if (integer_fields.includes(field_struct_name)) {
+                              return end_value.truncated().toString();
+                            } else {
+                              return end_value.toString();
+                            }
+                          }
+                        )}'))`;
                       });
                     } else {
                       return apply(
@@ -807,18 +815,20 @@ export function get_select_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            args.push(path_field_name);
                             start_path_constraints.push(
-                              `v${path_field_index + 1}.field_name = ?`
+                              `v${
+                                path_field_index + 1
+                              }.field_name = '${path_field_name}'`
                             );
                           }
                           for (let [
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            args.push(path_field_name);
                             end_path_constraints.push(
-                              `v${path_field_index + 1}.field_name = ?`
+                              `v${
+                                path_field_index + 1
+                              }.field_name = '${path_field_name}'`
                             );
                           }
                           const referenced_start_val_ref = start_value.length;
@@ -893,9 +903,10 @@ export function get_select_query(
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        args.push(path_field_name);
                         path_constraints.push(
-                          `v${path_field_index + 1}.field_name = ?`
+                          `v${
+                            path_field_index + 1
+                          }.field_name = '${path_field_name}'`
                         );
                       }
                       const referenced_val_ref = value.length;
@@ -904,8 +915,9 @@ export function get_select_query(
                       )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} v${referenced_val_ref}.integer_value`;
                     });
                   } else {
-                    args.push(value ? "1" : "0");
-                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ${
+                      value ? "1" : "0"
+                    }`;
                   }
                 });
                 break;
@@ -944,17 +956,19 @@ export function get_select_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (value instanceof Date) {
-                    args.push(value.getTime().toString());
-                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} '${value
+                      .getTime()
+                      .toString()}'`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
                       for (let [
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        args.push(path_field_name);
                         path_constraints.push(
-                          `v${path_field_index + 1}.field_name = ?`
+                          `v${
+                            path_field_index + 1
+                          }.field_name = '${path_field_name}'`
                         );
                       }
                       const referenced_val_ref = value.length;
@@ -973,29 +987,27 @@ export function get_select_query(
                 stmt = apply(undefined, () => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      args.push(start_value.toString());
-                      args.push(end_value.toString());
                       return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${
                         op === "not_between" ? "NOT BETWEEN" : op
-                      } ? AND ?`;
+                      } '${start_value.toString()}' AND '${end_value.toString()}'`;
                     } else {
                       return apply([] as Array<string>, (path_constraints) => {
                         for (let [
                           path_field_index,
                           path_field_name,
                         ] of end_value.entries()) {
-                          args.push(path_field_name);
                           path_constraints.push(
-                            `v${path_field_index + 1}.field_name = ?`
+                            `v${
+                              path_field_index + 1
+                            }.field_name = '${path_field_name}'`
                           );
                         }
-                        args.push(start_value.toString());
                         const referenced_val_ref = end_value.length;
                         return `${path_constraints.join(
                           " AND "
                         )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND (v${val_ref}.integer_value ${
                           op === "not_between" ? "NOT BETWEEN" : op
-                        } ? AND v${referenced_val_ref}.integer_value)`;
+                        } '${start_value.toString()}' AND v${referenced_val_ref}.integer_value)`;
                       });
                     }
                   } else {
@@ -1005,18 +1017,18 @@ export function get_select_query(
                           path_field_index,
                           path_field_name,
                         ] of start_value.entries()) {
-                          args.push(path_field_name);
                           path_constraints.push(
-                            `v${path_field_index + 1}.field_name = ?`
+                            `v${
+                              path_field_index + 1
+                            }.field_name = '${path_field_name}'`
                           );
                         }
-                        args.push(end_value.toString());
                         const referenced_val_ref = start_value.length;
                         return `${path_constraints.join(
                           " AND "
                         )} AND v${referenced_val_ref}.integer_value IS NOT NULL AND v${val_ref}.field_struct_name = "${field_struct_name}" AND (v${val_ref}.integer_value ${
                           op === "not_between" ? "NOT BETWEEN" : op
-                        } v${referenced_val_ref}.integer_value AND ?)`;
+                        } v${referenced_val_ref}.integer_value AND '${end_value.toString()}')`;
                       });
                     } else {
                       return apply(
@@ -1026,18 +1038,20 @@ export function get_select_query(
                             path_field_index,
                             path_field_name,
                           ] of start_value.entries()) {
-                            args.push(path_field_name);
                             start_path_constraints.push(
-                              `v${path_field_index + 1}.field_name = ?`
+                              `v${
+                                path_field_index + 1
+                              }.field_name = '${path_field_name}'`
                             );
                           }
                           for (let [
                             path_field_index,
                             path_field_name,
                           ] of end_value.entries()) {
-                            args.push(path_field_name);
                             end_path_constraints.push(
-                              `v${path_field_index + 1}.field_name = ?`
+                              `v${
+                                path_field_index + 1
+                              }.field_name = '${path_field_name}'`
                             );
                           }
                           const referenced_start_val_ref = start_value.length;
@@ -1085,17 +1099,19 @@ export function get_select_query(
                 const value = filter[1];
                 stmt = apply(undefined, () => {
                   if (is_decimal(value)) {
-                    args.push(value.truncated().toString());
-                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} ?`;
+                    return `v${val_ref}.field_struct_name = "${field_struct_name}" AND v${val_ref}.integer_value ${op} '${value
+                      .truncated()
+                      .toString()}'`;
                   } else {
                     return apply([] as Array<string>, (path_constraints) => {
                       for (let [
                         path_field_index,
                         path_field_name,
                       ] of value.entries()) {
-                        args.push(path_field_name);
                         path_constraints.push(
-                          `v${path_field_index + 1}.field_name = ?`
+                          `v${
+                            path_field_index + 1
+                          }.field_name = '${path_field_name}'`
                         );
                       }
                       const referenced_val_ref = value.length;
@@ -1130,8 +1146,13 @@ export function get_select_query(
       }
     }
   }
-  append_to_where_stmt(
-    `${filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`
+  apply(
+    `${filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    (it) => {
+      if (it !== "") {
+        append_to_where_stmt(it);
+      }
+    }
   );
 
   var group_by_stmt: string = "GROUP BY ";
@@ -1144,7 +1165,7 @@ export function get_select_query(
       }
     });
   };
-  for (let i of Array.from(Array(join_count).keys())) {
+  for (let i of Array.from(Array(join_count + 1).keys())) {
     const var_ref = i * 2 + 1;
     append_to_group_by_stmt(`v${var_ref}.level`);
     append_to_group_by_stmt(`v${var_ref}.struct_name`);
@@ -1193,14 +1214,13 @@ export function get_select_query(
         if (path_filter.sort_option !== undefined) {
           const path: ReadonlyArray<string> = path_filter.path;
           const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
-          args.push(path.join("."));
-          append_to_order_by_stmt(`? ${sort_order}`);
+          append_to_order_by_stmt(`${path.join(".")} ${sort_order}`);
         }
       }
     }
   );
   append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
-  console.log(order_by_stmt);
+  // console.log(order_by_stmt);
 
   const limit_offset_stmt: string = apply(undefined, () => {
     if (limit_offset !== undefined) {
@@ -1210,22 +1230,12 @@ export function get_select_query(
     }
     return "";
   });
-  console.log(limit_offset_stmt);
+  // console.log(limit_offset_stmt);
 
   const final_stmt = `${select_stmt} ${from_stmt} ${where_stmt} ${group_by_stmt} ${order_by_stmt} ${limit_offset_stmt};`;
-  console.log(final_stmt);
+  // console.log(final_stmt);
 
-  return {
-    type: "select",
-    select_stmt: select_stmt,
-    from_stmt: from_stmt,
-    where_stmt: where_stmt,
-    group_by_stmt: group_by_stmt,
-    order_by_stmt: order_by_stmt,
-    limit_offset_stmt: limit_offset_stmt,
-    stmt: final_stmt,
-    args: args,
-  };
+  return final_stmt;
 }
 
 export async function get_max_level(): Promise<Result<Decimal>> {

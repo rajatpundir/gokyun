@@ -27,21 +27,12 @@ import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 import {
-  activate_level,
   create_level,
-  deactivate_level,
   execute_transaction,
-  get_max_level,
-  get_param_other,
-  get_param_text,
-  remove_level,
-  remove_variables,
-  replace_param,
-  replace_variable,
+  get_select_query,
   replace_variables,
   useDB,
 } from "./main/utils/db";
-import { unwrap } from "./main/utils/prelude";
 
 declare global {
   namespace ReactNavigation {
@@ -221,24 +212,41 @@ export default function App() {
         },
       ]);
 
-      await remove_variables(new Decimal(0), "A", [
-        new Decimal(1),
-        new Decimal(2),
-      ]);
+      const a = get_select_query(
+        "A",
+        {
+          active: true,
+          level: undefined,
+          id: [],
+          created_at: [],
+          updated_at: [],
+        },
+        [
+          [["a"], "str", undefined, []],
+          [["c"], "i32", undefined, []],
+        ],
+        [new Decimal(10), new Decimal(0)]
+      );
+
+      console.log(a);
+
+      const s = await execute_transaction(a, []);
+
+      console.log("RESULTS ARE: ", s);
 
       console.log("===============");
-      const w = await execute_transaction("SELECT * FROM LEVELS", []);
-      console.log("AFTER LEVELS: ", w);
-      console.log("===============");
-      const w2 = await execute_transaction("SELECT * FROM VARS", []);
-      console.log("AFTER VARS: ", w2);
-      console.log("===============");
-      const w3 = await execute_transaction("SELECT * FROM VALS", []);
-      console.log("AFTER VALS: ", w3);
-      console.log("===============");
-      const w4 = await execute_transaction("SELECT * FROM REMOVED_VARS", []);
-      console.log("AFTER REMOVED_VARS: ", w4);
-      console.log("===============");
+      // const w = await execute_transaction("SELECT * FROM LEVELS", []);
+      // console.log("AFTER LEVELS: ", w);
+      // console.log("===============");
+      // const w2 = await execute_transaction("SELECT * FROM VARS", []);
+      // console.log("AFTER VARS: ", w2);
+      // console.log("===============");
+      // const w3 = await execute_transaction("SELECT * FROM VALS", []);
+      // console.log("AFTER VALS: ", w3);
+      // console.log("===============");
+      // const w4 = await execute_transaction("SELECT * FROM REMOVED_VARS", []);
+      // console.log("AFTER REMOVED_VARS: ", w4);
+      // console.log("===============");
     };
     x();
   }, []);
