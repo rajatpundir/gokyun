@@ -123,7 +123,7 @@ export default function App() {
 
       await create_level(new Decimal(1));
 
-      await replace_variables(new Decimal(0), new Date(), "A", [
+      await replace_variables(new Decimal(0), new Date(), "B", [
         {
           id: new Decimal(1),
           active: true,
@@ -136,32 +136,27 @@ export default function App() {
                 "a",
                 {
                   type: "str",
-                  value: "wwwahhaatt",
+                  value: "qq",
                 },
               ],
             ],
             [
+              [],
               [
-                [
-                  "c",
-                  {
-                    active: true,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    value: {
-                      type: "other",
-                      other: "B",
-                      value: new Decimal(9),
-                    },
-                  },
-                ],
-              ],
-              [
-                "x",
+                "b",
                 {
-                  type: "other",
-                  other: "W",
-                  value: new Decimal(99),
+                  type: "i32",
+                  value: new Decimal(32),
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "c",
+                {
+                  type: "udecimal",
+                  value: new Decimal(24.64),
                 },
               ],
             ],
@@ -179,38 +174,265 @@ export default function App() {
                 "a",
                 {
                   type: "str",
-                  value: "wwwahhaatt",
+                  value: "ww",
                 },
               ],
             ],
             [
+              [],
               [
-                [
-                  "c",
-                  {
-                    active: true,
-                    created_at: new Date(),
-                    updated_at: new Date(),
-                    value: {
-                      type: "other",
-                      other: "B",
-                      value: new Decimal(9),
-                    },
-                  },
-                ],
-              ],
-              [
-                "x",
+                "b",
                 {
-                  type: "other",
-                  other: "W",
-                  value: new Decimal(99),
+                  type: "i32",
+                  value: new Decimal(33),
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "c",
+                {
+                  type: "udecimal",
+                  value: new Decimal(85.73),
+                },
+              ],
+            ],
+          ],
+        },
+        {
+          id: new Decimal(3),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "a",
+                {
+                  type: "str",
+                  value: "ee",
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "b",
+                {
+                  type: "i32",
+                  value: new Decimal(34),
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "c",
+                {
+                  type: "udecimal",
+                  value: new Decimal(67.98),
                 },
               ],
             ],
           ],
         },
       ]);
+
+      await replace_variables(new Decimal(0), new Date(), "C", [
+        {
+          id: new Decimal(1),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "q",
+                {
+                  type: "str",
+                  value: "cc1",
+                },
+              ],
+            ],
+          ],
+        },
+        {
+          id: new Decimal(2),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "q",
+                {
+                  type: "str",
+                  value: "cc2",
+                },
+              ],
+            ],
+          ],
+        },
+        {
+          id: new Decimal(3),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "q",
+                {
+                  type: "str",
+                  value: "cc3",
+                },
+              ],
+            ],
+          ],
+        },
+      ]);
+
+      await replace_variables(new Decimal(0), new Date(), "A", [
+        {
+          id: new Decimal(1),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "x",
+                {
+                  type: "str",
+                  value: "aa1",
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "y",
+                {
+                  type: "other",
+                  other: "B",
+                  value: new Decimal(1),
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "z",
+                {
+                  type: "other",
+                  other: "C",
+                  value: new Decimal(1),
+                },
+              ],
+            ],
+          ],
+        },
+        {
+          id: new Decimal(2),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "x",
+                {
+                  type: "str",
+                  value: "aa1",
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "y",
+                {
+                  type: "other",
+                  other: "B",
+                  value: new Decimal(2),
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "z",
+                {
+                  type: "other",
+                  other: "C",
+                  value: new Decimal(2),
+                },
+              ],
+            ],
+          ],
+        },
+        {
+          id: new Decimal(3),
+          active: true,
+          created_at: new Date(),
+          updated_at: new Date(),
+          paths: [
+            [
+              [],
+              [
+                "x",
+                {
+                  type: "str",
+                  value: "aa1",
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "y",
+                {
+                  type: "other",
+                  other: "B",
+                  value: new Decimal(3),
+                },
+              ],
+            ],
+            [
+              [],
+              [
+                "z",
+                {
+                  type: "other",
+                  other: "C",
+                  value: new Decimal(3),
+                },
+              ],
+            ],
+          ],
+        },
+      ]);
+
+      console.log("===============");
+      const w = await execute_transaction("SELECT * FROM LEVELS", []);
+      console.log("AFTER LEVELS: ", w);
+      console.log("===============");
+      const w2 = await execute_transaction("SELECT * FROM VARS", []);
+      console.log("AFTER VARS: ", w2);
+      console.log("===============");
+      const w3 = await execute_transaction("SELECT * FROM VALS", []);
+      console.log("AFTER VALS: ", w3);
+      console.log("===============");
+      const w4 = await execute_transaction("SELECT * FROM REMOVED_VARS", []);
+      console.log("AFTER REMOVED_VARS: ", w4);
+      console.log("===============");
 
       const a = get_select_query(
         "A",
@@ -222,9 +444,13 @@ export default function App() {
           updated_at: [],
         },
         [
-          [["a"], "str", undefined, []],
-          [["c"], "other", undefined, [], "B"],
-          [["c", "x"], "other", undefined, [], "B"],
+          [["x"], "str", undefined, []],
+          [["y"], "other", undefined, [], "B"],
+          [["y", "a"], "str", undefined, []],
+          [["y", "b"], "i32", undefined, []],
+          [["y", "c"], "udecimal", undefined, []],
+          [["z"], "other", undefined, [], "C"],
+          [["z", "q"], "str", undefined, []],
         ],
         [new Decimal(10), new Decimal(0)]
       );
@@ -236,18 +462,6 @@ export default function App() {
       console.log("RESULTS ARE: ", s);
 
       console.log("===============");
-      // const w = await execute_transaction("SELECT * FROM LEVELS", []);
-      // console.log("AFTER LEVELS: ", w);
-      // console.log("===============");
-      // const w2 = await execute_transaction("SELECT * FROM VARS", []);
-      // console.log("AFTER VARS: ", w2);
-      // console.log("===============");
-      // const w3 = await execute_transaction("SELECT * FROM VALS", []);
-      // console.log("AFTER VALS: ", w3);
-      // console.log("===============");
-      // const w4 = await execute_transaction("SELECT * FROM REMOVED_VARS", []);
-      // console.log("AFTER REMOVED_VARS: ", w4);
-      // console.log("===============");
     };
     x();
   }, []);

@@ -14,6 +14,7 @@ import Decimal from "decimal.js";
 import { StrongEnum } from "./variable";
 import { ErrMsg, errors } from "./errors";
 import * as FileSystem from "expo-file-system";
+import { HashSet, Vector } from "prelude-ts";
 
 const db_name: string = "test1.db";
 
@@ -220,46 +221,46 @@ export function get_select_query(
     Math.max(acc, val[0].length)
   );
 
-  var select_stmt: string = "SELECT ";
+  var select_stmt: string = "SELECT \n";
   const append_to_select_stmt = (stmt: string) => {
     select_stmt += apply(undefined, () => {
-      if (select_stmt === "SELECT ") {
-        return `${stmt}`;
+      if (select_stmt === "SELECT \n") {
+        return ` ${stmt}`;
       } else {
-        return `, ${stmt}`;
+        return `,\n ${stmt}`;
       }
     });
   };
   apply(undefined, () => {
-    append_to_select_stmt("MAX(v1.level) AS _level");
+    append_to_select_stmt("v1.level AS _level");
     append_to_select_stmt("v1.struct_name AS _struct_name");
     append_to_select_stmt("v1.id AS _id");
     append_to_select_stmt("v1.active AS _active");
     append_to_select_stmt("v1.created_at AS _created_at");
     append_to_select_stmt("v1.updated_at AS _updated_at");
     append_to_select_stmt("v1.requested_at AS _requested_at");
-    for (let i of Array.from(Array(join_count).keys())) {
-      if (i !== 0) {
-        const var_ref = i * 2 + 1;
-        append_to_select_stmt(`MAX(v${var_ref}.level) AS _level_${var_ref}`);
-        append_to_select_stmt(
-          `v${var_ref}.struct_name AS _struct_name_${var_ref}`
-        );
-        append_to_select_stmt(`v${var_ref}.id AS _id_${var_ref}`);
-      }
-    }
   });
   apply(undefined, () => {
-    const path_name_expression: string = Array.from(Array(join_count).keys())
-      .map((x) => {
-        const val_ref = x * 2 + 2;
-        return `IFNULL(v${val_ref}.field_name, '')`;
-      })
-      .join(` || '.' || `);
+    const get_path_name_expression = (n: number) => {
+      return Array.from(Array(n).keys())
+        .map((x) => {
+          const val_ref = x * 2 + 2;
+          return `IFNULL(v${val_ref}.field_name, '')`;
+        })
+        .join(` || '.' || `);
+    };
+    var intermediate_paths = HashSet.of<Vector<string>>();
     path_filters.map((path_filter) => {
       const path: ReadonlyArray<string> = path_filter[0];
       const val_ref: number = path.length * 2;
       const field_struct_name = path_filter[1];
+      const path_name_expression = get_path_name_expression(path.length);
+      if (path.length > 1) {
+        const intermediate_path = Vector.ofIterable(
+          path.slice(0, path.length - 1)
+        );
+        intermediate_paths = intermediate_paths.add(intermediate_path);
+      }
       const stmt = apply(undefined, () => {
         switch (field_struct_name) {
           case "str":
@@ -310,8 +311,112 @@ export function get_select_query(
       });
       append_to_select_stmt(stmt);
     });
+    console.log(intermediate_paths.toArray().map((x) => x.toArray()));
+    for (let intermediate_path of intermediate_paths) {
+      const var_ref: number = (intermediate_path.length() - 1) * 2 + 1;
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(".")}') THEN (v${var_ref}.id) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(".")}') THEN (v${var_ref}.active) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._active'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(
+            "."
+          )}') THEN (v${var_ref}.created_at) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._created_at'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(
+            "."
+          )}') THEN (v${var_ref}.updated_at) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._updated_at'`
+      );
+      if (intermediate_path.length() > 1) {
+        for (let i = intermediate_path.length(); i > 0; i--) {
+          const temp_path = Vector.ofIterable(
+            intermediate_path.toArray().slice(0, i)
+          );
+          if (
+            !intermediate_paths.contains(temp_path) &&
+            !HashSet.ofIterable(
+              path_filters.map((x) => Vector.ofIterable(x[0]))
+            ).contains(temp_path)
+          ) {
+            const temp_var_ref: number =
+              (intermediate_path.length() - 1) * 2 + 1;
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.id) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}'`
+            );
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.active) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}._active'`
+            );
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.created_at) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}._created_at'`
+            );
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.updated_at) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}._updated_at'`
+            );
+          }
+        }
+      }
+    }
   });
-  // console.log(select_stmt);
+  console.log(select_stmt, "\n");
 
   var where_stmt: string = "WHERE ";
   const append_to_where_stmt = (stmt: string) => {
@@ -333,14 +438,14 @@ export function get_select_query(
   append_to_where_stmt(`v1.active = ${variable_filters.active ? "1" : "0"}`);
 
   var from_stmt: string =
-    "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
+    "\nFROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
   const append_to_from_stmt = (var_ref: number) => {
     const prev_val_ref = var_ref - 1;
     const next_val_ref = var_ref + 1;
-    from_stmt += ` LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
-    from_stmt += ` LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
+    from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
+    from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
     append_to_where_stmt(
-      `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level >= rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
+      `\n NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level >= rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
     );
   };
   console.log("JOIN COUNT: ", join_count);
@@ -358,7 +463,7 @@ export function get_select_query(
           if (acc === "") {
             return `(v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = '${field_struct_name}')`;
           } else {
-            return ` ${acc} OR (v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = '${field_struct_name}')`;
+            return `${acc} OR (v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = '${field_struct_name}')`;
           }
         }
         return acc;
@@ -1158,22 +1263,7 @@ export function get_select_query(
     }
   );
 
-  var group_by_stmt: string = "GROUP BY ";
-  const append_to_group_by_stmt = (stmt: string) => {
-    group_by_stmt += apply(undefined, () => {
-      if (group_by_stmt === "GROUP BY ") {
-        return `${stmt}`;
-      } else {
-        return `, ${stmt}`;
-      }
-    });
-  };
-  for (let i of Array.from(Array(join_count).keys())) {
-    const var_ref = i * 2 + 1;
-    append_to_group_by_stmt(`v${var_ref}.level`);
-    append_to_group_by_stmt(`v${var_ref}.struct_name`);
-    append_to_group_by_stmt(`v${var_ref}.id`);
-  }
+  const group_by_stmt: string = "GROUP BY v1.level, v1.struct_name, v1.id";
 
   var order_by_stmt: string = "ORDER BY ";
   const append_to_order_by_stmt = (stmt: string) => {
@@ -1235,7 +1325,7 @@ export function get_select_query(
   });
   // console.log(limit_offset_stmt);
 
-  const final_stmt = `${select_stmt} ${from_stmt} ${where_stmt} ${group_by_stmt} ${order_by_stmt} ${limit_offset_stmt};`;
+  const final_stmt = `${select_stmt} ${from_stmt} WHERE v1.struct_name = '${struct_name}'  ${group_by_stmt}  ${limit_offset_stmt};`;
   // console.log(final_stmt);
 
   return final_stmt;
