@@ -442,18 +442,16 @@ export function get_select_query(
   append_to_where_stmt(
     `NOT EXISTS(SELECT 1 FROM removed_vars AS rv1 INNER JOIN levels AS rvl1 ON (rv1.level = rvl1.id) WHERE (rvl1.active = 1 AND v1.level > rv1.level AND rv1.struct_name = v1.struct_name AND rv1.id = v1.id))`
   );
-  const append_to_from_stmt = (var_ref: number) => {
+  for (let i = 1; i < join_count; i++) {
+    let var_ref = i * 2 + 1;
     const prev_val_ref = var_ref - 1;
     const next_val_ref = var_ref + 1;
     from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
     from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
+    append_to_where_stmt(`v${prev_val_ref}.level >= v${var_ref}.level`);
     append_to_where_stmt(
       `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level > rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
     );
-  };
-  // console.log("JOIN COUNT: ", join_count);
-  for (let i = 1; i < join_count; i++) {
-    append_to_from_stmt(i * 2 + 1);
   }
   append_to_where_stmt(
     path_filters
