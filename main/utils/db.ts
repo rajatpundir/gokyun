@@ -416,7 +416,7 @@ export function get_select_query(
       }
     }
   });
-  console.log(select_stmt, "\n");
+  // console.log(select_stmt, "\n");
 
   var where_stmt: string = "WHERE ";
   const append_to_where_stmt = (stmt: string) => {
@@ -424,7 +424,7 @@ export function get_select_query(
       if (where_stmt === "WHERE ") {
         return `(${stmt})`;
       } else {
-        return ` AND (${stmt})`;
+        return `\n AND (${stmt})`;
       }
     });
   };
@@ -438,43 +438,51 @@ export function get_select_query(
   append_to_where_stmt(`v1.active = ${variable_filters.active ? "1" : "0"}`);
 
   var from_stmt: string =
-    "\nFROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
+    "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
+  append_to_where_stmt(
+    `NOT EXISTS(SELECT 1 FROM removed_vars AS rv1 INNER JOIN levels AS rvl1 ON (rv1.level = rvl1.id) WHERE (rvl1.active = 1 AND v1.level > rv1.level AND rv1.struct_name = v1.struct_name AND rv1.id = v1.id))`
+  );
   const append_to_from_stmt = (var_ref: number) => {
     const prev_val_ref = var_ref - 1;
     const next_val_ref = var_ref + 1;
     from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
     from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
     append_to_where_stmt(
-      `\n NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level >= rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
+      `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level > rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
     );
   };
-  console.log("JOIN COUNT: ", join_count);
-  for (let i = 0; i < join_count; i++) {
-    const var_ref = i * 2 + 1;
-    if (i !== 0) {
-      append_to_from_stmt(var_ref);
-    }
-    const val_ref = var_ref + 1;
-    apply(
-      fold("", path_filters, (acc, path_filter) => {
-        const path: ReadonlyArray<string> = path_filter[0];
-        const field_struct_name = path_filter[1];
-        if (i < path.length) {
-          if (acc === "") {
-            return `(v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = '${field_struct_name}')`;
-          } else {
-            return `${acc} OR (v${val_ref}.field_name = '${path[i]}' AND v${val_ref}.field_struct_name = '${field_struct_name}')`;
-          }
-        }
-        return acc;
-      }),
-      (field_name_filter_stmt) => {
-        if (field_name_filter_stmt !== "") {
-          append_to_where_stmt(field_name_filter_stmt);
-        }
-      }
-    );
+  // console.log("JOIN COUNT: ", join_count);
+  for (let i = 1; i < join_count; i++) {
+    append_to_from_stmt(i * 2 + 1);
   }
+  append_to_where_stmt(
+    path_filters
+      .map((path_filter) => {
+        const path: ReadonlyArray<string> = path_filter[0];
+        const path_length: number = path.length;
+        let stmt = path
+          .slice(0, path.length - 1)
+          .map((field_name, i) => `v${i * 2 + 2}.field_name = '${path[i]}'`)
+          .join(" AND ");
+        const field_struct_name = apply(path_filter[1], (it) => {
+          if (path_filter[1] === "other") {
+            return path_filter[4];
+          }
+          return it;
+        });
+        if (stmt !== "") {
+          stmt += " AND ";
+        }
+        stmt += `v${(path.length - 1) * 2 + 2}.field_name = '${
+          path[path.length - 1]
+        }' AND v${
+          (path.length - 1) * 2 + 2
+        }.field_struct_name = '${field_struct_name}'`;
+        return `(${stmt})`;
+      })
+      .join(" OR ")
+  );
+
   // console.log(from_stmt);
 
   // Process path filtering by their ops and values/other_paths
@@ -1325,7 +1333,7 @@ export function get_select_query(
   });
   // console.log(limit_offset_stmt);
 
-  const final_stmt = `${select_stmt} ${from_stmt} WHERE v1.struct_name = '${struct_name}'  ${group_by_stmt}  ${limit_offset_stmt};`;
+  const final_stmt = `${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt}  \n\n${limit_offset_stmt};`;
   // console.log(final_stmt);
 
   return final_stmt;

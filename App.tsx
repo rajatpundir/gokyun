@@ -27,9 +27,11 @@ import { HashSet, Vector } from "prelude-ts";
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 import {
+  activate_level,
   create_level,
   execute_transaction,
   get_select_query,
+  remove_variables,
   replace_variables,
   useDB,
 } from "./main/utils/db";
@@ -103,8 +105,8 @@ export default function App() {
 
   React.useEffect(() => {
     // TODO:
-    // Test DB
-    // Put some dummy data in DB
+    // Ordering
+    // Test filters
     // Make VariablesModal work with dummy data
     const x = async () => {
       console.log("===============");
@@ -122,8 +124,12 @@ export default function App() {
       console.log("===============");
 
       await create_level(new Decimal(1));
+      await create_level(new Decimal(2));
+      activate_level(new Decimal(1));
 
-      await replace_variables(new Decimal(0), new Date(), "B", [
+      const level = new Decimal(2);
+
+      await replace_variables(level, new Date(), "B", [
         {
           id: new Decimal(1),
           active: true,
@@ -240,7 +246,7 @@ export default function App() {
         },
       ]);
 
-      await replace_variables(new Decimal(0), new Date(), "C", [
+      await replace_variables(level, new Date(), "C", [
         {
           id: new Decimal(1),
           active: true,
@@ -297,7 +303,7 @@ export default function App() {
         },
       ]);
 
-      await replace_variables(new Decimal(0), new Date(), "A", [
+      await replace_variables(level, new Date(), "A", [
         {
           id: new Decimal(1),
           active: true,
@@ -420,6 +426,8 @@ export default function App() {
         },
       ]);
 
+      await remove_variables(new Decimal(1), "A", [new Decimal(1)]);
+
       console.log("===============");
       const w = await execute_transaction("SELECT * FROM LEVELS", []);
       console.log("AFTER LEVELS: ", w);
@@ -438,7 +446,7 @@ export default function App() {
         "A",
         {
           active: true,
-          level: undefined,
+          level: new Decimal(2),
           id: [],
           created_at: [],
           updated_at: [],
