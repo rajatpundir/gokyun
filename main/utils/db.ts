@@ -215,7 +215,7 @@ export function get_select_query(
     >;
   },
   path_filters: PathFilters,
-  limit_offset: [Decimal, Decimal]
+  limit_offset: [Decimal, Decimal] | undefined
 ): string {
   const join_count: number = fold(0, path_filters, (acc, val) =>
     Math.max(acc, val[0].length)
@@ -240,20 +240,18 @@ export function get_select_query(
     append_to_select_stmt("v1.updated_at AS _updated_at");
     append_to_select_stmt("v1.requested_at AS _requested_at");
   });
+  const get_path_name_expression = (n: number) => {
+    return Array.from(Array(n).keys())
+      .map((x) => {
+        const val_ref = x * 2 + 2;
+        return `IFNULL(v${val_ref}.field_name, '')`;
+      })
+      .join(` || '.' || `);
+  };
   apply(undefined, () => {
-    const get_path_name_expression = (n: number) => {
-      return Array.from(Array(n).keys())
-        .map((x) => {
-          const val_ref = x * 2 + 2;
-          return `IFNULL(v${val_ref}.field_name, '')`;
-        })
-        .join(` || '.' || `);
-    };
     var intermediate_paths = HashSet.of<Vector<string>>();
     path_filters.map((path_filter) => {
       const path: ReadonlyArray<string> = path_filter[0];
-      const val_ref: number = path.length * 2;
-      const field_struct_name = path_filter[1];
       const path_name_expression = get_path_name_expression(path.length);
       if (path.length > 1) {
         const intermediate_path = Vector.ofIterable(
@@ -261,6 +259,8 @@ export function get_select_query(
         );
         intermediate_paths = intermediate_paths.add(intermediate_path);
       }
+      const val_ref: number = path.length * 2;
+      const field_struct_name = path_filter[1];
       const stmt = apply(undefined, () => {
         switch (field_struct_name) {
           case "str":
@@ -448,7 +448,9 @@ export function get_select_query(
     const next_val_ref = var_ref + 1;
     from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
     from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
-    append_to_where_stmt(`v${prev_val_ref}.level >= v${var_ref}.level`);
+    append_to_where_stmt(
+      `IFNULL(v${prev_val_ref}.level, 0) >= IFNULL(v${var_ref}.level, 0)`
+    );
     append_to_where_stmt(
       `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level > rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
     );
@@ -1285,6 +1287,7 @@ export function get_select_query(
     path_filters
       .map((path_filter) => ({
         path: path_filter[0],
+        type: path_filter[1],
         sort_option: path_filter[2],
       }))
       .filter((path_filter) => path_filter.sort_option !== undefined)
@@ -1312,14 +1315,64 @@ export function get_select_query(
       for (let path_filter of path_filters) {
         if (path_filter.sort_option !== undefined) {
           const path: ReadonlyArray<string> = path_filter.path;
+          const path_name_expression = get_path_name_expression(path.length);
           const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
-          append_to_order_by_stmt(`${path.join(".")} ${sort_order}`);
+          const val_ref: number = path.length * 2;
+          const field_struct_name = path_filter.type;
+          const stmt = apply(undefined, () => {
+            switch (field_struct_name) {
+              case "str":
+              case "lstr":
+              case "clob": {
+                return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+                  "."
+                )}') THEN (v${val_ref}.text_value) END)`;
+              }
+              case "i32":
+              case "u32":
+              case "i64":
+              case "u64": {
+                return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+                  "."
+                )}') THEN (v${val_ref}.integer_value) END)`;
+              }
+              case "idouble":
+              case "udouble":
+              case "idecimal":
+              case "udecimal": {
+                return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+                  "."
+                )}') THEN (v${val_ref}.real_value) END)`;
+              }
+              case "bool": {
+                return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+                  "."
+                )}') THEN (v${val_ref}.integer_value) END)`;
+              }
+              case "date":
+              case "time":
+              case "timestamp": {
+                return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+                  "."
+                )}') THEN (v${val_ref}.integer_value) END)`;
+              }
+              case "other": {
+                return `MAX(CASE WHEN (${path_name_expression} = '${path.join(
+                  "."
+                )}') THEN (v${val_ref}.integer_value) END)`;
+              }
+              default: {
+                const _exhaustiveCheck: never = field_struct_name;
+                return _exhaustiveCheck;
+              }
+            }
+          });
+          append_to_order_by_stmt(`${stmt} ${sort_order}`);
         }
       }
     }
   );
-  append_to_order_by_stmt("_requested_at DESC, _updated_at DESC");
-  // console.log(order_by_stmt);
+  append_to_order_by_stmt("v1.requested_at DESC, v1.updated_at DESC");
 
   const limit_offset_stmt: string = apply(undefined, () => {
     if (limit_offset !== undefined) {
@@ -1331,7 +1384,7 @@ export function get_select_query(
   });
   // console.log(limit_offset_stmt);
 
-  const final_stmt = `${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt}  \n\n${limit_offset_stmt};`;
+  const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
   // console.log(final_stmt);
 
   return final_stmt;

@@ -125,7 +125,7 @@ export default function App() {
 
       await create_level(new Decimal(1));
       await create_level(new Decimal(2));
-      activate_level(new Decimal(1));
+      // activate_level(new Decimal(1));
 
       const level = new Decimal(2);
 
@@ -452,15 +452,22 @@ export default function App() {
           updated_at: [],
         },
         [
-          [["x"], "str", undefined, []],
+          [
+            ["x"],
+            "str",
+            undefined,
+            [
+              // ["==", "aa2"]
+            ],
+          ],
           [["y"], "other", undefined, [], "B"],
           [["y", "a"], "str", undefined, []],
           [["y", "b"], "i32", undefined, []],
-          [["y", "c"], "udecimal", undefined, []],
+          [["y", "c"], "udecimal", [new Decimal(0), false], []],
           [["z"], "other", undefined, [], "C"],
           [["z", "q"], "str", undefined, []],
         ],
-        [new Decimal(10), new Decimal(0)]
+        undefined
       );
 
       console.log(a);
