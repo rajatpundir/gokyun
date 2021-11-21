@@ -311,7 +311,7 @@ export function get_select_query(
       });
       append_to_select_stmt(stmt);
     });
-    console.log(intermediate_paths.toArray().map((x) => x.toArray()));
+    // console.log(intermediate_paths.toArray().map((x) => x.toArray()));
     for (let intermediate_path of intermediate_paths) {
       const var_ref: number = (intermediate_path.length() - 1) * 2 + 1;
       append_to_select_stmt(
@@ -416,7 +416,6 @@ export function get_select_query(
       }
     }
   });
-  // console.log(select_stmt, "\n");
 
   var where_stmt: string = "WHERE ";
   const append_to_where_stmt = (stmt: string) => {
@@ -483,8 +482,6 @@ export function get_select_query(
       .join(" OR ")
   );
 
-  // console.log(from_stmt);
-
   // Process path filtering by their ops and values/other_paths
   const filters_stmt: Array<Array<string>> = [];
   for (let [index, filter] of variable_filters.id.entries()) {
@@ -518,7 +515,7 @@ export function get_select_query(
       }
       if (stmt !== undefined) {
         if (index >= filters_stmt.length) {
-          for (let j = index - filters_stmt.length; j > 0; j--) {
+          for (let j = 0; j <= index - filters_stmt.length; j++) {
             filters_stmt.push([]);
           }
         }
@@ -526,6 +523,7 @@ export function get_select_query(
       }
     }
   }
+  console.log(filters_stmt);
   for (let [index, filter] of variable_filters.created_at.entries()) {
     var stmt: string | undefined = undefined;
     if (filter !== undefined) {
@@ -557,7 +555,7 @@ export function get_select_query(
       }
       if (stmt !== undefined) {
         if (index >= filters_stmt.length) {
-          for (let j = index - filters_stmt.length; j > 0; j--) {
+          for (let j = 0; j <= index - filters_stmt.length; j++) {
             filters_stmt.push([]);
           }
         }
@@ -596,7 +594,7 @@ export function get_select_query(
       }
       if (stmt !== undefined) {
         if (index >= filters_stmt.length) {
-          for (let j = index - filters_stmt.length; j > 0; j--) {
+          for (let j = 0; j <= index - filters_stmt.length; j++) {
             filters_stmt.push([]);
           }
         }
@@ -606,7 +604,7 @@ export function get_select_query(
   }
   for (let path_filter of path_filters) {
     const path: ReadonlyArray<string> = path_filter[0];
-    const val_ref: number = path_filter[0].length;
+    const val_ref: number = path_filter[0].length * 2;
     const field_struct_name = path_filter[1];
     switch (field_struct_name) {
       case "str":
@@ -645,7 +643,7 @@ export function get_select_query(
                       )} AND v${referenced_val_ref}.text_value IS NOT NULL AND v${val_ref}.field_struct_name = '${field_struct_name}' AND v${val_ref}.text_value ${op} v${referenced_val_ref}.text_value`;
                     });
                   } else {
-                    return `v${val_ref}.field_struct_name = '${field_struct_name}' AND v${val_ref}.text_value ${op} '${value}`;
+                    return `v${val_ref}.field_struct_name = '${field_struct_name}' AND v${val_ref}.text_value ${op} '${value}'`;
                   }
                 });
                 break;
@@ -748,7 +746,7 @@ export function get_select_query(
           }
           if (stmt !== undefined) {
             if (index >= filters_stmt.length) {
-              for (let j = index - filters_stmt.length; j > 0; j--) {
+              for (let j = 0; j <= index - filters_stmt.length; j++) {
                 filters_stmt.push([]);
               }
             }
@@ -994,7 +992,7 @@ export function get_select_query(
           }
           if (stmt !== undefined) {
             if (index >= filters_stmt.length) {
-              for (let j = index - filters_stmt.length; j > 0; j--) {
+              for (let j = 0; j <= index - filters_stmt.length; j++) {
                 filters_stmt.push([]);
               }
             }
@@ -1046,7 +1044,7 @@ export function get_select_query(
           }
           if (stmt !== undefined) {
             if (index >= filters_stmt.length) {
-              for (let j = index - filters_stmt.length; j > 0; j--) {
+              for (let j = 0; j <= index - filters_stmt.length; j++) {
                 filters_stmt.push([]);
               }
             }
@@ -1194,7 +1192,7 @@ export function get_select_query(
           }
           if (stmt !== undefined) {
             if (index >= filters_stmt.length) {
-              for (let j = index - filters_stmt.length; j > 0; j--) {
+              for (let j = 0; j <= index - filters_stmt.length; j++) {
                 filters_stmt.push([]);
               }
             }
@@ -1247,7 +1245,7 @@ export function get_select_query(
           }
           if (stmt !== undefined) {
             if (index >= filters_stmt.length) {
-              for (let j = index - filters_stmt.length; j > 0; j--) {
+              for (let j = 0; j <= index - filters_stmt.length; j++) {
                 filters_stmt.push([]);
               }
             }
@@ -1382,10 +1380,8 @@ export function get_select_query(
     }
     return "";
   });
-  // console.log(limit_offset_stmt);
 
   const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
-  // console.log(final_stmt);
 
   return final_stmt;
 }

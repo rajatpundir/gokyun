@@ -105,8 +105,8 @@ export default function App() {
 
   React.useEffect(() => {
     // TODO:
-    // Ordering
     // Test filters
+    // Add counter for structs and link it to zustand
     // Make VariablesModal work with dummy data
     const x = async () => {
       console.log("===============");
@@ -426,7 +426,7 @@ export default function App() {
         },
       ]);
 
-      await remove_variables(new Decimal(1), "A", [new Decimal(1)]);
+      // await remove_variables(new Decimal(1), "A", [new Decimal(1)]);
 
       console.log("===============");
       const w = await execute_transaction("SELECT * FROM LEVELS", []);
@@ -447,19 +447,14 @@ export default function App() {
         {
           active: true,
           level: new Decimal(2),
-          id: [],
+          id: [
+            // ["==", new Decimal(3)],
+          ],
           created_at: [],
           updated_at: [],
         },
         [
-          [
-            ["x"],
-            "str",
-            undefined,
-            [
-              // ["==", "aa2"]
-            ],
-          ],
+          [["x"], "str", undefined, [["==", "aa1"]]],
           [["y"], "other", undefined, [], "B"],
           [["y", "a"], "str", undefined, []],
           [["y", "b"], "i32", undefined, []],
