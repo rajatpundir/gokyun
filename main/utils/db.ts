@@ -30,6 +30,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       { sql: `DROP TABLE IF EXISTS "VARS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "VALS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "PARAMS";`, args: [] },
+      { sql: `DROP TABLE IF EXISTS "COUNTERS";`, args: [] },
       {
         sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL DEFAULT 0, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
         args: [],
@@ -48,6 +49,10 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       },
       {
         sql: `CREATE TABLE IF NOT EXISTS "PARAMS" ("name"	TEXT NOT NULL UNIQUE, "field_struct_name" TEXT NOT NULL, "text_value"	TEXT, "integer_value" INTEGER, "real_value" REAL, CHECK (((CASE WHEN text_value IS NULL THEN 0 ELSE 1 END) + (CASE WHEN integer_value IS NULL THEN 0 ELSE 1 END) + (CASE WHEN real_value IS NULL THEN 0 ELSE 1 END)) == 1));`,
+        args: [],
+      },
+      {
+        sql: `CREATE TABLE IF NOT EXISTS "COUNTERS" ("struct_name" TEXT NOT NULL, "count"	INTEGER NOT NULL, PRIMARY KEY("struct_name"));`,
         args: [],
       },
       {
@@ -311,7 +316,6 @@ export function get_select_query(
       });
       append_to_select_stmt(stmt);
     });
-    // console.log(intermediate_paths.toArray().map((x) => x.toArray()));
     for (let intermediate_path of intermediate_paths) {
       const var_ref: number = (intermediate_path.length() - 1) * 2 + 1;
       append_to_select_stmt(
@@ -482,7 +486,6 @@ export function get_select_query(
       .join(" OR ")
   );
 
-  // Process path filtering by their ops and values/other_paths
   const where_filters_stmt: Array<Array<string>> = [];
   for (let [index, filter] of variable_filters.id.entries()) {
     let stmt: string | undefined = undefined;
@@ -1577,4 +1580,50 @@ export async function get_param_other(
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+}
+
+export async function get_struct_counter(
+  name: string
+): Promise<Result<Decimal>> {
+  try {
+    const result_set = await execute_transaction(
+      `SELECT struct_name, count FROM counters WHERE struct_name = ?`,
+      [name]
+    );
+    if (result_set.rows.length == 1) {
+      const result = result_set.rows._array[0];
+      if ("count" in result) {
+        return new Ok(new Decimal(result["count"]).truncated());
+      }
+    } else {
+      try {
+        const result_set = await execute_transaction(
+          `REPLACE INTO "COUNTERS" ("struct_name", "count") VALUES(?, 2)`,
+          [name]
+        );
+        return new Ok(new Decimal(2));
+      } catch (err) {
+        return new Err(
+          new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg)
+        );
+      }
+    }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+}
+
+export async function increment_struct_counter(
+  name: string
+): Promise<Result<[]>> {
+  try {
+    const result_set = await execute_transaction(
+      `UPDATE "COUNTERS" SET count = count + 1 WHERE struct_name = ?`,
+      [name]
+    );
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Ok([] as []);
 }

@@ -30,8 +30,12 @@ import {
   activate_level,
   create_level,
   execute_transaction,
+  get_param_text,
   get_select_query,
+  get_struct_counter,
+  increment_struct_counter,
   remove_variables,
+  replace_param,
   replace_variables,
   useDB,
 } from "./main/utils/db";
@@ -476,6 +480,24 @@ export default function App() {
 
       console.log("RESULTS ARE: ", s);
 
+      console.log("===============");
+
+      const r = await execute_transaction("SELECT * FROM COUNTERS", []);
+      console.log("AFTER COUNTERS: ", r);
+      console.log("===============");
+
+      let l = await get_struct_counter("AA");
+      console.log("RESULT: ", l);
+      console.log("===============");
+
+      await increment_struct_counter("AA");
+
+      const t = await execute_transaction("SELECT * FROM COUNTERS", []);
+      console.log("AFTER COUNTERS: ", t);
+      console.log("===============");
+
+      l = await get_struct_counter("AA");
+      console.log("RESULT: ", l);
       console.log("===============");
     };
     x();
