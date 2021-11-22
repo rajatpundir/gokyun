@@ -496,16 +496,16 @@ export function get_select_query(
         case ">":
         case "<": {
           const value = filter[1];
-          stmt = `v1.id ${op} '${value.truncated().toString()}'`;
+          stmt = `v1.id ${op} ${value.truncated().toString()}`;
           break;
         }
         case "between":
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.id BETWEEN '${start_value
+          stmt = `v1.id BETWEEN ${start_value
             .truncated()
-            .toString()}' AND '${end_value.truncated().toString()}'`;
+            .toString()} AND ${end_value.truncated().toString()}`;
           break;
         }
         default: {
@@ -536,16 +536,14 @@ export function get_select_query(
         case ">":
         case "<": {
           const value = filter[1];
-          stmt = `v1.created_at ${op} '${value.getTime().toString()}'`;
+          stmt = `v1.created_at ${op} ${value.getTime()}`;
           break;
         }
         case "between":
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.created_at BETWEEN '${start_value
-            .getTime()
-            .toString()}' AND '${end_value.getTime().toString()}'`;
+          stmt = `v1.created_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
           break;
         }
         default: {
@@ -575,16 +573,14 @@ export function get_select_query(
         case ">":
         case "<": {
           const value = filter[1];
-          stmt = `v1.updated_at ${op} '${value.getTime().toString()}'`;
+          stmt = `v1.updated_at ${op} ${value.getTime()}`;
           break;
         }
         case "between":
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.updated_at BETWEEN '${start_value
-            .getTime()
-            .toString()}' AND '${end_value.getTime().toString()}'`;
+          stmt = `v1.updated_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
           break;
         }
         default: {
@@ -663,23 +659,23 @@ export function get_select_query(
                   if (typeof start_value === "object") {
                     if (typeof end_value === "object") {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } "${start_value.join(".")}" AND "${end_value.join(
                         "."
                       )}"`;
                     } else {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } "${start_value.join(".")}" AND '${end_value}'`;
                     }
                   } else {
                     if (typeof end_value === "object") {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } '${start_value}' AND "${end_value.join(".")}"`;
                     } else {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } '${start_value}' AND '${end_value}'`;
                     }
                   }
@@ -747,7 +743,7 @@ export function get_select_query(
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } ${apply(undefined, () => {
                         if (integer_fields.includes(field_struct_name)) {
                           return start_value.truncated().toString();
@@ -763,7 +759,7 @@ export function get_select_query(
                       })}`;
                     } else {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } ${apply(undefined, () => {
                         if (integer_fields.includes(field_struct_name)) {
                           return start_value.truncated().toString();
@@ -775,7 +771,7 @@ export function get_select_query(
                   } else {
                     if (is_decimal(end_value)) {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } "${start_value.join(".")}" AND ${apply(
                         undefined,
                         () => {
@@ -788,7 +784,7 @@ export function get_select_query(
                       )}`;
                     } else {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } "${start_value.join(".")}" AND "${end_value.join(
                         "."
                       )}"`;
@@ -881,22 +877,22 @@ export function get_select_query(
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } ${start_value.toString()} AND ${end_value.toString()}`;
                     } else {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } ${start_value.toString()} AND "${end_value.join(".")}"`;
                     }
                   } else {
                     if (is_decimal(end_value)) {
                       return `"${path_ref}" ${
-                        op === "not_between" ? "NOT BETWEEN" : op
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } "${start_value.join(".")}" AND ${end_value.toString()}`;
                     } else {
                       if (is_decimal(end_value)) {
                         return `"${path_ref}" ${
-                          op === "not_between" ? "NOT BETWEEN" : op
+                          op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                         } "${start_value.join(".")}" AND "${end_value.join(
                           "."
                         )}"`;
