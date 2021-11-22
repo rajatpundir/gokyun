@@ -356,7 +356,7 @@ export default function App() {
                 "x",
                 {
                   type: "str",
-                  value: "aa1",
+                  value: "aa2",
                 },
               ],
             ],
@@ -396,7 +396,7 @@ export default function App() {
                 "x",
                 {
                   type: "str",
-                  value: "aa1",
+                  value: "aa3",
                 },
               ],
             ],
@@ -454,10 +454,15 @@ export default function App() {
           updated_at: [],
         },
         [
-          [["x"], "str", undefined, [["==", "aa1"]]],
+          [["x"], "str", undefined, []],
           [["y"], "other", undefined, [], "B"],
           [["y", "a"], "str", undefined, []],
-          [["y", "b"], "i32", undefined, []],
+          [
+            ["y", "b"],
+            "i32",
+            undefined,
+            [["between", [new Decimal(33), new Decimal(34)]]],
+          ],
           [["y", "c"], "udecimal", [new Decimal(0), false], []],
           [["z"], "other", undefined, [], "C"],
           [["z", "q"], "str", undefined, []],
