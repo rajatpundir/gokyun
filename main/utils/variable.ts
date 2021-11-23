@@ -1,71 +1,105 @@
-import { Vector, HashSet } from "prelude-ts";
+import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
-import { Option } from "./prelude";
 import { ErrMsg } from "./errors";
 
-// Ownership states multiple ways to prove ownership of a struct
-// Permissions are matched against proven ownerships to get allowed operations
-
-// Borrowing is same as Ownership but only allows read, also assumes writes operations as read ops
-
-// Define working of ownership and borrowing
+type PathString = [ReadonlyArray<string>, string];
 
 export type StructPermissions = {
-  ownership: ReadonlyArray<[string, BooleanLispExpression]>;
+  ownership: ReadonlyArray<string>;
   borrow: Record<
     string,
     {
-      prove: ReadonlyArray<[string, string, BooleanLispExpression]>;
-      ownership: ReadonlyArray<ReadonlyArray<string>>;
+      // Here, prove is struct, and field in borrowed struct over which ownership must be proven
+      prove: [string, string];
+      // For proved borrowing, further enforce some equality constraints
+      // For example.
+      // You may be trying to access some alliance's info with memberhip of some other alliance
+      // To prevent above misuse, we must ensure that membership is of same alliance
+      constraints: ReadonlyArray<[PathString, PathString]>;
+      ownership: PathString;
     }
   >;
   private: Record<
     string,
     {
-      read: ReadonlyArray<[ReadonlyArray<string>, BooleanLispExpression]>;
-      write: ReadonlyArray<[ReadonlyArray<string>, BooleanLispExpression]>;
+      read: ReadonlyArray<PathString>;
+      write: ReadonlyArray<PathString>;
     }
   >;
-  public: ReadonlyArray<[ReadonlyArray<string>, BooleanLispExpression]>;
+  public: ReadonlyArray<PathString>;
 };
 
-export type StructEffects = Record<
+type StructTriggers = Record<
   string,
   {
-    dependencies: ReadonlyArray<ReadonlyArray<string>>;
-    mutate: ReadonlyArray<{
-      // path starts with '_prev' or '_curr'
-      // on creation, expression starting with '_curr' that does not depend on '_prev' are run
-      // on updation, expression with both '_prev' and '_curr' are run
-      // on deletion, expression with '_prev' that does not depend on '_curr' are run
-      path: ReadonlyArray<string>;
-      expr: LispExpression;
-    }>;
+    // Snapshot of paths is taken as per the name indicates
+    event:
+      | "after_creation"
+      | "before_update"
+      | "after_update"
+      | "before_deletion";
+    monitor: ReadonlyArray<PathString>;
+    operation:
+      | {
+          op: "insert";
+          struct: string;
+          fields: { [index: string]: LispExpression };
+        }
+      | {
+          // Does not throw exception if variable cannot be created due to unique constraint violation
+          // That is, variable was already present and operation will behave as if it had created the variable
+          op: "insert_ignore";
+          struct: string;
+          fields: { [index: string]: LispExpression };
+        }
+      | {
+          // Remove any variable that causes unique constraint violation
+          op: "replace";
+          struct: string;
+          id: LispExpression;
+          fields: { [index: string]: LispExpression };
+        }
+      | {
+          op: "delete";
+          struct: string;
+          fields: { [index: string]: LispExpression };
+        }
+      | {
+          // Does not throw exception if variable does not exist
+          op: "delete_ignore";
+          struct: string;
+          fields: { [index: string]: LispExpression };
+        }
+      | {
+          op: "update";
+          path: PathString;
+          value: LispExpression;
+        };
   }
 >;
 
 export class Struct {
   name: string;
-  fields: HashSet<Field>;
-  uniqueness: ReadonlyArray<ReadonlyArray<string>>;
+  fields: Record<string, WeakEnum>;
+  uniqueness: ReadonlyArray<PathString>;
   permissions: StructPermissions;
-  effects: StructEffects;
+  triggers: StructTriggers;
   checks: Record<string, [BooleanLispExpression, ErrMsg]>;
 
   constructor(
     name: string,
-    fields: HashSet<Field>,
-    uniqueness: ReadonlyArray<ReadonlyArray<string>>,
+    fields: Record<string, WeakEnum>,
+    uniqueness: ReadonlyArray<PathString>,
     permissions: StructPermissions,
-    effects: StructEffects,
+    triggers: StructTriggers,
     checks: Record<string, [BooleanLispExpression, ErrMsg]>
   ) {
     this.name = name;
     this.fields = fields;
     this.uniqueness = uniqueness;
     this.permissions = permissions;
-    this.effects = effects;
+    this.triggers = triggers;
     this.checks = checks;
   }
 
@@ -74,33 +108,6 @@ export class Struct {
       return false;
     }
     return this.name === other.name;
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String(this.name);
-  }
-}
-
-export class Field {
-  struct: Struct;
-  name: string;
-  value: WeakEnum;
-
-  constructor(struct: Struct, name: string, value: WeakEnum) {
-    this.struct = struct;
-    this.name = name;
-    this.value = value;
-  }
-
-  equals(other: Field): boolean {
-    if (!other) {
-      return false;
-    }
-    return this.struct.equals(other.struct) && this.name === other.name;
   }
 
   hashCode(): number {
@@ -143,11 +150,11 @@ export type WeakEnum =
     }
   | {
       type: "idouble";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "udouble";
-      default?: number;
+      default?: Decimal;
     }
   | {
       type: "idecimal";
@@ -178,75 +185,6 @@ export type WeakEnum =
       other: string;
       default?: Decimal;
     };
-
-export class Variable {
-  id: number;
-  struct: Struct;
-  values: HashSet<Value>;
-  created_at: number;
-  updated_at: number;
-  requested_at: number;
-
-  constructor(
-    id: number,
-    struct: Struct,
-    values: HashSet<Value>,
-    created_at: number,
-    updated_at: number,
-    requested_at: number
-  ) {
-    this.id = parseInt(String(id));
-    this.struct = struct;
-    this.values = values;
-    this.created_at = Math.max(0, parseInt(String(created_at)));
-    this.updated_at = Math.max(0, parseInt(String(updated_at)));
-    this.requested_at = Math.max(0, parseInt(String(requested_at)));
-  }
-
-  equals(other: Variable): boolean {
-    if (!other) {
-      return false;
-    }
-    return this.id === other.id;
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String(this.id);
-  }
-}
-
-export class Value {
-  variable: Variable;
-  field: Field;
-  value: StrongEnum;
-
-  constructor(variable: Variable, field: Field, value: StrongEnum) {
-    this.variable = variable;
-    this.field = field;
-    this.value = value;
-  }
-
-  equals(other: Value): boolean {
-    if (!other) {
-      return false;
-    }
-    return (
-      this.variable.equals(other.variable) && this.field.equals(other.field)
-    );
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String(this.variable);
-  }
-}
 
 export type StrongEnum =
   | {
@@ -317,21 +255,75 @@ export type StrongEnum =
 
 export class Path {
   label: string;
-  path: Vector<string>;
-  value: Option<StrongEnum>;
+  path: [
+    Array<
+      [
+        string,
+        {
+          struct: Struct;
+          id: Decimal;
+          active: boolean;
+          created_at: Date;
+          updated_at: Date;
+        }
+      ]
+    >,
+    [string, StrongEnum]
+  ];
   updatable: boolean = false;
 
-  constructor(label: string, path: Vector<string>, value: Option<StrongEnum>) {
+  constructor(
+    label: string,
+    path: [
+      Array<
+        [
+          string,
+          {
+            struct: Struct;
+            id: Decimal;
+            active: boolean;
+            created_at: Date;
+            updated_at: Date;
+          }
+        ]
+      >,
+      [string, StrongEnum]
+    ]
+  ) {
     this.label = label;
     this.path = path;
-    this.value = value;
   }
 
   equals(other: Path): boolean {
     if (!other) {
       return false;
     }
-    return this.path.equals(other.path);
+    if (this.label !== other.label) {
+      return false;
+    } else {
+      if (this.path[0].length !== other.path[0].length) {
+        return false;
+      } else {
+        for (let i = 0; i < this.path[0].length; i++) {
+          const [this_field_name, this_ref] = this.path[0][i];
+          const [other_field_name, other_ref] = this.path[0][i];
+          if (
+            this_field_name !== other_field_name ||
+            !this_ref.struct.equals(other_ref.struct) ||
+            this_ref.id !== other_ref.id
+          ) {
+            return false;
+          }
+        }
+        if (
+          this.path[1][0] !== other.path[1][0] ||
+          this.path[1][1].type !== other.path[1][1].type
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   hashCode(): number {
@@ -339,33 +331,39 @@ export class Path {
   }
 
   toString(): string {
-    return String([this.path, this.value, this.updatable]);
+    return String([this.path, this.updatable]);
   }
 }
 
-export class PathFilter {
+export class Variable {
+  struct: Struct;
+  id: Decimal;
   active: boolean;
-  label: string;
-  path: Vector<string>;
-  value: Option<StrongEnum | Vector<string>>;
+  created_at: Date;
+  updated_at: Date;
+  paths: HashSet<Path>;
 
   constructor(
+    struct: Struct,
+    id: Decimal,
     active: boolean,
-    label: string,
-    path: Vector<string>,
-    value: Option<StrongEnum | Vector<string>>
+    created_at: Date,
+    updated_at: Date,
+    paths: HashSet<Path>
   ) {
+    this.struct = struct;
+    this.id = id;
     this.active = active;
-    this.label = label;
-    this.path = path;
-    this.value = value;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
+    this.paths = paths;
   }
 
-  equals(other: Path): boolean {
+  equals(other: Variable): boolean {
     if (!other) {
       return false;
     }
-    return this.path.equals(other.path);
+    return this.struct.equals(other.struct) && this.id.equals(other.id);
   }
 
   hashCode(): number {
@@ -373,6 +371,13 @@ export class PathFilter {
   }
 
   toString(): string {
-    return String([this.path, this.value]);
+    return String({
+      struct: this.struct.name,
+      id: this.id.toString(),
+      active: this.active.valueOf(),
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      paths: this.paths.toArray(),
+    });
   }
 }

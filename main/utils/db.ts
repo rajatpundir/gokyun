@@ -12,139 +12,14 @@ import {
   unwrap,
 } from "./prelude";
 import Decimal from "decimal.js";
-import { StrongEnum, Struct } from "./variable";
+import { Path, StrongEnum, Struct, Variable } from "./variable";
 import { ErrMsg, errors } from "./errors";
 import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
 import { get_structs } from "./schema";
 
-export class Path {
-  label: string;
-  path: [
-    Array<
-      [
-        string,
-        {
-          struct: Struct;
-          id: Decimal;
-          active: boolean;
-          created_at: Date;
-          updated_at: Date;
-        }
-      ]
-    >,
-    [string, StrongEnum]
-  ];
-  updatable: boolean = false;
-
-  constructor(
-    label: string,
-    path: [
-      Array<
-        [
-          string,
-          {
-            struct: Struct;
-            id: Decimal;
-            active: boolean;
-            created_at: Date;
-            updated_at: Date;
-          }
-        ]
-      >,
-      [string, StrongEnum]
-    ]
-  ) {
-    this.label = label;
-    this.path = path;
-  }
-
-  equals(other: Path): boolean {
-    if (!other) {
-      return false;
-    }
-    if (this.label !== other.label) {
-      return false;
-    } else {
-      if (this.path[0].length !== other.path[0].length) {
-        return false;
-      } else {
-        for (let i = 0; i < this.path[0].length; i++) {
-          const [this_field_name, this_ref] = this.path[0][i];
-          const [other_field_name, other_ref] = this.path[0][i];
-          if (
-            this_field_name !== other_field_name ||
-            !this_ref.struct.equals(other_ref.struct) ||
-            this_ref.id !== other_ref.id
-          ) {
-            return false;
-          }
-        }
-        if (
-          this.path[1][0] !== other.path[1][0] ||
-          this.path[1][1].type !== other.path[1][1].type
-        ) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String([this.path, this.updatable]);
-  }
-}
-
-export class Variable {
-  struct: Struct;
-  id: Decimal;
-  active: boolean;
-  created_at: Date;
-  updated_at: Date;
-  paths: HashSet<Path>;
-
-  constructor(
-    struct: Struct,
-    id: Decimal,
-    active: boolean,
-    created_at: Date,
-    updated_at: Date,
-    paths: HashSet<Path>
-  ) {
-    this.struct = struct;
-    this.id = id;
-    this.active = active;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
-    this.paths = paths;
-  }
-
-  equals(other: Variable): boolean {
-    if (!other) {
-      return false;
-    }
-    return this.struct.equals(other.struct) && this.id.equals(other.id);
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String({
-      struct: this.struct.name,
-      id: this.id.toString(),
-      active: this.active.valueOf(),
-      created_at: this.created_at,
-      updated_at: this.updated_at,
-      paths: this.paths.toArray(),
-    });
-  }
-}
+// TODO. n per group should be performed, so that we get (struct_name, id) combination with max level
+// We could also have the HAVING clause eliminate possibility of nulls for aggregate column aliases
+// We will also need functions for activating or deactivating variable in a layer
 
 const db_name: string = "test1.db";
 
