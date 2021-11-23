@@ -1930,3 +1930,231 @@ export async function get_variable(
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
+
+export async function get_variables(
+  struct: Struct,
+  variable_filters: {
+    active: boolean;
+    level: Decimal | undefined;
+    id: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+      | ["between" | "not_between", [Decimal, Decimal]]
+      | undefined
+    >;
+    created_at: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    >;
+    updated_at: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    >;
+  },
+  path_filters: ReadonlyArray<[string, PathFilter]>,
+  limit_offset: [Decimal, Decimal] | undefined
+): Promise<
+  Result<
+    Array<{
+      struct: Struct;
+      id: Decimal;
+      active: boolean;
+      created_at: Date;
+      updated_at: Date;
+      requested_at: Date;
+      paths: Array<Path>;
+    }>
+  >
+> {
+  try {
+    const variables: Array<{
+      struct: Struct;
+      id: Decimal;
+      active: boolean;
+      created_at: Date;
+      updated_at: Date;
+      requested_at: Date;
+      paths: Array<Path>;
+    }> = [];
+    const result_set = await query(
+      struct.name,
+      variable_filters,
+      path_filters.map((x) => x[1]),
+      limit_offset
+    );
+    for (let result of result_set.rows._array) {
+      const paths: Array<Path> = [];
+      for (let [label, path_filter] of path_filters) {
+        const path: ReadonlyArray<string> = path_filter[0];
+        if (path.length !== 0) {
+          const init: ReadonlyArray<string> = path.slice(0, path.length - 1);
+          const last: string = path[path.length - 1];
+          const init_path: Array<
+            [
+              string,
+              {
+                struct: Struct;
+                id: Decimal;
+                active: boolean;
+                created_at: Date;
+                updated_at: Date;
+              }
+            ]
+          > = [];
+          for (let [index, field_name] of init.entries()) {
+            const ref: string = init.slice(0, index + 1).join(".");
+            const ref_struct_name = new String(
+              result[`${ref}._struct_name`]
+            ).valueOf();
+            const ref_struct: OptionTS<Struct> = get_structs()
+              .filter((x) => x.name === ref_struct_name)
+              .single();
+            if (ref_struct.isSome()) {
+              init_path.push([
+                field_name,
+                {
+                  struct: ref_struct.get(),
+                  id: new Decimal(result[`${ref}`]).truncated(),
+                  active: new Decimal(result[`${ref}._active`]).equals(1),
+                  created_at: new Date(result[`${ref}._created_at`]),
+                  updated_at: new Date(result[`${ref}._updated_at`]),
+                },
+              ]);
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          }
+          const leaf: [string, StrongEnum] = apply(undefined, () => {
+            const ref: string = init.join(".");
+            const field_struct_name = path_filter[1];
+            switch (field_struct_name) {
+              case "str":
+              case "lstr":
+              case "clob": {
+                return [
+                  last,
+                  {
+                    type: field_struct_name,
+                    value: apply(undefined, () => {
+                      if (ref === "") {
+                        return new String(result[`${last}`]).valueOf();
+                      } else {
+                        return new String(result[`${ref}.${last}`]).valueOf();
+                      }
+                    }),
+                  },
+                ] as [string, StrongEnum];
+              }
+              case "i32":
+              case "u32":
+              case "i64":
+              case "u64":
+              case "idouble":
+              case "udouble":
+              case "idecimal":
+              case "udecimal": {
+                return [
+                  last,
+                  {
+                    type: field_struct_name,
+                    value: apply(undefined, () => {
+                      const integer_fields = ["i32", "u32", "i64", "u64"];
+                      return apply(undefined, () => {
+                        if (integer_fields.includes(field_struct_name)) {
+                          if (ref === "") {
+                            return new Decimal(result[`${last}`]).truncated();
+                          } else {
+                            return new Decimal(
+                              result[`${ref}.${last}`]
+                            ).truncated();
+                          }
+                        } else {
+                          if (ref === "") {
+                            return new Decimal(result[`${last}`]);
+                          } else {
+                            return new Decimal(result[`${ref}.${last}`]);
+                          }
+                        }
+                      });
+                    }),
+                  },
+                ] as [string, StrongEnum];
+              }
+              case "bool": {
+                return [
+                  last,
+                  {
+                    type: field_struct_name,
+                    value: apply(undefined, () => {
+                      if (ref === "") {
+                        return new Decimal(result[`${last}`]).equals(1);
+                      } else {
+                        return new Decimal(result[`${ref}.${last}`]).equals(1);
+                      }
+                    }),
+                  },
+                ] as [string, StrongEnum];
+              }
+              case "date":
+              case "time":
+              case "timestamp": {
+                return [
+                  last,
+                  {
+                    type: field_struct_name,
+                    value: apply(undefined, () => {
+                      if (ref === "") {
+                        return new Date(result[`${last}`]);
+                      } else {
+                        return new Date(result[`${ref}.${last}`]);
+                      }
+                    }),
+                  },
+                ] as [string, StrongEnum];
+              }
+              case "other": {
+                const field_struct_name = path_filter[4];
+                return [
+                  last,
+                  {
+                    type: "other",
+                    other: field_struct_name,
+                    value: apply(undefined, () => {
+                      if (ref === "") {
+                        return new Decimal(result[`${last}`]).truncated();
+                      } else {
+                        return new Decimal(
+                          result[`${ref}.${last}`]
+                        ).truncated();
+                      }
+                    }),
+                  },
+                ] as [string, StrongEnum];
+              }
+              default: {
+                const _exhaustiveCheck: never = field_struct_name;
+                return _exhaustiveCheck;
+              }
+            }
+          });
+          paths.push(new Path(label, [init_path, leaf]));
+        } else {
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+        }
+      }
+      variables.push({
+        struct: struct,
+        id: new Decimal(result["_id"]).truncated(),
+        active: new Decimal(result["_active"]).equals(1),
+        created_at: new Date(result["_created_at"]),
+        updated_at: new Date(result["_updated_at"]),
+        requested_at: new Date(result["_requested_at"]),
+        paths: paths,
+      });
+    }
+    return new Ok(variables);
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+}

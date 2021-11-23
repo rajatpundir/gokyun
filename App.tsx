@@ -33,6 +33,7 @@ import {
   get_param_text,
   get_struct_counter,
   get_variable,
+  get_variables,
   increment_struct_counter,
   query,
   remove_variables,
@@ -507,20 +508,39 @@ export default function App() {
         .filter((x) => x.name === "A")
         .single();
       if (ref_struct.isSome()) {
-        const p = ref_struct.get();
-        const g = await get_variable(
-          undefined,
+        // const g = await get_variable(
+        //   undefined,
+        //   ref_struct.get(),
+        //   new Decimal(19),
+        //   true,
+        //   [
+        // ["x", [["x"], "str", undefined, []]],
+        // ["ya", [["y", "a"], "str", undefined, []]],
+        // ["yb", [["y", "b"], "i32", undefined, []]],
+        // ["yc", [["y", "c"], "udecimal", undefined, []]],
+        // ["zq", [["z", "q"], "str", undefined, []]],
+        //   ]
+        // );
+
+        const g = await get_variables(
           ref_struct.get(),
-          new Decimal(19),
-          true,
+          {
+            active: true,
+            level: undefined,
+            id: [["==", new Decimal(1)]],
+            created_at: [],
+            updated_at: [],
+          },
           [
             ["x", [["x"], "str", undefined, []]],
             ["ya", [["y", "a"], "str", undefined, []]],
             ["yb", [["y", "b"], "i32", undefined, []]],
             ["yc", [["y", "c"], "udecimal", undefined, []]],
             ["zq", [["z", "q"], "str", undefined, []]],
-          ]
+          ],
+          undefined
         );
+
         console.log(g);
       }
     };
