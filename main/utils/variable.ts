@@ -279,11 +279,11 @@ export type StrongEnum =
     }
   | {
       type: "idouble";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "udouble";
-      value: number;
+      value: Decimal;
     }
   | {
       type: "idecimal";

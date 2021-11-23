@@ -23,7 +23,7 @@ import {
 import NotFoundScreen from "./main/NotFoundScreen";
 import { VariablesModal } from "./main/utils/variables_modal";
 import { Path, PathFilter, StrongEnum, Struct } from "./main/utils/variable";
-import { HashSet, Vector } from "prelude-ts";
+
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 import {
@@ -31,14 +31,17 @@ import {
   create_level,
   execute_transaction,
   get_param_text,
-  get_select_query,
   get_struct_counter,
+  get_variable,
   increment_struct_counter,
+  query,
   remove_variables,
   replace_param,
   replace_variables,
   useDB,
 } from "./main/utils/db";
+import { get_structs } from "./main/utils/schema";
+import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
 
 declare global {
   namespace ReactNavigation {
@@ -446,7 +449,7 @@ export default function App() {
       console.log("AFTER REMOVED_VARS: ", w4);
       console.log("===============");
 
-      const a = get_select_query(
+      const a = await query(
         "A",
         {
           active: true,
@@ -476,9 +479,9 @@ export default function App() {
 
       console.log(a);
 
-      const s = await execute_transaction(a, []);
+      // const s = await execute_transaction(a, []);
 
-      console.log("RESULTS ARE: ", s);
+      // console.log("RESULTS ARE: ", s);
 
       console.log("===============");
 
@@ -499,6 +502,27 @@ export default function App() {
       l = await get_struct_counter("AA");
       console.log("RESULT: ", l);
       console.log("===============");
+
+      const ref_struct: OptionTS<Struct> = get_structs()
+        .filter((x) => x.name === "A")
+        .single();
+      if (ref_struct.isSome()) {
+        const p = ref_struct.get();
+        const g = await get_variable(
+          undefined,
+          ref_struct.get(),
+          new Decimal(19),
+          true,
+          [
+            ["x", [["x"], "str", undefined, []]],
+            ["ya", [["y", "a"], "str", undefined, []]],
+            ["yb", [["y", "b"], "i32", undefined, []]],
+            ["yc", [["y", "c"], "udecimal", undefined, []]],
+            ["zq", [["z", "q"], "str", undefined, []]],
+          ]
+        );
+        console.log(g);
+      }
     };
     x();
   }, []);

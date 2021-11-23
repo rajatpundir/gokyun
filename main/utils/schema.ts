@@ -56,6 +56,42 @@ const schema: Record<
     checks: Record<string, [BooleanLispExpression, ErrMsg]>;
   }
 > = {
+  A: {
+    fields: {},
+    uniqueness: [],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  B: {
+    fields: {},
+    uniqueness: [],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
+  C: {
+    fields: {},
+    uniqueness: [],
+    permissions: {
+      ownership: [],
+      borrow: {},
+      private: {},
+      public: [],
+    },
+    effects: {},
+    checks: {},
+  },
   Test: {
     fields: {
       user: { type: "other", other: "User" },
