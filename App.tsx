@@ -22,7 +22,7 @@ import {
 } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
 import { VariablesModal } from "./main/utils/variables_modal";
-import { Path, PathFilter, StrongEnum, Struct } from "./main/utils/variable";
+import { PathFilter, StrongEnum, Struct } from "./main/utils/variable";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
@@ -35,11 +35,14 @@ import {
   get_variable,
   get_variables,
   increment_struct_counter,
+  Path,
   query,
   remove_variables,
   replace_param,
   replace_variables,
+  save_variable,
   useDB,
+  Variable,
 } from "./main/utils/db";
 import { get_structs } from "./main/utils/schema";
 import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
@@ -136,6 +139,55 @@ export default function App() {
       // activate_level(new Decimal(1));
 
       const level = new Decimal(2);
+
+      const rr: OptionTS<Struct> = get_structs()
+        .filter((x) => x.name === "B")
+        .single();
+
+      if (rr.isSome()) {
+        const qq = save_variable(
+          level,
+          new Variable(
+            rr.get(),
+            new Decimal(44),
+            true,
+            new Date(),
+            new Date(),
+            HashSet.of(
+              new Path("a", [
+                [],
+                [
+                  "a",
+                  {
+                    type: "str",
+                    value: "qq",
+                  },
+                ],
+              ]),
+              new Path("b", [
+                [],
+                [
+                  "b",
+                  {
+                    type: "i32",
+                    value: new Decimal(32),
+                  },
+                ],
+              ]),
+              new Path("c", [
+                [],
+                [
+                  "c",
+                  {
+                    type: "udecimal",
+                    value: new Decimal(24.64),
+                  },
+                ],
+              ])
+            )
+          )
+        );
+      }
 
       await replace_variables(level, new Date(), "B", [
         {
@@ -508,38 +560,38 @@ export default function App() {
         .filter((x) => x.name === "A")
         .single();
       if (ref_struct.isSome()) {
-        // const g = await get_variable(
-        //   undefined,
-        //   ref_struct.get(),
-        //   new Decimal(19),
-        //   true,
-        //   [
-        // ["x", [["x"], "str", undefined, []]],
-        // ["ya", [["y", "a"], "str", undefined, []]],
-        // ["yb", [["y", "b"], "i32", undefined, []]],
-        // ["yc", [["y", "c"], "udecimal", undefined, []]],
-        // ["zq", [["z", "q"], "str", undefined, []]],
-        //   ]
-        // );
-
-        const g = await get_variables(
+        const g = await get_variable(
+          undefined,
           ref_struct.get(),
-          {
-            active: true,
-            level: undefined,
-            id: [["==", new Decimal(1)]],
-            created_at: [],
-            updated_at: [],
-          },
+          new Decimal(1),
+          true,
           [
             ["x", [["x"], "str", undefined, []]],
             ["ya", [["y", "a"], "str", undefined, []]],
             ["yb", [["y", "b"], "i32", undefined, []]],
             ["yc", [["y", "c"], "udecimal", undefined, []]],
             ["zq", [["z", "q"], "str", undefined, []]],
-          ],
-          undefined
+          ]
         );
+
+        // const g = await get_variables(
+        //   ref_struct.get(),
+        //   {
+        //     active: true,
+        //     level: undefined,
+        //     id: [["==", new Decimal(1)]],
+        //     created_at: [],
+        //     updated_at: [],
+        //   },
+        //   [
+        //     ["x", [["x"], "str", undefined, []]],
+        //     ["ya", [["y", "a"], "str", undefined, []]],
+        //     ["yb", [["y", "b"], "i32", undefined, []]],
+        //     ["yc", [["y", "c"], "udecimal", undefined, []]],
+        //     ["zq", [["z", "q"], "str", undefined, []]],
+        //   ],
+        //   undefined
+        // );
 
         console.log(g);
       }
