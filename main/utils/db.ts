@@ -9,20 +9,142 @@ import {
   is_decimal,
   Ok,
   Result,
-  Option,
   unwrap,
 } from "./prelude";
 import Decimal from "decimal.js";
 import { StrongEnum, Struct } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import {
-  HashSet,
-  Vector,
-  Option as OptionTS,
-  ConsLinkedList,
-} from "prelude-ts";
+import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
 import { get_structs } from "./schema";
-import * as FileSystem from "expo-file-system";
+
+export class Path {
+  label: string;
+  path: [
+    Array<
+      [
+        string,
+        {
+          struct: Struct;
+          id: Decimal;
+          active: boolean;
+          created_at: Date;
+          updated_at: Date;
+        }
+      ]
+    >,
+    [string, StrongEnum]
+  ];
+  updatable: boolean = false;
+
+  constructor(
+    label: string,
+    path: [
+      Array<
+        [
+          string,
+          {
+            struct: Struct;
+            id: Decimal;
+            active: boolean;
+            created_at: Date;
+            updated_at: Date;
+          }
+        ]
+      >,
+      [string, StrongEnum]
+    ]
+  ) {
+    this.label = label;
+    this.path = path;
+  }
+
+  equals(other: Path): boolean {
+    if (!other) {
+      return false;
+    }
+    if (this.label !== other.label) {
+      return false;
+    } else {
+      if (this.path[0].length !== other.path[0].length) {
+        return false;
+      } else {
+        for (let i = 0; i < this.path[0].length; i++) {
+          const [this_field_name, this_ref] = this.path[0][i];
+          const [other_field_name, other_ref] = this.path[0][i];
+          if (
+            this_field_name !== other_field_name ||
+            !this_ref.struct.equals(other_ref.struct) ||
+            this_ref.id !== other_ref.id
+          ) {
+            return false;
+          }
+        }
+        if (
+          this.path[1][0] !== other.path[1][0] ||
+          this.path[1][1].type !== other.path[1][1].type
+        ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return String([this.path, this.updatable]);
+  }
+}
+
+export class Variable {
+  struct: Struct;
+  id: Decimal;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+  paths: HashSet<Path>;
+
+  constructor(
+    struct: Struct,
+    id: Decimal,
+    active: boolean,
+    created_at: Date,
+    updated_at: Date,
+    paths: HashSet<Path>
+  ) {
+    this.struct = struct;
+    this.id = id;
+    this.active = active;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
+    this.paths = paths;
+  }
+
+  equals(other: Variable): boolean {
+    if (!other) {
+      return false;
+    }
+    return this.struct.equals(other.struct) && this.id.equals(other.id);
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return String({
+      struct: this.struct.name,
+      id: this.id.toString(),
+      active: this.active.valueOf(),
+      created_at: this.created_at,
+      updated_at: this.updated_at,
+      paths: this.paths.toArray(),
+    });
+  }
+}
 
 const db_name: string = "test1.db";
 
@@ -1121,7 +1243,7 @@ export async function remove_level(id: Decimal): Promise<Result<[]>> {
   return new Ok([] as []);
 }
 
-export async function replace_variable(
+async function replace_variable_in_db(
   level: Decimal,
   requested_at: Date,
   struct_name: string,
@@ -1301,58 +1423,7 @@ export async function replace_variable(
   return new Ok([] as []);
 }
 
-// Remove below
-export async function replace_variables(
-  level: Decimal,
-  requested_at: Date,
-  struct_name: string,
-  variables: ReadonlyArray<{
-    id: Decimal;
-    active: boolean;
-    created_at: Date;
-    updated_at: Date;
-    paths: Array<
-      [
-        Array<
-          [
-            string,
-            {
-              active: boolean;
-              created_at: Date;
-              updated_at: Date;
-              value: {
-                type: "other";
-                other: string;
-                value: Decimal;
-              };
-            }
-          ]
-        >,
-        [string, StrongEnum]
-      ]
-    >;
-  }>
-): Promise<Result<[]>> {
-  try {
-    for (let variable of variables) {
-      await replace_variable(
-        level,
-        requested_at,
-        struct_name,
-        variable.id,
-        variable.active,
-        variable.created_at,
-        variable.updated_at,
-        variable.paths
-      );
-    }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function remove_variables(
+async function remove_variables_in_db(
   level: Decimal,
   struct_name: string,
   ids: ReadonlyArray<Decimal>
@@ -1644,135 +1715,6 @@ export async function increment_struct_counter(
   return new Ok([] as []);
 }
 
-export class Path {
-  label: string;
-  path: [
-    Array<
-      [
-        string,
-        {
-          struct: Struct;
-          id: Decimal;
-          active: boolean;
-          created_at: Date;
-          updated_at: Date;
-        }
-      ]
-    >,
-    [string, StrongEnum]
-  ];
-  updatable: boolean = false;
-
-  constructor(
-    label: string,
-    path: [
-      Array<
-        [
-          string,
-          {
-            struct: Struct;
-            id: Decimal;
-            active: boolean;
-            created_at: Date;
-            updated_at: Date;
-          }
-        ]
-      >,
-      [string, StrongEnum]
-    ]
-  ) {
-    this.label = label;
-    this.path = path;
-  }
-
-  equals(other: Path): boolean {
-    if (!other) {
-      return false;
-    }
-    if (this.label !== other.label) {
-      return false;
-    } else {
-      if (this.path[0].length !== other.path[0].length) {
-        return false;
-      } else {
-        for (let i = 0; i < this.path[0].length; i++) {
-          const [this_field_name, this_ref] = this.path[0][i];
-          const [other_field_name, other_ref] = this.path[0][i];
-          if (
-            this_field_name !== other_field_name ||
-            !this_ref.struct.equals(other_ref.struct) ||
-            this_ref.id !== other_ref.id
-          ) {
-            return false;
-          }
-        }
-        if (
-          this.path[1][0] !== other.path[1][0] ||
-          this.path[1][1].type !== other.path[1][1].type
-        ) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String([this.path, this.updatable]);
-  }
-}
-
-export class Variable {
-  struct: Struct;
-  id: Decimal;
-  active: boolean;
-  created_at: Date;
-  updated_at: Date;
-  paths: HashSet<Path>;
-
-  constructor(
-    struct: Struct,
-    id: Decimal,
-    active: boolean,
-    created_at: Date,
-    updated_at: Date,
-    paths: HashSet<Path>
-  ) {
-    this.struct = struct;
-    this.id = id;
-    this.active = active;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
-    this.paths = paths;
-  }
-
-  equals(other: Variable): boolean {
-    if (!other) {
-      return false;
-    }
-    return this.struct.equals(other.struct) && this.id.equals(other.id);
-  }
-
-  hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return String({
-      struct: this.struct.name,
-      id: this.id.toString(),
-      active: this.active.valueOf(),
-      created_at: this.created_at,
-      updated_at: this.updated_at,
-      paths: this.paths.toArray(),
-    });
-  }
-}
-
 export async function get_variables(
   struct: Struct,
   variable_filters: {
@@ -2013,13 +1955,13 @@ export async function get_variable(
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-export async function save_variable(
+export async function replace_variable(
   level: Decimal,
   variable: Variable,
   requested_at: Date = new Date()
 ): Promise<Result<[]>> {
   try {
-    await replace_variable(
+    await replace_variable_in_db(
       level,
       requested_at,
       variable.struct.name,
@@ -2050,15 +1992,32 @@ export async function save_variable(
   return new Ok([] as []);
 }
 
-export async function save_variables(
+export async function replace_variables(
   level: Decimal,
   variables: HashSet<Variable>,
   requested_at: Date = new Date()
 ): Promise<Result<[]>> {
   try {
     for (let variable of variables) {
-      await save_variable(level, variable, requested_at);
+      await replace_variable(level, variable, requested_at);
     }
+  } catch (err) {
+    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+  }
+  return new Ok([] as []);
+}
+
+export async function remove_variables(
+  level: Decimal,
+  struct: Struct,
+  variables: HashSet<Variable>
+): Promise<Result<[]>> {
+  try {
+    await remove_variables_in_db(
+      level,
+      struct.name,
+      variables.toArray().map((x) => x.id)
+    );
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
