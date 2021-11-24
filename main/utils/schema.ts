@@ -161,7 +161,7 @@ const schema: Record<
             [
               [["product_category"], "translation_count"],
               new NumberArithmeticExpression(
-                new Subtract<ToNum>([
+                new Add<ToNum>([
                   new DotExpression(
                     new Dot(["product_category", "translation_count"])
                   ),
@@ -181,7 +181,7 @@ const schema: Record<
             [
               [["product_category"], "translation_count"],
               new NumberArithmeticExpression(
-                new Add<ToNum>([
+                new Subtract<ToNum>([
                   new DotExpression(
                     new Dot(["product_category", "translation_count"])
                   ),
@@ -274,33 +274,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_service_category: {
-        dependencies: [["service_category"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "service_category", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "service_category", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "service_category", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "service_category", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_service_category: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "service_category"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["service_category"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["service_category", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_service_category: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "service_category"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["service_category"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["service_category", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -379,33 +391,41 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_tag: {
-        dependencies: [["tag"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "tag", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "tag", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "tag", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "tag", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_tag: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "tag"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["tag"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["tag", "translation_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_tag: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "tag"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["tag"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["tag", "translation_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -737,33 +757,41 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_wallet: {
-        dependencies: [["wallet"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "wallet", "alliance_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "wallet", "alliance_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "wallet", "alliance_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "wallet", "alliance_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_wallet: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "wallet"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["wallet"], "alliance_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["wallet", "alliance_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_wallet: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "wallet"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["wallet"], "alliance_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["wallet", "alliance_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -802,29 +830,41 @@ const schema: Record<
       public: [[[], "name"]],
     },
     triggers: {
-      update_count_in_wallet: {
-        dependencies: [["wallet"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "wallet", "guild_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "wallet", "guild_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "wallet", "guild_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_prev", "wallet", "guild_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_wallet: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "wallet"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["wallet"], "guild_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["wallet", "guild_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_wallet: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "wallet"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["wallet"], "guild_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["wallet", "guild_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -864,28 +904,40 @@ const schema: Record<
     },
     triggers: {
       increment_count_in_wallet: {
-        dependencies: [["wallet"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "wallet", "clan_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "wallet", "clan_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "wallet", "clan_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_prev", "wallet", "clan_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "wallet"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["wallet"], "clan_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["wallet", "clan_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_wallet: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "wallet"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["wallet"], "clan_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["wallet", "clan_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -1024,65 +1076,77 @@ const schema: Record<
       public: [],
     },
     triggers: {
-      update_count_in_alliance: {
-        dependencies: [["alliance"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance", "member_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance", "member_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance", "member_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "member_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "member_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["alliance", "member_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_count_in_member: {
-        dependencies: [["member"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "member", "alliance_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "member", "alliance_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "member", "alliance_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "member", "alliance_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_count_in_alliance: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "member_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["alliance", "member_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      increment_count_in_member: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["member"], "alliance_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["member", "alliance_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_member: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["member"], "alliance_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["member", "alliance_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {},
@@ -1125,57 +1189,77 @@ const schema: Record<
       public: [],
     },
     triggers: {
-      update_count_in_guild: {
-        dependencies: [["guild"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "guild", "member_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_curr", "guild", "member_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "guild", "member_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "guild", "member_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_guild: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "guild"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["guild"], "member_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["guild", "member_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_count_in_member: {
-        dependencies: [["member"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "member", "guild_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_curr", "member", "guild_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "member", "guild_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "member", "guild_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_count_in_guild: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "guild"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["guild"], "member_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["guild", "member_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      increment_count_in_member: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["member"], "guild_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["member", "guild_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_member: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["member"], "guild_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["member", "guild_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {},
@@ -1218,57 +1302,77 @@ const schema: Record<
       public: [],
     },
     triggers: {
-      update_count_in_clan: {
-        dependencies: [["clan"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "clan", "member_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_curr", "clan", "member_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "clan", "member_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "clan", "member_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_clan: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "clan"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["clan"], "member_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["clan", "member_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_count_in_member: {
-        dependencies: [["member"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "member", "clan_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_curr", "member", "clan_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "member", "clan_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "member", "clan_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_count_in_clan: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "clan"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["clan"], "member_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["clan", "member_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      increment_count_in_member: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["member"], "clan_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["member", "clan_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_member: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["member"], "clan_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["member", "clan_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {},
@@ -1313,61 +1417,81 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_product_family_count_in_alliance: {
-        dependencies: [["alliance"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance", "product_family_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "product_family_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance", "product_family_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "product_family_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_product_family_count_in_alliance: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "product_family_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance", "product_family_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_product_count_in_alliance: {
-        dependencies: [["product_count"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_product_family_count_in_alliance: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "product_family_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance", "product_family_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      increment_product_count_in_alliance: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "product_count"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "product_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["alliance", "product_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_product_count_in_alliance: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "product_count"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "product_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["alliance", "product_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -1415,41 +1539,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family: {
-        dependencies: [["alliance_product_family"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_product_family", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_product_family", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product_family: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -1508,41 +1636,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family: {
-        dependencies: [["alliance_product_family"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_product_family", "property_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family",
-                    "property_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_product_family", "property_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family",
-                    "property_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product_family: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family"], "property_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family", "property_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family"], "property_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family", "property_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -1590,49 +1722,51 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family_property: {
-        dependencies: [["alliance_product_family_property"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: [
-              "_prev",
-              "alliance_product_family_property",
-              "translation_count",
+      increment_count_in_alliance_product_family_property: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family_property"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_property"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_property",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_property",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: [
-              "_curr",
-              "alliance_product_family_property",
-              "translation_count",
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family_property: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family_property"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_property"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_property",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_property",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
       },
     },
     checks: {
@@ -1698,41 +1832,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family_property: {
-        dependencies: [["alliance_product_family_property"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_product_family_property", "value_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_property",
-                    "value_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_product_family_property", "value_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_property",
-                    "value_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product_family_property: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family_property"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_property"], "value_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family_property", "value_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family_property: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family_property"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_property"], "value_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family_property", "value_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -1780,49 +1918,51 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family_property_value: {
-        dependencies: [["alliance_product_family_property_value"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: [
-              "_prev",
-              "alliance_product_family_property_value",
-              "translation_count",
+      increment_count_in_alliance_product_family_property_value: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family_property_value"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_property_value"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_property_value",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_property_value",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: [
-              "_curr",
-              "alliance_product_family_property_value",
-              "translation_count",
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family_property_value: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family_property_value"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_property_value"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_property_value",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_property_value",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
       },
     },
     checks: {
@@ -1893,33 +2033,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family: {
-        dependencies: [["alliance_product_family"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_product_family", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product_family", "product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_product_family", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product_family", "product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product_family: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family"], "product_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family", "product_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family"], "product_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product_family", "product_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -1980,33 +2132,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product: {
-        dependencies: [["alliance_product"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_product", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_product", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -2063,35 +2227,41 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product: {
-        dependencies: [["alliance_product"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance_product", "tag_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance_product", "tag_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance_product", "tag_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product", "tag_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product"], "tag_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["alliance_product", "tag_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product"], "tag_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["alliance_product", "tag_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {},
@@ -2143,33 +2313,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product: {
-        dependencies: [["alliance_product"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_product", "variant_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product", "variant_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_product", "variant_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_product", "variant_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_product: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product"], "variant_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product", "variant_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_product: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product"], "variant_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_product", "variant_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
       compute_provider_average_price: {
         dependencies: [["provider_count"], ["provider_price_sum"]],
@@ -2253,49 +2435,51 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family_variant: {
-        dependencies: [["alliance_product_family_variant"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: [
-              "_prev",
-              "alliance_product_family_variant",
-              "translation_count",
+      increment_count_in_alliance_product_family_variant: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_variant"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_variant",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_variant",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: [
-              "_curr",
-              "alliance_product_family_variant",
-              "translation_count",
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family_variant: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_variant"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_variant",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_variant",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
       },
     },
     checks: {
@@ -2369,49 +2553,51 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family_variant: {
-        dependencies: [["alliance_product_family_variant"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: [
-              "_prev",
-              "alliance_product_family_variant",
-              "variant_property_count",
+      increment_count_in_alliance_product_family_variant: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_variant"], "variant_property_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_variant",
+                      "variant_property_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_variant",
-                    "variant_property_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: [
-              "_curr",
-              "alliance_product_family_variant",
-              "variant_property_count",
+          ],
+        },
+      },
+      decrement_count_in_alliance_product_family_variant: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_variant"], "variant_property_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_variant",
+                      "variant_property_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_variant",
-                    "variant_property_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
       },
     },
     checks: {
@@ -2491,57 +2677,77 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_product_family_count_in_user: {
-        dependencies: [["user"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user", "product_family_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user", "product_family_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user", "product_family_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user", "product_family_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_product_family_count_in_user: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user"], "product_family_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["user", "product_family_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_product_count_in_user: {
-        dependencies: [["product_count"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(new Dot(["_prev", "user", "product_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(new Dot(["_prev", "user", "product_count"])),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_product_family_count_in_user: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user"], "product_family_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["user", "product_family_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      increment_product_count_in_user: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "product_count"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user"], "product_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["user", "product_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_product_count_in_user: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "product_count"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user"], "product_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["user", "product_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -2586,33 +2792,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_user_product_family: {
-        dependencies: [["user_product_family"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user_product_family", "property_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product_family", "property_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user_product_family", "property_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product_family", "property_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_user_product_family: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family"], "property_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product_family", "property_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_user_product_family: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family"], "property_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product_family", "property_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -2664,41 +2882,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_user_product_family_property: {
-        dependencies: [["user_product_family_property"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user_product_family_property", "value_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "user_product_family_property",
-                    "value_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user_product_family_property", "value_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "user_product_family_property",
-                    "value_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_user_product_family_property: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product_family_property"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family_property"], "value_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product_family_property", "value_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_user_product_family_property: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product_family_property"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family_property"], "value_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product_family_property", "value_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -2755,33 +2977,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_user_product_family: {
-        dependencies: [["user_product_family"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user_product_family", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product_family", "product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user_product_family", "product_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product_family", "product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_user_product_family: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family"], "product_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product_family", "product_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_user_product_family: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product_family"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family"], "product_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product_family", "product_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -2842,33 +3076,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_user_product: {
-        dependencies: [["user_product"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user_product", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user_product", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_user_product: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_user_product: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["user_product", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -2943,33 +3189,41 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_user_product: {
-        dependencies: [["user_product"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "user_product", "variant_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product", "variant_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "user_product", "variant_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "user_product", "variant_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_user_product: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product"], "variant_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["user_product", "variant_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_user_product: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product"], "variant_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["user_product", "variant_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -3029,49 +3283,51 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_user_product_family_variant: {
-        dependencies: [["user_product_family_variant"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: [
-              "_prev",
-              "user_product_family_variant",
-              "variant_property_count",
+      increment_count_in_user_product_family_variant: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family_variant"], "variant_property_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "user_product_family_variant",
+                      "variant_property_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "user_product_family_variant",
-                    "variant_property_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: [
-              "_curr",
-              "user_product_family_variant",
-              "variant_property_count",
+          ],
+        },
+      },
+      decrement_count_in_user_product_family_variant: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family_variant"], "variant_property_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "user_product_family_variant",
+                      "variant_property_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "user_product_family_variant",
-                    "variant_property_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
       },
     },
     checks: {
@@ -3278,127 +3534,137 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_product_family_variant: {
-        dependencies: [["alliance_product_family_variant"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: [
-              "_curr",
-              "alliance_product_family_variant",
-              "provider_count",
+      increment_count_in_alliance_product_family_variant: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_variant"], "provider_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_variant",
+                      "provider_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_curr",
-                    "alliance_product_family_variant",
-                    "provider_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: [
-              "_prev",
-              "alliance_product_family_variant",
-              "provider_count",
-            ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_product_family_variant",
-                    "provider_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
       },
-      update_count_in_alliance_member: {
-        dependencies: [["alliance_member"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance_member", "variant_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance_member", "variant_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance_member", "variant_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_member", "variant_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_count_in_alliance_product_family_variant: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_product_family_variant"], "provider_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_product_family_variant",
+                      "provider_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_count_in_user_product_family_variant: {
-        dependencies: [["user_product_family_variant"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: [
-              "_curr",
-              "user_product_family_variant",
-              "alliance_variant_count",
+      increment_count_in_alliance_member: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_member"], "variant_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_member", "variant_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_curr",
-                    "user_product_family_variant",
-                    "alliance_variant_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: [
-              "_prev",
-              "user_product_family_variant",
-              "alliance_variant_count",
+          ],
+        },
+      },
+      decrement_count_in_alliance_member: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_member"], "variant_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_member", "variant_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
             ],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "user_product_family_variant",
-                    "alliance_variant_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+          ],
+        },
+      },
+      increment_count_in_user_product_family_variant: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "user_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family_variant"], "alliance_variant_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "user_product_family_variant",
+                      "alliance_variant_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_user_product_family_variant: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "user_product_family_variant"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["user_product_family_variant"], "alliance_variant_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "user_product_family_variant",
+                      "alliance_variant_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -3471,35 +3737,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance: {
-        dependencies: [["alliance"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance", "virtual_product_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance", "virtual_product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance", "virtual_product_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "virtual_product_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "virtual_product_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance", "virtual_product_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "virtual_product_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance", "virtual_product_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -3563,35 +3839,41 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance: {
-        dependencies: [["alliance"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance", "service_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance", "service_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance", "service_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance", "service_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "service_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(new Dot(["alliance", "service_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance"], "service_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(new Dot(["alliance", "service_count"])),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -3649,33 +3931,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_service: {
-        dependencies: [["alliance_service"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_service", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_service", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_service", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_service", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_service: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_service"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_service", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_service: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_service"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_service", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -3783,41 +4077,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_service_task: {
-        dependencies: [["alliance_service_task"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_service_task", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_service_task",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_service_task", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_service_task",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_service_task: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_service_task"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service_task"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_service_task", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_service_task: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_service_task"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service_task"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_service_task", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -3927,41 +4225,51 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_alliance_service_milsestone: {
-        dependencies: [["alliance_service_milsestone"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "alliance_service_milsestone", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_service_milsestone",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "alliance_service_milsestone", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot([
-                    "_prev",
-                    "alliance_service_milsestone",
-                    "translation_count",
-                  ])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_service_milsestone: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_service_milsestone"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service_milsestone"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_service_milsestone",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_service_milsestone: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_service_milsestone"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service_milsestone"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot([
+                      "alliance_service_milsestone",
+                      "translation_count",
+                    ])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
@@ -4016,7 +4324,10 @@ const schema: Record<
           write: [],
         },
       },
-      public: [[["alliance_service_milestone"]], [["alliance_service_task"]]],
+      public: [
+        [[], "alliance_service_milestone"],
+        [[], "alliance_service_task"],
+      ],
     },
     triggers: {},
     checks: {},
@@ -4041,65 +4352,85 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_service: {
-        dependencies: [["alliance_service"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance_service", "provider_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance_service", "provider_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance_service", "provider_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_service", "provider_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_alliance_service: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_service"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service"], "provider_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_service", "provider_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
-      update_count_in_member: {
-        dependencies: [["alliance_member"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "alliance_member", "service_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_curr", "alliance_member", "service_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            // Run on updation/deletion as per rules of effects
-            path: ["_prev", "alliance_member", "service_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "alliance_member", "service_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      decrement_count_in_alliance_service: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_service"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_service"], "provider_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_service", "provider_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      increment_count_in_alliance_member: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "alliance_member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_member"], "service_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_member", "service_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_alliance_member: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "alliance_member"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["alliance_member"], "service_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["alliance_member", "service_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
