@@ -33,11 +33,9 @@ export type StructTriggers = Record<
   string,
   {
     // Snapshot of paths is taken as per the name indicates
-    event:
-      | "after_creation"
-      | "before_update"
-      | "after_update"
-      | "before_deletion";
+    event: ReadonlyArray<
+      "after_creation" | "before_update" | "after_update" | "before_deletion"
+    >;
     monitor: ReadonlyArray<PathString>;
     operation:
       | {

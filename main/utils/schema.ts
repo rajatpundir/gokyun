@@ -152,33 +152,45 @@ const schema: Record<
       ],
     },
     triggers: {
-      update_count_in_product_category: {
-        dependencies: [["product_category"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            path: ["_prev", "product_category", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Subtract<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "product_category", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-          {
-            path: ["_curr", "product_category", "translation_count"],
-            expr: new NumberArithmeticExpression(
-              new Add<ToNum>([
-                new DotExpression(
-                  new Dot(["_prev", "product_category", "translation_count"])
-                ),
-                [new Num(1)],
-              ])
-            ),
-          },
-        ],
+      increment_count_in_product_category: {
+        event: ["after_creation", "after_update"],
+        monitor: [[[], "product_category"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["product_category"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Subtract<ToNum>([
+                  new DotExpression(
+                    new Dot(["product_category", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      decrement_count_in_product_category: {
+        event: ["before_deletion", "before_update"],
+        monitor: [[[], "product_category"]],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["product_category"], "translation_count"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new DotExpression(
+                    new Dot(["product_category", "translation_count"])
+                  ),
+                  [new Num(1)],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
