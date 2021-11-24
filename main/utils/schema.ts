@@ -991,11 +991,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         guild: {
-          read: [[["user"]]],
+          read: [[[], "user"]],
           write: [],
         },
         user: {
-          read: [[["guild"]]],
+          read: [[[], "guild"]],
           write: [],
         },
       },
@@ -1038,21 +1038,15 @@ const schema: Record<
     uniqueness: [[["alliance"], "member"]],
     permissions: {
       borrow: {
-        alliance: {
-          prove: [
+        borrow_alliance_wallet_user: {
+          prove: ["Alliance_Member", "member"],
+          constraints: [
             [
-              "AllianceMember",
-              "member",
-              new NumberComparatorExpression(
-                new Equals<ToNum>([
-                  new DotExpression(new Dot(["alliance"])),
-                  new DotExpression(new Dot(["_borrow", "alliance"])),
-                  [],
-                ])
-              ),
+              [[], "alliance"],
+              [[], "alliance"],
             ],
           ],
-          ownership: [["alliance", "wallet", "user"]],
+          ownership: [["alliance", "wallet"], "user"],
         },
       },
       ownership: {
@@ -1159,21 +1153,15 @@ const schema: Record<
     uniqueness: [[["guild"], "member"]],
     permissions: {
       borrow: {
-        guild: {
-          prove: [
+        borrow_guild_wallet_user: {
+          prove: ["Guild_Member", "member"],
+          constraints: [
             [
-              "GuildMember",
-              "member",
-              new NumberComparatorExpression(
-                new Equals<ToNum>([
-                  new DotExpression(new Dot(["guild"])),
-                  new DotExpression(new Dot(["_borrow", "guild"])),
-                  [],
-                ])
-              ),
+              [[], "guild"],
+              [[], "guild"],
             ],
           ],
-          ownership: [["guild", "wallet", "user"]],
+          ownership: [["guild", "wallet"], "user"],
         },
       },
       ownership: {
@@ -1272,21 +1260,15 @@ const schema: Record<
     uniqueness: [[["clan"], "member"]],
     permissions: {
       borrow: {
-        clan: {
-          prove: [
+        borrow_clan_wallet_user: {
+          prove: ["Clan_Member", "member"],
+          constraints: [
             [
-              "ClanMember",
-              "member",
-              new NumberComparatorExpression(
-                new Equals<ToNum>([
-                  new DotExpression(new Dot(["clan"])),
-                  new DotExpression(new Dot(["_borrow", "clan"])),
-                  [],
-                ])
-              ),
+              [[], "clan"],
+              [[], "clan"],
             ],
           ],
-          ownership: [["clan", "wallet", "user"]],
+          ownership: [["clan", "wallet"], "user"],
         },
       },
       ownership: {
@@ -2354,20 +2336,25 @@ const schema: Record<
         },
       },
       compute_provider_average_price: {
-        dependencies: [["provider_count"], ["provider_price_sum"]],
-        mutate: [
-          // prev keys referred by '_prev', current by '_curr'
-          {
-            // Run on creation/updation as per rules of effects
-            path: ["_curr", "provider_average_price"],
-            expr: new NumberArithmeticExpression(
-              new Divide<ToDeci>([
-                new DotExpression(new Dot(["_curr", "provider_price_sum"])),
-                [new DotExpression(new Dot(["_curr", "provider_count"]))],
-              ])
-            ),
-          },
+        event: ["after_creation", "after_update"],
+        monitor: [
+          [[], "provider_count"],
+          [[], "provider_price_sum"],
         ],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [[], "provider_average_price"],
+              new NumberArithmeticExpression(
+                new Divide<ToDeci>([
+                  new DotExpression(new Dot(["provider_price_sum"])),
+                  [new DotExpression(new Dot(["provider_count"]))],
+                ])
+              ),
+            ],
+          ],
+        },
       },
     },
     checks: {
