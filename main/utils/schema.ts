@@ -1,9 +1,7 @@
 import Decimal from "decimal.js";
-import { HashSet } from "prelude-ts";
 import {
   Add,
   And,
-  Bool,
   BooleanLispExpression,
   Deci,
   DecimalComparatorExpression,
@@ -28,25 +26,15 @@ import {
   ToText,
 } from "./lisp";
 import { errors, ErrMsg } from "./errors";
-import { Struct, StructPermissions, WeakEnum } from "./variable";
-
-// get permissions for struct,
-// select subset of paths that wish to be shown in form,
-// select subset of paths that need to be updated,
-// ask to update the paths
-// {
-//     "a.b.c": 2,
-//     "a.b.c.d_1": 3,
-//     "a": 4 // Either children or parent can be updated, not both
-// }
+import { StructPermissions, StructTriggers, WeakEnum } from "./variable";
 
 const schema: Record<
   string,
   {
     fields: Record<string, WeakEnum>;
-    uniqueness: ReadonlyArray<ReadonlyArray<string>>;
+    uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
     permissions: StructPermissions;
-    effects: StructEffects;
+    triggers: StructTriggers;
     checks: Record<string, [BooleanLispExpression, ErrMsg]>;
   }
 > = {
@@ -54,36 +42,33 @@ const schema: Record<
     fields: {},
     uniqueness: [],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   B: {
     fields: {},
     uniqueness: [],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   C: {
     fields: {},
     uniqueness: [],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Test: {
@@ -99,23 +84,22 @@ const schema: Record<
       guild_count: { type: "u32", default: new Decimal(0) },
       clan_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["user", "name"]],
+    uniqueness: [[["user"], "name"]],
     permissions: {
-      ownership: [["user", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user: {
           read: [
-            [["copper"], new Bool(true)],
-            [["silver"], new Bool(true)],
-            [["gold"], new Bool(true)],
+            [[], "copper"],
+            [[], "silver"],
+            [[], "gold"],
           ],
           write: [],
         },
       },
-      public: [[["user"], new Bool(true)]],
+      public: [[[], "user"]],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Product_Category: {
@@ -126,15 +110,14 @@ const schema: Record<
     },
     uniqueness: [],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["parent"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "parent"],
+        [[], "name"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -158,18 +141,17 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["product_category", "language"]],
+    uniqueness: [[["product_category"], "language"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["product_category"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "product_category"],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_product_category: {
         dependencies: [["product_category"]],
         mutate: [
@@ -238,15 +220,14 @@ const schema: Record<
     },
     uniqueness: [],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["parent"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "parent"],
+        [[], "name"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -270,18 +251,17 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["service_category", "language"]],
+    uniqueness: [[["service_category"], "language"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["service_category"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "service_category"],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_service_category: {
         dependencies: [["service_category"]],
         mutate: [
@@ -347,14 +327,13 @@ const schema: Record<
       name: { type: "str" },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["name"]],
+    uniqueness: [[[], "name"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
-      public: [[["name"], new Bool(true)]],
+      ownership: {},
+      public: [[[], "name"]],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -378,17 +357,16 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["tag", "language"]],
+    uniqueness: [[["tag"], "language"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_tag: {
         dependencies: [["tag"]],
         mutate: [
@@ -453,14 +431,13 @@ const schema: Record<
     fields: {
       name: { type: "str" },
     },
-    uniqueness: [["name"]],
+    uniqueness: [[[], "name"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
-      public: [[["name"], new Bool(true)]],
+      ownership: {},
+      public: [[[], "name"]],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -494,14 +471,13 @@ const schema: Record<
       average_latitude: { type: "idecimal", default: new Decimal(0) },
       average_longitude: { type: "idecimal", default: new Decimal(0) },
     },
-    uniqueness: [["country", "name"]],
+    uniqueness: [[["country"], "name"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
-      public: [[["country", "name"], new Bool(true)]],
+      ownership: {},
+      public: [[["country"], "name"]],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_is_not_empty: [
         new LogicalUnaryExpression(
@@ -549,18 +525,17 @@ const schema: Record<
       // Use standard deviation for average calculation
       average_time: { type: "timestamp", default: new Date() },
     },
-    uniqueness: [["from", "to"]],
+    uniqueness: [[["from"], "to"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["from"], new Bool(true)],
-        [["to"], new Bool(true)],
-        [["average_time"], new Bool(true)],
+        [[], "from"],
+        [[], "to"],
+        [[], "average_time"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_is_not_empty: [
         new LogicalUnaryExpression(
@@ -582,14 +557,13 @@ const schema: Record<
     fields: {
       code: { type: "str" },
     },
-    uniqueness: [["code"]],
+    uniqueness: [[[], "code"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
-      public: [[["code"], new Bool(true)]],
+      ownership: {},
+      public: [[[], "code"]],
     },
-    effects: {},
+    triggers: {},
     checks: {
       code_is_not_empty: [
         new LogicalUnaryExpression(
@@ -622,21 +596,23 @@ const schema: Record<
       product_family_count: { type: "u32", default: new Decimal(0) },
       product_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["mobile"], ["nickname"]],
+    uniqueness: [
+      [[], "mobile"],
+      [[], "nickname"],
+    ],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {},
+      ownership: {},
       public: [
-        [["nickname"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["knows_english"], new Bool(true)],
-        [["country"], new Bool(true)],
-        [["product_family_count"], new Bool(true)],
-        [["product_family_variant_count"], new Bool(true)],
+        [[], "nickname"],
+        [[], "language"],
+        [[], "knows_english"],
+        [[], "country"],
+        [[], "product_family_count"],
+        [[], "product_family_variant_count"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       mobile_is_not_empty: [
         new LogicalUnaryExpression(
@@ -681,23 +657,22 @@ const schema: Record<
       guild_count: { type: "u32", default: new Decimal(0) },
       clan_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["user", "name"]],
+    uniqueness: [[["user"], "name"]],
     permissions: {
-      ownership: [["user", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user: {
           read: [
-            [["copper"], new Bool(true)],
-            [["silver"], new Bool(true)],
-            [["gold"], new Bool(true)],
+            [[], "copper"],
+            [[], "silver"],
+            [[], "gold"],
           ],
           write: [],
         },
       },
-      public: [[["user"], new Bool(true)]],
+      public: [[[], "user"]],
     },
-    effects: {},
+    triggers: {},
     checks: {
       // Wallet should not be attached to more than one alliance / guild / clan
       wallet_is_attached_uniquely: [
@@ -735,22 +710,21 @@ const schema: Record<
       virtual_product_count: { type: "u32", default: new Decimal(0) },
       service_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["name"]],
+    uniqueness: [[[], "name"]],
     permissions: {
-      ownership: [["wallet", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         wallet: {
           read: [],
-          write: [[["name"], new Bool(true)]],
+          write: [[[], "name"]],
         },
       },
       public: [
-        [["name"], new Bool(true)],
-        [["member_count"], new Bool(true)],
+        [[], "name"],
+        [[], "member_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_wallet: {
         dependencies: [["wallet"]],
         mutate: [
@@ -804,19 +778,18 @@ const schema: Record<
       wallet: { type: "other", other: "Wallet" },
       member_count: { type: "u32" },
     },
-    uniqueness: [["name"]],
+    uniqueness: [[[], "name"]],
     permissions: {
-      ownership: [["wallet", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         wallet: {
           read: [],
-          write: [[["name"], new Bool(true)]],
+          write: [[[], "name"]],
         },
       },
-      public: [[["name"], new Bool(true)]],
+      public: [[[], "name"]],
     },
-    effects: {
+    triggers: {
       update_count_in_wallet: {
         dependencies: [["wallet"]],
         mutate: [
@@ -868,17 +841,16 @@ const schema: Record<
     },
     uniqueness: [],
     permissions: {
-      ownership: [["wallet", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         wallet: {
           read: [],
-          write: [[["name"], new Bool(true)]],
+          write: [[[], "name"]],
         },
       },
-      public: [[["name"], new Bool(true)]],
+      public: [[[], "name"]],
     },
-    effects: {
+    triggers: {
       increment_count_in_wallet: {
         dependencies: [["wallet"]],
         mutate: [
@@ -927,23 +899,22 @@ const schema: Record<
       alliance: { type: "other", other: "Alliance" },
       user: { type: "other", other: "User" },
     },
-    uniqueness: [["alliance", "user"]],
+    uniqueness: [[["alliance"], "user"]],
     permissions: {
-      ownership: [["user", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance: {
-          read: [[["user"], new Bool(true)]],
+          read: [[[], "user"]],
           write: [],
         },
         user: {
-          read: [[["alliance"], new Bool(true)]],
+          read: [[[], "alliance"]],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Guild_Member_Request: {
@@ -951,23 +922,22 @@ const schema: Record<
       guild: { type: "other", other: "Guild" },
       user: { type: "other", other: "User" },
     },
-    uniqueness: [["guild", "user"]],
+    uniqueness: [[["guild"], "user"]],
     permissions: {
-      ownership: [["guild", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         guild: {
-          read: [[["user"], new Bool(true)]],
+          read: [[["user"]]],
           write: [],
         },
         user: {
-          read: [[["guild"], new Bool(true)]],
+          read: [[["guild"]]],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Clan_Member_Invite: {
@@ -976,23 +946,22 @@ const schema: Record<
       clan: { type: "other", other: "Clan" },
       user: { type: "other", other: "User" },
     },
-    uniqueness: [["clan", "user"]],
+    uniqueness: [[["clan"], "user"]],
     permissions: {
-      ownership: [["user", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         clan: {
-          read: [[["user"], new Bool(true)]],
+          read: [[[], "user"]],
           write: [],
         },
         user: {
-          read: [[["clan"], new Bool(true)]],
+          read: [[[], "clan"]],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Alliance_Member: {
@@ -1002,12 +971,8 @@ const schema: Record<
       variant_count: { type: "u32", default: new Decimal(0) },
       service_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["alliance", "member"]],
+    uniqueness: [[["alliance"], "member"]],
     permissions: {
-      ownership: [
-        ["alliance", new Bool(true)],
-        ["member", new Bool(true)],
-      ],
       borrow: {
         alliance: {
           prove: [
@@ -1026,27 +991,27 @@ const schema: Record<
           ownership: [["alliance", "wallet", "user"]],
         },
       },
-      private: {
+      ownership: {
         alliance: {
           read: [
-            [["member"], new Bool(true)],
-            [["variant_count"], new Bool(true)],
-            [["service_count"], new Bool(true)],
+            [[], "member"],
+            [[], "variant_count"],
+            [[], "service_count"],
           ],
           write: [],
         },
         member: {
           read: [
-            [["alliance"], new Bool(true)],
-            [["variant_count"], new Bool(true)],
-            [["service_count"], new Bool(true)],
+            [[], "alliance"],
+            [[], "variant_count"],
+            [[], "service_count"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance: {
         dependencies: [["alliance"]],
         mutate: [
@@ -1115,12 +1080,8 @@ const schema: Record<
       guild: { type: "other", other: "Guild" },
       member: { type: "other", other: "User" },
     },
-    uniqueness: [["guild", "member"]],
+    uniqueness: [[["guild"], "member"]],
     permissions: {
-      ownership: [
-        ["guild", new Bool(true)],
-        ["member", new Bool(true)],
-      ],
       borrow: {
         guild: {
           prove: [
@@ -1139,19 +1100,19 @@ const schema: Record<
           ownership: [["guild", "wallet", "user"]],
         },
       },
-      private: {
+      ownership: {
         guild: {
-          read: [[["member"], new Bool(true)]],
+          read: [[[], "member"]],
           write: [],
         },
         member: {
-          read: [[["guild"], new Bool(true)]],
+          read: [[[], "guild"]],
           write: [],
         },
       },
       public: [],
     },
-    effects: {
+    triggers: {
       update_count_in_guild: {
         dependencies: [["guild"]],
         mutate: [
@@ -1212,12 +1173,8 @@ const schema: Record<
       clan: { type: "other", other: "Clan" },
       member: { type: "other", other: "User" },
     },
-    uniqueness: [["clan", "member"]],
+    uniqueness: [[["clan"], "member"]],
     permissions: {
-      ownership: [
-        ["clan", new Bool(true)],
-        ["member", new Bool(true)],
-      ],
       borrow: {
         clan: {
           prove: [
@@ -1236,19 +1193,19 @@ const schema: Record<
           ownership: [["clan", "wallet", "user"]],
         },
       },
-      private: {
+      ownership: {
         clan: {
-          read: [[["member"], new Bool(true)]],
+          read: [[[], "member"]],
           write: [],
         },
         member: {
-          read: [[["clan"], new Bool(true)]],
+          read: [[[], "clan"]],
           write: [],
         },
       },
       public: [],
     },
-    effects: {
+    triggers: {
       update_count_in_clan: {
         dependencies: [["clan"]],
         mutate: [
@@ -1315,36 +1272,35 @@ const schema: Record<
       translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
-      ["alliance", "name"],
-      ["alliance", "order"],
+      [["alliance"], "name"],
+      [["alliance"], "order"],
     ],
     permissions: {
-      ownership: [["alliance", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance: {
           read: [],
           write: [
-            [["order"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["product_category"], new Bool(true)],
-            [["property_count"], new Bool(true)],
-            [["product_count"], new Bool(true)],
-            [["translation_count"], new Bool(true)],
+            [[], "order"],
+            [[], "name"],
+            [[], "product_category"],
+            [[], "property_count"],
+            [[], "product_count"],
+            [[], "translation_count"],
           ],
         },
       },
       public: [
-        [["alliance"], new Bool(true)],
-        [["order"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["product_category"], new Bool(true)],
-        [["property_count"], new Bool(true)],
-        [["product_count"], new Bool(true)],
-        [["translation_count"], new Bool(true)],
+        [[], "alliance"],
+        [[], "order"],
+        [[], "name"],
+        [[], "product_category"],
+        [[], "property_count"],
+        [[], "product_count"],
+        [[], "translation_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_product_family_count_in_alliance: {
         dependencies: [["alliance"]],
         mutate: [
@@ -1428,26 +1384,25 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["alliance_product_family", "language"]],
+    uniqueness: [[["alliance_product_family"], "language"]],
     permissions: {
-      ownership: [["alliance_product_family", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
           ],
         },
       },
       public: [
-        [["alliance_product_family"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "alliance_product_family"],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family: {
         dependencies: [["alliance_product_family"]],
         mutate: [
@@ -1526,22 +1481,21 @@ const schema: Record<
       value_count: { type: "u32", default: new Decimal(0) },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["alliance_product_family", "name"]],
+    uniqueness: [[["alliance_product_family"], "name"]],
     permissions: {
-      ownership: [["alliance_product_family", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family: {
           read: [],
-          write: [[["name"], new Bool(true)]],
+          write: [[[], "name"]],
         },
       },
       public: [
-        [["alliance_product_family"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "alliance_product_family"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family: {
         dependencies: [["alliance_product_family"]],
         mutate: [
@@ -1605,26 +1559,25 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["alliance_product_family_property", "language"]],
+    uniqueness: [[["alliance_product_family_property"], "language"]],
     permissions: {
-      ownership: [["alliance_product_family_property", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_property: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
           ],
         },
       },
       public: [
-        [["alliance_product_family_property"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "alliance_product_family_property"],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family_property: {
         dependencies: [["alliance_product_family_property"]],
         mutate: [
@@ -1712,28 +1665,27 @@ const schema: Record<
       translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
-      ["alliance_product_family_property", "name"],
-      ["alliance_product_family_property", "order"],
+      [["alliance_product_family_property"], "name"],
+      [["alliance_product_family_property"], "order"],
     ],
     permissions: {
-      ownership: [["alliance_product_family_property", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_property: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["order"], new Bool(true)],
+            [[], "name"],
+            [[], "order"],
           ],
         },
       },
       public: [
-        [["alliance_product_family_property"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["order"], new Bool(true)],
+        [[], "alliance_product_family_property"],
+        [[], "name"],
+        [[], "order"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family_property: {
         dependencies: [["alliance_product_family_property"]],
         mutate: [
@@ -1797,26 +1749,25 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["alliance_product_family_property_value", "language"]],
+    uniqueness: [[["alliance_product_family_property_value"], "language"]],
     permissions: {
-      ownership: [["alliance_product_family_property_value", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_property_value: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
           ],
         },
       },
       public: [
-        [["alliance_product_family_property_value"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "alliance_product_family_property_value"],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family_property_value: {
         dependencies: [["alliance_product_family_property_value"]],
         mutate: [
@@ -1905,32 +1856,31 @@ const schema: Record<
       tag_count: { type: "u32", default: new Decimal(0) },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["alliance_product_family", "name"]],
+    uniqueness: [[["alliance_product_family"], "name"]],
     permissions: {
-      ownership: [["alliance_product_family", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
-            [["variant_count"], new Bool(true)],
-            [["tag_count"], new Bool(true)],
-            [["translation_count"], new Bool(true)],
+            [[], "name"],
+            [[], "description"],
+            [[], "variant_count"],
+            [[], "tag_count"],
+            [[], "translation_count"],
           ],
         },
       },
       public: [
-        [["alliance_product_family"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
-        [["variant_count"], new Bool(true)],
-        [["tag_count"], new Bool(true)],
-        [["translation_count"], new Bool(true)],
+        [[], "alliance_product_family"],
+        [[], "name"],
+        [[], "description"],
+        [[], "variant_count"],
+        [[], "tag_count"],
+        [[], "translation_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family: {
         dependencies: [["alliance_product_family"]],
         mutate: [
@@ -1997,28 +1947,27 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
     },
-    uniqueness: [["alliance_product", "language"]],
+    uniqueness: [[["alliance_product"], "language"]],
     permissions: {
-      ownership: [["alliance_product", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
+            [[], "description"],
           ],
         },
       },
       public: [
-        [["alliance_product"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
+        [[], "alliance_product"],
+        [[], "language"],
+        [[], "name"],
+        [[], "description"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product: {
         dependencies: [["alliance_product"]],
         mutate: [
@@ -2087,22 +2036,21 @@ const schema: Record<
       },
       tag: { type: "other", other: "Tag" },
     },
-    uniqueness: [["alliance_product", "tag"]],
+    uniqueness: [[["alliance_product"], "tag"]],
     permissions: {
-      ownership: [],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product: {
           read: [],
-          write: [[["tag"], new Bool(true)]],
+          write: [[[], "tag"]],
         },
       },
       public: [
-        [["alliance_product"], new Bool(true)],
-        [["tag"], new Bool(true)],
+        [[], "alliance_product"],
+        [[], "tag"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product: {
         dependencies: [["alliance_product"]],
         mutate: [
@@ -2153,37 +2101,36 @@ const schema: Record<
       provider_average_price: { type: "udecimal", default: new Decimal(0) },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["alliance_product", "name"]],
+    uniqueness: [[["alliance_product"], "name"]],
     permissions: {
-      ownership: [["alliance_product", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["min_quantity"], new Bool(true)],
-            [["max_quantity"], new Bool(true)],
-            [["min_price"], new Bool(true)],
-            [["max_price"], new Bool(true)],
+            [[], "name"],
+            [[], "min_quantity"],
+            [[], "max_quantity"],
+            [[], "min_price"],
+            [[], "max_price"],
           ],
         },
       },
       public: [
-        [["alliance_product"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["min_quantity"], new Bool(true)],
-        [["max_quantity"], new Bool(true)],
-        [["min_price"], new Bool(true)],
-        [["max_price"], new Bool(true)],
-        [["variant_property_count"], new Bool(true)],
-        [["provider_count"], new Bool(true)],
-        [["provider_price_sum"], new Bool(true)],
-        [["provider_average_price"], new Bool(true)],
-        [["translation_count"], new Bool(true)],
+        [[], "alliance_product"],
+        [[], "name"],
+        [[], "min_quantity"],
+        [[], "max_quantity"],
+        [[], "min_price"],
+        [[], "max_price"],
+        [[], "variant_property_count"],
+        [[], "provider_count"],
+        [[], "provider_price_sum"],
+        [[], "provider_average_price"],
+        [[], "translation_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product: {
         dependencies: [["alliance_product"]],
         mutate: [
@@ -2275,26 +2222,25 @@ const schema: Record<
       language: { type: "other", other: "Language" },
       name: { type: "str" },
     },
-    uniqueness: [["alliance_product_family_variant", "language"]],
+    uniqueness: [[["alliance_product_family_variant"], "language"]],
     permissions: {
-      ownership: [["alliance_product_family_variant", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_variant: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
           ],
         },
       },
       public: [
-        [["alliance_product_family_variant"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "alliance_product_family_variant"],
+        [[], "language"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family_variant: {
         dependencies: [["alliance_product_family_variant"]],
         mutate: [
@@ -2388,30 +2334,29 @@ const schema: Record<
       },
     },
     uniqueness: [
-      ["alliance_product_family_variant", "order"],
-      ["alliance_product_family_variant", "alliance_product_family_property"],
+      [["alliance_product_family_variant"], "order"],
+      [["alliance_product_family_variant"], "alliance_product_family_property"],
     ],
     permissions: {
-      ownership: [["alliance_product_family_variant", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_variant: {
           read: [],
           write: [
-            [["order"], new Bool(true)],
-            [["alliance_product_family_property"], new Bool(true)],
-            [["alliance_product_family_property_value"], new Bool(true)],
+            [[], "order"],
+            [[], "alliance_product_family_property"],
+            [[], "alliance_product_family_property_value"],
           ],
         },
       },
       public: [
-        [["alliance_product_family_variant"], new Bool(true)],
-        [["order"], new Bool(true)],
-        [["alliance_product_family_property"], new Bool(true)],
-        [["alliance_product_family_property_value"], new Bool(true)],
+        [[], "alliance_product_family_variant"],
+        [[], "order"],
+        [[], "alliance_product_family_property"],
+        [[], "alliance_product_family_property_value"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family_variant: {
         dependencies: [["alliance_product_family_variant"]],
         mutate: [
@@ -2505,36 +2450,35 @@ const schema: Record<
       translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
-      ["alliance", "name"],
-      ["alliance", "order"],
+      [["alliance"], "name"],
+      [["alliance"], "order"],
     ],
     permissions: {
-      ownership: [["user", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user: {
           read: [],
           write: [
-            [["order"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["product_category"], new Bool(true)],
-            [["property_count"], new Bool(true)],
-            [["product_count"], new Bool(true)],
-            [["translation_count"], new Bool(true)],
+            [[], "order"],
+            [[], "name"],
+            [[], "product_category"],
+            [[], "property_count"],
+            [[], "product_count"],
+            [[], "translation_count"],
           ],
         },
       },
       public: [
-        [["user"], new Bool(true)],
-        [["order"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["product_category"], new Bool(true)],
-        [["property_count"], new Bool(true)],
-        [["product_count"], new Bool(true)],
-        [["translation_count"], new Bool(true)],
+        [[], "user"],
+        [[], "order"],
+        [[], "name"],
+        [[], "product_category"],
+        [[], "property_count"],
+        [[], "product_count"],
+        [[], "translation_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_product_family_count_in_user: {
         dependencies: [["user"]],
         mutate: [
@@ -2615,22 +2559,21 @@ const schema: Record<
       value_count: { type: "u32", default: new Decimal(0) },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["user_product_family", "name"]],
+    uniqueness: [[["user_product_family"], "name"]],
     permissions: {
-      ownership: [["user_product_family", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user_product_family: {
           read: [],
-          write: [[["name"], new Bool(true)]],
+          write: [[[], "name"]],
         },
       },
       public: [
-        [["user_product_family"], new Bool(true)],
-        [["name"], new Bool(true)],
+        [[], "user_product_family"],
+        [[], "name"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_user_product_family: {
         dependencies: [["user_product_family"]],
         mutate: [
@@ -2688,28 +2631,27 @@ const schema: Record<
       translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
-      ["user_product_family_property", "name"],
-      ["user_product_family_property", "order"],
+      [["user_product_family_property"], "name"],
+      [["user_product_family_property"], "order"],
     ],
     permissions: {
-      ownership: [["user_product_family_property", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user_product_family_property: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["order"], new Bool(true)],
+            [[], "name"],
+            [[], "order"],
           ],
         },
       },
       public: [
-        [["user_product_family_property"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["order"], new Bool(true)],
+        [[], "user_product_family_property"],
+        [[], "name"],
+        [[], "order"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_user_product_family_property: {
         dependencies: [["user_product_family_property"]],
         mutate: [
@@ -2776,32 +2718,31 @@ const schema: Record<
       tag_count: { type: "u32", default: new Decimal(0) },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["user_product_family", "name"]],
+    uniqueness: [[["user_product_family"], "name"]],
     permissions: {
-      ownership: [["user_product_family", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user_product_family: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
-            [["variant_count"], new Bool(true)],
-            [["tag_count"], new Bool(true)],
-            [["translation_count"], new Bool(true)],
+            [[], "name"],
+            [[], "description"],
+            [[], "variant_count"],
+            [[], "tag_count"],
+            [[], "translation_count"],
           ],
         },
       },
       public: [
-        [["user_product_family"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
-        [["variant_count"], new Bool(true)],
-        [["tag_count"], new Bool(true)],
-        [["translation_count"], new Bool(true)],
+        [[], "user_product_family"],
+        [[], "name"],
+        [[], "description"],
+        [[], "variant_count"],
+        [[], "tag_count"],
+        [[], "translation_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_user_product_family: {
         dependencies: [["user_product_family"]],
         mutate: [
@@ -2868,28 +2809,27 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
     },
-    uniqueness: [["user_product", "language"]],
+    uniqueness: [[["user_product"], "language"]],
     permissions: {
-      ownership: [["user_product", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user_product: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
+            [[], "description"],
           ],
         },
       },
       public: [
-        [["user_product"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
+        [[], "user_product"],
+        [[], "language"],
+        [[], "name"],
+        [[], "description"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_user_product: {
         dependencies: [["user_product"]],
         mutate: [
@@ -2964,34 +2904,33 @@ const schema: Record<
       translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
-      ["user_product", "name"],
-      ["user_product", "order"],
+      [["user_product"], "name"],
+      [["user_product"], "order"],
     ],
     permissions: {
-      ownership: [["user_product", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user_product: {
           read: [],
           write: [
-            [["order"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["quantity"], new Bool(true)],
-            [["price"], new Bool(true)],
+            [[], "order"],
+            [[], "name"],
+            [[], "quantity"],
+            [[], "price"],
           ],
         },
       },
       public: [
-        [["user_product"], new Bool(true)],
-        [["order"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["quantity"], new Bool(true)],
-        [["price"], new Bool(true)],
-        [["variant_property_count"], new Bool(true)],
-        [["translation_count"], new Bool(true)],
+        [[], "user_product"],
+        [[], "order"],
+        [[], "name"],
+        [[], "quantity"],
+        [[], "price"],
+        [[], "variant_property_count"],
+        [[], "translation_count"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_user_product: {
         dependencies: [["user_product"]],
         mutate: [
@@ -3055,30 +2994,29 @@ const schema: Record<
       },
     },
     uniqueness: [
-      ["user_product_family_variant", "order"],
-      ["user_product_family_variant", "user_product_family_property"],
+      [["user_product_family_variant"], "order"],
+      [["user_product_family_variant"], "user_product_family_property"],
     ],
     permissions: {
-      ownership: [["user_product_family_variant", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user_product_family_variant: {
           read: [],
           write: [
-            [["order"], new Bool(true)],
-            [["user_product_family_property"], new Bool(true)],
-            [["user_product_family_property_value"], new Bool(true)],
+            [[], "order"],
+            [[], "user_product_family_property"],
+            [[], "user_product_family_property_value"],
           ],
         },
       },
       public: [
-        [["user_product_family_variant"], new Bool(true)],
-        [["order"], new Bool(true)],
-        [["user_product_family_property"], new Bool(true)],
-        [["user_product_family_property_value"], new Bool(true)],
+        [[], "user_product_family_variant"],
+        [[], "order"],
+        [[], "user_product_family_property"],
+        [[], "user_product_family_property_value"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_user_product_family_variant: {
         dependencies: [["user_product_family_variant"]],
         mutate: [
@@ -3172,34 +3110,30 @@ const schema: Record<
       },
     },
     uniqueness: [
-      ["alliance_product_family_variant", "user_product_family_variant"],
-      ["alliance_member", "user_product_family_variant"],
+      [["alliance_product_family_variant"], "user_product_family_variant"],
+      [["alliance_member"], "user_product_family_variant"],
     ],
     permissions: {
-      ownership: [
-        ["alliance_product_family_variant", new Bool(true)],
-        ["user_product_family_variant", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_variant: {
           read: [
-            [["alliance_member"], new Bool(true)],
-            [["user_product_family_variant"], new Bool(true)],
+            [[], "alliance_member"],
+            [[], "user_product_family_variant"],
           ],
           write: [],
         },
         user_product_family_variant: {
           read: [
-            [["alliance_product_family_variant"], new Bool(true)],
-            [["alliance_member"], new Bool(true)],
+            [[], "alliance_product_family_variant"],
+            [[], "alliance_member"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {
       alliance_is_the_same: [
         new NumberComparatorExpression(
@@ -3311,32 +3245,27 @@ const schema: Record<
       },
     },
     uniqueness: [
-      ["alliance_product_family_variant", "user_product_family_variant"],
-      ["alliance_member", "user_product_family_variant"],
+      [["alliance_product_family_variant"], "user_product_family_variant"],
+      [["alliance_member"], "user_product_family_variant"],
     ],
     permissions: {
-      ownership: [
-        ["alliance_product_family_variant", new Bool(true)],
-        ["alliance_member", new Bool(true)],
-        ["user_product_family_variant", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         alliance_product_family_variant: {
-          read: [[["alliance_member"], new Bool(true)]],
+          read: [[[], "alliance_member"]],
           write: [],
         },
         user_product_family_variant: {
-          read: [[["alliance_member"], new Bool(true)]],
+          read: [[[], "alliance_member"]],
           write: [],
         },
       },
       public: [
-        [["alliance_product_family_variant"], new Bool(true)],
-        [["user_product_family_variant"], new Bool(true)],
+        [[], "alliance_product_family_variant"],
+        [[], "user_product_family_variant"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_product_family_variant: {
         dependencies: [["alliance_product_family_variant"]],
         mutate: [
@@ -3511,26 +3440,25 @@ const schema: Record<
       alliance_product: { type: "other", other: "Alliance_Product" },
       markup: { type: "udecimal" }, // percentage increase above base price
     },
-    uniqueness: [["alliance", "alliance_product"]],
+    uniqueness: [[["alliance"], "alliance_product"]],
     permissions: {
-      ownership: [["alliance", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance: {
           read: [],
           write: [
-            [["alliance_product"], new Bool(true)],
-            [["markup"], new Bool(true)],
+            [[], "alliance_product"],
+            [[], "markup"],
           ],
         },
       },
       public: [
-        [["alliance"], new Bool(true)],
-        [["alliance_product"], new Bool(true)],
-        [["markup"], new Bool(true)],
+        [[], "alliance"],
+        [[], "alliance_product"],
+        [[], "markup"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance: {
         dependencies: [["alliance"]],
         mutate: [
@@ -3595,35 +3523,34 @@ const schema: Record<
       provider_count: { type: "u32", default: new Decimal(0) },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["alliance", "name"]],
+    uniqueness: [[["alliance"], "name"]],
     permissions: {
-      ownership: [["alliance", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["language"], new Bool(true)],
-            [["description"], new Bool(true)],
-            [["min_price"], new Bool(true)],
-            [["max_price"], new Bool(true)],
+            [[], "name"],
+            [[], "language"],
+            [[], "description"],
+            [[], "min_price"],
+            [[], "max_price"],
           ],
         },
       },
       public: [
-        [["alliance"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["description"], new Bool(true)],
-        [["min_price"], new Bool(true)],
-        [["max_price"], new Bool(true)],
-        [["provider_count"], new Bool(true)],
-        [["provider_price_sum"], new Bool(true)],
-        [["provider_average_price"], new Bool(true)],
+        [[], "alliance"],
+        [[], "name"],
+        [[], "language"],
+        [[], "description"],
+        [[], "min_price"],
+        [[], "max_price"],
+        [[], "provider_count"],
+        [[], "provider_price_sum"],
+        [[], "provider_average_price"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance: {
         dependencies: [["alliance"]],
         mutate: [
@@ -3689,28 +3616,27 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
     },
-    uniqueness: [["alliance_service", "language"]],
+    uniqueness: [[["alliance_service"], "language"]],
     permissions: {
-      ownership: [["alliance_service", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_service: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
+            [[], "description"],
           ],
         },
       },
       public: [
-        [["alliance_service"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
+        [[], "alliance_service"],
+        [[], "language"],
+        [[], "name"],
+        [[], "description"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_service: {
         dependencies: [["alliance_service"]],
         mutate: [
@@ -3779,28 +3705,27 @@ const schema: Record<
       price: { type: "udecimal" },
       translation_count: { type: "u32", default: new Decimal(0) },
     },
-    uniqueness: [["alliance_service", "name"]],
+    uniqueness: [[["alliance_service"], "name"]],
     permissions: {
-      ownership: [["alliance_service", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_service: {
           read: [],
           write: [
-            [["name"], new Bool(true)],
-            [["price"], new Bool(true)],
+            [[], "name"],
+            [[], "price"],
           ],
         },
       },
       public: [
-        [["alliance_service"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["description"], new Bool(true)],
-        [["price"], new Bool(true)],
+        [[], "alliance_service"],
+        [[], "name"],
+        [[], "language"],
+        [[], "description"],
+        [[], "price"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -3825,28 +3750,27 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
     },
-    uniqueness: [["alliance_service_task", "language"]],
+    uniqueness: [[["alliance_service_task"], "language"]],
     permissions: {
-      ownership: [["alliance_service_task", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_service_task: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
+            [[], "description"],
           ],
         },
       },
       public: [
-        [["alliance_service_task"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
+        [[], "alliance_service_task"],
+        [[], "language"],
+        [[], "name"],
+        [[], "description"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_service_task: {
         dependencies: [["alliance_service_task"]],
         mutate: [
@@ -3924,26 +3848,25 @@ const schema: Record<
       translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [
-      ["alliance_service", "name"],
-      ["alliance_service", "order"],
+      [["alliance_service"], "name"],
+      [["alliance_service"], "order"],
     ],
     permissions: {
-      ownership: [["alliance_service", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         user: {
           read: [],
-          write: [[["name"], new Bool(true)]],
+          write: [[[], "name"]],
         },
       },
       public: [
-        [["alliance_service"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
-        [["order"], new Bool(true)],
+        [[], "alliance_service"],
+        [[], "name"],
+        [[], "description"],
+        [[], "order"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       name_cannot_be_empty: [
         new LogicalUnaryExpression(
@@ -3971,28 +3894,27 @@ const schema: Record<
       name: { type: "str" },
       description: { type: "clob" },
     },
-    uniqueness: [["alliance_service_milsestone", "language"]],
+    uniqueness: [[["alliance_service_milsestone"], "language"]],
     permissions: {
-      ownership: [["alliance_service_milsestone", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance_service_milsestone: {
           read: [],
           write: [
-            [["language"], new Bool(true)],
-            [["name"], new Bool(true)],
-            [["description"], new Bool(true)],
+            [[], "language"],
+            [[], "name"],
+            [[], "description"],
           ],
         },
       },
       public: [
-        [["alliance_service_milsestone"], new Bool(true)],
-        [["language"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["description"], new Bool(true)],
+        [[], "alliance_service_milsestone"],
+        [[], "language"],
+        [[], "name"],
+        [[], "description"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_alliance_service_milsestone: {
         dependencies: [["alliance_service_milsestone"]],
         mutate: [
@@ -4069,14 +3991,10 @@ const schema: Record<
       },
       alliance_service_task: { type: "other", other: "Alliance_Service_Task" },
     },
-    uniqueness: [["alliance_service_milestone", "alliance_service_task"]],
+    uniqueness: [[["alliance_service_milestone"], "alliance_service_task"]],
     permissions: {
-      ownership: [
-        ["alliance_service_milestone", new Bool(true)],
-        ["alliance_service_task", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         alliance_service_milestone: {
           read: [],
           write: [],
@@ -4086,12 +4004,9 @@ const schema: Record<
           write: [],
         },
       },
-      public: [
-        [["alliance_service_milestone"], new Bool(true)],
-        [["alliance_service_task"], new Bool(true)],
-      ],
+      public: [[["alliance_service_milestone"]], [["alliance_service_task"]]],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Alliance_Service_Provider: {
@@ -4099,25 +4014,21 @@ const schema: Record<
       alliance_service: { type: "other", other: "Alliance_Service" },
       alliance_member: { type: "other", other: "Alliance_Member" },
     },
-    uniqueness: [["alliance_service", "alliance_member"]],
+    uniqueness: [[["alliance_service"], "alliance_member"]],
     permissions: {
-      ownership: [
-        ["alliance_service", new Bool(true)],
-        ["alliance_member", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         alliance_service: {
           read: [],
           write: [],
         },
       },
       public: [
-        [["alliance_service"], new Bool(true)],
-        [["alliance_member"], new Bool(true)],
+        [[], "alliance_service"],
+        [[], "alliance_member"],
       ],
     },
-    effects: {
+    triggers: {
       update_count_in_service: {
         dependencies: [["alliance_service"]],
         mutate: [
@@ -4214,47 +4125,46 @@ const schema: Record<
       used_coupon_count: { type: "udecimal", default: new Decimal(0) },
       used_coupon_price_sum: { type: "udecimal", default: new Decimal(0) },
     },
-    uniqueness: [["alliance", "name"]],
+    uniqueness: [[["alliance"], "name"]],
     permissions: {
-      ownership: [["alliance", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         alliance: {
           read: [
-            [["name"], new Bool(true)],
-            [["unused"], new Bool(true)],
-            [["used"], new Bool(true)],
-            [["min_order_value"], new Bool(true)],
-            [["flat_discount"], new Bool(true)],
-            [["discount"], new Bool(true)],
-            [["max_absolute_discount"], new Bool(true)],
-            [["valid_from"], new Bool(true)],
-            [["valid_to"], new Bool(true)],
-            [["min_clan_loyalty"], new Bool(true)],
-            [["max_clan_loyalty"], new Bool(true)],
-            [["show_coupon"], new Bool(true)],
+            [[], "name"],
+            [[], "unused"],
+            [[], "used"],
+            [[], "min_order_value"],
+            [[], "flat_discount"],
+            [[], "discount"],
+            [[], "max_absolute_discount"],
+            [[], "valid_from"],
+            [[], "valid_to"],
+            [[], "min_clan_loyalty"],
+            [[], "max_clan_loyalty"],
+            [[], "show_coupon"],
           ],
           write: [],
         },
       },
       public: [
-        [["alliance"], new Bool(true)],
-        [["name"], new Bool(true)],
-        [["unused"], new Bool(true)],
-        [["used"], new Bool(true)],
-        [["min_order_value"], new Bool(true)],
-        [["min_price"], new Bool(true)],
-        [["flat_discount"], new Bool(true)],
-        [["discount"], new Bool(true)],
-        [["max_absolute_discount"], new Bool(true)],
-        [["valid_from"], new Bool(true)],
-        [["valid_to"], new Bool(true)],
-        [["min_clan_loyalty"], new Bool(true)],
-        [["max_clan_loyalty"], new Bool(true)],
-        [["show_coupon"], new Bool(true)],
+        [[], "alliance"],
+        [[], "name"],
+        [[], "unused"],
+        [[], "used"],
+        [[], "min_order_value"],
+        [[], "min_price"],
+        [[], "flat_discount"],
+        [[], "discount"],
+        [[], "max_absolute_discount"],
+        [[], "valid_from"],
+        [[], "valid_to"],
+        [[], "min_clan_loyalty"],
+        [[], "max_clan_loyalty"],
+        [[], "show_coupon"],
       ],
     },
-    effects: {},
+    triggers: {},
     checks: {
       valid_from_is_less_than_valid_to: [
         new NumberComparatorExpression(
@@ -4289,36 +4199,32 @@ const schema: Record<
       order_amount_sum: { type: "udecimal" },
       order_amount_mean: { type: "udecimal" },
     },
-    uniqueness: [["alliance", "clan"]],
+    uniqueness: [[["alliance"], "clan"]],
     permissions: {
-      ownership: [
-        ["alliance", new Bool(true)],
-        ["clan", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         alliance: {
           read: [
-            [["clan"], new Bool(true)],
-            [["order_count"], new Bool(true)],
-            [["order_price_sum"], new Bool(true)],
-            [["order_price_mean"], new Bool(true)],
+            [[], "clan"],
+            [[], "order_count"],
+            [[], "order_price_sum"],
+            [[], "order_price_mean"],
           ],
           write: [],
         },
         clan: {
           read: [
-            [["alliance"], new Bool(true)],
-            [["order_count"], new Bool(true)],
-            [["order_price_sum"], new Bool(true)],
-            [["order_price_mean"], new Bool(true)],
+            [[], "alliance"],
+            [[], "order_count"],
+            [[], "order_price_sum"],
+            [[], "order_price_mean"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   // TODO. To Reassess below structs
@@ -4333,20 +4239,19 @@ const schema: Record<
     },
     uniqueness: [],
     permissions: {
-      ownership: [["clan", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         clan: {
           read: [
-            [["product_count"], new Bool(true)],
-            [["product_price_sum"], new Bool(true)],
+            [[], "product_count"],
+            [[], "product_price_sum"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Clan_Product_Order_Draft_Item: {
@@ -4362,32 +4267,28 @@ const schema: Record<
       },
       quantity: { type: "u32" },
     },
-    uniqueness: [["clan_product_order_draft", "listed_alliance_product"]],
+    uniqueness: [[["clan_product_order_draft"], "listed_alliance_product"]],
     permissions: {
-      ownership: [
-        ["clan_product_order_draft", new Bool(true)],
-        ["listed_alliance_product", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         clan_product_order_draft: {
           read: [
-            [["listed_alliance_product"], new Bool(true)],
-            [["price"], new Bool(true)],
+            [[], "listed_alliance_product"],
+            [[], "price"],
           ],
           write: [],
         },
         listed_alliance_product: {
           read: [
-            [["clan_product_order_draft"], new Bool(true)],
-            [["price"], new Bool(true)],
+            [[], "clan_product_order_draft"],
+            [[], "price"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Clan_Product_Order: {
@@ -4398,20 +4299,19 @@ const schema: Record<
     },
     uniqueness: [],
     permissions: {
-      ownership: [["clan", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         clan: {
           read: [
-            [["product_count"], new Bool(true)],
-            [["product_price_sum"], new Bool(true)],
+            [[], "product_count"],
+            [[], "product_price_sum"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Clan_Product_Order_Item: {
@@ -4424,34 +4324,30 @@ const schema: Record<
       quantity: { type: "u32" },
       price: { type: "udecimal" },
     },
-    uniqueness: [["clan_product_order_draft", "listed_alliance_product"]],
+    uniqueness: [[["clan_product_order_draft"], "listed_alliance_product"]],
     permissions: {
-      ownership: [
-        ["clan_product_order_draft", new Bool(true)],
-        ["listed_alliance_product", new Bool(true)],
-      ],
       borrow: {},
-      private: {
+      ownership: {
         clan_product_order: {
           read: [
-            [["listed_alliance_product"], new Bool(true)],
-            [["quantity"], new Bool(true)],
-            [["price"], new Bool(true)],
+            [[], "listed_alliance_product"],
+            [[], "quantity"],
+            [[], "price"],
           ],
           write: [],
         },
         listed_alliance_product: {
           read: [
-            [["clan_product_order"], new Bool(true)],
-            [["quantity"], new Bool(true)],
-            [["price"], new Bool(true)],
+            [[], "clan_product_order"],
+            [[], "quantity"],
+            [[], "price"],
           ],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
   Clan_Service_Order: {
@@ -4464,17 +4360,16 @@ const schema: Record<
     },
     uniqueness: [],
     permissions: {
-      ownership: [["clan", new Bool(true)]],
       borrow: {},
-      private: {
+      ownership: {
         clan: {
-          read: [[["listed_alliance_service"], new Bool(true)]],
+          read: [[[], "listed_alliance_service"]],
           write: [],
         },
       },
       public: [],
     },
-    effects: {},
+    triggers: {},
     checks: {},
   },
 };

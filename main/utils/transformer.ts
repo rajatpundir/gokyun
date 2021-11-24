@@ -1,11 +1,15 @@
 import { LispExpression } from "./lisp";
 import { WeakEnum } from "./variable";
 
-// Ownership over inputs provided will be checked
+// Ownership or borrowing over inputs provided will be checked
 // But outputs does not have anything to do with ownership
 export class Transformer {
   name: string;
   inputs: Record<string, WeakEnum>;
+  // Updates to paths should take place inside 'inputs' instead of 'outputs'
+  // 'outputs' should be used to insert, replace and delete variables, as well as primitive value forwarding for use in composer computations
+  // Additionally, a transformer mat be marked as such that it cannot be run directly by the user
+  // In case, a transformer is executed via a Composer, ownership of inputs will not be checked.
   outputs: Record<
     string,
     | {
@@ -107,5 +111,5 @@ export class Transformer {
 }
 
 // Mapper
-// Reducer
+// Reducer (Only makes sense to be used in Composer after a mapper)
 // Composer

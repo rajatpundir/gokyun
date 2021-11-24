@@ -6,7 +6,13 @@ import { ErrMsg } from "./errors";
 type PathString = [ReadonlyArray<string>, string];
 
 export type StructPermissions = {
-  ownership: ReadonlyArray<string>;
+  ownership: Record<
+    string,
+    {
+      read: ReadonlyArray<PathString>;
+      write: ReadonlyArray<PathString>;
+    }
+  >;
   borrow: Record<
     string,
     {
@@ -20,17 +26,10 @@ export type StructPermissions = {
       ownership: PathString;
     }
   >;
-  private: Record<
-    string,
-    {
-      read: ReadonlyArray<PathString>;
-      write: ReadonlyArray<PathString>;
-    }
-  >;
   public: ReadonlyArray<PathString>;
 };
 
-type StructTriggers = Record<
+export type StructTriggers = Record<
   string,
   {
     // Snapshot of paths is taken as per the name indicates
@@ -73,8 +72,7 @@ type StructTriggers = Record<
         }
       | {
           op: "update";
-          path: PathString;
-          value: LispExpression;
+          path_updates: ReadonlyArray<[PathString, LispExpression]>;
         };
   }
 >;
