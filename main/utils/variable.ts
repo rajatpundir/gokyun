@@ -268,7 +268,7 @@ export class Path {
     >,
     [string, StrongEnum]
   ];
-  updatable: boolean = false;
+  writeable: boolean = false;
 
   constructor(
     label: string,
@@ -329,7 +329,7 @@ export class Path {
   }
 
   toString(): string {
-    return String([this.path, this.updatable]);
+    return String([this.path, this.writeable]);
   }
 }
 

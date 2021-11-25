@@ -88,11 +88,19 @@ export function is_decimal(value: any): value is Decimal {
 
 export type State = Immutable<{
   struct: Struct;
-  id: number | undefined;
+  id: Decimal;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
   values: HashSet<Path>;
 }>;
 
-export type Action = ["id", number] | ["values", Path, StrongEnum];
+export type Action =
+  | ["id", Decimal]
+  | ["active", boolean]
+  | ["created_at", Date]
+  | ["updated_at", Date]
+  | ["values", Path];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -100,36 +108,24 @@ export function reducer(state: Draft<State>, action: Action) {
       state.id = action[1];
       break;
     }
+    case "active": {
+      state.active = action[1];
+      break;
+    }
+    case "created_at": {
+      state.created_at = action[1];
+      break;
+    }
+    case "updated_at": {
+      state.updated_at = action[1];
+      break;
+    }
     case "values": {
-      state.values = apply(
-        state.values.filter((x) => !x.equals(action[1])),
-        (it) => {
-          const temp = state.values.findAny((x) => x.equals(action[1]));
-          if (temp.isSome()) {
-            const path: Path = temp.get();
-            if (unwrap(path.value)) {
-              if (path.updatable) {
-                if (path.value.value.type === action[2].type) {
-                  if (
-                    path.value.value.type === "other" &&
-                    action[2].type === "other"
-                  ) {
-                    if (path.value.value.other === action[2].other) {
-                      path.value = new Ok(action[2]);
-                    }
-                  } else {
-                    path.value = new Ok(action[2]);
-                  }
-                }
-              } else {
-                path.value = new Ok(action[2]);
-              }
-            }
-            return it.add(path);
-          }
-          return it;
-        }
-      );
+      if (action[1].writeable) {
+        state.values = apply(state.values.remove(action[1]), (it) => {
+          return it.add(action[1]);
+        });
+      }
       break;
     }
     default: {
