@@ -2,15 +2,16 @@ import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { ErrMsg } from "./errors";
+import { apply } from "./prelude";
 
-type PathString = [ReadonlyArray<string>, string];
+export type PathString = [ReadonlyArray<string>, string];
 
 export type StructPermissions = {
   ownership: Record<
     string,
     {
-      read: ReadonlyArray<PathString>;
-      write: ReadonlyArray<PathString>;
+      read: ReadonlyArray<string>;
+      write: ReadonlyArray<string>;
     }
   >;
   borrow: Record<
@@ -23,10 +24,11 @@ export type StructPermissions = {
       // You may be trying to access some alliance's info with memberhip of some other alliance
       // To prevent above misuse, we must ensure that membership is of same alliance
       constraints: ReadonlyArray<[PathString, PathString]>;
+      // The below PathString should point to a 'User'
       ownership: PathString;
     }
   >;
-  public: ReadonlyArray<PathString>;
+  public: ReadonlyArray<string>;
 };
 
 export type StructTriggers = Record<
@@ -376,4 +378,62 @@ export class Variable {
       paths: this.paths.toArray(),
     });
   }
+}
+
+export function get_strong_enum(field: WeakEnum): StrongEnum {
+  return apply(undefined, () => {
+    switch (field.type) {
+      case "str":
+      case "lstr":
+      case "clob": {
+        return {
+          type: field.type,
+          value: field.default || "",
+        };
+      }
+      case "i32":
+      case "u32":
+      case "i64":
+      case "u64": {
+        return {
+          type: field.type,
+          value: field.default || new Decimal(0),
+        };
+      }
+      case "idouble":
+      case "udouble":
+      case "idecimal":
+      case "udecimal": {
+        return {
+          type: field.type,
+          value: field.default || new Decimal(0),
+        };
+      }
+      case "bool": {
+        return {
+          type: field.type,
+          value: field.default || false,
+        };
+      }
+      case "date":
+      case "time":
+      case "timestamp": {
+        return {
+          type: field.type,
+          value: field.default || new Date(),
+        };
+      }
+      case "other": {
+        return {
+          type: field.type,
+          other: field.other,
+          value: field.default || new Decimal(-1),
+        };
+      }
+      default: {
+        const _exhaustiveCheck: never = field;
+        return _exhaustiveCheck;
+      }
+    }
+  });
 }

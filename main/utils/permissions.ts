@@ -1,4 +1,4 @@
-import { HashSet, Vector } from "prelude-ts";
+import { HashSet } from "prelude-ts";
 import { ErrMsg, errors } from "./errors";
 import {
   Result,
@@ -9,305 +9,249 @@ import {
   unwrap_array,
   apply,
 } from "./prelude";
-import { get_structs } from "./schema";
-import { Path, StrongEnum, Struct } from "./variable";
+import { get_struct } from "./schema";
+import { get_strong_enum, PathString, StrongEnum, Struct } from "./variable";
 
-export function validate_ownership_path(
+export class PathPermission {
+  path: [Array<[string, Struct]>, [string, StrongEnum]];
+  writeable: boolean = false;
+
+  constructor(path: [Array<[string, Struct]>, [string, StrongEnum]]) {
+    this.path = path;
+  }
+
+  equals(other: PathPermission): boolean {
+    if (!other) {
+      return false;
+    }
+    if (this.path[0].length !== other.path[0].length) {
+      return false;
+    } else {
+      for (let i = 0; i < this.path[0].length; i++) {
+        const [this_field_name, this_struct] = this.path[0][i];
+        const [other_field_name, other_struct] = this.path[0][i];
+        if (
+          this_field_name !== other_field_name ||
+          !this_struct.equals(other_struct)
+        ) {
+          return false;
+        }
+      }
+      if (
+        this.path[1][0] !== other.path[1][0] ||
+        this.path[1][1].type !== other.path[1][1].type
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return String([this.path, this.writeable]);
+  }
+}
+
+// Function to determine if PathString points to a field with 'User' struct
+export function get_valid_user_path(
   struct: Struct,
-  path: ReadonlyArray<string>
-): Result<ReadonlyArray<string>> {
-  if (path.length !== 0) {
-    const field_name = path[0];
-    const field = struct.fields.findAny((f) => f.name === path[0]);
-    // field at start of path must exist
-    if (field.isSome()) {
-      const f = field.get();
-      // field must point to a non primitive type
-      if (f.value.type === "other") {
-        const non_primitive_struct = f.value.other;
-        // if there are no more fields, non primitive type pointed must be User struct
-        if (non_primitive_struct === "User" && path.length === 1) {
-          return new Ok([f.name]);
-        } else {
-          // get struct pointed by the field at start of path
-          const next_struct = get_structs()
-            .filter((s) => s.name === non_primitive_struct)
-            .single();
-          // struct pointed must exist
-          if (next_struct.isSome()) {
-            // validate path recursively
-            const next_result = validate_ownership_path(
-              next_struct.get(),
-              path.slice(1)
-            );
-            if (unwrap(next_result)) {
-              return new Ok([f.name, ...next_result.value]);
-            }
+  path: PathString,
+  borrowed: boolean
+): Result<[Array<[string, Struct]>, string, boolean]> {
+  const [init, last] = path;
+  if (init.length === 0) {
+    if (last in struct.fields) {
+      const field = struct.fields[last];
+      if (field.type === "other" && field.other === "User") {
+        return new Ok([[], last, borrowed] as [
+          Array<[string, Struct]>,
+          string,
+          boolean
+        ]);
+      }
+    }
+  } else {
+    const field_name: string = init[0];
+    if (field_name in struct.fields) {
+      const field = struct.fields[field_name];
+      if (field.type == "other") {
+        const next_struct = get_struct(field.other);
+        if (unwrap(next_struct)) {
+          const result = get_valid_user_path(
+            next_struct.value,
+            [init.slice(1), last],
+            borrowed
+          );
+          if (unwrap(result)) {
+            return new Ok([
+              apply(
+                [[field_name, next_struct.value] as [string, Struct]],
+                (it) => {
+                  it.concat(result.value[0]);
+                  return it;
+                }
+              ),
+              result.value[1],
+              borrowed,
+            ] as [Array<[string, Struct]>, string, boolean]);
           }
         }
       }
     }
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+}
+
+export function get_user_path_permissions(
+  struct: Struct,
+  user_path: [Array<[string, Struct]>, string, boolean],
+  prefix: Array<[string, Struct]> = []
+): HashSet<PathPermission> {
+  let path_permissions: HashSet<PathPermission> = HashSet.of();
+  const [init, last, borrowed] = user_path;
+  if (init.length === 0) {
+    if (last in struct.fields && last in struct.permissions.ownership) {
+      const permissions = struct.permissions.ownership[last];
+      for (let field_name in permissions.write) {
+        if (field_name in struct.fields) {
+          const field = struct.fields[field_name];
+          const path_permission = apply(
+            new PathPermission([prefix, [field_name, get_strong_enum(field)]]),
+            (it) => {
+              if (!borrowed) {
+                it.writeable = true;
+              }
+              return it;
+            }
+          );
+          // Remove and add, as existing permission may not be writeable
+          path_permissions = path_permissions.remove(path_permission);
+          path_permissions = path_permissions.add(path_permission);
+        }
+      }
+      for (let field_name in permissions.read) {
+        if (field_name in struct.fields) {
+          const field = struct.fields[field_name];
+          const path_permission = new PathPermission([
+            prefix,
+            [field_name, get_strong_enum(field)],
+          ]);
+          path_permissions = path_permissions.add(path_permission);
+        }
+      }
+    }
+  } else {
+    const [first, next_struct] = init[0];
+    if (first in struct.fields && first in struct.permissions.ownership) {
+      const permissions = struct.permissions.ownership[last];
+      for (let field_name in permissions.write) {
+        if (field_name in struct.fields) {
+          const field = struct.fields[field_name];
+          const path_permission = apply(
+            new PathPermission([prefix, [field_name, get_strong_enum(field)]]),
+            (it) => {
+              if (!borrowed) {
+                it.writeable = true;
+              }
+              return it;
+            }
+          );
+          // Remove and add, as existing permission may not be writeable
+          path_permissions = path_permissions.remove(path_permission);
+          path_permissions = path_permissions.add(path_permission);
+        }
+      }
+      for (let field_name in permissions.read) {
+        if (field_name in struct.fields) {
+          const field = struct.fields[field_name];
+          const path_permission = new PathPermission([
+            prefix,
+            [field_name, get_strong_enum(field)],
+          ]);
+          path_permissions = path_permissions.add(path_permission);
+        }
+      }
+      // Add permission for owning field itself as readable path if not present
+      const field = struct.fields[first];
+      const path_permission = new PathPermission([
+        prefix,
+        [first, get_strong_enum(field)],
+      ]);
+      path_permissions = path_permissions.add(path_permission);
+      // Get permissions for next level
+      path_permissions = path_permissions.addAll(
+        get_user_path_permissions(
+          next_struct,
+          [init.slice(1), last, borrowed],
+          [...prefix, init[0]]
+        )
+      );
+    }
+  }
+  for (let field_name in struct.permissions.public) {
+    if (field_name in struct.fields) {
+      const field = struct.fields[field_name];
+      const path_permission = new PathPermission([
+        prefix,
+        [field_name, get_strong_enum(field)],
+      ]);
+      path_permissions = path_permissions.add(path_permission);
+    }
+  }
+  return path_permissions;
 }
 
 export function get_permissions(
   struct: Struct,
-  ownership_paths: ReadonlyArray<ReadonlyArray<string>>,
-  borrow_fields: ReadonlyArray<string>
-): Result<[HashSet<Vector<string>>, HashSet<Vector<string>>]> {
-  // validate user pointing paths
+  user_paths: Array<PathString>,
+  borrows: Array<string>
+) {
+  let path_permissions: HashSet<PathPermission> = HashSet.of();
   const result = unwrap_array(
-    ownership_paths.map((path) => validate_ownership_path(struct, path))
+    apply([], (it: Array<[PathString, boolean]>) => {
+      for (let path of user_paths) {
+        it.push([path, false]);
+      }
+      for (let borrow_name of borrows) {
+        if (borrow_name in struct.permissions.borrow) {
+          const borrow = struct.permissions.borrow[borrow_name];
+          it.push([borrow.ownership, true]);
+        }
+      }
+      return it;
+    }).map((x) => get_valid_user_path(struct, x[0], x[1]))
   );
   if (unwrap(result)) {
-    // get fields which can be used to prove ownership
-    const all_ownership_fields: HashSet<string> = HashSet.ofIterable(
-      struct.permissions.ownership.map((x) => x[0])
-    );
-    // get ownership fields which which can be borrowed against
-    const all_borrow_fields: HashSet<string> = HashSet.ofIterable(
-      Object.keys(struct.permissions.borrow).filter((borrow_field) =>
-        all_ownership_fields.contains(borrow_field)
-      )
-    );
-    // get paths (leaf points to User struct) which are used to prove ownership
-    const allowed_ownership_paths: ReadonlyArray<ReadonlyArray<string>> =
-      result.value.filter(
-        (path) => path.length !== 0 && all_ownership_fields.contains(path[0])
+    const valid_user_paths = result.value;
+    for (let valid_user_path of valid_user_paths) {
+      path_permissions = path_permissions.addAll(
+        get_user_path_permissions(struct, valid_user_path)
       );
-    // get ownership fields that are accessed while traversing user-pointing paths
-    const accessed_ownership_fields: HashSet<string> = HashSet.ofIterable(
-      allowed_ownership_paths.map((path) => path[0])
-    );
-    // get ownership fields that were not at start of user pointing paths, but borrowed instead
-    const allowed_borrow_fields = all_borrow_fields.filter(
-      (borrow_field) =>
-        !accessed_ownership_fields.contains(borrow_field) &&
-        borrow_fields.includes(borrow_field)
-    );
-    const read_permissions: Array<Array<string>> = [];
-    const write_permissions: Array<Array<string>> = [];
-    for (let ownership_path of allowed_ownership_paths) {
-      const result = get_permissions_for_owned_field(
-        [],
-        struct,
-        ownership_path,
-        false
-      );
-      if (unwrap(result)) {
-        const [nested_write_permissions, nested_read_permissions] =
-          result.value;
-        write_permissions.push(
-          ...(nested_write_permissions as Array<Array<string>>)
-        );
-        read_permissions.push(
-          ...(nested_read_permissions as Array<Array<string>>)
-        );
-      } else {
-        return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-      }
-    }
-    for (let borrow_field_name of allowed_borrow_fields) {
-      // get borrow field
-      const borrow_field = struct.permissions.borrow[borrow_field_name];
-      // validate borrowed ownership fields
-      const result = unwrap_array(
-        borrow_field.ownership.map((path) =>
-          validate_ownership_path(struct, path)
-        )
-      );
-      // validate user pointing paths
-      if (unwrap(result)) {
-        // get paths (leaf points to User struct) which are used to prove ownership
-        const allowed_borrowed_ownership_paths: ReadonlyArray<
-          ReadonlyArray<string>
-        > = result.value.filter(
-          (path) => path.length !== 0 && all_ownership_fields.contains(path[0])
-        );
-        for (let borrowed_ownership_path of allowed_borrowed_ownership_paths) {
-          const result = get_permissions_for_owned_field(
-            [],
-            struct,
-            borrowed_ownership_path,
-            true
-          );
-          if (unwrap(result)) {
-            const [nested_write_permissions, nested_read_permissions] =
-              result.value;
-            read_permissions.push(
-              ...(nested_write_permissions as Array<Array<string>>),
-              ...(nested_read_permissions as Array<Array<string>>)
-            );
-          } else {
-            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-          }
-        }
-      }
-    }
-    // return a tuple of write and read permissions
-    return new Ok<[HashSet<Vector<string>>, HashSet<Vector<string>>]>([
-      HashSet.ofIterable(write_permissions.map((x) => Vector.ofIterable(x))),
-      HashSet.ofIterable(read_permissions.map((x) => Vector.ofIterable(x))),
-    ]);
-  }
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-}
-
-function get_permissions_for_owned_field(
-  prefix: ReadonlyArray<string>,
-  struct: Struct,
-  ownership_path: ReadonlyArray<string>,
-  borrow: boolean
-): Result<
-  [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]
-> {
-  if (ownership_path.length !== 0) {
-    // get owned field name from start of user pointing path
-    const owned_field_name = ownership_path[0];
-    // permissions must be defined against the owned field
-    if (owned_field_name in struct.permissions.private) {
-      const permissions = struct.permissions.private[owned_field_name];
-      // get write permissions against owned field
-      const write_permissions: Array<ReadonlyArray<string>> =
-        permissions.write.map((x) => [...prefix, ...x[0]]);
-      // get read permissions against owned field
-      // also, for owned field itself, read permission is granted
-      const read_permissions: Array<ReadonlyArray<string>> = apply(
-        permissions.read.map((x) => [...prefix, ...x[0]]),
-        (it) => {
-          it.push([...prefix, owned_field_name]);
-          it.push(
-            ...struct.permissions.public.map((x) => [...prefix, ...x[0]])
-          );
-          return it;
-        }
-      );
-      // get the owned field
-      const owned_field = struct.fields.findAny(
-        (field) => field.name === owned_field_name
-      );
-      // owned field must exist in fields of the struct
-      // owned field could could be traversed into, if itself doesnt point to User struct
-      if (owned_field.isSome() && ownership_path.length !== 1) {
-        // get owned field
-        const owned_field_value = owned_field.get().value;
-        // fields inside user pointing path must be non primitive
-        if (owned_field_value.type === "other") {
-          // get struct against owned field
-          const next_struct = get_structs()
-            .filter((s) => s.name === owned_field_value.other)
-            .single();
-          // struct pointed by owned field must exist
-          // second field of user pointing path must exist as a key in above mentioned struct
-          if (
-            next_struct.isSome() &&
-            next_struct
-              .get()
-              .fields.anyMatch((field) => field.name === ownership_path[1])
-          ) {
-            // recursively try to get the read and write permissions
-            // prefix owned field name to all permissions
-            const result = get_permissions_for_owned_field(
-              [...prefix, owned_field_name],
-              next_struct.get(),
-              ownership_path.slice(1),
-              borrow
-            );
-            if (unwrap(result)) {
-              const [nested_write_permissions, nested_read_permissions] =
-                result.value;
-              if (borrow) {
-                return new Ok([
-                  [],
-                  apply(read_permissions, (it) => {
-                    it.push(
-                      ...nested_write_permissions,
-                      ...nested_read_permissions
-                    );
-                    return it;
-                  }),
-                ] as [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]);
-              } else {
-                return new Ok([
-                  apply(write_permissions, (it) => {
-                    it.push(...nested_write_permissions);
-                    return it;
-                  }),
-                  apply(read_permissions, (it) => {
-                    it.push(...nested_read_permissions);
-                    return it;
-                  }),
-                ] as [ReadonlyArray<ReadonlyArray<string>>, ReadonlyArray<ReadonlyArray<string>>]);
-              }
-            } else {
-              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-            }
-          }
-        }
-        return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-      }
-      if (borrow) {
-        return new Ok([[], [...write_permissions, ...read_permissions]] as [
-          ReadonlyArray<ReadonlyArray<string>>,
-          ReadonlyArray<ReadonlyArray<string>>
-        ]);
-      } else {
-        return new Ok([write_permissions, read_permissions] as [
-          ReadonlyArray<ReadonlyArray<string>>,
-          ReadonlyArray<ReadonlyArray<string>>
-        ]);
-      }
     }
   }
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-}
-
-export function get_paths(
-  permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>],
-  values: ReadonlyArray<[string, ReadonlyArray<string>, StrongEnum]>
-): HashSet<Path> {
-  const paths: HashSet<Path> = apply([], (it: Array<Path>) => {
-    for (let value of values) {
-      it.push(
-        new Path(value[0], Vector.ofIterable(value[1]), new Ok(value[2]))
-      );
-    }
-    return HashSet.ofIterable(it);
-  });
-  return apply([], (it: Array<Path>) => {
-    const [write_permissions, read_permissions] = permissions;
-    for (let path of paths) {
-      if (write_permissions.contains(path.path)) {
-        it.push(
-          apply(path, (v) => {
-            v.updatable = true;
-            return v;
-          })
-        );
-      } else if (read_permissions.contains(path.path)) {
-        it.push(path);
-      }
-    }
-    return HashSet.ofIterable(it);
-  });
+  return path_permissions;
 }
 
 export function log_permissions(
   struct: Struct,
-  result: Result<[HashSet<Vector<string>>, HashSet<Vector<string>>]>
+  user_paths: Array<PathString>,
+  borrows: Array<string>
 ) {
+  const path_permissions = get_permissions(struct, user_paths, borrows);
   console.log("\n=======================");
   console.log("STRUCT: ", struct.name);
-  if (unwrap(result)) {
-    const permissions = result.value;
-    console.log("\n=======================");
-    console.log("WRITE PERMISSIONS");
-    console.log(permissions[0].toArray().map((x) => x.toArray()));
-    console.log("\n=======================");
-    console.log("READ PERMISSIONS");
-    console.log(permissions[1].toArray().map((x) => x.toArray()));
-  } else {
-    console.log("Error printing permissions");
+  console.log("\n=======================");
+  console.log("READ PERMISSIONS");
+  for (let permission of path_permissions.filter((x) => !x.writeable)) {
+    console.log(permission.toString());
+  }
+  console.log("\n=======================");
+  console.log("WRITE PERMISSIONS");
+  for (let permission of path_permissions.filter((x) => x.writeable)) {
+    console.log(permission.toString());
   }
 }

@@ -33,6 +33,7 @@ import {
   StructTriggers,
   WeakEnum,
 } from "./variable";
+import { CustomError, Err, Ok, Result } from "./prelude";
 
 const schema: Record<
   string,
@@ -62,15 +63,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         user: {
-          read: [
-            [[], "copper"],
-            [[], "silver"],
-            [[], "gold"],
-          ],
+          read: ["copper", "silver", "gold"],
           write: [],
         },
       },
-      public: [[[], "user"]],
+      public: ["user"],
     },
     triggers: {},
     checks: {},
@@ -85,10 +82,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [
-        [[], "parent"],
-        [[], "name"],
-      ],
+      public: ["parent", "name"],
     },
     triggers: {},
     checks: {
@@ -118,11 +112,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [
-        [[], "product_category"],
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["product_category", "language", "name"],
     },
     triggers: {
       increment_count_in_product_category: {
@@ -207,10 +197,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [
-        [[], "parent"],
-        [[], "name"],
-      ],
+      public: ["parent", "name"],
     },
     triggers: {},
     checks: {
@@ -240,11 +227,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [
-        [[], "service_category"],
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["service_category", "language", "name"],
     },
     triggers: {
       increment_count_in_service_category: {
@@ -328,7 +311,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [[[], "name"]],
+      public: ["name"],
     },
     triggers: {},
     checks: {
@@ -358,10 +341,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["language", "name"],
     },
     triggers: {
       increment_count_in_tag: {
@@ -440,7 +420,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [[[], "name"]],
+      public: ["name"],
     },
     triggers: {},
     checks: {
@@ -480,7 +460,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [[["country"], "name"]],
+      public: ["country", "name"],
     },
     triggers: {},
     checks: {
@@ -534,11 +514,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [
-        [[], "from"],
-        [[], "to"],
-        [[], "average_time"],
-      ],
+      public: ["from", "to", "average_time"],
     },
     triggers: {},
     checks: {
@@ -566,7 +542,7 @@ const schema: Record<
     permissions: {
       borrow: {},
       ownership: {},
-      public: [[[], "code"]],
+      public: ["code"],
     },
     triggers: {},
     checks: {
@@ -609,12 +585,12 @@ const schema: Record<
       borrow: {},
       ownership: {},
       public: [
-        [[], "nickname"],
-        [[], "language"],
-        [[], "knows_english"],
-        [[], "country"],
-        [[], "product_family_count"],
-        [[], "product_family_variant_count"],
+        "nickname",
+        "language",
+        "knows_english",
+        "country",
+        "product_family_count",
+        "product_family_variant_count",
       ],
     },
     triggers: {},
@@ -667,15 +643,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         user: {
-          read: [
-            [[], "copper"],
-            [[], "silver"],
-            [[], "gold"],
-          ],
+          read: ["copper", "silver", "gold"],
           write: [],
         },
       },
-      public: [[[], "user"]],
+      public: ["user"],
     },
     triggers: {},
     checks: {
@@ -721,13 +693,10 @@ const schema: Record<
       ownership: {
         wallet: {
           read: [],
-          write: [[[], "name"]],
+          write: ["name"],
         },
       },
-      public: [
-        [[], "name"],
-        [[], "member_count"],
-      ],
+      public: ["name", "member_count"],
     },
     triggers: {
       increment_count_in_wallet: {
@@ -797,10 +766,10 @@ const schema: Record<
       ownership: {
         wallet: {
           read: [],
-          write: [[[], "name"]],
+          write: ["name"],
         },
       },
-      public: [[[], "name"]],
+      public: ["name"],
     },
     triggers: {
       increment_count_in_wallet: {
@@ -870,10 +839,10 @@ const schema: Record<
       ownership: {
         wallet: {
           read: [],
-          write: [[[], "name"]],
+          write: ["name"],
         },
       },
-      public: [[[], "name"]],
+      public: ["name"],
     },
     triggers: {
       increment_count_in_wallet: {
@@ -941,11 +910,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         alliance: {
-          read: [[[], "user"]],
+          read: ["user"],
           write: [],
         },
         user: {
-          read: [[[], "alliance"]],
+          read: ["alliance"],
           write: [],
         },
       },
@@ -964,11 +933,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         guild: {
-          read: [[[], "user"]],
+          read: ["user"],
           write: [],
         },
         user: {
-          read: [[[], "guild"]],
+          read: ["guild"],
           write: [],
         },
       },
@@ -988,11 +957,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         clan: {
-          read: [[[], "user"]],
+          read: ["user"],
           write: [],
         },
         user: {
-          read: [[[], "clan"]],
+          read: ["clan"],
           write: [],
         },
       },
@@ -1024,19 +993,11 @@ const schema: Record<
       },
       ownership: {
         alliance: {
-          read: [
-            [[], "member"],
-            [[], "variant_count"],
-            [[], "service_count"],
-          ],
+          read: ["member", "variant_count", "service_count"],
           write: [],
         },
         member: {
-          read: [
-            [[], "alliance"],
-            [[], "variant_count"],
-            [[], "service_count"],
-          ],
+          read: ["alliance", "variant_count", "service_count"],
           write: [],
         },
       },
@@ -1139,11 +1100,11 @@ const schema: Record<
       },
       ownership: {
         guild: {
-          read: [[[], "member"]],
+          read: ["member"],
           write: [],
         },
         member: {
-          read: [[[], "guild"]],
+          read: ["guild"],
           write: [],
         },
       },
@@ -1246,11 +1207,11 @@ const schema: Record<
       },
       ownership: {
         clan: {
-          read: [[[], "member"]],
+          read: ["member"],
           write: [],
         },
         member: {
-          read: [[[], "clan"]],
+          read: ["clan"],
           write: [],
         },
       },
@@ -1352,23 +1313,23 @@ const schema: Record<
         alliance: {
           read: [],
           write: [
-            [[], "order"],
-            [[], "name"],
-            [[], "product_category"],
-            [[], "property_count"],
-            [[], "product_count"],
-            [[], "translation_count"],
+            "order",
+            "name",
+            "product_category",
+            "property_count",
+            "product_count",
+            "translation_count",
           ],
         },
       },
       public: [
-        [[], "alliance"],
-        [[], "order"],
-        [[], "name"],
-        [[], "product_category"],
-        [[], "property_count"],
-        [[], "product_count"],
-        [[], "translation_count"],
+        "alliance",
+        "order",
+        "name",
+        "product_category",
+        "property_count",
+        "product_count",
+        "translation_count",
       ],
     },
     triggers: {
@@ -1481,17 +1442,10 @@ const schema: Record<
       ownership: {
         alliance_product_family: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-          ],
+          write: ["language", "name"],
         },
       },
-      public: [
-        [[], "alliance_product_family"],
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["alliance_product_family", "language", "name"],
     },
     triggers: {
       increment_count_in_alliance_product_family: {
@@ -1582,13 +1536,10 @@ const schema: Record<
       ownership: {
         alliance_product_family: {
           read: [],
-          write: [[[], "name"]],
+          write: ["name"],
         },
       },
-      public: [
-        [[], "alliance_product_family"],
-        [[], "name"],
-      ],
+      public: ["alliance_product_family", "name"],
     },
     triggers: {
       increment_count_in_alliance_product_family: {
@@ -1664,17 +1615,10 @@ const schema: Record<
       ownership: {
         alliance_product_family_property: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-          ],
+          write: ["language", "name"],
         },
       },
-      public: [
-        [[], "alliance_product_family_property"],
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["alliance_product_family_property", "language", "name"],
     },
     triggers: {
       increment_count_in_alliance_product_family_property: {
@@ -1774,17 +1718,10 @@ const schema: Record<
       ownership: {
         alliance_product_family_property: {
           read: [],
-          write: [
-            [[], "name"],
-            [[], "order"],
-          ],
+          write: ["name", "order"],
         },
       },
-      public: [
-        [[], "alliance_product_family_property"],
-        [[], "name"],
-        [[], "order"],
-      ],
+      public: ["alliance_product_family_property", "name", "order"],
     },
     triggers: {
       increment_count_in_alliance_product_family_property: {
@@ -1860,17 +1797,10 @@ const schema: Record<
       ownership: {
         alliance_product_family_property_value: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-          ],
+          write: ["language", "name"],
         },
       },
-      public: [
-        [[], "alliance_product_family_property_value"],
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["alliance_product_family_property_value", "language", "name"],
     },
     triggers: {
       increment_count_in_alliance_product_family_property_value: {
@@ -1970,21 +1900,21 @@ const schema: Record<
         alliance_product_family: {
           read: [],
           write: [
-            [[], "name"],
-            [[], "description"],
-            [[], "variant_count"],
-            [[], "tag_count"],
-            [[], "translation_count"],
+            "name",
+            "description",
+            "variant_count",
+            "tag_count",
+            "translation_count",
           ],
         },
       },
       public: [
-        [[], "alliance_product_family"],
-        [[], "name"],
-        [[], "description"],
-        [[], "variant_count"],
-        [[], "tag_count"],
-        [[], "translation_count"],
+        "alliance_product_family",
+        "name",
+        "description",
+        "variant_count",
+        "tag_count",
+        "translation_count",
       ],
     },
     triggers: {
@@ -2072,19 +2002,10 @@ const schema: Record<
       ownership: {
         alliance_product: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-            [[], "description"],
-          ],
+          write: ["language", "name", "description"],
         },
       },
-      public: [
-        [[], "alliance_product"],
-        [[], "language"],
-        [[], "name"],
-        [[], "description"],
-      ],
+      public: ["alliance_product", "language", "name", "description"],
     },
     triggers: {
       increment_count_in_alliance_product: {
@@ -2173,13 +2094,10 @@ const schema: Record<
       ownership: {
         alliance_product: {
           read: [],
-          write: [[[], "tag"]],
+          write: ["tag"],
         },
       },
-      public: [
-        [[], "alliance_product"],
-        [[], "tag"],
-      ],
+      public: ["alliance_product", "tag"],
     },
     triggers: {
       increment_count_in_alliance_product: {
@@ -2245,26 +2163,26 @@ const schema: Record<
         alliance_product: {
           read: [],
           write: [
-            [[], "name"],
-            [[], "min_quantity"],
-            [[], "max_quantity"],
-            [[], "min_price"],
-            [[], "max_price"],
+            "name",
+            "min_quantity",
+            "max_quantity",
+            "min_price",
+            "max_price",
           ],
         },
       },
       public: [
-        [[], "alliance_product"],
-        [[], "name"],
-        [[], "min_quantity"],
-        [[], "max_quantity"],
-        [[], "min_price"],
-        [[], "max_price"],
-        [[], "variant_property_count"],
-        [[], "provider_count"],
-        [[], "provider_price_sum"],
-        [[], "provider_average_price"],
-        [[], "translation_count"],
+        "alliance_product",
+        "name",
+        "min_quantity",
+        "max_quantity",
+        "min_price",
+        "max_price",
+        "variant_property_count",
+        "provider_count",
+        "provider_price_sum",
+        "provider_average_price",
+        "translation_count",
       ],
     },
     triggers: {
@@ -2382,17 +2300,10 @@ const schema: Record<
       ownership: {
         alliance_product_family_variant: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-          ],
+          write: ["language", "name"],
         },
       },
-      public: [
-        [[], "alliance_product_family_variant"],
-        [[], "language"],
-        [[], "name"],
-      ],
+      public: ["alliance_product_family_variant", "language", "name"],
     },
     triggers: {
       increment_count_in_alliance_product_family_variant: {
@@ -2499,17 +2410,17 @@ const schema: Record<
         alliance_product_family_variant: {
           read: [],
           write: [
-            [[], "order"],
-            [[], "alliance_product_family_property"],
-            [[], "alliance_product_family_property_value"],
+            "order",
+            "alliance_product_family_property",
+            "alliance_product_family_property_value",
           ],
         },
       },
       public: [
-        [[], "alliance_product_family_variant"],
-        [[], "order"],
-        [[], "alliance_product_family_property"],
-        [[], "alliance_product_family_property_value"],
+        "alliance_product_family_variant",
+        "order",
+        "alliance_product_family_property",
+        "alliance_product_family_property_value",
       ],
     },
     triggers: {
@@ -2617,23 +2528,23 @@ const schema: Record<
         user: {
           read: [],
           write: [
-            [[], "order"],
-            [[], "name"],
-            [[], "product_category"],
-            [[], "property_count"],
-            [[], "product_count"],
-            [[], "translation_count"],
+            "order",
+            "name",
+            "product_category",
+            "property_count",
+            "product_count",
+            "translation_count",
           ],
         },
       },
       public: [
-        [[], "user"],
-        [[], "order"],
-        [[], "name"],
-        [[], "product_category"],
-        [[], "property_count"],
-        [[], "product_count"],
-        [[], "translation_count"],
+        "user",
+        "order",
+        "name",
+        "product_category",
+        "property_count",
+        "product_count",
+        "translation_count",
       ],
     },
     triggers: {
@@ -2743,13 +2654,10 @@ const schema: Record<
       ownership: {
         user_product_family: {
           read: [],
-          write: [[[], "name"]],
+          write: ["name"],
         },
       },
-      public: [
-        [[], "user_product_family"],
-        [[], "name"],
-      ],
+      public: ["user_product_family", "name"],
     },
     triggers: {
       increment_count_in_user_product_family: {
@@ -2829,17 +2737,10 @@ const schema: Record<
       ownership: {
         user_product_family_property: {
           read: [],
-          write: [
-            [[], "name"],
-            [[], "order"],
-          ],
+          write: ["name", "order"],
         },
       },
-      public: [
-        [[], "user_product_family_property"],
-        [[], "name"],
-        [[], "order"],
-      ],
+      public: ["user_product_family_property", "name", "order"],
     },
     triggers: {
       increment_count_in_user_product_family_property: {
@@ -2919,21 +2820,21 @@ const schema: Record<
         user_product_family: {
           read: [],
           write: [
-            [[], "name"],
-            [[], "description"],
-            [[], "variant_count"],
-            [[], "tag_count"],
-            [[], "translation_count"],
+            "name",
+            "description",
+            "variant_count",
+            "tag_count",
+            "translation_count",
           ],
         },
       },
       public: [
-        [[], "user_product_family"],
-        [[], "name"],
-        [[], "description"],
-        [[], "variant_count"],
-        [[], "tag_count"],
-        [[], "translation_count"],
+        "user_product_family",
+        "name",
+        "description",
+        "variant_count",
+        "tag_count",
+        "translation_count",
       ],
     },
     triggers: {
@@ -3021,19 +2922,10 @@ const schema: Record<
       ownership: {
         user_product: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-            [[], "description"],
-          ],
+          write: ["language", "name", "description"],
         },
       },
-      public: [
-        [[], "user_product"],
-        [[], "language"],
-        [[], "name"],
-        [[], "description"],
-      ],
+      public: ["user_product", "language", "name", "description"],
     },
     triggers: {
       increment_count_in_user_product: {
@@ -3130,22 +3022,17 @@ const schema: Record<
       ownership: {
         user_product: {
           read: [],
-          write: [
-            [[], "order"],
-            [[], "name"],
-            [[], "quantity"],
-            [[], "price"],
-          ],
+          write: ["order", "name", "quantity", "price"],
         },
       },
       public: [
-        [[], "user_product"],
-        [[], "order"],
-        [[], "name"],
-        [[], "quantity"],
-        [[], "price"],
-        [[], "variant_property_count"],
-        [[], "translation_count"],
+        "user_product",
+        "order",
+        "name",
+        "quantity",
+        "price",
+        "variant_property_count",
+        "translation_count",
       ],
     },
     triggers: {
@@ -3229,17 +3116,17 @@ const schema: Record<
         user_product_family_variant: {
           read: [],
           write: [
-            [[], "order"],
-            [[], "user_product_family_property"],
-            [[], "user_product_family_property_value"],
+            "order",
+            "user_product_family_property",
+            "user_product_family_property_value",
           ],
         },
       },
       public: [
-        [[], "user_product_family_variant"],
-        [[], "order"],
-        [[], "user_product_family_property"],
-        [[], "user_product_family_property_value"],
+        "user_product_family_variant",
+        "order",
+        "user_product_family_property",
+        "user_product_family_property_value",
       ],
     },
     triggers: {
@@ -3345,17 +3232,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         alliance_product_family_variant: {
-          read: [
-            [[], "alliance_member"],
-            [[], "user_product_family_variant"],
-          ],
+          read: ["alliance_member", "user_product_family_variant"],
           write: [],
         },
         user_product_family_variant: {
-          read: [
-            [[], "alliance_product_family_variant"],
-            [[], "alliance_member"],
-          ],
+          read: ["alliance_product_family_variant", "alliance_member"],
           write: [],
         },
       },
@@ -3480,17 +3361,17 @@ const schema: Record<
       borrow: {},
       ownership: {
         alliance_product_family_variant: {
-          read: [[[], "alliance_member"]],
+          read: ["alliance_member"],
           write: [],
         },
         user_product_family_variant: {
-          read: [[[], "alliance_member"]],
+          read: ["alliance_member"],
           write: [],
         },
       },
       public: [
-        [[], "alliance_product_family_variant"],
-        [[], "user_product_family_variant"],
+        "alliance_product_family_variant",
+        "user_product_family_variant",
       ],
     },
     triggers: {
@@ -3684,17 +3565,10 @@ const schema: Record<
       ownership: {
         alliance: {
           read: [],
-          write: [
-            [[], "alliance_product"],
-            [[], "markup"],
-          ],
+          write: ["alliance_product", "markup"],
         },
       },
-      public: [
-        [[], "alliance"],
-        [[], "alliance_product"],
-        [[], "markup"],
-      ],
+      public: ["alliance", "alliance_product", "markup"],
     },
     triggers: {
       increment_count_in_alliance: {
@@ -3777,25 +3651,19 @@ const schema: Record<
       ownership: {
         alliance: {
           read: [],
-          write: [
-            [[], "name"],
-            [[], "language"],
-            [[], "description"],
-            [[], "min_price"],
-            [[], "max_price"],
-          ],
+          write: ["name", "language", "description", "min_price", "max_price"],
         },
       },
       public: [
-        [[], "alliance"],
-        [[], "name"],
-        [[], "language"],
-        [[], "description"],
-        [[], "min_price"],
-        [[], "max_price"],
-        [[], "provider_count"],
-        [[], "provider_price_sum"],
-        [[], "provider_average_price"],
+        "alliance",
+        "name",
+        "language",
+        "description",
+        "min_price",
+        "max_price",
+        "provider_count",
+        "provider_price_sum",
+        "provider_average_price",
       ],
     },
     triggers: {
@@ -3876,19 +3744,10 @@ const schema: Record<
       ownership: {
         alliance_service: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-            [[], "description"],
-          ],
+          write: ["language", "name", "description"],
         },
       },
-      public: [
-        [[], "alliance_service"],
-        [[], "language"],
-        [[], "name"],
-        [[], "description"],
-      ],
+      public: ["alliance_service", "language", "name", "description"],
     },
     triggers: {
       increment_count_in_alliance_service: {
@@ -3977,19 +3836,10 @@ const schema: Record<
       ownership: {
         alliance_service: {
           read: [],
-          write: [
-            [[], "name"],
-            [[], "price"],
-          ],
+          write: ["name", "price"],
         },
       },
-      public: [
-        [[], "alliance_service"],
-        [[], "name"],
-        [[], "language"],
-        [[], "description"],
-        [[], "price"],
-      ],
+      public: ["alliance_service", "name", "language", "description", "price"],
     },
     triggers: {},
     checks: {
@@ -4022,19 +3872,10 @@ const schema: Record<
       ownership: {
         alliance_service_task: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-            [[], "description"],
-          ],
+          write: ["language", "name", "description"],
         },
       },
-      public: [
-        [[], "alliance_service_task"],
-        [[], "language"],
-        [[], "name"],
-        [[], "description"],
-      ],
+      public: ["alliance_service_task", "language", "name", "description"],
     },
     triggers: {
       increment_count_in_alliance_service_task: {
@@ -4126,15 +3967,10 @@ const schema: Record<
       ownership: {
         user: {
           read: [],
-          write: [[[], "name"]],
+          write: ["name"],
         },
       },
-      public: [
-        [[], "alliance_service"],
-        [[], "name"],
-        [[], "description"],
-        [[], "order"],
-      ],
+      public: ["alliance_service", "name", "description", "order"],
     },
     triggers: {},
     checks: {
@@ -4170,18 +4006,14 @@ const schema: Record<
       ownership: {
         alliance_service_milsestone: {
           read: [],
-          write: [
-            [[], "language"],
-            [[], "name"],
-            [[], "description"],
-          ],
+          write: ["language", "name", "description"],
         },
       },
       public: [
-        [[], "alliance_service_milsestone"],
-        [[], "language"],
-        [[], "name"],
-        [[], "description"],
+        "alliance_service_milsestone",
+        "language",
+        "name",
+        "description",
       ],
     },
     triggers: {
@@ -4284,10 +4116,7 @@ const schema: Record<
           write: [],
         },
       },
-      public: [
-        [[], "alliance_service_milestone"],
-        [[], "alliance_service_task"],
-      ],
+      public: ["alliance_service_milestone", "alliance_service_task"],
     },
     triggers: {},
     checks: {},
@@ -4306,10 +4135,7 @@ const schema: Record<
           write: [],
         },
       },
-      public: [
-        [[], "alliance_service"],
-        [[], "alliance_member"],
-      ],
+      public: ["alliance_service", "alliance_member"],
     },
     triggers: {
       increment_count_in_alliance_service: {
@@ -4434,37 +4260,37 @@ const schema: Record<
       ownership: {
         alliance: {
           read: [
-            [[], "name"],
-            [[], "unused"],
-            [[], "used"],
-            [[], "min_order_value"],
-            [[], "flat_discount"],
-            [[], "discount"],
-            [[], "max_absolute_discount"],
-            [[], "valid_from"],
-            [[], "valid_to"],
-            [[], "min_clan_loyalty"],
-            [[], "max_clan_loyalty"],
-            [[], "show_coupon"],
+            "name",
+            "unused",
+            "used",
+            "min_order_value",
+            "flat_discount",
+            "discount",
+            "max_absolute_discount",
+            "valid_from",
+            "valid_to",
+            "min_clan_loyalty",
+            "max_clan_loyalty",
+            "show_coupon",
           ],
           write: [],
         },
       },
       public: [
-        [[], "alliance"],
-        [[], "name"],
-        [[], "unused"],
-        [[], "used"],
-        [[], "min_order_value"],
-        [[], "min_price"],
-        [[], "flat_discount"],
-        [[], "discount"],
-        [[], "max_absolute_discount"],
-        [[], "valid_from"],
-        [[], "valid_to"],
-        [[], "min_clan_loyalty"],
-        [[], "max_clan_loyalty"],
-        [[], "show_coupon"],
+        "alliance",
+        "name",
+        "unused",
+        "used",
+        "min_order_value",
+        "min_price",
+        "flat_discount",
+        "discount",
+        "max_absolute_discount",
+        "valid_from",
+        "valid_to",
+        "min_clan_loyalty",
+        "max_clan_loyalty",
+        "show_coupon",
       ],
     },
     triggers: {},
@@ -4507,20 +4333,15 @@ const schema: Record<
       borrow: {},
       ownership: {
         alliance: {
-          read: [
-            [[], "clan"],
-            [[], "order_count"],
-            [[], "order_price_sum"],
-            [[], "order_price_mean"],
-          ],
+          read: ["clan", "order_count", "order_price_sum", "order_price_mean"],
           write: [],
         },
         clan: {
           read: [
-            [[], "alliance"],
-            [[], "order_count"],
-            [[], "order_price_sum"],
-            [[], "order_price_mean"],
+            "alliance",
+            "order_count",
+            "order_price_sum",
+            "order_price_mean",
           ],
           write: [],
         },
@@ -4545,10 +4366,7 @@ const schema: Record<
       borrow: {},
       ownership: {
         clan: {
-          read: [
-            [[], "product_count"],
-            [[], "product_price_sum"],
-          ],
+          read: ["product_count", "product_price_sum"],
           write: [],
         },
       },
@@ -4575,17 +4393,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         clan_product_order_draft: {
-          read: [
-            [[], "listed_alliance_product"],
-            [[], "price"],
-          ],
+          read: ["listed_alliance_product", "price"],
           write: [],
         },
         listed_alliance_product: {
-          read: [
-            [[], "clan_product_order_draft"],
-            [[], "price"],
-          ],
+          read: ["clan_product_order_draft", "price"],
           write: [],
         },
       },
@@ -4605,10 +4417,7 @@ const schema: Record<
       borrow: {},
       ownership: {
         clan: {
-          read: [
-            [[], "product_count"],
-            [[], "product_price_sum"],
-          ],
+          read: ["product_count", "product_price_sum"],
           write: [],
         },
       },
@@ -4632,19 +4441,11 @@ const schema: Record<
       borrow: {},
       ownership: {
         clan_product_order: {
-          read: [
-            [[], "listed_alliance_product"],
-            [[], "quantity"],
-            [[], "price"],
-          ],
+          read: ["listed_alliance_product", "quantity", "price"],
           write: [],
         },
         listed_alliance_product: {
-          read: [
-            [[], "clan_product_order"],
-            [[], "quantity"],
-            [[], "price"],
-          ],
+          read: ["clan_product_order", "quantity", "price"],
           write: [],
         },
       },
@@ -4666,7 +4467,7 @@ const schema: Record<
       borrow: {},
       ownership: {
         clan: {
-          read: [[[], "listed_alliance_service"]],
+          read: ["listed_alliance_service"],
           write: [],
         },
       },
@@ -4695,4 +4496,14 @@ export function get_structs(): HashSet<Struct> {
     structs = structs.add(struct);
   }
   return structs;
+}
+
+export function get_struct(struct_name: string): Result<Struct> {
+  const struct = get_structs()
+    .filter((s) => s.name === struct_name)
+    .single();
+  if (struct.isSome()) {
+    return new Ok(struct.get());
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
