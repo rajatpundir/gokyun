@@ -1,6 +1,6 @@
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
-import { Path, StrongEnum, Struct } from "./variable";
+import { Path, Struct } from "./variable";
 import Decimal from "decimal.js";
 import { errors, ErrMsg } from "./errors";
 

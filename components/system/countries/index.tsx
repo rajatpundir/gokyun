@@ -18,6 +18,8 @@ import { Path, Struct } from "../../../main/utils/variable";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import {
   get_permissions,
+  get_user_path_permissions,
+  get_valid_user_path,
   log_permissions,
 } from "../../../main/utils/permissions";
 import { useNavigation } from "@react-navigation/core";
@@ -81,20 +83,29 @@ function B() {
 }
 
 const struct: Option<Struct> = get_structs()
-  .filter((s) => s.name === "Test")
+  .filter((s) => s.name === "Alliance_Member")
   .single();
 
 export default function Component(props: ParentNavigatorProps<"Countries">) {
   const navigation = useNavigation();
 
-  // if (struct.isSome()) {
-  //   log_permissions(
-  //     struct.get(),
-  //     get_permissions(struct.get(), [["user"]], [])
-  //   );
-  // } else {
-  //   console.log("---nothing---");
-  // }
+  if (struct.isSome()) {
+    const x = get_valid_user_path(
+      struct.get(),
+      [["alliance", "wallet"], "user"],
+      false
+    );
+    if (unwrap(x)) {
+      console.log(
+        x.value[0].map((q) => q[0]),
+        x.value[1]
+      );
+    }
+    console.log();
+    log_permissions(struct.get(), [[["alliance", "wallet"], "user"]], []);
+  } else {
+    console.log("---nothing---");
+  }
 
   return (
     <View
@@ -107,43 +118,43 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       <B />
       <A /> */}
       <Pressable
-        onPress={() => {
-          if (struct.isSome()) {
-            const permissions = get_permissions(struct.get(), [["user"]], []);
-            if (unwrap(permissions)) {
-              navigation.navigate("VariablesModal", {
-                struct: struct.get(),
-                permissions: permissions.value,
-                requested_paths: HashSet.of(),
-                selected: new Decimal(0),
-                set_selected: (selected: Decimal) => {},
-                filters: [],
-                limit: new Decimal(10),
-                offset: new Decimal(0),
-                render_item: (
-                  struct: Immutable<Struct>,
-                  id: Immutable<Decimal>,
-                  paths: Immutable<HashSet<Path>>,
-                  selected: Immutable<Decimal>,
-                  set_selected: (selected: Decimal) => void
-                ) => {
-                  return (
-                    <>
-                      <Text>PKPKPKPK</Text>
-                      {/* <TextInput
-                        value={"9i09i09i09i09"}
-                        keyboardType={"number-pad"}
-                        onChangeText={
-                          (x) => {}
-                        }
-                      /> */}
-                    </>
-                  );
-                },
-              });
-            }
-          }
-        }}
+      // onPress={() => {
+      //   if (struct.isSome()) {
+      //     const permissions = get_permissions(struct.get(), [["user"]], []);
+      //     if (unwrap(permissions)) {
+      //       navigation.navigate("VariablesModal", {
+      //         struct: struct.get(),
+      //         permissions: permissions.value,
+      //         requested_paths: HashSet.of(),
+      //         selected: new Decimal(0),
+      //         set_selected: (selected: Decimal) => {},
+      //         filters: [],
+      //         limit: new Decimal(10),
+      //         offset: new Decimal(0),
+      //         render_item: (
+      //           struct: Immutable<Struct>,
+      //           id: Immutable<Decimal>,
+      //           paths: Immutable<HashSet<Path>>,
+      //           selected: Immutable<Decimal>,
+      //           set_selected: (selected: Decimal) => void
+      //         ) => {
+      //           return (
+      //             <>
+      //               <Text>PKPKPKPK</Text>
+      //               {/* <TextInput
+      //                 value={"9i09i09i09i09"}
+      //                 keyboardType={"number-pad"}
+      //                 onChangeText={
+      //                   (x) => {}
+      //                 }
+      //               /> */}
+      //             </>
+      //           );
+      //         },
+      //       });
+      //     }
+      //   }
+      // }}
       >
         <Text>GOTO VARIABLES MODAL</Text>
       </Pressable>

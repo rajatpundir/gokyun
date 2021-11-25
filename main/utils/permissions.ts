@@ -52,7 +52,9 @@ export class PathPermission {
   }
 
   toString(): string {
-    return String([this.path, this.writeable]);
+    return `[${this.path[0].map((x) => x[0]).join(".")}] ${this.path[1][0]} ${
+      this.writeable ? "true" : "false"
+    }`;
   }
 }
 
@@ -91,8 +93,7 @@ export function get_valid_user_path(
               apply(
                 [[field_name, next_struct.value] as [string, Struct]],
                 (it) => {
-                  it.concat(result.value[0]);
-                  return it;
+                  return it.concat(result.value[0]);
                 }
               ),
               result.value[1],
@@ -116,7 +117,7 @@ export function get_user_path_permissions(
   if (init.length === 0) {
     if (last in struct.fields && last in struct.permissions.ownership) {
       const permissions = struct.permissions.ownership[last];
-      for (let field_name in permissions.write) {
+      for (let field_name of permissions.write) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = apply(
@@ -133,22 +134,24 @@ export function get_user_path_permissions(
           path_permissions = path_permissions.add(path_permission);
         }
       }
-      for (let field_name in permissions.read) {
+      for (let field_name of permissions.read) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = new PathPermission([
             prefix,
             [field_name, get_strong_enum(field)],
           ]);
-          path_permissions = path_permissions.add(path_permission);
+          if (!path_permissions.contains(path_permission)) {
+            path_permissions = path_permissions.add(path_permission);
+          }
         }
       }
     }
   } else {
     const [first, next_struct] = init[0];
     if (first in struct.fields && first in struct.permissions.ownership) {
-      const permissions = struct.permissions.ownership[last];
-      for (let field_name in permissions.write) {
+      const permissions = struct.permissions.ownership[first];
+      for (let field_name of permissions.write) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = apply(
@@ -165,14 +168,16 @@ export function get_user_path_permissions(
           path_permissions = path_permissions.add(path_permission);
         }
       }
-      for (let field_name in permissions.read) {
+      for (let field_name of permissions.read) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = new PathPermission([
             prefix,
             [field_name, get_strong_enum(field)],
           ]);
-          path_permissions = path_permissions.add(path_permission);
+          if (!path_permissions.contains(path_permission)) {
+            path_permissions = path_permissions.add(path_permission);
+          }
         }
       }
       // Add permission for owning field itself as readable path if not present
@@ -192,14 +197,16 @@ export function get_user_path_permissions(
       );
     }
   }
-  for (let field_name in struct.permissions.public) {
+  for (let field_name of struct.permissions.public) {
     if (field_name in struct.fields) {
       const field = struct.fields[field_name];
       const path_permission = new PathPermission([
         prefix,
         [field_name, get_strong_enum(field)],
       ]);
-      path_permissions = path_permissions.add(path_permission);
+      if (!path_permissions.contains(path_permission)) {
+        path_permissions = path_permissions.add(path_permission);
+      }
     }
   }
   return path_permissions;
@@ -213,14 +220,14 @@ export function get_permissions(
   let path_permissions: HashSet<PathPermission> = HashSet.of();
   const result = unwrap_array(
     apply([], (it: Array<[PathString, boolean]>) => {
-      for (let path of user_paths) {
-        it.push([path, false]);
-      }
       for (let borrow_name of borrows) {
         if (borrow_name in struct.permissions.borrow) {
           const borrow = struct.permissions.borrow[borrow_name];
           it.push([borrow.ownership, true]);
         }
+      }
+      for (let path of user_paths) {
+        it.push([path, false]);
       }
       return it;
     }).map((x) => get_valid_user_path(struct, x[0], x[1]))
@@ -254,4 +261,5 @@ export function log_permissions(
   for (let permission of path_permissions.filter((x) => x.writeable)) {
     console.log(permission.toString());
   }
+  console.log("\n=======================");
 }

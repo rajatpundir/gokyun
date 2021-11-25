@@ -8,7 +8,7 @@ import { FlatList, StyleSheet, Button } from "react-native";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { Struct, Variable } from "./variable";
 
-import { Text, View, TextInput } from "../themed";
+import { Text, View } from "../themed";
 
 import {
   BottomSheetModal,

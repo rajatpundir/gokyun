@@ -26,8 +26,6 @@ import { Struct, Variable } from "./main/utils/variable";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
-import { HashSet } from "prelude-ts";
-import { PathPermission } from "./main/utils/permissions";
 
 declare global {
   namespace ReactNavigation {
