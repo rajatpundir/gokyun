@@ -16,6 +16,7 @@ import { Path, StrongEnum, Struct, Variable } from "./variable";
 import { ErrMsg, errors } from "./errors";
 import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
 import { get_structs } from "./schema";
+import { Immutable } from "immer";
 
 // TODO. n per group should be performed, so that we get (struct_name, id) combination with max level
 // We could also have the HAVING clause eliminate possibility of nulls for aggregate column aliases
@@ -100,7 +101,7 @@ export function execute_transaction(
   });
 }
 
-type PathFilter =
+export type PathFilter =
   | [
       ReadonlyArray<string>,
       "str" | "lstr" | "clob",

@@ -6,8 +6,7 @@ import Decimal from "decimal.js";
 import { FlatList, StyleSheet, Button } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { get_variables } from "./sqlite";
-import { Struct, Path, PathFilter } from "./variable";
+import { Struct, Variable } from "./variable";
 
 import { Text, View, TextInput } from "../themed";
 
@@ -16,57 +15,61 @@ import {
   BottomSheetModalProvider,
   BottomSheetSectionList,
 } from "@gorhom/bottom-sheet";
+import { get_variables, PathFilter } from "./db";
+import { unwrap } from "./prelude";
 
 // A button press is used to copy values of offline filter to online filter
 // while offline_filter directly queries from the SQLite DB
 // online_filter is used to query from backend, once its done, is should notify the component of such to refresh its contents from SQLite DB
 
+export type VariableFilter = {
+  variable_filters: {
+    active: boolean;
+    level: Decimal | undefined;
+    id: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+      | ["between" | "not_between", [Decimal, Decimal]]
+      | undefined
+    >;
+    created_at: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    >;
+    updated_at: ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    >;
+  };
+  path_filters: ReadonlyArray<[string, PathFilter]>;
+  limit_offset: [Decimal, Decimal] | undefined;
+};
+
 type State = Immutable<{
-  offline_filters: ReadonlyArray<[boolean, HashSet<PathFilter>]>;
-  online_filters: ReadonlyArray<[boolean, HashSet<PathFilter>]>;
-  limit: Decimal;
-  offset: Decimal;
-  variables: ReadonlyArray<{
-    struct: Struct;
-    id: Decimal;
-    paths: HashSet<Path>;
-  }>;
+  struct: Struct;
+  offline_filters: VariableFilter;
+  online_filters: VariableFilter;
+  variables: HashSet<Variable>;
 }>;
 
 type Action =
-  | ["offline_filters", Array<[boolean, HashSet<PathFilter>]>]
-  | ["online_filters", Array<[boolean, HashSet<PathFilter>]>]
-  | ["limit", Decimal]
-  | ["offset", Decimal]
-  | [
-      "variables",
-      Array<{
-        struct: Struct;
-        id: Decimal;
-        paths: HashSet<Path>;
-      }>
-    ];
+  | ["offline_filters", VariableFilter]
+  | ["online_filters", VariableFilter]
+  | ["variables", HashSet<Variable>];
 
 function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
     case "offline_filters": {
-      state.offline_filters = action[1];
+      // state.offline_filters = action[1];
       break;
     }
     case "online_filters": {
-      state.online_filters = action[1];
-      break;
-    }
-    case "limit": {
-      state.limit = action[1];
-      break;
-    }
-    case "offset": {
-      state.offset = action[1];
+      // state.online_filters = action[1];
       break;
     }
     case "variables": {
-      state.variables = action[1] as any;
+      state.variables = action[1];
       break;
     }
     default: {
@@ -80,27 +83,26 @@ export function VariablesModal(
   props: RootNavigatorProps<"VariablesModal">
 ): JSX.Element {
   const init: State = {
-    offline_filters: props.route.params.filters,
-    online_filters: props.route.params.filters,
-    limit: props.route.params.limit,
-    offset: props.route.params.offset,
-    variables: [],
+    struct: props.route.params.struct,
+    offline_filters: props.route.params.filter,
+    online_filters: props.route.params.filter,
+    variables: HashSet.of(),
   };
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, init);
   useEffect(() => {
     const update_variables = async () => {
-      const variables = await get_variables(
+      const result = await get_variables(
         props.route.params.struct,
-        props.route.params.permissions,
-        props.route.params.requested_paths,
-        state.online_filters,
-        state.limit,
-        state.offset
+        state.offline_filters.variable_filters as any,
+        state.offline_filters.path_filters as any,
+        state.offline_filters.limit_offset as any
       );
-      dispatch(["variables", variables]);
+      if (unwrap(result)) {
+        dispatch(["variables", HashSet.ofIterable(result.value)]);
+      }
     };
     update_variables();
-  }, [state.online_filters, state.limit, state.offset]);
+  }, [state.offline_filters, state.online_filters]);
 
   // ref
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -166,12 +168,10 @@ export function VariablesModal(
             color="black"
           />
           <FlatList
-            data={state.variables}
+            data={state.variables.toArray()}
             renderItem={(list_item) => {
               return props.route.params.render_item(
-                list_item.item.struct,
-                list_item.item.id,
-                list_item.item.paths,
+                list_item.item,
                 props.route.params.selected,
                 props.route.params.set_selected
               );
@@ -179,7 +179,7 @@ export function VariablesModal(
             keyExtractor={(list_item) => list_item.id.valueOf()}
           />
           <View>
-            <Text>Limit</Text>
+            {/* <Text>Limit</Text>
             <TextInput
               value={state.limit.toString()}
               keyboardType={"number-pad"}
@@ -194,7 +194,7 @@ export function VariablesModal(
               onChangeText={(x) =>
                 dispatch(["offset", new Decimal(x).truncated()])
               }
-            />
+            /> */}
           </View>
           <BottomSheetModal
             ref={bottomSheetModalRef}

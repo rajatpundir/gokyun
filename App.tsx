@@ -21,12 +21,13 @@ import {
   NavigatorParams as MainScreenNavigatorParams,
 } from "./components";
 import NotFoundScreen from "./main/NotFoundScreen";
-import { VariablesModal } from "./main/utils/variables_modal";
-import { Path, PathFilter, Struct } from "./main/utils/variable";
+import { VariableFilter, VariablesModal } from "./main/utils/variables_modal";
+import { Struct, Variable } from "./main/utils/variable";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
-import { HashSet, Vector } from "prelude-ts";
+import { HashSet } from "prelude-ts";
+import { PathPermission } from "./main/utils/permissions";
 
 declare global {
   namespace ReactNavigation {
@@ -39,17 +40,11 @@ export type NavigatorParams = {
   NotFound: undefined;
   VariablesModal: {
     struct: Struct;
-    permissions: [HashSet<Vector<string>>, HashSet<Vector<string>>];
-    requested_paths: HashSet<Path>;
+    filter: VariableFilter;
     selected: Decimal;
     set_selected: (selected: Decimal) => void;
-    filters: Array<[boolean, HashSet<PathFilter>]>;
-    limit: Decimal;
-    offset: Decimal;
     render_item: (
-      struct: Immutable<Struct>,
-      id: Immutable<Decimal>,
-      paths: Immutable<HashSet<Path>>,
+      variable: Variable,
       selected: Immutable<Decimal>,
       set_selected: (selected: Decimal) => void
     ) => JSX.Element;
