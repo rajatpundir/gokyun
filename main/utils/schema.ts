@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
 import {
   Add,
   And,
@@ -26,7 +27,12 @@ import {
   ToText,
 } from "./lisp";
 import { errors, ErrMsg } from "./errors";
-import { StructPermissions, StructTriggers, WeakEnum } from "./variable";
+import {
+  Struct,
+  StructPermissions,
+  StructTriggers,
+  WeakEnum,
+} from "./variable";
 
 const schema: Record<
   string,
@@ -38,39 +44,6 @@ const schema: Record<
     checks: Record<string, [BooleanLispExpression, ErrMsg]>;
   }
 > = {
-  A: {
-    fields: {},
-    uniqueness: [],
-    permissions: {
-      borrow: {},
-      ownership: {},
-      public: [],
-    },
-    triggers: {},
-    checks: {},
-  },
-  B: {
-    fields: {},
-    uniqueness: [],
-    permissions: {
-      borrow: {},
-      ownership: {},
-      public: [],
-    },
-    triggers: {},
-    checks: {},
-  },
-  C: {
-    fields: {},
-    uniqueness: [],
-    permissions: {
-      borrow: {},
-      ownership: {},
-      public: [],
-    },
-    triggers: {},
-    checks: {},
-  },
   Test: {
     fields: {
       user: { type: "other", other: "User" },
@@ -4704,24 +4677,22 @@ const schema: Record<
   },
 };
 
-// export function get_structs(): HashSet<Struct> {
-//   let structs: HashSet<Struct> = HashSet.of();
-//   for (let structName in schema) {
-//     const structDef = schema[structName];
-//     const struct: Struct = new Struct(
-//       structName,
-//       HashSet.of(),
-//       structDef.uniqueness,
-//       structDef.permissions,
-//       structDef.effects,
-//       structDef.checks
-//     );
-//     for (let fieldName in structDef.fields) {
-//       struct.fields = struct.fields.add(
-//         new Field(struct, fieldName, structDef.fields[fieldName])
-//       );
-//     }
-//     structs = structs.add(struct);
-//   }
-//   return structs;
-// }
+export function get_structs(): HashSet<Struct> {
+  let structs: HashSet<Struct> = HashSet.of();
+  for (let structName in schema) {
+    const structDef = schema[structName];
+    const struct: Struct = new Struct(
+      structName,
+      {},
+      structDef.uniqueness,
+      structDef.permissions,
+      structDef.triggers,
+      structDef.checks
+    );
+    for (let fieldName in structDef.fields) {
+      struct.fields[fieldName] = structDef.fields[fieldName];
+    }
+    structs = structs.add(struct);
+  }
+  return structs;
+}
