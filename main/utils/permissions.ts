@@ -52,9 +52,7 @@ export class PathPermission {
   }
 
   toString(): string {
-    return `[${this.path[0].map((x) => x[0]).join(".")}] ${this.path[1][0]} ${
-      this.writeable ? "true" : "false"
-    }`;
+    return `[${this.path[0].map((x) => x[0]).join(".")}] ${this.path[1][0]}`;
   }
 }
 
@@ -107,6 +105,40 @@ export function get_valid_user_path(
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
+function get_public_permissions(
+  struct: Struct,
+  prefix: Array<[string, Struct]> = []
+) {
+  let path_permissions: HashSet<PathPermission> = HashSet.of();
+  for (let field_name of struct.permissions.public) {
+    if (field_name in struct.fields) {
+      const field = struct.fields[field_name];
+      const path_permission = new PathPermission([
+        prefix,
+        [field_name, get_strong_enum(field)],
+      ]);
+      if (!path_permissions.contains(path_permission)) {
+        path_permissions = path_permissions.add(path_permission);
+      }
+      if (field.type === "other") {
+        const next_struct = get_struct(field.other);
+        if (unwrap(next_struct)) {
+          const nested_path_permissions = get_public_permissions(
+            next_struct.value,
+            [...prefix, [field_name, next_struct.value]]
+          );
+          for (let permission of nested_path_permissions) {
+            if (!path_permissions.contains(permission)) {
+              path_permissions = path_permissions.add(permission);
+            }
+          }
+        }
+      }
+    }
+  }
+  return path_permissions;
+}
+
 export function get_user_path_permissions(
   struct: Struct,
   user_path: [Array<[string, Struct]>, string, boolean],
@@ -132,6 +164,20 @@ export function get_user_path_permissions(
           // Remove and add, as existing permission may not be writeable
           path_permissions = path_permissions.remove(path_permission);
           path_permissions = path_permissions.add(path_permission);
+          if (field.type === "other") {
+            const next_struct = get_struct(field.other);
+            if (unwrap(next_struct)) {
+              const nested_path_permissions = get_public_permissions(
+                next_struct.value,
+                [...prefix, [field_name, next_struct.value]]
+              );
+              for (let permission of nested_path_permissions) {
+                if (!path_permissions.contains(permission)) {
+                  path_permissions = path_permissions.add(permission);
+                }
+              }
+            }
+          }
         }
       }
       for (let field_name of permissions.read) {
@@ -143,6 +189,20 @@ export function get_user_path_permissions(
           ]);
           if (!path_permissions.contains(path_permission)) {
             path_permissions = path_permissions.add(path_permission);
+          }
+          if (field.type === "other") {
+            const next_struct = get_struct(field.other);
+            if (unwrap(next_struct)) {
+              const nested_path_permissions = get_public_permissions(
+                next_struct.value,
+                [...prefix, [field_name, next_struct.value]]
+              );
+              for (let permission of nested_path_permissions) {
+                if (!path_permissions.contains(permission)) {
+                  path_permissions = path_permissions.add(permission);
+                }
+              }
+            }
           }
         }
       }
@@ -207,6 +267,20 @@ export function get_user_path_permissions(
       if (!path_permissions.contains(path_permission)) {
         path_permissions = path_permissions.add(path_permission);
       }
+      if (field.type === "other") {
+        const next_struct = get_struct(field.other);
+        if (unwrap(next_struct)) {
+          const nested_path_permissions = get_public_permissions(
+            next_struct.value,
+            [...prefix, [field_name, next_struct.value]]
+          );
+          for (let permission of nested_path_permissions) {
+            if (!path_permissions.contains(permission)) {
+              path_permissions = path_permissions.add(permission);
+            }
+          }
+        }
+      }
     }
   }
   return path_permissions;
@@ -217,13 +291,14 @@ export function get_permissions(
   user_paths: Array<PathString>,
   borrows: Array<string>
 ) {
-  let path_permissions: HashSet<PathPermission> = HashSet.of();
+  let path_permissions: HashSet<PathPermission> =
+    get_public_permissions(struct);
   const result = unwrap_array(
     apply([], (it: Array<[PathString, boolean]>) => {
       for (let borrow_name of borrows) {
         if (borrow_name in struct.permissions.borrow) {
           const borrow = struct.permissions.borrow[borrow_name];
-          it.push([borrow.ownership, true]);
+          it.push([borrow.user_path, true]);
         }
       }
       for (let path of user_paths) {

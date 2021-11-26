@@ -83,26 +83,26 @@ function B() {
 }
 
 const struct: Option<Struct> = get_structs()
-  .filter((s) => s.name === "Alliance_Member")
+  .filter((s) => s.name === "User")
   .single();
 
 export default function Component(props: ParentNavigatorProps<"Countries">) {
   const navigation = useNavigation();
 
   if (struct.isSome()) {
-    const x = get_valid_user_path(
-      struct.get(),
-      [["alliance", "wallet"], "user"],
-      false
-    );
-    if (unwrap(x)) {
-      console.log(
-        x.value[0].map((q) => q[0]),
-        x.value[1]
-      );
-    }
-    console.log();
-    log_permissions(struct.get(), [[["alliance", "wallet"], "user"]], []);
+    // const x = get_valid_user_path(
+    //   struct.get(),
+    //   [["alliance", "wallet"], "user"],
+    //   false
+    // );
+    // if (unwrap(x)) {
+    //   console.log(
+    //     x.value[0].map((q) => q[0]),
+    //     x.value[1]
+    //   );
+    // }
+    // console.log();
+    log_permissions(struct.get(), [], []);
   } else {
     console.log("---nothing---");
   }

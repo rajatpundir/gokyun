@@ -25,7 +25,7 @@ export type StructPermissions = {
       // To prevent above misuse, we must ensure that membership is of same alliance
       constraints: ReadonlyArray<[PathString, PathString]>;
       // The below PathString should point to a 'User'
-      ownership: PathString;
+      user_path: PathString;
     }
   >;
   public: ReadonlyArray<string>;

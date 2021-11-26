@@ -988,7 +988,7 @@ const schema: Record<
               [[], "alliance"],
             ],
           ],
-          ownership: [["alliance", "wallet"], "user"],
+          user_path: [["alliance", "wallet"], "user"],
         },
       },
       ownership: {
@@ -1095,7 +1095,7 @@ const schema: Record<
               [[], "guild"],
             ],
           ],
-          ownership: [["guild", "wallet"], "user"],
+          user_path: [["guild", "wallet"], "user"],
         },
       },
       ownership: {
@@ -1202,7 +1202,7 @@ const schema: Record<
               [[], "clan"],
             ],
           ],
-          ownership: [["clan", "wallet"], "user"],
+          user_path: [["clan", "wallet"], "user"],
         },
       },
       ownership: {
