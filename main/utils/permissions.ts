@@ -15,6 +15,7 @@ import { get_strong_enum, PathString, StrongEnum, Struct } from "./variable";
 export class PathPermission {
   path: [Array<[string, Struct]>, [string, StrongEnum]];
   writeable: boolean = false;
+  label: string = "";
 
   constructor(path: [Array<[string, Struct]>, [string, StrongEnum]]) {
     this.path = path;
@@ -57,7 +58,7 @@ export class PathPermission {
 }
 
 // Function to determine if PathString points to a field with 'User' struct
-export function get_valid_user_path(
+function get_valid_user_path(
   struct: Struct,
   path: PathString,
   borrowed: boolean
@@ -108,7 +109,7 @@ export function get_valid_user_path(
 function get_public_permissions(
   struct: Struct,
   prefix: Array<[string, Struct]> = []
-) {
+): HashSet<PathPermission> {
   let path_permissions: HashSet<PathPermission> = HashSet.of();
   for (let field_name of struct.permissions.public) {
     if (field_name in struct.fields) {
@@ -139,7 +140,7 @@ function get_public_permissions(
   return path_permissions;
 }
 
-export function get_user_path_permissions(
+function get_user_path_permissions(
   struct: Struct,
   user_path: [Array<[string, Struct]>, string, boolean],
   prefix: Array<[string, Struct]> = []
@@ -290,7 +291,7 @@ export function get_permissions(
   struct: Struct,
   user_paths: Array<PathString>,
   borrows: Array<string>
-) {
+): HashSet<PathPermission> {
   let path_permissions: HashSet<PathPermission> =
     get_public_permissions(struct);
   const result = unwrap_array(

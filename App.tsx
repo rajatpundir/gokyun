@@ -24,6 +24,8 @@ import NotFoundScreen from "./main/NotFoundScreen";
 import { VariableFilter, VariablesModal } from "./main/utils/variables_modal";
 import { Struct, Variable } from "./main/utils/variable";
 
+import Country from "./modals/country";
+
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
 
@@ -46,6 +48,9 @@ export type NavigatorParams = {
       selected: Immutable<Decimal>,
       set_selected: (selected: Decimal) => void
     ) => JSX.Element;
+  };
+  Country: {
+    id: number;
   };
 };
 
@@ -110,6 +115,11 @@ export default function App() {
               name="VariablesModal"
               component={VariablesModal}
               options={{ title: "Select your Variable!" }}
+            />
+            <Stack.Screen
+              name="Country"
+              component={Country}
+              options={{ title: "Create Country" }}
             />
             <Stack.Screen
               name="NotFound"

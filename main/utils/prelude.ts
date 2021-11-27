@@ -1,6 +1,6 @@
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
-import { Path, Struct } from "./variable";
+import { Path, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
 import { errors, ErrMsg } from "./errors";
 
@@ -87,12 +87,12 @@ export function is_decimal(value: any): value is Decimal {
 }
 
 export type State = Immutable<{
-  struct: Struct;
   id: Decimal;
   active: boolean;
   created_at: Date;
   updated_at: Date;
   values: HashSet<Path>;
+  mode: "read" | "write";
 }>;
 
 export type Action =
@@ -100,7 +100,8 @@ export type Action =
   | ["active", boolean]
   | ["created_at", Date]
   | ["updated_at", Date]
-  | ["values", Path];
+  | ["values", Path]
+  | ["variable", Variable];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -126,6 +127,14 @@ export function reducer(state: Draft<State>, action: Action) {
           return it.add(action[1]);
         });
       }
+      break;
+    }
+    case "variable": {
+      state.id = action[1].id;
+      state.active = action[1].active;
+      state.created_at = action[1].created_at;
+      state.updated_at = action[1].updated_at;
+      state.values = action[1].paths;
       break;
     }
     default: {
