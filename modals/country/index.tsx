@@ -8,6 +8,8 @@ import { useImmerReducer } from "use-immer";
 import {
   Action,
   apply,
+  Ok,
+  Option,
   reducer,
   State,
   unwrap,
@@ -19,6 +21,7 @@ import { get_permissions, PathPermission } from "../../main/utils/permissions";
 import { get_variable, PathFilter } from "../../main/utils/db";
 import { Path, PathString, StrongEnum } from "../../main/utils/variable";
 import { useNavigation } from "@react-navigation/core";
+import { Immutable } from "immer";
 
 function get_shortlisted_permissions(
   permissions: HashSet<PathPermission>,
@@ -160,10 +163,29 @@ function get_writeable_paths(
   return writeable_paths;
 }
 
-// Labels(Shortlisted paths)
-// -> PathPermission(s) for shortlisted paths(subset for creation)
-// -> PathFilter(s)
-// -> Path(s)
+function get_path(
+  paths: Immutable<HashSet<Path>>,
+  path_string: PathString
+): Option<Path> {
+  for (let path of paths) {
+    if (
+      path.path[0].length === path_string[0].length &&
+      path.path[1][0] === path_string[1]
+    ) {
+      let check = true;
+      for (let [index, [field_name, _]] of path.path[0].entries()) {
+        if (path_string[0][index] !== field_name) {
+          check = false;
+          break;
+        }
+      }
+      if (check) {
+        return new Ok(path);
+      }
+    }
+  }
+  return undefined;
+}
 
 export default function Component(
   props: RootNavigatorProps<"Country">
@@ -224,6 +246,17 @@ export default function Component(
         return (
           <>
             <View>
+              {apply(get_path(state.values, [[], "name"]), (it) => {
+                if (unwrap(it)) {
+                  const path = it.value;
+                  return (
+                    <View>
+                      <Text>{path.label}</Text>
+                    </View>
+                  );
+                }
+                return undefined;
+              })}
               <Text>Create your country</Text>
               <TextInput />
             </View>
