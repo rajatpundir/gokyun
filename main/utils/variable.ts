@@ -2,10 +2,7 @@ import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { ErrMsg } from "./errors";
-
-function apply<T, U>(v: T, fx: (it: T) => U): U {
-  return fx(v);
-}
+import { apply } from "./prelude";
 
 export type PathString = [ReadonlyArray<string>, string];
 
