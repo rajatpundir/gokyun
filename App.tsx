@@ -20,7 +20,9 @@ import {
   Navigator,
   NavigatorParams as MainScreenNavigatorParams,
 } from "./components";
+
 import NotFoundScreen from "./main/NotFoundScreen";
+
 import { VariableFilter, VariablesModal } from "./main/utils/variables_modal";
 import { Struct, Variable } from "./main/utils/variable";
 
@@ -90,8 +92,6 @@ const linking: LinkingOptions<NavigatorParams> = {
 
 const Stack = createNativeStackNavigator<NavigatorParams>();
 
-// TODO:
-// Make VariablesModal work with dummy data
 export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
@@ -119,7 +119,11 @@ export default function App() {
             <Stack.Screen
               name="Country"
               component={Country}
-              options={{ title: "Create Country" }}
+              options={{
+                title: "Country",
+                headerStyle: { backgroundColor: "black" },
+                headerTintColor: "white",
+              }}
             />
             <Stack.Screen
               name="NotFound"

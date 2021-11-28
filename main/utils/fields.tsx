@@ -34,7 +34,12 @@ export function Str(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           value={value.value}
           onChangeText={(x) =>
@@ -59,7 +64,7 @@ export function Str(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -133,7 +138,7 @@ export function I_32(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -179,7 +184,7 @@ export function U_32(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -225,7 +230,7 @@ export function I_64(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -271,7 +276,7 @@ export function U_64(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -313,7 +318,7 @@ export function I_Double(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -355,7 +360,7 @@ export function U_Double(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -397,7 +402,7 @@ export function I_Decimal(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -439,7 +444,7 @@ export function U_Decimal(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -477,7 +482,7 @@ export function Bool(
       return <Switch style={[{}, style]} {...otherProps} value={value.value} />;
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -538,7 +543,7 @@ export function Date_Field(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -591,7 +596,7 @@ export function Time_Field(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }
 
@@ -677,6 +682,6 @@ export function DateTime_Field(
       );
     }
   }
-  console.log("ERROR: Invalid path for ", state.struct.name, ": ", props.path);
+  console.log("ERROR: Invalid path: ", props.path);
   return null;
 }

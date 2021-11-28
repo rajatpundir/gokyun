@@ -137,7 +137,7 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       {/* Floating button */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       <Pressable
-        onPress={() => navigation.navigate("Country", { id: new Decimal(-1) })}
+        onPress={() => navigation.navigate("Country", { id: -1 })}
         style={styles.touchableOpacityStyle}
       >
         <SimpleLineIcons name="plus" size={36} color="white" />

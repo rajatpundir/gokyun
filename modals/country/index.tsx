@@ -3,219 +3,67 @@ import { StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { Text, View } from "../../main/themed";
-import { TextInput } from "react-native";
 import { useImmerReducer } from "use-immer";
 import {
   Action,
   apply,
-  Ok,
-  Option,
+  get_labeled_path_filters,
+  get_top_writeable_paths,
+  get_writeable_paths,
   reducer,
   State,
   unwrap,
+  get_path,
 } from "../../main/utils/prelude";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { get_permissions, PathPermission } from "../../main/utils/permissions";
-import { get_variable, PathFilter } from "../../main/utils/db";
-import { Path, PathString, StrongEnum } from "../../main/utils/variable";
-import { useNavigation } from "@react-navigation/core";
-import { Immutable } from "immer";
-
-function get_shortlisted_permissions(
-  permissions: HashSet<PathPermission>,
-  labels: Array<[string, PathString]>
-): HashSet<PathPermission> {
-  let path_permissions: HashSet<PathPermission> = HashSet.of();
-  for (let [label, path] of labels) {
-    for (let permission of permissions) {
-      if (
-        permission.path[0].length === path[0].length &&
-        permission.path[1][0] === path[1]
-      ) {
-        let check = true;
-        for (let [index, field_name] of path[0].entries()) {
-          if (permission.path[0][index][0] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          path_permissions = path_permissions.add(
-            apply(permission, (it) => {
-              it.label = label;
-              return it;
-            })
-          );
-          break;
-        }
-      }
-    }
-  }
-  return path_permissions;
-}
-
-function get_labeled_path_filters(
-  permissions: HashSet<PathPermission>,
-  labels: Array<[string, PathString]>
-): Array<[string, PathFilter]> {
-  const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, labels);
-  const path_filters: Array<[string, PathFilter]> = [];
-  for (let permission of labeled_permissions) {
-    const path = apply(
-      permission.path[0].map((x) => x[0]),
-      (it) => {
-        it.push(permission.path[1][0]);
-        return it;
-      }
-    );
-    const field: StrongEnum = permission.path[1][1];
-    switch (field.type) {
-      case "str":
-      case "lstr":
-      case "clob":
-      case "i32":
-      case "u32":
-      case "i64":
-      case "u64":
-      case "idouble":
-      case "udouble":
-      case "idecimal":
-      case "udecimal":
-      case "bool":
-      case "date":
-      case "time":
-      case "timestamp": {
-        path_filters.push([
-          permission.label,
-          [path, field.type, undefined, []],
-        ]);
-        break;
-      }
-      case "other": {
-        path_filters.push([
-          permission.label,
-          [path, field.type, undefined, [], field.other],
-        ]);
-        break;
-      }
-      default: {
-        const _exhaustiveCheck: never = field;
-        return _exhaustiveCheck;
-      }
-    }
-  }
-  return path_filters;
-}
-
-function get_top_writeable_paths(
-  permissions: HashSet<PathPermission>,
-  labels: Array<[string, PathString]>
-): HashSet<Path> {
-  const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, labels);
-  let paths: HashSet<Path> = HashSet.of();
-  for (let permission of labeled_permissions) {
-    if (permission.path[0].length === 0) {
-      paths = paths.add(
-        apply(new Path(permission.label, [[], permission.path[1]]), (it) => {
-          it.writeable = true;
-          return it;
-        })
-      );
-    }
-  }
-  return paths;
-}
-
-function get_writeable_paths(
-  paths: HashSet<Path>,
-  permissions: HashSet<PathPermission>
-): HashSet<Path> {
-  let writeable_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
-    for (let permission of permissions) {
-      if (
-        permission.path[0].length === path.path[0].length &&
-        permission.path[1][0] === path.path[1][0]
-      ) {
-        let check = true;
-        for (let [index, [field_name, _]] of path.path[0].entries()) {
-          if (permission.path[0][index][0] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          writeable_paths = writeable_paths.add(
-            apply(path, (it) => {
-              it.writeable = permission.writeable;
-              return it;
-            })
-          );
-          break;
-        }
-      }
-    }
-  }
-  return writeable_paths;
-}
-
-function get_path(
-  paths: Immutable<HashSet<Path>>,
-  path_string: PathString
-): Option<Path> {
-  for (let path of paths) {
-    if (
-      path.path[0].length === path_string[0].length &&
-      path.path[1][0] === path_string[1]
-    ) {
-      let check = true;
-      for (let [index, [field_name, _]] of path.path[0].entries()) {
-        if (path_string[0][index] !== field_name) {
-          check = false;
-          break;
-        }
-      }
-      if (check) {
-        return new Ok(path);
-      }
-    }
-  }
-  return undefined;
-}
+import { get_permissions } from "../../main/utils/permissions";
+import { get_variable } from "../../main/utils/db";
+import { PathString } from "../../main/utils/variable";
+import { Str } from "../../main/utils/fields";
 
 export default function Component(
   props: RootNavigatorProps<"Country">
 ): JSX.Element {
-  const labels: Array<[string, PathString]> = [["Country Name", [[], "name"]]];
-  const used_paths: Array<PathString> = [];
-  const borrows: Array<string> = [];
   const struct = get_struct("Country");
+  const [used_paths, borrows]: [Array<PathString>, Array<string>] = [[], []];
+  const labels: Array<[string, PathString]> = [["Country Name", [[], "name"]]];
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
     active: true,
     created_at: new Date(),
     updated_at: new Date(),
     values: HashSet.of(),
-    mode: props.route.params.id === -1 ? "write" : "read",
+    mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
   });
   React.useEffect(() => {
-    const x = async () => {
+    const set_title = async (title: string) => {
+      props.navigation.setOptions({ headerTitle: title });
+    };
+    if (unwrap(struct)) {
+      if (state.mode === "write") {
+        if (state.id.equals(new Decimal(-1))) {
+          set_title("Create Country");
+        } else {
+          set_title("Update Country");
+        }
+      } else {
+        set_title("Country");
+      }
+    }
+    const update_values = async () => {
       if (unwrap(struct)) {
         const path_permissions = get_permissions(
           struct.value,
           used_paths,
           borrows
         );
-        if (props.route.params.id !== -1) {
-          // fetch values from database
+        if (!state.id.equals(-1)) {
           const result = await get_variable(
             undefined,
             struct.value,
-            new Decimal(props.route.params.id),
+            state.id as Decimal,
             true,
             get_labeled_path_filters(path_permissions, labels)
           );
@@ -236,64 +84,97 @@ export default function Component(
         }
       }
     };
-    x();
-  }, []);
+    update_values();
+  }, [state.id]);
   if (unwrap(struct)) {
-    const path_permissions = get_permissions(struct.value, used_paths, borrows);
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
-        // do whatever with values
-        return (
-          <>
-            <View>
-              {apply(get_path(state.values, [[], "name"]), (it) => {
-                if (unwrap(it)) {
-                  const path = it.value;
-                  return (
-                    <View>
-                      <Text>{path.label}</Text>
-                    </View>
-                  );
-                }
-                return undefined;
-              })}
-              <Text>Create your country</Text>
-              <TextInput />
-            </View>
-          </>
-        );
+        return create_struct(state, dispatch);
       } else {
-        // do whatever with values
-        return (
-          <>
-            <View>
-              <Text>Update your country</Text>
-              <TextInput />
-            </View>
-          </>
-        );
+        return update_struct(state, dispatch);
       }
     } else {
-      // do whatever with values
-      return (
-        <>
-          <View>
-            <Text>Read your country</Text>
-            <TextInput />
-          </View>
-        </>
-      );
+      return show_struct(state, dispatch);
     }
   }
-  const navigation = useNavigation();
-  navigation.goBack();
+  return <></>;
+}
+
+function create_struct(
+  state: State,
+  dispatch: React.Dispatch<Action>
+): JSX.Element {
   return (
-    <>
-      <View>
-        <Text>There is no such thing as a Country</Text>
-        <TextInput />
-      </View>
-    </>
+    <View style={{ flex: 1 }}>
+      {apply(get_path(state.values, [[], "name"]), (path) => {
+        if (unwrap(path)) {
+          return (
+            <View>
+              <Text>{path.value.label}</Text>
+              <Str
+                mode={"read"}
+                state={state}
+                dispatch={dispatch}
+                path={path.value}
+              />
+            </View>
+          );
+        }
+        return undefined;
+      })}
+    </View>
+  );
+}
+
+function update_struct(
+  state: State,
+  dispatch: React.Dispatch<Action>
+): JSX.Element {
+  return (
+    <View style={{ flex: 1 }}>
+      {apply(get_path(state.values, [[], "name"]), (path) => {
+        if (unwrap(path)) {
+          return (
+            <View>
+              <Text>{path.value.label}</Text>
+              <Str
+                mode={"read"}
+                state={state}
+                dispatch={dispatch}
+                path={path.value}
+              />
+            </View>
+          );
+        }
+        return undefined;
+      })}
+    </View>
+  );
+}
+
+function show_struct(
+  state: State,
+  dispatch: React.Dispatch<Action>
+): JSX.Element {
+  return (
+    <View style={{ flex: 1 }}>
+      {apply(get_path(state.values, [[], "name"]), (path) => {
+        if (unwrap(path)) {
+          return (
+            <View>
+              <Text>{path.value.label}</Text>
+              <Str
+                mode={"read"}
+                state={state}
+                dispatch={dispatch}
+                path={path.value}
+              />
+            </View>
+          );
+        }
+        return undefined;
+      })}
+    </View>
   );
 }
 
