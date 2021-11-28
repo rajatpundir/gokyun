@@ -837,7 +837,7 @@ export function DateTime_Field(
     ) {
       const [showPicker, setPicker] = useState(false);
       const [mode, setMode] = useState("date");
-      let [tempDate, setDate] = useState(new Date(value.value.getTime()));
+      let [date, setDate] = useState(new Date(value.value.getTime()));
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
@@ -868,7 +868,7 @@ export function DateTime_Field(
                   if (selectedValue !== undefined) {
                     if (mode === "date") {
                       setDate(
-                        apply(tempDate, (it) => {
+                        apply(date, (it) => {
                           it.setFullYear(selectedValue.getFullYear());
                           it.setMonth(selectedValue.getMonth());
                           it.setDate(selectedValue.getDate());
@@ -879,7 +879,7 @@ export function DateTime_Field(
                       setPicker(Platform.OS !== "ios");
                     } else {
                       setDate(
-                        apply(tempDate, (it) => {
+                        apply(date, (it) => {
                           it.setHours(selectedValue.getHours());
                           it.setMinutes(selectedValue.getMinutes());
                           it.setSeconds(selectedValue.getSeconds());
@@ -892,7 +892,7 @@ export function DateTime_Field(
                         apply(props.path, (it) => {
                           it.path[1][1] = {
                             type: "timestamp",
-                            value: new Date(tempDate.getTime()),
+                            value: new Date(date.getTime()),
                           };
                           return it;
                         }),
