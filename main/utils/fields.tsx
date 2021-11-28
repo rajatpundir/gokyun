@@ -11,7 +11,8 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Decimal from "decimal.js";
 
-import { Action, apply, State } from "./prelude";
+import { apply } from "./prelude";
+import { Action, State } from "./commons";
 import { useState } from "react";
 import { Path } from "./variable";
 
@@ -58,7 +59,15 @@ export function Str(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value}
         </Text>
       );
@@ -70,30 +79,110 @@ export function Str(
 
 export function Lstr(
   props: TextInput["props"] & Text["props"] & ComponentProps
-): JSX.Element | undefined {
+): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
-  return (
-    <Str
-      mode={props.mode}
-      state={props.state}
-      dispatch={props.dispatch}
-      path={props.path}
-    />
-  );
+  const value = props.path.path[1][1];
+  if (value.type === "lstr") {
+    if (
+      props.path.writeable &&
+      (state.id.equals(new Decimal(-1)) || props.mode === "write")
+    ) {
+      return (
+        <TextInput
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+          value={value.value}
+          onChangeText={(x) =>
+            dispatch([
+              "values",
+              apply(props.path, (it) => {
+                it.path[1][1] = {
+                  type: "lstr",
+                  value: x,
+                };
+                return it;
+              }),
+            ])
+          }
+        />
+      );
+    } else {
+      return (
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
+          {value.value}
+        </Text>
+      );
+    }
+  }
+  console.log("ERROR: Invalid path: ", props.path);
+  return null;
 }
 
 export function Clob(
   props: TextInput["props"] & Text["props"] & ComponentProps
-): JSX.Element | undefined {
+): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
-  return (
-    <Str
-      mode={props.mode}
-      state={props.state}
-      dispatch={props.dispatch}
-      path={props.path}
-    />
-  );
+  const value = props.path.path[1][1];
+  if (value.type === "clob") {
+    if (
+      props.path.writeable &&
+      (state.id.equals(new Decimal(-1)) || props.mode === "write")
+    ) {
+      return (
+        <TextInput
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+          value={value.value}
+          onChangeText={(x) =>
+            dispatch([
+              "values",
+              apply(props.path, (it) => {
+                it.path[1][1] = {
+                  type: "clob",
+                  value: x,
+                };
+                return it;
+              }),
+            ])
+          }
+        />
+      );
+    } else {
+      return (
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
+          {value.value}
+        </Text>
+      );
+    }
+  }
+  console.log("ERROR: Invalid path: ", props.path);
+  return null;
 }
 
 export function I_32(
@@ -108,7 +197,12 @@ export function I_32(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -132,7 +226,15 @@ export function I_32(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -154,7 +256,12 @@ export function U_32(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -178,7 +285,15 @@ export function U_32(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -200,7 +315,12 @@ export function I_64(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -224,7 +344,15 @@ export function I_64(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -246,7 +374,12 @@ export function U_64(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -270,7 +403,15 @@ export function U_64(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -292,7 +433,12 @@ export function I_Double(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -312,7 +458,15 @@ export function I_Double(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -334,7 +488,12 @@ export function U_Double(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -354,7 +513,15 @@ export function U_Double(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -376,7 +543,12 @@ export function I_Decimal(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -396,7 +568,15 @@ export function I_Decimal(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -418,7 +598,12 @@ export function U_Decimal(
     ) {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -438,7 +623,15 @@ export function U_Decimal(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.toString()}
         </Text>
       );
@@ -500,7 +693,15 @@ export function Date_Field(
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text style={[{}, style]} {...otherProps}>
+            <Text
+              style={[
+                {
+                  color: "white",
+                },
+                style,
+              ]}
+              {...otherProps}
+            >
               {value.value.getDate() +
                 "-" +
                 (value.value.getMonth() + 1) +
@@ -533,7 +734,15 @@ export function Date_Field(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.getDate() +
             "-" +
             (value.value.getMonth() + 1) +
@@ -561,8 +770,16 @@ export function Time_Field(
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text style={[{}, style]} {...otherProps}>
-              {value.value.getHours() + "-" + value.value.getMinutes()}
+            <Text
+              style={[
+                {
+                  color: "white",
+                },
+                style,
+              ]}
+              {...otherProps}
+            >
+              {value.value.getHours() + ":" + value.value.getMinutes()}
             </Text>
           </Pressable>
           <View>
@@ -590,8 +807,16 @@ export function Time_Field(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
-          {value.value.getHours() + "-" + value.value.getMinutes()}
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
+          {value.value.getHours() + ":" + value.value.getMinutes()}
         </Text>
       );
     }
@@ -612,56 +837,68 @@ export function DateTime_Field(
     ) {
       const [showPicker, setPicker] = useState(false);
       const [mode, setMode] = useState("date");
-      const [tempDate, setTempDate] = useState(new Date(value.value.getTime()));
-      const [tempTime, setTempTime] = useState(
-        new Date(new Date(value.value.getTime()))
-      );
+      let [tempDate, setDate] = useState(new Date(value.value.getTime()));
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text style={[{}, style]} {...otherProps}>
+            <Text
+              style={[
+                {
+                  color: "white",
+                },
+                style,
+              ]}
+              {...otherProps}
+            >
               {value.value.getDate() +
                 "-" +
                 (value.value.getMonth() + 1) +
                 "-" +
                 value.value.getFullYear()}{" "}
-              {value.value.getHours() + "-" + value.value.getMinutes()}
+              {value.value.getHours() + ":" + value.value.getMinutes()}
             </Text>
           </Pressable>
           <View>
             {showPicker && (
               <DateTimePicker
-                mode={"time"}
+                mode={mode as any}
                 value={value.value}
                 onChange={(_temp: any, selectedValue: Date | undefined) => {
                   setPicker(Platform.OS === "ios");
-                  if (mode == "date") {
-                    const currentDate = selectedValue || (value.value as Date);
-                    setTempDate(currentDate);
-                    setMode("time");
-                    setPicker(Platform.OS !== "ios");
-                  } else {
-                    const selectedTime = selectedValue || (value.value as Date);
-                    setTempTime(selectedTime);
-                    setPicker(Platform.OS === "ios");
-                    setMode("date");
-                    dispatch([
-                      "values",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "timestamp",
-                          value: new Date(
-                            tempDate.getFullYear(),
-                            tempDate.getMonth(),
-                            tempDate.getDate(),
-                            tempTime.getHours(),
-                            tempTime.getMinutes(),
-                            tempTime.getSeconds()
-                          ),
-                        };
-                        return it;
-                      }),
-                    ]);
+                  if (selectedValue !== undefined) {
+                    if (mode === "date") {
+                      setDate(
+                        apply(tempDate, (it) => {
+                          it.setFullYear(selectedValue.getFullYear());
+                          it.setMonth(selectedValue.getMonth());
+                          it.setDate(selectedValue.getDate());
+                          return it;
+                        })
+                      );
+                      setMode("time");
+                      setPicker(Platform.OS !== "ios");
+                    } else {
+                      setDate(
+                        apply(tempDate, (it) => {
+                          it.setHours(selectedValue.getHours());
+                          it.setMinutes(selectedValue.getMinutes());
+                          it.setSeconds(selectedValue.getSeconds());
+                          it.setMilliseconds(selectedValue.getMilliseconds());
+                          return it;
+                        })
+                      );
+                      dispatch([
+                        "values",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: "timestamp",
+                            value: new Date(tempDate.getTime()),
+                          };
+                          return it;
+                        }),
+                      ]);
+                      setMode("date");
+                    }
                   }
                 }}
               />
@@ -671,13 +908,21 @@ export function DateTime_Field(
       );
     } else {
       return (
-        <Text style={[{}, style]} {...otherProps}>
+        <Text
+          style={[
+            {
+              color: "white",
+            },
+            style,
+          ]}
+          {...otherProps}
+        >
           {value.value.getDate() +
             "-" +
             (value.value.getMonth() + 1) +
             "-" +
             value.value.getFullYear()}{" "}
-          {value.value.getHours() + "-" + value.value.getMinutes()}
+          {value.value.getHours() + ":" + value.value.getMinutes()}
         </Text>
       );
     }

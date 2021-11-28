@@ -26,7 +26,7 @@ import NotFoundScreen from "./main/NotFoundScreen";
 import { VariableFilter, VariablesModal } from "./main/utils/variables_modal";
 import { Struct, Variable } from "./main/utils/variable";
 
-import Country from "./modals/country";
+import Test from "./modals/test";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
@@ -51,7 +51,7 @@ export type NavigatorParams = {
       set_selected: (selected: Decimal) => void
     ) => JSX.Element;
   };
-  Country: {
+  Test: {
     id: number;
   };
 };
@@ -117,10 +117,10 @@ export default function App() {
               options={{ title: "Select your Variable!" }}
             />
             <Stack.Screen
-              name="Country"
-              component={Country}
+              name="Test"
+              component={Test}
               options={{
-                title: "Country",
+                title: "Test",
                 headerStyle: { backgroundColor: "black" },
                 headerTintColor: "white",
               }}

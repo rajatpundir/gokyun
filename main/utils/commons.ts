@@ -24,6 +24,8 @@ export type Action =
   | ["variable", Variable];
 
 export function reducer(state: Draft<State>, action: Action) {
+  console.log("---");
+  console.log(action);
   switch (action[0]) {
     case "id": {
       state.id = action[1];
