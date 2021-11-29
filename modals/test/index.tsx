@@ -2,7 +2,7 @@ import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { Text, View } from "../../main/themed";
+import { View } from "../../main/themed";
 import { useImmerReducer } from "use-immer";
 import {
   State,
@@ -11,7 +11,6 @@ import {
   get_labeled_path_filters,
   get_top_writeable_paths,
   get_writeable_paths,
-  get_path,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
@@ -19,7 +18,7 @@ import { HashSet } from "prelude-ts";
 import { get_permissions, log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
 import { PathString } from "../../main/utils/variable";
-import { Field } from "../../main/utils/fields";
+import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
 // Put some checks on Str, Lstr and Clob
@@ -111,315 +110,111 @@ export default function Component(
   if (unwrap(struct)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
-        return create_struct(state, dispatch);
+        return create_struct({ state, dispatch });
       } else {
-        return update_struct(state, dispatch);
+        return update_struct({ state, dispatch });
       }
     } else {
-      return show_struct(state, dispatch);
+      return show_struct({ state, dispatch });
     }
   }
   return <></>;
 }
 
-function create_struct(
-  state: State,
-  dispatch: React.Dispatch<Action>
-): JSX.Element {
+function create_struct(reducer: {
+  state: State;
+  dispatch: React.Dispatch<Action>;
+}): JSX.Element {
   return (
     <ScrollView style={{ flex: 1 }}>
-      {apply(get_path(state.values, [[], "str"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "lstr"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "clob"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "u32"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "i32"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "u64"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "i64"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "udouble"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "idouble"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "udecimal"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "idecimal"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "bool"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "date"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "time"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
-      {apply(get_path(state.values, [[], "timestamp"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
+      <View>
+        <Label {...reducer} path={[[], "str"]} />
+        <Field {...reducer} path={[[], "str"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "lstr"]} />
+        <Field {...reducer} path={[[], "lstr"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "clob"]} />
+        <Field {...reducer} path={[[], "clob"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "u32"]} />
+        <Field {...reducer} path={[[], "u32"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "i32"]} />
+        <Field {...reducer} path={[[], "i32"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "u64"]} />
+        <Field {...reducer} path={[[], "u64"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "i64"]} />
+        <Field {...reducer} path={[[], "i64"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "udouble"]} />
+        <Field {...reducer} path={[[], "udouble"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "idouble"]} />
+        <Field {...reducer} path={[[], "idouble"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "udecimal"]} />
+        <Field {...reducer} path={[[], "udecimal"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "idecimal"]} />
+        <Field {...reducer} path={[[], "idecimal"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "bool"]} />
+        <Field {...reducer} path={[[], "bool"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "date"]} />
+        <Field {...reducer} path={[[], "date"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "time"]} />
+        <Field {...reducer} path={[[], "time"]} />
+      </View>
+      <View>
+        <Label {...reducer} path={[[], "timestamp"]} />
+        <Field {...reducer} path={[[], "timestamp"]} />
+      </View>
     </ScrollView>
   );
 }
 
-function update_struct(
-  state: State,
-  dispatch: React.Dispatch<Action>
-): JSX.Element {
+function update_struct(reducer: {
+  state: State;
+  dispatch: React.Dispatch<Action>;
+}): JSX.Element {
   return (
     <View style={{ flex: 1 }}>
-      {apply(get_path(state.values, [[], "str"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
+      <View>
+        <Label {...reducer} path={[[], "str"]} />
+        <Field {...reducer} path={[[], "str"]} />
+      </View>
     </View>
   );
 }
 
-function show_struct(
-  state: State,
-  dispatch: React.Dispatch<Action>
-): JSX.Element {
+function show_struct(reducer: {
+  state: State;
+  dispatch: React.Dispatch<Action>;
+}): JSX.Element {
   return (
     <View style={{ flex: 1 }}>
-      {apply(get_path(state.values, [[], "str"]), (path) => {
-        if (unwrap(path)) {
-          return (
-            <View>
-              <Text>{path.value.label}</Text>
-              <Field
-                mode={"read"}
-                state={state}
-                dispatch={dispatch}
-                path={path.value}
-              />
-            </View>
-          );
-        }
-        return undefined;
-      })}
+      <View>
+        <Label {...reducer} path={[[], "str"]} />
+        <Field {...reducer} path={[[], "str"]} />
+      </View>
     </View>
   );
 }

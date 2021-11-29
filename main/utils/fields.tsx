@@ -11,10 +11,12 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Decimal from "decimal.js";
 import moment from "moment";
 
-import { apply } from "./prelude";
+import { apply, unwrap, Option, Ok } from "./prelude";
 import { Action, State } from "./commons";
 import { useState } from "react";
-import { Path } from "./variable";
+import { Path, PathString } from "./variable";
+import { HashSet } from "prelude-ts";
+import { Immutable } from "immer";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -910,172 +912,320 @@ function Timestamp_Field(
   return null;
 }
 
-export function Field(
-  props: ComponentProps & {
-    options?:
-      | ["text", TextInput["props"] & Text["props"]]
-      | ["date", Text["props"]]
-      | ["bool", Switch["props"]];
-  }
-): JSX.Element | null {
-  const field_struct_name = props.path.path[1][1].type;
-  switch (field_struct_name) {
-    case "str": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <Str {...props} {...props.options[1]} />;
+function get_path(
+  paths: Immutable<HashSet<Path>>,
+  path_string: PathString
+): Option<Path> {
+  for (let path of paths) {
+    if (
+      path.path[0].length === path_string[0].length &&
+      path.path[1][0] === path_string[1]
+    ) {
+      let check = true;
+      for (let [index, [field_name, _]] of path.path[0].entries()) {
+        if (path_string[0][index] !== field_name) {
+          check = false;
+          break;
+        }
       }
-      return <Str {...props} />;
-    }
-    case "lstr": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <Lstr {...props} {...props.options[1]} />;
+      if (check) {
+        return new Ok(path);
       }
-      return <Lstr {...props} />;
-    }
-    case "clob": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <Clob {...props} {...props.options[1]} />;
-      }
-      return <Clob {...props} />;
-    }
-    case "u32": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <U_32 {...props} {...props.options[1]} />;
-      }
-      return <U_32 {...props} />;
-    }
-    case "i32": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <I_32 {...props} {...props.options[1]} />;
-      }
-      return <I_32 {...props} />;
-    }
-    case "u64": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <U_64 {...props} {...props.options[1]} />;
-      }
-      return <U_64 {...props} />;
-    }
-    case "i64": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <I_64 {...props} {...props.options[1]} />;
-      }
-      return <I_64 {...props} />;
-    }
-    case "udouble": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <U_Double {...props} {...props.options[1]} />;
-      }
-      return <U_Double {...props} />;
-    }
-    case "idouble": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <I_Double {...props} {...props.options[1]} />;
-      }
-      return <I_Double {...props} />;
-    }
-    case "udecimal": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <U_Decimal {...props} {...props.options[1]} />;
-      }
-      return <U_Decimal {...props} />;
-    }
-    case "idecimal": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "text"
-      ) {
-        return <I_Decimal {...props} {...props.options[1]} />;
-      }
-      return <I_Decimal {...props} />;
-    }
-    case "bool": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "bool"
-      ) {
-        return <Bool {...props} {...props.options[1]} />;
-      }
-      return <Bool {...props} />;
-    }
-    case "date": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "date"
-      ) {
-        return <Date_Field {...props} {...props.options[1]} />;
-      }
-      return <Date_Field {...props} />;
-    }
-    case "time": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "date"
-      ) {
-        return <Time_Field {...props} {...props.options[1]} />;
-      }
-      return <Time_Field {...props} />;
-    }
-    case "timestamp": {
-      if (
-        props.options !== null &&
-        props.options !== undefined &&
-        props.options[0] === "date"
-      ) {
-        return <Timestamp_Field {...props} {...props.options[1]} />;
-      }
-      return <Timestamp_Field {...props} />;
-    }
-    case "other": {
-      return <></>;
-    }
-    default: {
-      const _exhaustiveCheck: never = field_struct_name;
-      return _exhaustiveCheck;
     }
   }
+  return undefined;
+}
+
+export function Label(props: {
+  state: State;
+  path: PathString;
+}): JSX.Element | null {
+  return apply(get_path(props.state.values, props.path), (path) => {
+    if (unwrap(path)) {
+      return <Text>{path.value.label}</Text>;
+    }
+    return null;
+  });
+}
+
+export function Field(props: {
+  state: State;
+  dispatch: React.Dispatch<Action>;
+  path: PathString;
+  mode?: "read" | "write";
+  options?:
+    | ["text", TextInput["props"] & Text["props"]]
+    | ["date", Text["props"]]
+    | ["bool", Switch["props"]];
+}): JSX.Element | null {
+  return apply(get_path(props.state.values, props.path), (path) => {
+    if (unwrap(path)) {
+      const field_struct_name = path.value.path[1][1].type;
+      switch (field_struct_name) {
+        case "str": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <Str
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Str mode={"read"} {...props} path={path.value} />;
+        }
+        case "lstr": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <Lstr
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Lstr mode={"read"} {...props} path={path.value} />;
+        }
+        case "clob": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <Clob
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Clob mode={"read"} {...props} path={path.value} />;
+        }
+        case "u32": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <U_32
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <U_32 mode={"read"} {...props} path={path.value} />;
+        }
+        case "i32": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <I_32
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <I_32 mode={"read"} {...props} path={path.value} />;
+        }
+        case "u64": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <U_64
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <U_64 mode={"read"} {...props} path={path.value} />;
+        }
+        case "i64": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <I_64
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <I_64 mode={"read"} {...props} path={path.value} />;
+        }
+        case "udouble": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <U_Double
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <U_Double mode={"read"} {...props} path={path.value} />;
+        }
+        case "idouble": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <I_Double
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <I_Double mode={"read"} {...props} path={path.value} />;
+        }
+        case "udecimal": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <U_Decimal
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <U_Decimal mode={"read"} {...props} path={path.value} />;
+        }
+        case "idecimal": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "text"
+          ) {
+            return (
+              <I_Decimal
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <I_Decimal mode={"read"} {...props} path={path.value} />;
+        }
+        case "bool": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "bool"
+          ) {
+            return (
+              <Bool
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Bool mode={"read"} {...props} path={path.value} />;
+        }
+        case "date": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "date"
+          ) {
+            return (
+              <Date_Field
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Date_Field mode={"read"} {...props} path={path.value} />;
+        }
+        case "time": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "date"
+          ) {
+            return (
+              <Time_Field
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Time_Field mode={"read"} {...props} path={path.value} />;
+        }
+        case "timestamp": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "date"
+          ) {
+            return (
+              <Timestamp_Field
+                mode={"read"}
+                {...props}
+                path={path.value}
+                {...props.options[1]}
+              />
+            );
+          }
+          return <Timestamp_Field mode={"read"} {...props} path={path.value} />;
+        }
+        case "other": {
+          return <></>;
+        }
+        default: {
+          const _exhaustiveCheck: never = field_struct_name;
+          return _exhaustiveCheck;
+        }
+      }
+    }
+    return null;
+  });
 }
