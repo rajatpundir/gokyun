@@ -3,7 +3,7 @@ import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
 import { PathFilter } from "./db";
 import { PathPermission } from "./permissions";
-import { apply, Ok, Option } from "./prelude";
+import { apply } from "./prelude";
 import { Path, Variable, PathString, StrongEnum } from "./variable";
 
 export type State = Immutable<{

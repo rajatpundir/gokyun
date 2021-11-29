@@ -21,6 +21,7 @@ import { PathString } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
+// use useContext()
 // Put some checks on Str, Lstr and Clob
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
@@ -128,64 +129,64 @@ function create_struct(reducer: {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View>
-        <Label {...reducer} path={[[], "str"]} />
-        <Field {...reducer} path={[[], "str"]} />
+        <Label {...reducer} path={"str"} />
+        <Field {...reducer} path={"str"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "lstr"]} />
-        <Field {...reducer} path={[[], "lstr"]} />
+        <Label {...reducer} path={"lstr"} />
+        <Field {...reducer} path={"lstr"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "clob"]} />
-        <Field {...reducer} path={[[], "clob"]} />
+        <Label {...reducer} path={"clob"} />
+        <Field {...reducer} path={"clob"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "u32"]} />
-        <Field {...reducer} path={[[], "u32"]} />
+        <Label {...reducer} path={"u32"} />
+        <Field {...reducer} path={"u32"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "i32"]} />
-        <Field {...reducer} path={[[], "i32"]} />
+        <Label {...reducer} path={"i32"} />
+        <Field {...reducer} path={"i32"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "u64"]} />
-        <Field {...reducer} path={[[], "u64"]} />
+        <Label {...reducer} path={"u64"} />
+        <Field {...reducer} path={"u64"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "i64"]} />
-        <Field {...reducer} path={[[], "i64"]} />
+        <Label {...reducer} path={"i64"} />
+        <Field {...reducer} path={"i64"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "udouble"]} />
-        <Field {...reducer} path={[[], "udouble"]} />
+        <Label {...reducer} path={"udouble"} />
+        <Field {...reducer} path={"udouble"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "idouble"]} />
-        <Field {...reducer} path={[[], "idouble"]} />
+        <Label {...reducer} path={"idouble"} />
+        <Field {...reducer} path={"idouble"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "udecimal"]} />
-        <Field {...reducer} path={[[], "udecimal"]} />
+        <Label {...reducer} path={"udecimal"} />
+        <Field {...reducer} path={"udecimal"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "idecimal"]} />
-        <Field {...reducer} path={[[], "idecimal"]} />
+        <Label {...reducer} path={"idecimal"} />
+        <Field {...reducer} path={"idecimal"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "bool"]} />
-        <Field {...reducer} path={[[], "bool"]} />
+        <Label {...reducer} path={"bool"} />
+        <Field {...reducer} path={"bool"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "date"]} />
-        <Field {...reducer} path={[[], "date"]} />
+        <Label {...reducer} path={"date"} />
+        <Field {...reducer} path={"date"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "time"]} />
-        <Field {...reducer} path={[[], "time"]} />
+        <Label {...reducer} path={"time"} />
+        <Field {...reducer} path={"time"} />
       </View>
       <View>
-        <Label {...reducer} path={[[], "timestamp"]} />
-        <Field {...reducer} path={[[], "timestamp"]} />
+        <Label {...reducer} path={"timestamp"} />
+        <Field {...reducer} path={"timestamp"} />
       </View>
     </ScrollView>
   );
@@ -198,8 +199,8 @@ function update_struct(reducer: {
   return (
     <View style={{ flex: 1 }}>
       <View>
-        <Label {...reducer} path={[[], "str"]} />
-        <Field {...reducer} path={[[], "str"]} />
+        <Label {...reducer} path={"str"} />
+        <Field {...reducer} path={"str"} />
       </View>
     </View>
   );
@@ -212,8 +213,8 @@ function show_struct(reducer: {
   return (
     <View style={{ flex: 1 }}>
       <View>
-        <Label {...reducer} path={[[], "str"]} />
-        <Field {...reducer} path={[[], "str"]} />
+        <Label {...reducer} path={"str"} />
+        <Field {...reducer} path={"str"} />
       </View>
     </View>
   );

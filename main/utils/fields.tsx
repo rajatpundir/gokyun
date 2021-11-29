@@ -11,6 +11,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Decimal from "decimal.js";
 import moment from "moment";
 
+import { Text as ThemedText } from "../../main/themed";
 import { apply, unwrap, Option, Ok } from "./prelude";
 import { Action, State } from "./commons";
 import { useState } from "react";
@@ -938,11 +939,20 @@ function get_path(
 
 export function Label(props: {
   state: State;
-  path: PathString;
+  path: PathString | string;
 }): JSX.Element | null {
-  return apply(get_path(props.state.values, props.path), (path) => {
+  const path_string: PathString = apply(undefined, () => {
+    if (typeof props.path === "string") {
+      return [[], props.path];
+    } else {
+      return props.path;
+    }
+  });
+  console.log(path_string);
+  return apply(get_path(props.state.values, path_string), (path) => {
+    console.log(path?.value.label);
     if (unwrap(path)) {
-      return <Text>{path.value.label}</Text>;
+      return <ThemedText>{path.value.label}</ThemedText>;
     }
     return null;
   });
@@ -951,14 +961,21 @@ export function Label(props: {
 export function Field(props: {
   state: State;
   dispatch: React.Dispatch<Action>;
-  path: PathString;
+  path: PathString | string;
   mode?: "read" | "write";
   options?:
     | ["text", TextInput["props"] & Text["props"]]
     | ["date", Text["props"]]
     | ["bool", Switch["props"]];
 }): JSX.Element | null {
-  return apply(get_path(props.state.values, props.path), (path) => {
+  const path_string: PathString = apply(undefined, () => {
+    if (typeof props.path === "string") {
+      return [[], props.path];
+    } else {
+      return props.path;
+    }
+  });
+  return apply(get_path(props.state.values, path_string), (path) => {
     if (unwrap(path)) {
       const field_struct_name = path.value.path[1][1].type;
       switch (field_struct_name) {
