@@ -7,9 +7,9 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Decimal from "decimal.js";
+import moment from "moment";
 
 import { apply } from "./prelude";
 import { Action, State } from "./commons";
@@ -23,7 +23,7 @@ type ComponentProps = {
   path: Path;
 };
 
-export function Str(
+function Str(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -77,7 +77,7 @@ export function Str(
   return null;
 }
 
-export function Lstr(
+function Lstr(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -131,7 +131,7 @@ export function Lstr(
   return null;
 }
 
-export function Clob(
+function Clob(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -185,7 +185,7 @@ export function Clob(
   return null;
 }
 
-export function I_32(
+function I_32(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -244,7 +244,7 @@ export function I_32(
   return null;
 }
 
-export function U_32(
+function U_32(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -303,7 +303,7 @@ export function U_32(
   return null;
 }
 
-export function I_64(
+function I_64(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -362,7 +362,7 @@ export function I_64(
   return null;
 }
 
-export function U_64(
+function U_64(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -421,7 +421,7 @@ export function U_64(
   return null;
 }
 
-export function I_Double(
+function I_Double(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -476,7 +476,7 @@ export function I_Double(
   return null;
 }
 
-export function U_Double(
+function U_Double(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -531,7 +531,7 @@ export function U_Double(
   return null;
 }
 
-export function I_Decimal(
+function I_Decimal(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -586,7 +586,7 @@ export function I_Decimal(
   return null;
 }
 
-export function U_Decimal(
+function U_Decimal(
   props: TextInput["props"] & Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -642,9 +642,7 @@ export function U_Decimal(
 }
 
 // TODO. Add a expo-checkbox based implemention as well
-export function Bool(
-  props: Switch["props"] & ComponentProps
-): JSX.Element | null {
+function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "bool") {
@@ -679,9 +677,7 @@ export function Bool(
   return null;
 }
 
-export function Date_Field(
-  props: Text["props"] & ComponentProps
-): JSX.Element | null {
+function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "date") {
@@ -702,11 +698,7 @@ export function Date_Field(
               ]}
               {...otherProps}
             >
-              {value.value.getDate() +
-                "-" +
-                (value.value.getMonth() + 1) +
-                "-" +
-                value.value.getFullYear()}
+              {moment(value.value).format("Do MMM YYYY")}
             </Text>
           </Pressable>
           <View>
@@ -743,11 +735,7 @@ export function Date_Field(
           ]}
           {...otherProps}
         >
-          {value.value.getDate() +
-            "-" +
-            (value.value.getMonth() + 1) +
-            "-" +
-            value.value.getFullYear()}
+          {moment(value.value).format("MMM Do YYYY")}
         </Text>
       );
     }
@@ -756,9 +744,7 @@ export function Date_Field(
   return null;
 }
 
-export function Time_Field(
-  props: Text["props"] & ComponentProps
-): JSX.Element | null {
+function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "time") {
@@ -779,7 +765,7 @@ export function Time_Field(
               ]}
               {...otherProps}
             >
-              {value.value.getHours() + ":" + value.value.getMinutes()}
+              {moment(value.value).format("h:mm A")}
             </Text>
           </Pressable>
           <View>
@@ -816,7 +802,7 @@ export function Time_Field(
           ]}
           {...otherProps}
         >
-          {value.value.getHours() + ":" + value.value.getMinutes()}
+          {moment(value.value).format("h:mm A")}
         </Text>
       );
     }
@@ -825,7 +811,7 @@ export function Time_Field(
   return null;
 }
 
-export function DateTime_Field(
+function Timestamp_Field(
   props: Text["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
@@ -850,18 +836,13 @@ export function DateTime_Field(
               ]}
               {...otherProps}
             >
-              {value.value.getDate() +
-                "-" +
-                (value.value.getMonth() + 1) +
-                "-" +
-                value.value.getFullYear()}{" "}
-              {value.value.getHours() + ":" + value.value.getMinutes()}
+              {moment(value.value).format("Do MMM YYYY, h:mm A")}
             </Text>
           </Pressable>
           <View>
             {showPicker && (
               <DateTimePicker
-                mode={mode as any}
+                mode={mode as "date" | "time"}
                 value={value.value}
                 onChange={(_temp: any, selectedValue: Date | undefined) => {
                   setPicker(Platform.OS === "ios");
@@ -899,6 +880,9 @@ export function DateTime_Field(
                       ]);
                       setMode("date");
                     }
+                  } else {
+                    setDate(new Date(value.value.getTime()));
+                    setMode("date");
                   }
                 }}
               />
@@ -917,16 +901,181 @@ export function DateTime_Field(
           ]}
           {...otherProps}
         >
-          {value.value.getDate() +
-            "-" +
-            (value.value.getMonth() + 1) +
-            "-" +
-            value.value.getFullYear()}{" "}
-          {value.value.getHours() + ":" + value.value.getMinutes()}
+          {moment(value.value).format("Do MMM YYYY, h:mm A")}
         </Text>
       );
     }
   }
   console.log("ERROR: Invalid path: ", props.path);
   return null;
+}
+
+export function Field(
+  props: ComponentProps & {
+    options?:
+      | ["text", TextInput["props"] & Text["props"]]
+      | ["date", Text["props"]]
+      | ["bool", Switch["props"]];
+  }
+): JSX.Element | null {
+  const field_struct_name = props.path.path[1][1].type;
+  switch (field_struct_name) {
+    case "str": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <Str {...props} {...props.options[1]} />;
+      }
+      return <Str {...props} />;
+    }
+    case "lstr": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <Lstr {...props} {...props.options[1]} />;
+      }
+      return <Lstr {...props} />;
+    }
+    case "clob": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <Clob {...props} {...props.options[1]} />;
+      }
+      return <Clob {...props} />;
+    }
+    case "u32": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <U_32 {...props} {...props.options[1]} />;
+      }
+      return <U_32 {...props} />;
+    }
+    case "i32": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <I_32 {...props} {...props.options[1]} />;
+      }
+      return <I_32 {...props} />;
+    }
+    case "u64": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <U_64 {...props} {...props.options[1]} />;
+      }
+      return <U_64 {...props} />;
+    }
+    case "i64": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <I_64 {...props} {...props.options[1]} />;
+      }
+      return <I_64 {...props} />;
+    }
+    case "udouble": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <U_Double {...props} {...props.options[1]} />;
+      }
+      return <U_Double {...props} />;
+    }
+    case "idouble": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <I_Double {...props} {...props.options[1]} />;
+      }
+      return <I_Double {...props} />;
+    }
+    case "udecimal": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <U_Decimal {...props} {...props.options[1]} />;
+      }
+      return <U_Decimal {...props} />;
+    }
+    case "idecimal": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "text"
+      ) {
+        return <I_Decimal {...props} {...props.options[1]} />;
+      }
+      return <I_Decimal {...props} />;
+    }
+    case "bool": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "bool"
+      ) {
+        return <Bool {...props} {...props.options[1]} />;
+      }
+      return <Bool {...props} />;
+    }
+    case "date": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "date"
+      ) {
+        return <Date_Field {...props} {...props.options[1]} />;
+      }
+      return <Date_Field {...props} />;
+    }
+    case "time": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "date"
+      ) {
+        return <Time_Field {...props} {...props.options[1]} />;
+      }
+      return <Time_Field {...props} />;
+    }
+    case "timestamp": {
+      if (
+        props.options !== null &&
+        props.options !== undefined &&
+        props.options[0] === "date"
+      ) {
+        return <Timestamp_Field {...props} {...props.options[1]} />;
+      }
+      return <Timestamp_Field {...props} />;
+    }
+    case "other": {
+      return <></>;
+    }
+    default: {
+      const _exhaustiveCheck: never = field_struct_name;
+      return _exhaustiveCheck;
+    }
+  }
 }

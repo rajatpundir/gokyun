@@ -5,12 +5,12 @@ import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { Text, View } from "../../main/themed";
 import { useImmerReducer } from "use-immer";
 import {
+  State,
   Action,
+  reducer,
   get_labeled_path_filters,
   get_top_writeable_paths,
   get_writeable_paths,
-  reducer,
-  State,
   get_path,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
@@ -19,25 +19,13 @@ import { HashSet } from "prelude-ts";
 import { get_permissions, log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
 import { PathString } from "../../main/utils/variable";
-import {
-  Bool,
-  Clob,
-  I_32,
-  I_64,
-  I_Decimal,
-  I_Double,
-  Lstr,
-  Str,
-  U_32,
-  U_64,
-  U_Decimal,
-  U_Double,
-  Date_Field,
-  Time_Field,
-  DateTime_Field,
-} from "../../main/utils/fields";
+import { Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
+// Put some checks on Str, Lstr and Clob
+// Push some users into DB
+// Get user selected to return a variable along with requested paths
+// Complete testing Test
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
@@ -145,7 +133,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Str
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -161,7 +149,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Lstr
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -177,7 +165,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Clob
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -193,7 +181,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <U_32
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -209,7 +197,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <I_32
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -225,7 +213,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <U_64
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -241,7 +229,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <I_64
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -257,7 +245,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <U_Double
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -273,7 +261,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <I_Double
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -289,7 +277,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <U_Decimal
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -305,7 +293,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <I_Decimal
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -321,7 +309,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Bool
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -337,7 +325,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Date_Field
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -353,7 +341,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Time_Field
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -369,7 +357,7 @@ function create_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <DateTime_Field
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -395,7 +383,7 @@ function update_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Str
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}
@@ -421,7 +409,7 @@ function show_struct(
           return (
             <View>
               <Text>{path.value.label}</Text>
-              <Str
+              <Field
                 mode={"read"}
                 state={state}
                 dispatch={dispatch}

@@ -30,6 +30,7 @@
     "expo-status-bar": "~1.1.0",
     "expo-web-browser": "~10.0.3",
     "immer": "^9.0.6",
+    "moment": "^2.29.1",
     "mustache": "^4.2.0",
     "prelude-ts": "^1.0.3",
     "react": "17.0.1",
