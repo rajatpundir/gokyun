@@ -21,8 +21,7 @@ import { PathString } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// use useContext()
-// Put some checks on Str, Lstr and Clob
+// Test triggers
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
 // Complete testing Test

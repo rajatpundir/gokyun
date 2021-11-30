@@ -87,7 +87,32 @@ const schema: Record<
         "user",
       ],
     },
-    triggers: {},
+    triggers: {
+      add_something: {
+        event: ["after_creation", "after_update"],
+        monitor: [
+          [[], "u32"],
+          [[], "u64"],
+        ],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [[], "i64"],
+              new NumberArithmeticExpression(
+                new Add<ToNum>([
+                  new Num(1),
+                  [
+                    new DotExpression(new Dot(["u32"])),
+                    new DotExpression(new Dot(["u64"])),
+                  ],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+    },
     checks: {},
   },
   Product_Category: {

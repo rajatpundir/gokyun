@@ -52,7 +52,7 @@ function Str(
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "str",
-                  value: x,
+                  value: x.substring(0, 256),
                 };
                 return it;
               }),
@@ -106,7 +106,7 @@ function Lstr(
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "lstr",
-                  value: x,
+                  value: x.substring(0, 1024),
                 };
                 return it;
               }),

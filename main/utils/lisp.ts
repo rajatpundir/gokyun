@@ -7,8 +7,10 @@ import {
   CustomError,
   fold,
   fold_prev,
+  apply,
 } from "./prelude";
 import { ErrMsg, errors } from "./errors";
+import { PathString } from "./variable";
 
 type LispResult = Num | Deci | Text | Bool;
 
@@ -33,6 +35,7 @@ abstract class ToValue {
   abstract get_result(
     symbols: Readonly<Record<string, Symbol>>
   ): Result<LispResult>;
+  abstract get_paths(): Array<PathString>;
   abstract serialize(): any;
 }
 
@@ -84,6 +87,10 @@ export class Num implements ToNum, ToDeci, ToText {
     return new Ok(new Text(this.value.toString()));
   }
 
+  get_paths(): Array<PathString> {
+    return [];
+  }
+
   serialize(): any {
     return this.value;
   }
@@ -120,6 +127,10 @@ export class Deci implements ToNum, ToDeci, ToText {
     return new Ok(new Text(this.value.toString()));
   }
 
+  get_paths(): Array<PathString> {
+    return [];
+  }
+
   serialize(): any {
     return this.value;
   }
@@ -146,6 +157,10 @@ export class Text implements ToText {
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
     return new Ok(new Text(this.value));
+  }
+
+  get_paths(): Array<PathString> {
+    return [];
   }
 
   serialize(): any {
@@ -178,6 +193,10 @@ export class Bool implements ToBoolean, ToText {
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
     return new Ok(new Text(String(this.value)));
+  }
+
+  get_paths(): Array<PathString> {
+    return [];
   }
 
   serialize(): any {
@@ -388,6 +407,16 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
     }
   }
 
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      for (let expr of this.value.value[1]) {
+        it = it.concat(expr.get_paths());
+      }
+      return it;
+    });
+  }
+
   serialize(): any {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
@@ -567,6 +596,16 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
       const _exhaustiveCheck: never = this.value;
       return _exhaustiveCheck;
     }
+  }
+
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      for (let expr of this.value.value[1]) {
+        it = it.concat(expr.get_paths());
+      }
+      return it;
+    });
   }
 
   serialize(): any {
@@ -855,6 +894,17 @@ export class NumberComparatorExpression implements ToBoolean {
     }
   }
 
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      it = it.concat(this.value.value[1].get_paths());
+      for (let expr of this.value.value[2]) {
+        it = it.concat(expr.get_paths());
+      }
+      return it;
+    });
+  }
+
   serialize(): any {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
@@ -1093,6 +1143,17 @@ export class DecimalComparatorExpression implements ToBoolean {
       const _exhaustiveCheck: never = this.value;
       return _exhaustiveCheck;
     }
+  }
+
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      it = it.concat(this.value.value[1].get_paths());
+      for (let expr of this.value.value[2]) {
+        it = it.concat(expr.get_paths());
+      }
+      return it;
+    });
   }
 
   serialize(): any {
@@ -1335,6 +1396,17 @@ export class TextComparatorExpression implements ToBoolean {
     }
   }
 
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      it = it.concat(this.value.value[1].get_paths());
+      for (let expr of this.value.value[2]) {
+        it = it.concat(expr.get_paths());
+      }
+      return it;
+    });
+  }
+
   serialize(): any {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
@@ -1508,6 +1580,17 @@ export class LogicalBinaryExpression implements ToBoolean {
     }
   }
 
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      it = it.concat(this.value.value[1].get_paths());
+      for (let expr of this.value.value[2]) {
+        it = it.concat(expr.get_paths());
+      }
+      return it;
+    });
+  }
+
   serialize(): any {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
@@ -1595,6 +1678,10 @@ export class LogicalUnaryExpression implements ToBoolean {
       return new Ok(new Bool(!v.value.value));
     }
     return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+  }
+
+  get_paths(): Array<PathString> {
+    return this.value.value.get_paths();
   }
 
   serialize(): any {
@@ -1793,6 +1880,18 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
       return otherwise;
     }
     return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+  }
+
+  get_paths(): Array<PathString> {
+    return apply([] as Array<PathString>, (it) => {
+      it = it.concat(this.value.value[0].get_paths());
+      for (let expr of this.value.value[1]) {
+        it = it.concat(expr[0].get_paths());
+        it = it.concat(expr[1].get_paths());
+      }
+      it = it.concat(this.value.value[2].get_paths());
+      return it;
+    });
   }
 
   serialize(): any {
@@ -2084,6 +2183,15 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
       }
     }
     return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+  }
+
+  get_paths(): Array<PathString> {
+    return apply(this.value.value, (path) => {
+      if (path.length !== 0) {
+        return [[path.slice(0, path.length - 1), path[path.length - 1]]];
+      }
+      return [];
+    });
   }
 
   serialize(): any {
