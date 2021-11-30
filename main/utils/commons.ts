@@ -2,8 +2,10 @@ import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
 import { PathFilter } from "./db";
+import { ErrMsg, errors } from "./errors";
+import { LispExpression, Symbol, Text, Num, Deci, Bool } from "./lisp";
 import { PathPermission } from "./permissions";
-import { apply } from "./prelude";
+import { apply, CustomError, Err, Ok, Result } from "./prelude";
 import { Path, Variable, PathString, StrongEnum } from "./variable";
 
 export type State = Immutable<{
@@ -20,7 +22,7 @@ export type Action =
   | ["active", boolean]
   | ["created_at", Date]
   | ["updated_at", Date]
-  | ["values", Path]
+  | ["value", Path]
   | ["variable", Variable];
 
 export function reducer(state: Draft<State>, action: Action) {
@@ -41,7 +43,7 @@ export function reducer(state: Draft<State>, action: Action) {
       state.updated_at = action[1];
       break;
     }
-    case "values": {
+    case "value": {
       if (action[1].writeable) {
         state.values = apply(state.values.remove(action[1]), (it) => {
           return it.add(action[1]);
@@ -202,4 +204,114 @@ export function get_writeable_paths(
     }
   }
   return writeable_paths;
+}
+
+function add_symbol(
+  symbols: Record<string, Symbol>,
+  path: PathString,
+  field: StrongEnum
+): Record<string, Symbol> {
+  if (path[0].length === 0) {
+    const symbol_name = path[1];
+    symbols[symbol_name] = apply(undefined, () => {
+      switch (field.type) {
+        case "str":
+        case "lstr":
+        case "clob": {
+          return new Symbol({
+            value: new Ok(new Text(field.value)),
+            values: {},
+          });
+        }
+        case "i32":
+        case "u32":
+        case "i64":
+        case "u64": {
+          return new Symbol({
+            value: new Ok(new Num(field.value.toNumber())),
+            values: {},
+          });
+        }
+        case "idouble":
+        case "udouble":
+        case "idecimal":
+        case "udecimal": {
+          return new Symbol({
+            value: new Ok(new Num(field.value.toNumber())),
+            values: {},
+          });
+        }
+        case "bool": {
+          return new Symbol({
+            value: new Ok(new Bool(field.value)),
+            values: {},
+          });
+        }
+        case "date":
+        case "time":
+        case "timestamp": {
+          return new Symbol({
+            value: new Ok(new Num(field.value.getTime())),
+            values: {},
+          });
+        }
+        case "other": {
+          return new Symbol({
+            value: new Ok(new Num(field.value.toNumber())),
+            values: {},
+          });
+        }
+        default: {
+          const _exhaustiveCheck: never = field;
+          return _exhaustiveCheck;
+        }
+      }
+    });
+  } else {
+    const symbol_name = path[0][0];
+    symbols[symbol_name].value.values = add_symbol(
+      apply({}, (it) => {
+        if (symbol_name in symbols) {
+          return symbols[symbol_name].value.values;
+        }
+        return it;
+      }),
+      [path[0].slice(1), path[1]],
+      field
+    );
+  }
+  return symbols;
+}
+
+export function get_symbols(
+  paths: Immutable<HashSet<Path>>,
+  expr: LispExpression
+): Result<Readonly<Record<string, Symbol>>> {
+  let symbols: Record<string, Symbol> = {};
+  const dependencies = expr.get_paths();
+  for (let dependency of dependencies) {
+    for (let path of paths) {
+      if (
+        path.path[0].length === dependency[0].length &&
+        path.path[1][0] === dependency[1]
+      ) {
+        let check = true;
+        for (let [index, field_name] of dependency[0].entries()) {
+          if (path.path[0][index][0] !== field_name) {
+            check = false;
+          }
+        }
+        if (check) {
+          symbols = add_symbol(
+            symbols,
+            [path.path[0].map((x) => x[0]), path.path[1][0]],
+            path.path[1][1]
+          );
+        } else {
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+        }
+      }
+    }
+  }
+  return new Ok(symbols);
 }

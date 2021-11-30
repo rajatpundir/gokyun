@@ -206,7 +206,7 @@ export class Bool implements ToBoolean, ToText {
 
 type Leaf = Num | Deci | Text | Bool;
 
-class Symbol {
+export class Symbol {
   value: {
     value: Option<Leaf>;
     values: Record<string, Symbol>;

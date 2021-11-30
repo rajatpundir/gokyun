@@ -11,6 +11,7 @@ import {
   get_labeled_path_filters,
   get_top_writeable_paths,
   get_writeable_paths,
+  get_symbols,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
@@ -19,7 +20,9 @@ import { get_permissions, log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
 import { PathString } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
-import { apply, unwrap } from "../../main/utils/prelude";
+import { apply, Err, unwrap } from "../../main/utils/prelude";
+import { Bool, Deci, LispExpression, Num, Text } from "../../main/utils/lisp";
+import { expressionStatement } from "@babel/types";
 
 // Test triggers
 // Push some users into DB
@@ -100,13 +103,222 @@ export default function Component(
           }
         } else {
           for (let path of get_top_writeable_paths(path_permissions, labels)) {
-            dispatch(["values", path]);
+            dispatch(["value", path]);
           }
         }
       }
     };
     update_values();
   }, [state.id]);
+  React.useEffect(() => {
+    if (unwrap(struct)) {
+      for (let trigger_name of Object.keys(struct.value.triggers)) {
+        const trigger = struct.value.triggers[trigger_name];
+        if (trigger.operation.op === "update") {
+          if (state.mode === "write") {
+            if (state.id.equals(new Decimal(-1))) {
+              // Variable will be created
+              if (trigger.event.includes("after_creation")) {
+                for (let path_update of trigger.operation.path_updates) {
+                  const path_string: PathString = path_update[0];
+                  const expr = path_update[1];
+                  const result = get_symbols(state.values, expr);
+                  if (unwrap(result)) {
+                    const symbols = result.value;
+                    for (let value of state.values) {
+                      if (
+                        value.path[0].length === path_string[0].length &&
+                        value.path[1][0] === path_string[1]
+                      ) {
+                        let check = true;
+                        for (let [
+                          index,
+                          field_name,
+                        ] of path_string[0].entries()) {
+                          if (value.path[index][0] !== field_name) {
+                            check = false;
+                          }
+                        }
+                        if (check) {
+                          const field = value.path[1][1];
+                          switch (field.type) {
+                            case "str":
+                            case "lstr":
+                            case "clob": {
+                              const result = expr.get_result(symbols);
+                              if (unwrap(result)) {
+                                if (result.value instanceof Text) {
+                                  dispatch([
+                                    "value",
+                                    apply(value, (it) => {
+                                      it.path[1] = [
+                                        it.path[1][0],
+                                        {
+                                          type: field.type,
+                                          value: result.value.value as string,
+                                        },
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                }
+                              }
+                              break;
+                            }
+                            case "i32":
+                            case "u32":
+                            case "i64":
+                            case "u64": {
+                              const result = expr.get_result(symbols);
+                              if (unwrap(result)) {
+                                if (result.value instanceof Num) {
+                                  dispatch([
+                                    "value",
+                                    apply(value, (it) => {
+                                      it.path[1] = [
+                                        it.path[1][0],
+                                        {
+                                          type: field.type,
+                                          value: new Decimal(
+                                            result.value.value as number
+                                          ),
+                                        },
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                }
+                              }
+                              break;
+                            }
+                            case "idouble":
+                            case "udouble":
+                            case "idecimal":
+                            case "udecimal": {
+                              const result = expr.get_result(symbols);
+                              if (unwrap(result)) {
+                                if (result.value instanceof Deci) {
+                                  dispatch([
+                                    "value",
+                                    apply(value, (it) => {
+                                      it.path[1] = [
+                                        it.path[1][0],
+                                        {
+                                          type: field.type,
+                                          value: new Decimal(
+                                            result.value.value as number
+                                          ),
+                                        },
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                }
+                              }
+                              break;
+                            }
+                            case "bool": {
+                              const result = expr.get_result(symbols);
+                              if (unwrap(result)) {
+                                if (result.value instanceof Bool) {
+                                  result.value.value;
+                                  dispatch([
+                                    "value",
+                                    apply(value, (it) => {
+                                      it.path[1] = [
+                                        it.path[1][0],
+                                        {
+                                          type: field.type,
+                                          value: result.value.value as boolean,
+                                        },
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                }
+                              }
+                              break;
+                            }
+                            case "date":
+                            case "time":
+                            case "timestamp": {
+                              const result = expr.get_result(symbols);
+                              if (unwrap(result)) {
+                                if (result.value instanceof Num) {
+                                  dispatch([
+                                    "value",
+                                    apply(value, (it) => {
+                                      it.path[1] = [
+                                        it.path[1][0],
+                                        {
+                                          type: field.type,
+                                          value: new Date(
+                                            result.value.value as number
+                                          ),
+                                        },
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                }
+                              }
+                              break;
+                            }
+                            case "other": {
+                              const result = expr.get_result(symbols);
+                              if (unwrap(result)) {
+                                if (result.value instanceof Num) {
+                                  dispatch([
+                                    "value",
+                                    apply(value, (it) => {
+                                      it.path[1] = [
+                                        it.path[1][0],
+                                        {
+                                          type: field.type,
+                                          other: field.other,
+                                          value: new Decimal(
+                                            result.value.value as number
+                                          ),
+                                        },
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                }
+                              }
+                              break;
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = field;
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            } else {
+              // For now, assume that there is no concept of child affecting parent.
+              // Variable will be updated
+              // paths in variable and that of previous parent may be affected
+              if (trigger.event.includes("before_update")) {
+              }
+              // paths in variable and that of parent may be affected
+              if (trigger.event.includes("after_update")) {
+              }
+            }
+          } else {
+            // Variable is being shown
+            // Deletion of child items may effect paths in parent
+            if (trigger.event.includes("before_deletion")) {
+            }
+          }
+        }
+      }
+    }
+  }, []);
   if (unwrap(struct)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
