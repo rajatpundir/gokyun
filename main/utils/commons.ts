@@ -65,6 +65,9 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
+      if (state.id.equals(-1)) {
+        state.trigger = [!state.trigger[0], "after_creation"];
+      }
       break;
     }
     case "trigger": {

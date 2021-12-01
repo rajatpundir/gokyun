@@ -18,7 +18,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_permissions, log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
-import { PathString } from "../../main/utils/variable";
+import { PathString, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
@@ -91,10 +91,9 @@ export default function Component(
             get_labeled_path_filters(path_permissions, labels)
           );
           if (unwrap(result)) {
-            const variable = result.value;
             dispatch([
               "variable",
-              apply(variable, (it) => {
+              apply(result.value, (it) => {
                 it.paths = get_writeable_paths(
                   struct.value,
                   it.paths,
@@ -105,20 +104,24 @@ export default function Component(
             ]);
           }
         } else {
-          for (let path of get_top_writeable_paths(
-            struct.value,
-            path_permissions,
-            labels
-          )) {
-            dispatch(["value", path]);
-          }
-          dispatch(["trigger", "after_creation"]);
+          dispatch([
+            "variable",
+            new Variable(
+              struct.value,
+              new Decimal(-1),
+              state.active,
+              state.created_at,
+              state.updated_at,
+              get_top_writeable_paths(struct.value, path_permissions, labels)
+            ),
+          ]);
         }
       }
     };
     update_values();
   }, [state.mode, state.id]);
   React.useEffect(() => {
+    console.log(state.trigger);
     if (unwrap(struct)) {
       run_triggers(struct.value, state, dispatch, state.trigger[1]);
     }
