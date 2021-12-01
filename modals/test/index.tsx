@@ -241,22 +241,18 @@ async function run_triggers(
   dispatch: React.Dispatch<Action>
 ) {
   for (let trigger_name of Object.keys(struct.triggers)) {
-    console.log(trigger_name);
     const trigger = struct.triggers[trigger_name];
     if (trigger.operation.op === "update") {
       if (state.mode === "write") {
         if (state.id.equals(new Decimal(-1))) {
-          console.log("________");
           // Variable will be created
           if (trigger.event.includes("after_creation")) {
             for (let path_update of trigger.operation.path_updates) {
-              console.log(path_update);
               const path_string: PathString = path_update[0];
               const expr = path_update[1];
               const result = get_symbols(state.values, expr);
               if (unwrap(result)) {
                 const symbols = result.value;
-                console.log(symbols);
                 for (let value of state.values) {
                   if (
                     value.path[0].length === path_string[0].length &&
@@ -268,10 +264,8 @@ async function run_triggers(
                         check = false;
                       }
                     }
-                    console.log(String(check));
                     if (check) {
                       const field = value.path[1][1];
-                      console.log(field.type);
                       switch (field.type) {
                         case "str":
                         case "lstr":
@@ -301,7 +295,6 @@ async function run_triggers(
                         case "i64":
                         case "u64": {
                           const result = expr.get_result(symbols);
-                          console.log(result);
                           if (unwrap(result)) {
                             if (result.value instanceof Num) {
                               dispatch([
