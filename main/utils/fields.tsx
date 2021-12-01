@@ -48,7 +48,7 @@ function Str(
           value={value.value}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "str",
@@ -102,7 +102,7 @@ function Lstr(
           value={value.value}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "lstr",
@@ -156,7 +156,7 @@ function Clob(
           value={value.value}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "clob",
@@ -211,7 +211,7 @@ function I_32(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "i32",
@@ -270,7 +270,7 @@ function U_32(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "u32",
@@ -329,7 +329,7 @@ function I_64(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "i64",
@@ -388,7 +388,7 @@ function U_64(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "u64",
@@ -447,7 +447,7 @@ function I_Double(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "idouble",
@@ -502,7 +502,7 @@ function U_Double(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "udouble",
@@ -557,7 +557,7 @@ function I_Decimal(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "idecimal",
@@ -612,7 +612,7 @@ function U_Decimal(
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "udecimal",
@@ -660,7 +660,7 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
           value={value.value}
           onValueChange={(x) =>
             dispatch([
-              "values",
+              "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "bool",
@@ -712,7 +712,7 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
                 onChange={(_temp: any, date: Date | undefined) => {
                   setPicker(Platform.OS === "ios");
                   dispatch([
-                    "values",
+                    "value",
                     apply(props.path, (it) => {
                       it.path[1][1] = {
                         type: "date",
@@ -779,7 +779,7 @@ function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
                 onChange={(_temp: any, date: Date | undefined) => {
                   setPicker(Platform.OS === "ios");
                   dispatch([
-                    "values",
+                    "value",
                     apply(props.path, (it) => {
                       it.path[1][1] = {
                         type: "time",
@@ -872,7 +872,7 @@ function Timestamp_Field(
                         })
                       );
                       dispatch([
-                        "values",
+                        "value",
                         apply(props.path, (it) => {
                           it.path[1][1] = {
                             type: "timestamp",
@@ -948,9 +948,7 @@ export function Label(props: {
       return props.path;
     }
   });
-  console.log(path_string);
   return apply(get_path(props.state.values, path_string), (path) => {
-    console.log(path?.value.label);
     if (unwrap(path)) {
       return <ThemedText>{path.value.label}</ThemedText>;
     }

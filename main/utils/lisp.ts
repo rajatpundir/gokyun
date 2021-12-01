@@ -2101,12 +2101,12 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToNum) {
+      if (v.value instanceof Num) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
           return v1;
         }
-      } else if (v.value instanceof ToDeci) {
+      } else if (v.value instanceof Deci) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
           return new Ok(new Num(v1.value.value));
@@ -2119,12 +2119,12 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToDeci) {
+      if (v.value instanceof Deci) {
         let v1 = v.value.get_decimal(symbols);
         if (unwrap(v1)) {
           return v1;
         }
-      } else if (v.value instanceof ToNum) {
+      } else if (v.value instanceof Num) {
         let v1 = v.value.get_number(symbols);
         if (unwrap(v1)) {
           return new Ok(new Deci(v1.value.value));
@@ -2137,7 +2137,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToText) {
+      if (v.value instanceof Text) {
         let v1 = v.value.get_text(symbols);
         if (unwrap(v1)) {
           return v1;
@@ -2150,7 +2150,7 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToBoolean) {
+      if (v.value instanceof Bool) {
         let v1 = v.value.get_boolean(symbols);
         if (unwrap(v1)) {
           return v1;
