@@ -15,6 +15,7 @@ import {
   LessThanEquals,
   LogicalBinaryExpression,
   LogicalUnaryExpression,
+  Multiply,
   Not,
   Num,
   NumberArithmeticExpression,
@@ -27,12 +28,7 @@ import {
   ToText,
 } from "./lisp";
 import { errors, ErrMsg } from "./errors";
-import {
-  Struct,
-  StructPermissions,
-  StructTriggers,
-  WeakEnum,
-} from "./variable";
+import { Struct, StructPermissions, StructTrigger, WeakEnum } from "./variable";
 import { CustomError, Err, Ok, Result } from "./prelude";
 
 const schema: Record<
@@ -41,7 +37,7 @@ const schema: Record<
     fields: Record<string, WeakEnum>;
     uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
     permissions: StructPermissions;
-    triggers: StructTriggers;
+    triggers: Record<string, StructTrigger>;
     checks: Record<string, [BooleanLispExpression, ErrMsg]>;
   }
 > = {
@@ -100,12 +96,9 @@ const schema: Record<
             [
               [[], "i64"],
               new NumberArithmeticExpression(
-                new Add<ToNum>([
-                  new Num(1),
-                  [
-                    new DotExpression(new Dot(["u32"])),
-                    new DotExpression(new Dot(["u64"])),
-                  ],
+                new Multiply<ToNum>([
+                  new DotExpression(new Dot(["lll", "u32"])),
+                  [new DotExpression(new Dot(["u64"]))],
                 ])
               ),
             ],

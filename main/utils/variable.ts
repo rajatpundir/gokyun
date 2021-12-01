@@ -31,58 +31,55 @@ export type StructPermissions = {
   public: ReadonlyArray<string>;
 };
 
-export type StructTriggers = Record<
-  string,
-  {
-    // Snapshot of paths is taken as per the name indicates
-    event: ReadonlyArray<
-      "after_creation" | "before_update" | "after_update" | "before_deletion"
-    >;
-    monitor: ReadonlyArray<PathString>;
-    operation:
-      | {
-          op: "insert";
-          struct: string;
-          fields: { [index: string]: LispExpression };
-        }
-      | {
-          // Does not throw exception if variable cannot be created due to unique constraint violation
-          // That is, variable was already present and operation will behave as if it had created the variable
-          op: "insert_ignore";
-          struct: string;
-          fields: { [index: string]: LispExpression };
-        }
-      | {
-          // Remove any variable that causes unique constraint violation
-          op: "replace";
-          struct: string;
-          id: LispExpression;
-          fields: { [index: string]: LispExpression };
-        }
-      | {
-          op: "delete";
-          struct: string;
-          fields: { [index: string]: LispExpression };
-        }
-      | {
-          // Does not throw exception if variable does not exist
-          op: "delete_ignore";
-          struct: string;
-          fields: { [index: string]: LispExpression };
-        }
-      | {
-          op: "update";
-          path_updates: ReadonlyArray<[PathString, LispExpression]>;
-        };
-  }
->;
+export type StructTrigger = {
+  // Snapshot of paths is taken as per the name indicates
+  event: ReadonlyArray<
+    "after_creation" | "before_update" | "after_update" | "before_deletion"
+  >;
+  monitor: ReadonlyArray<PathString>;
+  operation:
+    | {
+        op: "insert";
+        struct: string;
+        fields: { [index: string]: LispExpression };
+      }
+    | {
+        // Does not throw exception if variable cannot be created due to unique constraint violation
+        // That is, variable was already present and operation will behave as if it had created the variable
+        op: "insert_ignore";
+        struct: string;
+        fields: { [index: string]: LispExpression };
+      }
+    | {
+        // Remove any variable that causes unique constraint violation
+        op: "replace";
+        struct: string;
+        id: LispExpression;
+        fields: { [index: string]: LispExpression };
+      }
+    | {
+        op: "delete";
+        struct: string;
+        fields: { [index: string]: LispExpression };
+      }
+    | {
+        // Does not throw exception if variable does not exist
+        op: "delete_ignore";
+        struct: string;
+        fields: { [index: string]: LispExpression };
+      }
+    | {
+        op: "update";
+        path_updates: ReadonlyArray<[PathString, LispExpression]>;
+      };
+};
 
 export class Struct {
   name: string;
   fields: Record<string, WeakEnum>;
   uniqueness: ReadonlyArray<PathString>;
   permissions: StructPermissions;
-  triggers: StructTriggers;
+  triggers: Record<string, StructTrigger>;
   checks: Record<string, [BooleanLispExpression, ErrMsg]>;
 
   constructor(
@@ -90,7 +87,7 @@ export class Struct {
     fields: Record<string, WeakEnum>,
     uniqueness: ReadonlyArray<PathString>,
     permissions: StructPermissions,
-    triggers: StructTriggers,
+    triggers: Record<string, StructTrigger>,
     checks: Record<string, [BooleanLispExpression, ErrMsg]>
   ) {
     this.name = name;

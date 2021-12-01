@@ -5,7 +5,7 @@ import { PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { LispExpression, Symbol, Text, Num, Bool, Deci } from "./lisp";
 import { PathPermission } from "./permissions";
-import { apply, CustomError, Err, Ok, Result } from "./prelude";
+import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { Path, Variable, PathString, StrongEnum, Struct } from "./variable";
 
 export type State = Immutable<{
@@ -15,7 +15,10 @@ export type State = Immutable<{
   updated_at: Date;
   values: HashSet<Path>;
   mode: "read" | "write";
-  trigger_toggle: boolean;
+  trigger: [
+    boolean,
+    "after_creation" | "before_update" | "after_update" | "before_deletion"
+  ];
 }>;
 
 export type Action =
@@ -24,7 +27,11 @@ export type Action =
   | ["created_at", Date]
   | ["updated_at", Date]
   | ["value", Path]
-  | ["variable", Variable];
+  | ["variable", Variable]
+  | [
+      "trigger",
+      "after_creation" | "before_update" | "after_update" | "before_deletion"
+    ];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -49,9 +56,6 @@ export function reducer(state: Draft<State>, action: Action) {
         state.values = apply(state.values.remove(action[1]), (it) => {
           return it.add(action[1]);
         });
-        if (action[1].trigger_dependency) {
-          state.trigger_toggle = !state.trigger_toggle;
-        }
       }
       break;
     }
@@ -61,12 +65,10 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
-      for (let path of action[1].paths) {
-        if (path.trigger_dependency) {
-          state.trigger_toggle = !state.trigger_toggle;
-          break;
-        }
-      }
+      break;
+    }
+    case "trigger": {
+      state.trigger = [!state.trigger[0], action[1]];
       break;
     }
     default: {
@@ -74,6 +76,76 @@ export function reducer(state: Draft<State>, action: Action) {
       return _exhaustiveCheck;
     }
   }
+}
+
+function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
+  let market_paths: HashSet<Path> = HashSet.of();
+  for (let path of paths) {
+    const path_string: PathString = [
+      path.path[0].map((x) => x[0]),
+      path.path[1][0],
+    ];
+    for (let trigger_name of Object.keys(struct.triggers)) {
+      const trigger = struct.triggers[trigger_name];
+      if (trigger.operation.op !== "update") {
+        for (let field_name of Object.keys(trigger.operation.fields)) {
+          const expr = trigger.operation.fields[field_name];
+          for (let used_path of expr.get_paths()) {
+            if (
+              path_string[0].length === used_path[0].length &&
+              path_string[1] === used_path[1]
+            ) {
+              let check = true;
+              for (let [index, other_field_name] of path_string[0].entries()) {
+                if (used_path[index] !== other_field_name) {
+                  check = false;
+                }
+              }
+              if (check) {
+                market_paths = market_paths.add(
+                  apply(path, (it) => {
+                    it.trigger_dependency = true;
+                    return it;
+                  })
+                );
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        for (let field of trigger.operation.path_updates) {
+          const expr = field[1];
+          for (let used_path of expr.get_paths()) {
+            if (
+              path_string[0].length === used_path[0].length &&
+              path_string[1] === used_path[1]
+            ) {
+              let check = true;
+              for (let [index, other_field_name] of path_string[0].entries()) {
+                if (used_path[index] !== other_field_name) {
+                  check = false;
+                }
+              }
+              if (check) {
+                market_paths = market_paths.add(
+                  apply(path, (it) => {
+                    it.trigger_dependency = true;
+                    return it;
+                  })
+                );
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (!market_paths.contains(path)) {
+      market_paths = market_paths.add(path);
+    }
+  }
+  return market_paths;
 }
 
 function get_shortlisted_permissions(
@@ -328,72 +400,193 @@ export function get_symbols(
   return new Ok(symbols);
 }
 
-function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
-  let market_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
-    const path_string: PathString = [
-      path.path[0].map((x) => x[0]),
-      path.path[1][0],
-    ];
-    for (let trigger_name of Object.keys(struct.triggers)) {
-      const trigger = struct.triggers[trigger_name];
-      if (trigger.operation.op !== "update") {
-        for (let field_name of Object.keys(trigger.operation.fields)) {
-          const expr = trigger.operation.fields[field_name];
-          for (let used_path of expr.get_paths()) {
-            if (
-              path_string[0].length === used_path[0].length &&
-              path_string[1] === used_path[1]
-            ) {
-              let check = true;
-              for (let [index, other_field_name] of path_string[0].entries()) {
-                if (used_path[index] !== other_field_name) {
-                  check = false;
-                }
-              }
-              if (check) {
-                market_paths = market_paths.add(
-                  apply(path, (it) => {
-                    it.trigger_dependency = true;
-                    return it;
-                  })
-                );
-                break;
-              }
+function run_path_updates(
+  state: State,
+  dispatch: React.Dispatch<Action>,
+  path_updates: ReadonlyArray<[PathString, LispExpression]>
+) {
+  for (let path_update of path_updates) {
+    const path_string: PathString = path_update[0];
+    const expr = path_update[1];
+    const result = get_symbols(state.values, expr);
+    if (unwrap(result)) {
+      const symbols = result.value;
+      for (let value of state.values) {
+        if (
+          value.path[0].length === path_string[0].length &&
+          value.path[1][0] === path_string[1]
+        ) {
+          let check = true;
+          for (let [index, field_name] of path_string[0].entries()) {
+            if (value.path[index][0] !== field_name) {
+              check = false;
             }
           }
-        }
-      } else {
-        for (let field of trigger.operation.path_updates) {
-          const expr = field[1];
-          for (let used_path of expr.get_paths()) {
-            if (
-              path_string[0].length === used_path[0].length &&
-              path_string[1] === used_path[1]
-            ) {
-              let check = true;
-              for (let [index, other_field_name] of path_string[0].entries()) {
-                if (used_path[index] !== other_field_name) {
-                  check = false;
+          if (check) {
+            const field = value.path[1][1];
+            switch (field.type) {
+              case "str":
+              case "lstr":
+              case "clob": {
+                const result = expr.get_result(symbols);
+                if (unwrap(result)) {
+                  if (result.value instanceof Text) {
+                    dispatch([
+                      "value",
+                      apply(value, (it) => {
+                        it.path[1] = [
+                          it.path[1][0],
+                          {
+                            type: field.type,
+                            value: result.value.value as string,
+                          },
+                        ];
+                        return it;
+                      }),
+                    ]);
+                  }
                 }
-              }
-              if (check) {
-                market_paths = market_paths.add(
-                  apply(path, (it) => {
-                    it.trigger_dependency = true;
-                    return it;
-                  })
-                );
                 break;
+              }
+              case "i32":
+              case "u32":
+              case "i64":
+              case "u64": {
+                const result = expr.get_result(symbols);
+                if (unwrap(result)) {
+                  if (result.value instanceof Num) {
+                    dispatch([
+                      "value",
+                      apply(value, (it) => {
+                        it.path[1] = [
+                          it.path[1][0],
+                          {
+                            type: field.type,
+                            value: new Decimal(result.value.value as number),
+                          },
+                        ];
+                        return it;
+                      }),
+                    ]);
+                  }
+                }
+                break;
+              }
+              case "idouble":
+              case "udouble":
+              case "idecimal":
+              case "udecimal": {
+                const result = expr.get_result(symbols);
+                if (unwrap(result)) {
+                  if (result.value instanceof Deci) {
+                    dispatch([
+                      "value",
+                      apply(value, (it) => {
+                        it.path[1] = [
+                          it.path[1][0],
+                          {
+                            type: field.type,
+                            value: new Decimal(result.value.value as number),
+                          },
+                        ];
+                        return it;
+                      }),
+                    ]);
+                  }
+                }
+                break;
+              }
+              case "bool": {
+                const result = expr.get_result(symbols);
+                if (unwrap(result)) {
+                  if (result.value instanceof Bool) {
+                    result.value.value;
+                    dispatch([
+                      "value",
+                      apply(value, (it) => {
+                        it.path[1] = [
+                          it.path[1][0],
+                          {
+                            type: field.type,
+                            value: result.value.value as boolean,
+                          },
+                        ];
+                        return it;
+                      }),
+                    ]);
+                  }
+                }
+                break;
+              }
+              case "date":
+              case "time":
+              case "timestamp": {
+                const result = expr.get_result(symbols);
+                if (unwrap(result)) {
+                  if (result.value instanceof Num) {
+                    dispatch([
+                      "value",
+                      apply(value, (it) => {
+                        it.path[1] = [
+                          it.path[1][0],
+                          {
+                            type: field.type,
+                            value: new Date(result.value.value as number),
+                          },
+                        ];
+                        return it;
+                      }),
+                    ]);
+                  }
+                }
+                break;
+              }
+              case "other": {
+                const result = expr.get_result(symbols);
+                if (unwrap(result)) {
+                  if (result.value instanceof Num) {
+                    dispatch([
+                      "value",
+                      apply(value, (it) => {
+                        it.path[1] = [
+                          it.path[1][0],
+                          {
+                            type: field.type,
+                            other: field.other,
+                            value: new Decimal(result.value.value as number),
+                          },
+                        ];
+                        return it;
+                      }),
+                    ]);
+                  }
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = field;
+                return _exhaustiveCheck;
               }
             }
           }
         }
       }
     }
-    if (!market_paths.contains(path)) {
-      market_paths = market_paths.add(path);
+  }
+}
+
+export async function run_triggers(
+  struct: Struct,
+  state: State,
+  dispatch: React.Dispatch<Action>,
+  event: "after_creation" | "before_update" | "after_update" | "before_deletion"
+) {
+  for (let trigger_name of Object.keys(struct.triggers)) {
+    const trigger = struct.triggers[trigger_name];
+    if (trigger.operation.op === "update") {
+      if (trigger.event.includes(event)) {
+        run_path_updates(state, dispatch, trigger.operation.path_updates);
+      }
     }
   }
-  return market_paths;
 }
