@@ -6,7 +6,7 @@ import { ErrMsg, errors } from "./errors";
 import { LispExpression, Symbol, Text, Num, Deci, Bool } from "./lisp";
 import { PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result } from "./prelude";
-import { Path, Variable, PathString, StrongEnum } from "./variable";
+import { Path, Variable, PathString, StrongEnum, Struct } from "./variable";
 
 export type State = Immutable<{
   id: Decimal;
@@ -15,6 +15,7 @@ export type State = Immutable<{
   updated_at: Date;
   values: HashSet<Path>;
   mode: "read" | "write";
+  trigger_toggle: boolean;
 }>;
 
 export type Action =
@@ -154,6 +155,7 @@ export function get_labeled_path_filters(
 }
 
 export function get_top_writeable_paths(
+  struct: Struct,
   permissions: HashSet<PathPermission>,
   labels: Array<[string, PathString]>
 ): HashSet<Path> {
@@ -170,10 +172,11 @@ export function get_top_writeable_paths(
       );
     }
   }
-  return paths;
+  return mark_trigger_dependencies(struct, paths);
 }
 
 export function get_writeable_paths(
+  struct: Struct,
   paths: HashSet<Path>,
   permissions: HashSet<PathPermission>
 ): HashSet<Path> {
@@ -203,7 +206,7 @@ export function get_writeable_paths(
       }
     }
   }
-  return writeable_paths;
+  return mark_trigger_dependencies(struct, writeable_paths);
 }
 
 function add_symbol(
@@ -314,4 +317,74 @@ export function get_symbols(
     }
   }
   return new Ok(symbols);
+}
+
+function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
+  let market_paths: HashSet<Path> = HashSet.of();
+  for (let path of paths) {
+    const path_string: PathString = [
+      path.path[0].map((x) => x[0]),
+      path.path[1][0],
+    ];
+    for (let trigger_name of Object.keys(struct.triggers)) {
+      const trigger = struct.triggers[trigger_name];
+      if (trigger.operation.op !== "update") {
+        for (let field_name of Object.keys(trigger.operation.fields)) {
+          const expr = trigger.operation.fields[field_name];
+          for (let used_path of expr.get_paths()) {
+            if (
+              path_string[0].length === used_path[0].length &&
+              path_string[1] === used_path[1]
+            ) {
+              let check = true;
+              for (let [index, other_field_name] of path_string[0].entries()) {
+                if (used_path[index] !== other_field_name) {
+                  check = false;
+                }
+              }
+              if (check) {
+                market_paths = market_paths.add(
+                  apply(path, (it) => {
+                    it.trigger_dependency = true;
+                    return it;
+                  })
+                );
+                break;
+              }
+            }
+          }
+        }
+      } else {
+        for (let field of trigger.operation.path_updates) {
+          const expr = field[1];
+          for (let used_path of expr.get_paths()) {
+            if (
+              path_string[0].length === used_path[0].length &&
+              path_string[1] === used_path[1]
+            ) {
+              let check = true;
+              for (let [index, other_field_name] of path_string[0].entries()) {
+                if (used_path[index] !== other_field_name) {
+                  check = false;
+                }
+              }
+              if (check) {
+                market_paths = market_paths.add(
+                  apply(path, (it) => {
+                    it.trigger_dependency = true;
+                    return it;
+                  })
+                );
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    if (!market_paths.contains(path)) {
+      market_paths = market_paths.add(path);
+    }
+  }
+  return market_paths;
 }

@@ -269,6 +269,7 @@ export class Path {
     [string, StrongEnum]
   ];
   writeable: boolean = false;
+  trigger_dependency: boolean = false;
 
   constructor(
     label: string,

@@ -58,6 +58,7 @@ export default function Component(
     updated_at: new Date(),
     values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
+    trigger_toggle: false,
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {
@@ -95,13 +96,21 @@ export default function Component(
             dispatch([
               "variable",
               apply(variable, (it) => {
-                it.paths = get_writeable_paths(it.paths, path_permissions);
+                it.paths = get_writeable_paths(
+                  struct.value,
+                  it.paths,
+                  path_permissions
+                );
                 return it;
               }),
             ]);
           }
         } else {
-          for (let path of get_top_writeable_paths(path_permissions, labels)) {
+          for (let path of get_top_writeable_paths(
+            struct.value,
+            path_permissions,
+            labels
+          )) {
             dispatch(["value", path]);
           }
         }
@@ -113,7 +122,7 @@ export default function Component(
     if (unwrap(struct)) {
       run_triggers(struct.value, state, dispatch);
     }
-  }, [state.mode, state.id]);
+  }, [state.trigger_toggle]);
   if (unwrap(struct)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
