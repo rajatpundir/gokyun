@@ -57,7 +57,7 @@ export default function Component(
     updated_at: new Date(),
     values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
-    trigger: [false, "after_creation"],
+    trigger: false,
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {
@@ -82,7 +82,19 @@ export default function Component(
           borrows
         );
         log_permissions(struct.value, user_paths, borrows);
-        if (!state.id.equals(-1)) {
+        if (state.id.equals(-1)) {
+          dispatch([
+            "variable",
+            new Variable(
+              struct.value,
+              new Decimal(-1),
+              state.active,
+              state.created_at,
+              state.updated_at,
+              get_top_writeable_paths(struct.value, path_permissions, labels)
+            ),
+          ]);
+        } else {
           const result = await get_variable(
             undefined,
             struct.value,
@@ -103,27 +115,14 @@ export default function Component(
               }),
             ]);
           }
-        } else {
-          dispatch([
-            "variable",
-            new Variable(
-              struct.value,
-              new Decimal(-1),
-              state.active,
-              state.created_at,
-              state.updated_at,
-              get_top_writeable_paths(struct.value, path_permissions, labels)
-            ),
-          ]);
         }
       }
     };
     update_values();
   }, [state.mode, state.id]);
   React.useEffect(() => {
-    console.log(state.trigger);
     if (unwrap(struct)) {
-      run_triggers(struct.value, state, dispatch, state.trigger[1]);
+      run_triggers(struct.value, state, dispatch);
     }
   }, [state.trigger]);
   if (unwrap(struct)) {

@@ -15,10 +15,7 @@ export type State = Immutable<{
   updated_at: Date;
   values: HashSet<Path>;
   mode: "read" | "write";
-  trigger: [
-    boolean,
-    "after_creation" | "before_update" | "after_update" | "before_deletion"
-  ];
+  trigger: boolean;
 }>;
 
 export type Action =
@@ -27,11 +24,7 @@ export type Action =
   | ["created_at", Date]
   | ["updated_at", Date]
   | ["value", Path]
-  | ["variable", Variable]
-  | [
-      "trigger",
-      "after_creation" | "before_update" | "after_update" | "before_deletion"
-    ];
+  | ["variable", Variable];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -56,6 +49,9 @@ export function reducer(state: Draft<State>, action: Action) {
         state.values = apply(state.values.remove(action[1]), (it) => {
           return it.add(action[1]);
         });
+        if (action[1].trigger_dependency) {
+          state.trigger = !state.trigger;
+        }
       }
       break;
     }
@@ -65,13 +61,7 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
-      if (state.id.equals(-1)) {
-        state.trigger = [!state.trigger[0], "after_creation"];
-      }
-      break;
-    }
-    case "trigger": {
-      state.trigger = [!state.trigger[0], action[1]];
+      state.trigger = !state.trigger;
       break;
     }
     default: {
@@ -81,8 +71,50 @@ export function reducer(state: Draft<State>, action: Action) {
   }
 }
 
+function mark_trigger_outputs(struct: Struct, paths: HashSet<Path>) {
+  let marked_paths: HashSet<Path> = HashSet.of();
+  for (let path of paths) {
+    const path_string: PathString = [
+      path.path[0].map((x) => x[0]),
+      path.path[1][0],
+    ];
+    let is_trigger_output = false;
+    for (let trigger_name of Object.keys(struct.triggers)) {
+      const trigger = struct.triggers[trigger_name];
+      if (trigger.operation.op === "update") {
+        for (let field of trigger.operation.path_updates) {
+          const ref_path_string = field[0];
+          if (
+            ref_path_string[0].length === path_string[0].length &&
+            ref_path_string[1] === path_string[1]
+          ) {
+            let check = true;
+            for (let [index, other_field_name] of path_string[0].entries()) {
+              if (ref_path_string[index] !== other_field_name) {
+                check = false;
+              }
+            }
+            if (check) {
+              is_trigger_output = true;
+            }
+          }
+        }
+      }
+    }
+    marked_paths = marked_paths.add(
+      apply(path, (it) => {
+        if (is_trigger_output) {
+          it.writeable = false;
+        }
+        return it;
+      })
+    );
+  }
+  return marked_paths;
+}
+
 function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
-  let market_paths: HashSet<Path> = HashSet.of();
+  let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     const path_string: PathString = [
       path.path[0].map((x) => x[0]),
@@ -105,7 +137,7 @@ function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
                 }
               }
               if (check) {
-                market_paths = market_paths.add(
+                marked_paths = marked_paths.add(
                   apply(path, (it) => {
                     it.trigger_dependency = true;
                     return it;
@@ -131,7 +163,7 @@ function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
                 }
               }
               if (check) {
-                market_paths = market_paths.add(
+                marked_paths = marked_paths.add(
                   apply(path, (it) => {
                     it.trigger_dependency = true;
                     return it;
@@ -144,11 +176,11 @@ function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
         }
       }
     }
-    if (!market_paths.contains(path)) {
-      market_paths = market_paths.add(path);
+    if (!marked_paths.contains(path)) {
+      marked_paths = marked_paths.add(path);
     }
   }
-  return market_paths;
+  return mark_trigger_outputs(struct, marked_paths);
 }
 
 function get_shortlisted_permissions(
@@ -581,14 +613,21 @@ function run_path_updates(
 export async function run_triggers(
   struct: Struct,
   state: State,
-  dispatch: React.Dispatch<Action>,
-  event: "after_creation" | "before_update" | "after_update" | "before_deletion"
+  dispatch: React.Dispatch<Action>
 ) {
   for (let trigger_name of Object.keys(struct.triggers)) {
     const trigger = struct.triggers[trigger_name];
     if (trigger.operation.op === "update") {
-      if (trigger.event.includes(event)) {
-        run_path_updates(state, dispatch, trigger.operation.path_updates);
+      if (state.mode === "write") {
+        if (state.id.equals(-1)) {
+          if (trigger.event.includes("after_creation")) {
+            run_path_updates(state, dispatch, trigger.operation.path_updates);
+          }
+        } else {
+          if (trigger.event.includes("after_update")) {
+            run_path_updates(state, dispatch, trigger.operation.path_updates);
+          }
+        }
       }
     }
   }

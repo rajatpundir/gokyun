@@ -46,10 +46,7 @@ function Str(
           ]}
           {...otherProps}
           value={value.value}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -59,13 +56,8 @@ function Str(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -108,10 +100,7 @@ function Lstr(
           ]}
           {...otherProps}
           value={value.value}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -121,13 +110,8 @@ function Lstr(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -170,10 +154,7 @@ function Clob(
           ]}
           {...otherProps}
           value={value.value}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -183,13 +164,8 @@ function Clob(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -233,10 +209,7 @@ function I_32(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -250,13 +223,8 @@ function I_32(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -300,10 +268,7 @@ function U_32(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -317,13 +282,8 @@ function U_32(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -367,10 +327,7 @@ function I_64(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -384,13 +341,8 @@ function I_64(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -434,10 +386,7 @@ function U_64(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -451,13 +400,8 @@ function U_64(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -501,10 +445,7 @@ function I_Double(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -514,13 +455,8 @@ function I_Double(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -564,10 +500,7 @@ function U_Double(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -577,13 +510,8 @@ function U_Double(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -627,10 +555,7 @@ function I_Decimal(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -640,13 +565,8 @@ function I_Decimal(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -690,10 +610,7 @@ function U_Decimal(
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
-          onChangeText={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onChangeText={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -703,13 +620,8 @@ function U_Decimal(
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -746,10 +658,7 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
           style={[{}, style]}
           {...otherProps}
           value={value.value}
-          onValueChange={(x) => {
-            if (!state.id.equals(-1)) {
-              dispatch(["trigger", "before_update"]);
-            }
+          onValueChange={(x) =>
             dispatch([
               "value",
               apply(props.path, (it) => {
@@ -759,13 +668,8 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
                 };
                 return it;
               }),
-            ]);
-            if (state.id.equals(-1)) {
-              dispatch(["trigger", "after_creation"]);
-            } else {
-              dispatch(["trigger", "after_update"]);
-            }
-          }}
+            ])
+          }
         />
       );
     } else {
@@ -807,26 +711,16 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
                 value={value.value}
                 onChange={(_temp: any, date: Date | undefined) => {
                   setPicker(Platform.OS === "ios");
-                  {
-                    if (!state.id.equals(-1)) {
-                      dispatch(["trigger", "before_update"]);
-                    }
-                    dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "date",
-                          value: date || new Date(),
-                        };
-                        return it;
-                      }),
-                    ]);
-                    if (state.id.equals(-1)) {
-                      dispatch(["trigger", "after_creation"]);
-                    } else {
-                      dispatch(["trigger", "after_update"]);
-                    }
-                  }
+                  dispatch([
+                    "value",
+                    apply(props.path, (it) => {
+                      it.path[1][1] = {
+                        type: "date",
+                        value: date || new Date(),
+                      };
+                      return it;
+                    }),
+                  ]);
                 }}
               />
             )}
@@ -884,26 +778,16 @@ function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
                 value={value.value}
                 onChange={(_temp: any, date: Date | undefined) => {
                   setPicker(Platform.OS === "ios");
-                  {
-                    if (!state.id.equals(-1)) {
-                      dispatch(["trigger", "before_update"]);
-                    }
-                    dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "time",
-                          value: date || new Date(),
-                        };
-                        return it;
-                      }),
-                    ]);
-                    if (state.id.equals(-1)) {
-                      dispatch(["trigger", "after_creation"]);
-                    } else {
-                      dispatch(["trigger", "after_update"]);
-                    }
-                  }
+                  dispatch([
+                    "value",
+                    apply(props.path, (it) => {
+                      it.path[1][1] = {
+                        type: "time",
+                        value: date || new Date(),
+                      };
+                      return it;
+                    }),
+                  ]);
                 }}
               />
             )}
@@ -987,9 +871,6 @@ function Timestamp_Field(
                           return it;
                         })
                       );
-                      if (!state.id.equals(-1)) {
-                        dispatch(["trigger", "before_update"]);
-                      }
                       dispatch([
                         "value",
                         apply(props.path, (it) => {
@@ -1000,11 +881,6 @@ function Timestamp_Field(
                           return it;
                         }),
                       ]);
-                      if (state.id.equals(-1)) {
-                        dispatch(["trigger", "after_creation"]);
-                      } else {
-                        dispatch(["trigger", "after_update"]);
-                      }
                       setMode("date");
                     }
                   } else {
