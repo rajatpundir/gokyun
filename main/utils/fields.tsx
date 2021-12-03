@@ -216,7 +216,7 @@ function I_32(
                 it.path[1][1] = {
                   type: "i32",
                   value: Decimal.clamp(
-                    new Decimal(x).truncated(),
+                    new Decimal(x || "0").truncated(),
                     -2147483648,
                     2147483648
                   ),
@@ -275,7 +275,7 @@ function U_32(
                 it.path[1][1] = {
                   type: "u32",
                   value: Decimal.clamp(
-                    new Decimal(x).truncated(),
+                    new Decimal(x || "0").truncated(),
                     0,
                     2147483648
                   ),
@@ -334,7 +334,7 @@ function I_64(
                 it.path[1][1] = {
                   type: "i64",
                   value: Decimal.clamp(
-                    new Decimal(x).truncated(),
+                    new Decimal(x || "0").truncated(),
                     new Decimal("-9223372036854775807"),
                     new Decimal("9223372036854775807")
                   ),
@@ -393,7 +393,7 @@ function U_64(
                 it.path[1][1] = {
                   type: "u64",
                   value: Decimal.clamp(
-                    new Decimal(x).truncated(),
+                    new Decimal(x || "0").truncated(),
                     0,
                     new Decimal("9223372036854775807")
                   ),
@@ -451,7 +451,7 @@ function I_Double(
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "idouble",
-                  value: new Decimal(x),
+                  value: new Decimal(x || "0"),
                 };
                 return it;
               }),
@@ -506,7 +506,7 @@ function U_Double(
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "udouble",
-                  value: new Decimal(x).abs(),
+                  value: new Decimal(x || "0").abs(),
                 };
                 return it;
               }),
@@ -561,7 +561,7 @@ function I_Decimal(
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "idecimal",
-                  value: new Decimal(x),
+                  value: new Decimal(x || "0"),
                 };
                 return it;
               }),
@@ -616,7 +616,7 @@ function U_Decimal(
               apply(props.path, (it) => {
                 it.path[1][1] = {
                   type: "udecimal",
-                  value: new Decimal(x).abs(),
+                  value: new Decimal(x || "0").abs(),
                 };
                 return it;
               }),

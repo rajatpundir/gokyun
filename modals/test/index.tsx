@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View } from "../../main/themed";
@@ -136,7 +136,11 @@ export default function Component(
       return show_struct({ state, dispatch });
     }
   }
-  return <></>;
+  return (
+    <>
+      <Text>lkjlkjlkjlkjlkj</Text>
+    </>
+  );
 }
 
 function create_struct(reducer: {

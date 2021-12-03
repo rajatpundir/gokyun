@@ -97,7 +97,7 @@ const schema: Record<
               [[], "i64"],
               new NumberArithmeticExpression(
                 new Multiply<ToNum>([
-                  new DotExpression(new Dot(["lll", "u32"])),
+                  new DotExpression(new Dot(["u32"])),
                   [new DotExpression(new Dot(["u64"]))],
                 ])
               ),

@@ -45,7 +45,7 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "value": {
-      if (action[1].writeable) {
+      if (action[1].writeable || action[1].trigger_output) {
         state.values = apply(state.values.remove(action[1]), (it) => {
           return it.add(action[1]);
         });
@@ -56,7 +56,6 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "variable": {
-      state.id = action[1].id;
       state.active = action[1].active;
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
@@ -105,6 +104,7 @@ function mark_trigger_outputs(struct: Struct, paths: HashSet<Path>) {
       apply(path, (it) => {
         if (is_trigger_output) {
           it.writeable = false;
+          it.trigger_output = true;
         }
         return it;
       })
