@@ -15,7 +15,7 @@ import { Text as ThemedText } from "../../main/themed";
 import { apply, unwrap, Option, Ok } from "./prelude";
 import { Action, State } from "./commons";
 import { useState } from "react";
-import { Path, PathString } from "./variable";
+import { Path, PathString, Struct } from "./variable";
 import { HashSet } from "prelude-ts";
 import { Immutable } from "immer";
 
@@ -913,24 +913,74 @@ function Timestamp_Field(
   return null;
 }
 
-function get_path(
-  paths: Immutable<HashSet<Path>>,
-  path_string: PathString
-): Option<Path> {
-  for (let path of paths) {
-    if (
-      path.path[0].length === path_string[0].length &&
-      path.path[1][0] === path_string[1]
-    ) {
-      let check = true;
-      for (let [index, [field_name, _]] of path.path[0].entries()) {
-        if (path_string[0][index] !== field_name) {
-          check = false;
-          break;
+function get_path(state: State, path_string: PathString): Option<Path> {
+  const first: string = apply(path_string[1], (it) => {
+    if (path_string[0].length !== 0) {
+      return path_string[0][0];
+    }
+    return it;
+  });
+  if (first in state.extensions) {
+    const extension = state.extensions[first];
+    const nested_path = get_path(extension.state, [
+      path_string[0].slice(1),
+      path_string[1],
+    ]);
+    if (unwrap(nested_path)) {
+      let label = "";
+      for (let [path_label, path] of state.labels) {
+        if (
+          path[0].length === path_string[0].length &&
+          path[1] === path_string[1]
+        ) {
+          let check = true;
+          for (let [index, field_name] of path_string[0].entries()) {
+            if (path[0][index] !== field_name) {
+              check = false;
+            }
+          }
+          if (check) {
+            label = path_label;
+            break;
+          }
         }
       }
-      if (check) {
-        return new Ok(path);
+      return new Ok(
+        apply(nested_path.value, (it) => {
+          return new Path(label, [
+            [
+              [
+                first,
+                {
+                  struct: extension.struct as Struct,
+                  id: extension.state.id as Decimal,
+                  active: extension.state.active,
+                  created_at: extension.state.created_at,
+                  updated_at: extension.state.updated_at,
+                },
+              ],
+            ],
+            it.path[1],
+          ]);
+        })
+      );
+    }
+  } else {
+    for (let path of state.values) {
+      if (
+        path.path[0].length === path_string[0].length &&
+        path.path[1][0] === path_string[1]
+      ) {
+        let check = true;
+        for (let [index, [field_name, _]] of path.path[0].entries()) {
+          if (path_string[0][index] !== field_name) {
+            check = false;
+            break;
+          }
+        }
+        if (check) {
+          return new Ok(path);
+        }
       }
     }
   }
@@ -948,7 +998,7 @@ export function Label(props: {
       return props.path;
     }
   });
-  return apply(get_path(props.state.values, path_string), (path) => {
+  return apply(get_path(props.state, path_string), (path) => {
     if (unwrap(path)) {
       return <ThemedText>{path.value.label}</ThemedText>;
     }
@@ -973,7 +1023,7 @@ export function Field(props: {
       return props.path;
     }
   });
-  return apply(get_path(props.state.values, path_string), (path) => {
+  return apply(get_path(props.state, path_string), (path) => {
     if (unwrap(path)) {
       const field_struct_name = path.value.path[1][1].type;
       switch (field_struct_name) {

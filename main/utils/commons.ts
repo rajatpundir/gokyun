@@ -1,6 +1,7 @@
 import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
+import React from "react";
 import { PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { LispExpression, Symbol, Text, Num, Bool, Deci } from "./lisp";
@@ -16,6 +17,15 @@ export type State = Immutable<{
   values: HashSet<Path>;
   mode: "read" | "write";
   trigger: boolean;
+  extensions: Record<
+    string,
+    {
+      struct: Struct;
+      state: State;
+      dispatch: React.Dispatch<Action>;
+    }
+  >;
+  labels: Array<[string, PathString]>;
 }>;
 
 export type Action =
@@ -46,9 +56,41 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "value": {
       if (action[1].writeable || action[1].trigger_output) {
-        state.values = apply(state.values.remove(action[1]), (it) => {
-          return it.add(action[1]);
-        });
+        if (action[1].path[0].length === 0) {
+          if (action[1].path[1][0] in state.extensions) {
+            const extension = state.extensions[action[1].path[1][0]];
+            extension.dispatch([
+              "value",
+              apply(new Path(action[1].label, action[1].path), (it) => {
+                it.writeable = action[1].writeable;
+                it.trigger_dependency = action[1].trigger_dependency;
+                it.trigger_output = action[1].trigger_output;
+                return it;
+              }),
+            ]);
+          } else {
+            state.values = apply(state.values.remove(action[1]), (it) => {
+              return it.add(action[1]);
+            });
+          }
+        } else {
+          if (action[1].path[0][0][0] in state.extensions) {
+            const extension = state.extensions[action[1].path[0][0][0]];
+            extension.dispatch([
+              "value",
+              apply(new Path(action[1].label, action[1].path), (it) => {
+                it.writeable = action[1].writeable;
+                it.trigger_dependency = action[1].trigger_dependency;
+                it.trigger_output = action[1].trigger_output;
+                return it;
+              }),
+            ]);
+          } else {
+            state.values = apply(state.values.remove(action[1]), (it) => {
+              return it.add(action[1]);
+            });
+          }
+        }
         if (action[1].trigger_dependency) {
           state.trigger = !state.trigger;
         }
@@ -185,7 +227,7 @@ function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
 
 function get_shortlisted_permissions(
   permissions: HashSet<PathPermission>,
-  labels: Array<[string, PathString]>
+  labels: Immutable<Array<[string, PathString]>>
 ): HashSet<PathPermission> {
   let path_permissions: HashSet<PathPermission> = HashSet.of();
   for (let [label, path] of labels) {
@@ -218,7 +260,7 @@ function get_shortlisted_permissions(
 
 export function get_labeled_path_filters(
   permissions: HashSet<PathPermission>,
-  labels: Array<[string, PathString]>
+  labels: Immutable<Array<[string, PathString]>>
 ): Array<[string, PathFilter]> {
   const labeled_permissions: HashSet<PathPermission> =
     get_shortlisted_permissions(permissions, labels);
@@ -273,7 +315,7 @@ export function get_labeled_path_filters(
 export function get_top_writeable_paths(
   struct: Struct,
   permissions: HashSet<PathPermission>,
-  labels: Array<[string, PathString]>
+  labels: Immutable<Array<[string, PathString]>>
 ): HashSet<Path> {
   const labeled_permissions: HashSet<PathPermission> =
     get_shortlisted_permissions(permissions, labels);

@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View } from "../../main/themed";
@@ -22,6 +22,7 @@ import { PathString, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
+// Make triggers workk with path extensions
 // Test triggers
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
@@ -31,25 +32,6 @@ export default function Component(
 ): JSX.Element {
   const struct = get_struct("Test");
   const [user_paths, borrows]: [Array<PathString>, Array<string>] = [[], []];
-  const labels: Array<[string, PathString]> = [
-    ["STR", [[], "str"]],
-    ["LSTR", [[], "lstr"]],
-    ["CLOB", [[], "clob"]],
-    ["U32", [[], "u32"]],
-    ["I32", [[], "i32"]],
-    ["U64", [[], "u64"]],
-    ["I64", [[], "i64"]],
-    ["UDOUBLE", [[], "udouble"]],
-    ["IDOUBLE", [[], "idouble"]],
-    ["UDECIMAL", [[], "udecimal"]],
-    ["IDECIMAL", [[], "idecimal"]],
-    ["BOOL", [[], "bool"]],
-    ["DATE", [[], "date"]],
-    ["TIME", [[], "time"]],
-    ["TIMESTAMP", [[], "timestamp"]],
-    ["USER", [[], "user"]],
-    ["USER NICKNAME", [["user"], "nickname"]],
-  ];
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
     active: true,
@@ -58,6 +40,26 @@ export default function Component(
     values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
     trigger: false,
+    extensions: {},
+    labels: [
+      ["STR", [[], "str"]],
+      ["LSTR", [[], "lstr"]],
+      ["CLOB", [[], "clob"]],
+      ["U32", [[], "u32"]],
+      ["I32", [[], "i32"]],
+      ["U64", [[], "u64"]],
+      ["I64", [[], "i64"]],
+      ["UDOUBLE", [[], "udouble"]],
+      ["IDOUBLE", [[], "idouble"]],
+      ["UDECIMAL", [[], "udecimal"]],
+      ["IDECIMAL", [[], "idecimal"]],
+      ["BOOL", [[], "bool"]],
+      ["DATE", [[], "date"]],
+      ["TIME", [[], "time"]],
+      ["TIMESTAMP", [[], "timestamp"]],
+      ["USER", [[], "user"]],
+      ["USER NICKNAME", [["user"], "nickname"]],
+    ],
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {
@@ -91,7 +93,11 @@ export default function Component(
               state.active,
               state.created_at,
               state.updated_at,
-              get_top_writeable_paths(struct.value, path_permissions, labels)
+              get_top_writeable_paths(
+                struct.value,
+                path_permissions,
+                state.labels
+              )
             ),
           ]);
         } else {
@@ -100,7 +106,7 @@ export default function Component(
             struct.value,
             state.id as Decimal,
             true,
-            get_labeled_path_filters(path_permissions, labels)
+            get_labeled_path_filters(path_permissions, state.labels)
           );
           if (unwrap(result)) {
             dispatch([
@@ -136,11 +142,7 @@ export default function Component(
       return show_struct({ state, dispatch });
     }
   }
-  return (
-    <>
-      <Text>lkjlkjlkjlkjlkj</Text>
-    </>
-  );
+  return <></>;
 }
 
 function create_struct(reducer: {
