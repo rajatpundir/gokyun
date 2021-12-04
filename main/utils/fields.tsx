@@ -913,7 +913,7 @@ function Timestamp_Field(
   return null;
 }
 
-function get_path(state: State, path_string: PathString): Option<Path> {
+export function get_path(state: State, path_string: PathString): Option<Path> {
   const first: string = apply(path_string[1], (it) => {
     if (path_string[0].length !== 0) {
       return path_string[0][0];

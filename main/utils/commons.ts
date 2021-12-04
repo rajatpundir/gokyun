@@ -4,6 +4,7 @@ import { HashSet } from "prelude-ts";
 import React from "react";
 import { PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
+import { get_path } from "./fields";
 import { LispExpression, Symbol, Text, Num, Bool, Deci } from "./lisp";
 import { PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
@@ -447,33 +448,22 @@ function add_symbol(
 }
 
 export function get_symbols(
-  paths: Immutable<HashSet<Path>>,
+  state: State,
   expr: LispExpression
 ): Result<Readonly<Record<string, Symbol>>> {
   let symbols: Record<string, Symbol> = {};
   const dependencies = expr.get_paths();
   for (let dependency of dependencies) {
-    for (let path of paths) {
-      if (
-        path.path[0].length === dependency[0].length &&
-        path.path[1][0] === dependency[1]
-      ) {
-        let check = true;
-        for (let [index, field_name] of dependency[0].entries()) {
-          if (path.path[0][index][0] !== field_name) {
-            check = false;
-          }
-        }
-        if (check) {
-          symbols = add_symbol(
-            symbols,
-            [path.path[0].map((x) => x[0]), path.path[1][0]],
-            path.path[1][1]
-          );
-        } else {
-          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-        }
-      }
+    const result = get_path(state, dependency);
+    if (unwrap(result)) {
+      const path = result.value;
+      symbols = add_symbol(
+        symbols,
+        [path.path[0].map((x) => x[0]), path.path[1][0]],
+        path.path[1][1]
+      );
+    } else {
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
   }
   return new Ok(symbols);
@@ -487,7 +477,7 @@ function run_path_updates(
   for (let path_update of path_updates) {
     const path_string: PathString = path_update[0];
     const expr = path_update[1];
-    const result = get_symbols(state.values, expr);
+    const result = get_symbols(state, expr);
     if (unwrap(result)) {
       const symbols = result.value;
       for (let value of state.values) {
