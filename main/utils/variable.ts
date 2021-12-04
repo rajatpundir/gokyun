@@ -458,3 +458,13 @@ export function compare_paths(
   }
   return false;
 }
+
+export function concat_path_strings(
+  path_string: PathString,
+  other_path_string: PathString
+): PathString {
+  return [
+    [...path_string[0], path_string[1], ...other_path_string[0]],
+    other_path_string[1],
+  ];
+}

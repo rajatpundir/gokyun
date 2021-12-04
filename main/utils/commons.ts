@@ -7,7 +7,15 @@ import { ErrMsg, errors } from "./errors";
 import { LispExpression, Symbol, Text, Num, Bool, Deci } from "./lisp";
 import { PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { Path, Variable, PathString, StrongEnum, Struct } from "./variable";
+import {
+  Path,
+  Variable,
+  PathString,
+  StrongEnum,
+  Struct,
+  compare_paths,
+  concat_path_strings,
+} from "./variable";
 
 export type State = Immutable<{
   id: Decimal;
@@ -113,7 +121,11 @@ export function reducer(state: Draft<State>, action: Action) {
   }
 }
 
-function mark_trigger_outputs(struct: Struct, paths: HashSet<Path>) {
+function mark_trigger_outputs(
+  struct: Struct,
+  paths: HashSet<Path>,
+  state: State
+) {
   // Aside from struct passed here, state's higher_structs will be also be used to mark trigger outputs
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
@@ -127,17 +139,27 @@ function mark_trigger_outputs(struct: Struct, paths: HashSet<Path>) {
       if (trigger.operation.op === "update") {
         for (let field of trigger.operation.path_updates) {
           const ref_path_string = field[0];
-          if (
-            ref_path_string[0].length === path_string[0].length &&
-            ref_path_string[1] === path_string[1]
-          ) {
-            let check = true;
-            for (let [index, other_field_name] of path_string[0].entries()) {
-              if (ref_path_string[index] !== other_field_name) {
-                check = false;
-              }
-            }
-            if (check) {
+          if (compare_paths(ref_path_string, path_string)) {
+            is_trigger_output = true;
+          }
+        }
+      }
+    }
+    for (let [higher_struct, higher_path_string] of state.higher_structs) {
+      for (let trigger_name of Object.keys(higher_struct.triggers)) {
+        const trigger = struct.triggers[trigger_name];
+        if (trigger.operation.op === "update") {
+          for (let field of trigger.operation.path_updates) {
+            const ref_path_string = field[0];
+            if (
+              compare_paths(
+                ref_path_string,
+                concat_path_strings(
+                  higher_path_string as PathString,
+                  path_string
+                )
+              )
+            ) {
               is_trigger_output = true;
             }
           }
@@ -157,74 +179,63 @@ function mark_trigger_outputs(struct: Struct, paths: HashSet<Path>) {
   return marked_paths;
 }
 
-function mark_trigger_dependencies(struct: Struct, paths: HashSet<Path>) {
+function mark_trigger_dependencies(
+  struct: Struct,
+  paths: HashSet<Path>,
+  state: State
+) {
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     const path_string: PathString = [
       path.path[0].map((x) => x[0]),
       path.path[1][0],
     ];
+    let is_trigger_dependency = false;
     for (let trigger_name of Object.keys(struct.triggers)) {
       const trigger = struct.triggers[trigger_name];
-      if (trigger.operation.op !== "update") {
-        for (let field_name of Object.keys(trigger.operation.fields)) {
-          const expr = trigger.operation.fields[field_name];
-          for (let used_path of expr.get_paths()) {
-            if (
-              path_string[0].length === used_path[0].length &&
-              path_string[1] === used_path[1]
-            ) {
-              let check = true;
-              for (let [index, other_field_name] of path_string[0].entries()) {
-                if (used_path[index] !== other_field_name) {
-                  check = false;
-                }
-              }
-              if (check) {
-                marked_paths = marked_paths.add(
-                  apply(path, (it) => {
-                    it.trigger_dependency = true;
-                    return it;
-                  })
-                );
-                break;
-              }
-            }
-          }
-        }
-      } else {
+      if (trigger.operation.op === "update") {
         for (let field of trigger.operation.path_updates) {
           const expr = field[1];
           for (let used_path of expr.get_paths()) {
-            if (
-              path_string[0].length === used_path[0].length &&
-              path_string[1] === used_path[1]
-            ) {
-              let check = true;
-              for (let [index, other_field_name] of path_string[0].entries()) {
-                if (used_path[index] !== other_field_name) {
-                  check = false;
-                }
-              }
-              if (check) {
-                marked_paths = marked_paths.add(
-                  apply(path, (it) => {
-                    it.trigger_dependency = true;
-                    return it;
-                  })
-                );
-                break;
-              }
+            if (compare_paths(used_path, path_string)) {
+              is_trigger_dependency = true;
+              break;
             }
           }
         }
       }
     }
-    if (!marked_paths.contains(path)) {
-      marked_paths = marked_paths.add(path);
+    for (let [higher_struct, higher_path_string] of state.higher_structs) {
+      for (let trigger_name of Object.keys(higher_struct.triggers)) {
+        const trigger = struct.triggers[trigger_name];
+        if (trigger.operation.op === "update") {
+          for (let field of trigger.operation.path_updates) {
+            const ref_path_string = field[0];
+            if (
+              compare_paths(
+                ref_path_string,
+                concat_path_strings(
+                  higher_path_string as PathString,
+                  path_string
+                )
+              )
+            ) {
+              is_trigger_dependency = true;
+            }
+          }
+        }
+      }
     }
+    marked_paths = marked_paths.add(
+      apply(path, (it) => {
+        if (is_trigger_dependency) {
+          it.trigger_dependency = true;
+        }
+        return it;
+      })
+    );
   }
-  return mark_trigger_outputs(struct, marked_paths);
+  return mark_trigger_outputs(struct, marked_paths, state);
 }
 
 function get_shortlisted_permissions(
@@ -235,25 +246,18 @@ function get_shortlisted_permissions(
   for (let [label, path] of labels) {
     for (let permission of permissions) {
       if (
-        permission.path[0].length === path[0].length &&
-        permission.path[1][0] === path[1]
+        compare_paths(
+          [permission.path[0].map((x) => x[0]), permission.path[1][0]],
+          path as PathString
+        )
       ) {
-        let check = true;
-        for (let [index, field_name] of path[0].entries()) {
-          if (permission.path[0][index][0] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          path_permissions = path_permissions.add(
-            apply(permission, (it) => {
-              it.label = label;
-              return it;
-            })
-          );
-          break;
-        }
+        path_permissions = path_permissions.add(
+          apply(permission, (it) => {
+            it.label = label;
+            return it;
+          })
+        );
+        break;
       }
     }
   }
@@ -263,7 +267,8 @@ function get_shortlisted_permissions(
 export function get_top_writeable_paths(
   struct: Struct,
   permissions: HashSet<PathPermission>,
-  labels: Immutable<Array<[string, PathString]>>
+  labels: Immutable<Array<[string, PathString]>>,
+  state: State
 ): HashSet<Path> {
   const labeled_permissions: HashSet<PathPermission> =
     get_shortlisted_permissions(permissions, labels);
@@ -278,42 +283,36 @@ export function get_top_writeable_paths(
       );
     }
   }
-  return mark_trigger_dependencies(struct, paths);
+  return mark_trigger_dependencies(struct, paths, state);
 }
 
 // Marks writeable paths as writeable
 export function get_writeable_paths(
   struct: Struct,
   paths: HashSet<Path>,
-  permissions: HashSet<PathPermission>
+  permissions: HashSet<PathPermission>,
+  state: State
 ): HashSet<Path> {
   let writeable_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     for (let permission of permissions) {
       if (
-        permission.path[0].length === path.path[0].length &&
-        permission.path[1][0] === path.path[1][0]
+        compare_paths(
+          [permission.path[0].map((x) => x[0]), permission.path[1][0]],
+          [path.path[0].map((x) => x[0]), path.path[1][0]]
+        )
       ) {
-        let check = true;
-        for (let [index, [field_name, _]] of path.path[0].entries()) {
-          if (permission.path[0][index][0] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          writeable_paths = writeable_paths.add(
-            apply(path, (it) => {
-              it.writeable = permission.writeable;
-              return it;
-            })
-          );
-          break;
-        }
+        writeable_paths = writeable_paths.add(
+          apply(path, (it) => {
+            it.writeable = permission.writeable;
+            return it;
+          })
+        );
+        break;
       }
     }
   }
-  return mark_trigger_dependencies(struct, writeable_paths);
+  return mark_trigger_dependencies(struct, writeable_paths, state);
 }
 
 export function get_labeled_path_filters(

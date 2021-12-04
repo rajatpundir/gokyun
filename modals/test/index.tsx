@@ -99,7 +99,8 @@ export default function Component(
               get_top_writeable_paths(
                 struct.value,
                 path_permissions,
-                state.labels
+                state.labels,
+                state
               )
             ),
           ]);
@@ -118,7 +119,8 @@ export default function Component(
                 it.paths = get_writeable_paths(
                   struct.value,
                   it.paths,
-                  path_permissions
+                  path_permissions,
+                  state
                 );
                 return it;
               }),
