@@ -22,7 +22,9 @@ import { PathString, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// Make triggers workk with path extensions
+// There should be change to marking trigger outputs and dependencies
+// Otherwise accessing and modifying paths should already be taken care of
+// Make triggers work with path extensions
 // Test triggers
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
@@ -39,7 +41,7 @@ export default function Component(
     updated_at: new Date(),
     values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
-    trigger: false,
+    trigger: 0,
     extensions: {},
     labels: [
       ["STR", [[], "str"]],
@@ -60,6 +62,7 @@ export default function Component(
       ["USER", [[], "user"]],
       ["USER NICKNAME", [["user"], "nickname"]],
     ],
+    higher_structs: [],
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {

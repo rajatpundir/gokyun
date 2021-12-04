@@ -16,7 +16,7 @@ export type State = Immutable<{
   updated_at: Date;
   values: HashSet<Path>;
   mode: "read" | "write";
-  trigger: boolean;
+  trigger: number;
   extensions: Record<
     string,
     {
@@ -26,6 +26,7 @@ export type State = Immutable<{
     }
   >;
   labels: Array<[string, PathString]>;
+  higher_structs: Array<[Struct, PathString]>;
 }>;
 
 export type Action =
@@ -92,7 +93,7 @@ export function reducer(state: Draft<State>, action: Action) {
           }
         }
         if (action[1].trigger_dependency) {
-          state.trigger = !state.trigger;
+          state.trigger += 1;
         }
       }
       break;
@@ -102,7 +103,7 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
-      state.trigger = !state.trigger;
+      state.trigger += 1;
       break;
     }
     default: {
@@ -113,6 +114,7 @@ export function reducer(state: Draft<State>, action: Action) {
 }
 
 function mark_trigger_outputs(struct: Struct, paths: HashSet<Path>) {
+  // Aside from struct passed here, state's higher_structs will be also be used to mark trigger outputs
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     const path_string: PathString = [
@@ -258,6 +260,62 @@ function get_shortlisted_permissions(
   return path_permissions;
 }
 
+export function get_top_writeable_paths(
+  struct: Struct,
+  permissions: HashSet<PathPermission>,
+  labels: Immutable<Array<[string, PathString]>>
+): HashSet<Path> {
+  const labeled_permissions: HashSet<PathPermission> =
+    get_shortlisted_permissions(permissions, labels);
+  let paths: HashSet<Path> = HashSet.of();
+  for (let permission of labeled_permissions) {
+    if (permission.path[0].length === 0) {
+      paths = paths.add(
+        apply(new Path(permission.label, [[], permission.path[1]]), (it) => {
+          it.writeable = true;
+          return it;
+        })
+      );
+    }
+  }
+  return mark_trigger_dependencies(struct, paths);
+}
+
+// Marks writeable paths as writeable
+export function get_writeable_paths(
+  struct: Struct,
+  paths: HashSet<Path>,
+  permissions: HashSet<PathPermission>
+): HashSet<Path> {
+  let writeable_paths: HashSet<Path> = HashSet.of();
+  for (let path of paths) {
+    for (let permission of permissions) {
+      if (
+        permission.path[0].length === path.path[0].length &&
+        permission.path[1][0] === path.path[1][0]
+      ) {
+        let check = true;
+        for (let [index, [field_name, _]] of path.path[0].entries()) {
+          if (permission.path[0][index][0] !== field_name) {
+            check = false;
+            break;
+          }
+        }
+        if (check) {
+          writeable_paths = writeable_paths.add(
+            apply(path, (it) => {
+              it.writeable = permission.writeable;
+              return it;
+            })
+          );
+          break;
+        }
+      }
+    }
+  }
+  return mark_trigger_dependencies(struct, writeable_paths);
+}
+
 export function get_labeled_path_filters(
   permissions: HashSet<PathPermission>,
   labels: Immutable<Array<[string, PathString]>>
@@ -310,61 +368,6 @@ export function get_labeled_path_filters(
     }
   }
   return path_filters;
-}
-
-export function get_top_writeable_paths(
-  struct: Struct,
-  permissions: HashSet<PathPermission>,
-  labels: Immutable<Array<[string, PathString]>>
-): HashSet<Path> {
-  const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, labels);
-  let paths: HashSet<Path> = HashSet.of();
-  for (let permission of labeled_permissions) {
-    if (permission.path[0].length === 0) {
-      paths = paths.add(
-        apply(new Path(permission.label, [[], permission.path[1]]), (it) => {
-          it.writeable = true;
-          return it;
-        })
-      );
-    }
-  }
-  return mark_trigger_dependencies(struct, paths);
-}
-
-export function get_writeable_paths(
-  struct: Struct,
-  paths: HashSet<Path>,
-  permissions: HashSet<PathPermission>
-): HashSet<Path> {
-  let writeable_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
-    for (let permission of permissions) {
-      if (
-        permission.path[0].length === path.path[0].length &&
-        permission.path[1][0] === path.path[1][0]
-      ) {
-        let check = true;
-        for (let [index, [field_name, _]] of path.path[0].entries()) {
-          if (permission.path[0][index][0] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          writeable_paths = writeable_paths.add(
-            apply(path, (it) => {
-              it.writeable = permission.writeable;
-              return it;
-            })
-          );
-          break;
-        }
-      }
-    }
-  }
-  return mark_trigger_dependencies(struct, writeable_paths);
 }
 
 function add_symbol(

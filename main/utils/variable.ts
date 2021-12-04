@@ -436,3 +436,25 @@ export function get_strong_enum(field: WeakEnum): StrongEnum {
     }
   });
 }
+
+export function compare_paths(
+  path_string: PathString,
+  other_path_string: PathString
+): boolean {
+  if (
+    path_string[0].length === other_path_string.length &&
+    path_string[1] === other_path_string[1]
+  ) {
+    let check = true;
+    for (let [index, field_name] of path_string[0].entries()) {
+      if (other_path_string[index] !== field_name) {
+        check = false;
+        break;
+      }
+    }
+    if (check) {
+      return true;
+    }
+  }
+  return false;
+}
