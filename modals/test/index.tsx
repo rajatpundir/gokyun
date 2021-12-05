@@ -196,6 +196,7 @@ export default function Component(
         apply({}, (it) => {
           if (unwrap(struct)) {
             return {
+              ...state2.extensions,
               z: {
                 struct: struct.value,
                 state: state,
