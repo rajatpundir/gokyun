@@ -442,7 +442,7 @@ export function compare_paths(
   other_path_string: PathString
 ): boolean {
   if (
-    path_string[0].length === other_path_string.length &&
+    path_string[0].length === other_path_string[0].length &&
     path_string[1] === other_path_string[1]
   ) {
     let check = true;

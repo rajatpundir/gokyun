@@ -30,6 +30,7 @@ export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
   const struct = get_struct("Test");
+  const struct2 = get_struct("Test2");
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
     active: true,
@@ -57,6 +58,39 @@ export default function Component(
       ["TIMESTAMP", [[], "timestamp"]],
       ["USER", [[], "user"]],
       ["USER NICKNAME", [["user"], "nickname"]],
+    ],
+    higher_structs: [],
+    user_paths: [],
+    borrows: [],
+  });
+  const [state2, dispatch2] = useImmerReducer<State, Action>(reducer, {
+    id: new Decimal(props.route.params.id),
+    active: true,
+    created_at: new Date(),
+    updated_at: new Date(),
+    values: HashSet.of(),
+    mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
+    trigger: 0,
+    extensions: {},
+    labels: [
+      ["STR2", [[], "str"]],
+      ["STR3", [["z"], "str"]],
+      ["LSTR2", [[], "lstr"]],
+      ["CLOB2", [[], "clob"]],
+      ["U322", [[], "u32"]],
+      ["I322", [[], "i32"]],
+      ["U642", [[], "u64"]],
+      ["I642", [[], "i64"]],
+      ["UDOUBLE2", [[], "udouble"]],
+      ["IDOUBLE2", [[], "idouble"]],
+      ["UDECIMAL2", [[], "udecimal"]],
+      ["IDECIMAL2", [[], "idecimal"]],
+      ["BOOL2", [[], "bool"]],
+      ["DATE2", [[], "date"]],
+      ["TIME2", [[], "time"]],
+      ["TIMESTAMP2", [[], "timestamp"]],
+      ["USER2", [[], "user"]],
+      ["USER NICKNAME2", [["user"], "nickname"]],
     ],
     higher_structs: [],
     user_paths: [],
@@ -115,19 +149,85 @@ export default function Component(
           }
         }
       }
+      if (unwrap(struct2)) {
+        log_permissions(
+          struct2.value,
+          state2.user_paths as PathString[],
+          state2.borrows as string[]
+        );
+        if (state2.id.equals(-1)) {
+          dispatch2([
+            "variable",
+            new Variable(
+              struct2.value,
+              new Decimal(-1),
+              state2.active,
+              state2.created_at,
+              state2.updated_at,
+              get_top_writeable_paths(struct2.value, state2)
+            ),
+          ]);
+        } else {
+          const result = await get_variable(
+            undefined,
+            struct2.value,
+            state2.id as Decimal,
+            true,
+            get_labeled_path_filters(struct2.value, state2)
+          );
+          if (unwrap(result)) {
+            dispatch2([
+              "variable",
+              apply(result.value, (it) => {
+                it.paths = get_writeable_paths(struct2.value, it.paths, state2);
+                return it;
+              }),
+            ]);
+          }
+        }
+      }
     };
     update_values();
-  }, [state.mode, state.id]);
-  // React.useEffect(() => {
-  //   if (unwrap(struct)) {
-  //     run_triggers(struct.value, state, dispatch);
-  //   }
-  // }, [state.trigger]);
-  console.log(state.values.length());
-  if (unwrap(struct)) {
+  }, [state2.mode, state2.id]);
+  React.useEffect(() => {
+    if (unwrap(struct)) {
+      dispatch2([
+        "extension",
+        apply({}, (it) => {
+          if (unwrap(struct)) {
+            return {
+              z: {
+                struct: struct.value,
+                state: state,
+                dispatch: dispatch,
+              },
+            };
+          }
+          return it;
+        }),
+      ]);
+    }
+  }, [state.values]);
+  React.useEffect(() => {
+    if (unwrap(struct)) {
+      run_triggers(struct.value, state, dispatch);
+      dispatch2(["trigger"]);
+    }
+  }, [state.trigger]);
+  React.useEffect(() => {
+    if (unwrap(struct2)) {
+      run_triggers(struct2.value, state2, dispatch2);
+    }
+  }, [state2.trigger]);
+  if (unwrap(struct) && unwrap(struct2)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
-        return create_struct({ state, dispatch });
+        return (
+          <>
+            {create_struct({ state, dispatch })}
+            {create_struct({ state: state2, dispatch: dispatch2 })}
+          </>
+        );
       } else {
         return update_struct({ state, dispatch });
       }
@@ -147,6 +247,10 @@ function create_struct(reducer: {
       <View>
         <Label {...reducer} path={"str"} />
         <Field {...reducer} path={"str"} />
+      </View>
+      <View>
+        <Label {...reducer} path={[["z"], "str"]} />
+        <Field {...reducer} path={[["z"], "str"]} />
       </View>
       <View>
         <Label {...reducer} path={"lstr"} />

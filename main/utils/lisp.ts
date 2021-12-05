@@ -12,7 +12,7 @@ import {
 import { ErrMsg, errors } from "./errors";
 import { PathString } from "./variable";
 
-type LispResult = Num | Deci | Text | Bool;
+export type LispResult = Num | Deci | Text | Bool;
 
 export type LispExpression =
   | NumberArithmeticExpression

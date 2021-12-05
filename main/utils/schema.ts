@@ -108,6 +108,73 @@ const schema: Record<
     },
     checks: {},
   },
+  Test2: {
+    fields: {
+      str: { type: "str" },
+      lstr: { type: "lstr" },
+      clob: { type: "clob" },
+      u32: { type: "u32", default: new Decimal(77) },
+      i32: { type: "i32" },
+      u64: { type: "u64", default: new Decimal(11) },
+      i64: { type: "i64" },
+      udouble: { type: "udouble" },
+      idouble: { type: "idouble" },
+      udecimal: { type: "udecimal" },
+      idecimal: { type: "idecimal" },
+      bool: { type: "bool" },
+      date: { type: "date" },
+      time: { type: "time" },
+      timestamp: { type: "timestamp" },
+      user: { type: "other", other: "User" },
+    },
+    uniqueness: [],
+    permissions: {
+      borrow: {},
+      ownership: {},
+      public: [
+        "str",
+        "lstr",
+        "clob",
+        "u32",
+        "i32",
+        "u64",
+        "i64",
+        "udouble",
+        "idouble",
+        "udecimal",
+        "idecimal",
+        "bool",
+        "date",
+        "time",
+        "timestamp",
+        "user",
+      ],
+    },
+    triggers: {
+      add_something: {
+        event: ["after_creation", "after_update"],
+        monitor: [
+          [[], "u32"],
+          [[], "u64"],
+        ],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [["z"], "i32"],
+              new NumberArithmeticExpression(
+                new Multiply<ToNum>([
+                  new DotExpression(new Dot(["z", "u32"])),
+                  [new DotExpression(new Dot(["u64"]))],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+    },
+    checks: {},
+  },
   Product_Category: {
     fields: {
       parent: { type: "other", other: "Product_Category" },

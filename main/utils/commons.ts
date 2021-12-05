@@ -5,7 +5,15 @@ import React from "react";
 import { PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { get_path } from "./fields";
-import { LispExpression, Symbol, Text, Num, Bool, Deci } from "./lisp";
+import {
+  LispExpression,
+  Symbol,
+  Text,
+  Num,
+  Bool,
+  Deci,
+  LispResult,
+} from "./lisp";
 import { get_permissions, PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import {
@@ -46,7 +54,19 @@ export type Action =
   | ["created_at", Date]
   | ["updated_at", Date]
   | ["value", Path]
-  | ["variable", Variable];
+  | ["variable", Variable]
+  | [
+      "extension",
+      Record<
+        string,
+        {
+          struct: Struct;
+          state: State;
+          dispatch: React.Dispatch<Action>;
+        }
+      >
+    ]
+  | ["trigger"];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -68,41 +88,9 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "value": {
       if (action[1].writeable || action[1].trigger_output) {
-        if (action[1].path[0].length === 0) {
-          if (action[1].path[1][0] in state.extensions) {
-            const extension = state.extensions[action[1].path[1][0]];
-            extension.dispatch([
-              "value",
-              apply(new Path(action[1].label, action[1].path), (it) => {
-                it.writeable = action[1].writeable;
-                it.trigger_dependency = action[1].trigger_dependency;
-                it.trigger_output = action[1].trigger_output;
-                return it;
-              }),
-            ]);
-          } else {
-            state.values = apply(state.values.remove(action[1]), (it) => {
-              return it.add(action[1]);
-            });
-          }
-        } else {
-          if (action[1].path[0][0][0] in state.extensions) {
-            const extension = state.extensions[action[1].path[0][0][0]];
-            extension.dispatch([
-              "value",
-              apply(new Path(action[1].label, action[1].path), (it) => {
-                it.writeable = action[1].writeable;
-                it.trigger_dependency = action[1].trigger_dependency;
-                it.trigger_output = action[1].trigger_output;
-                return it;
-              }),
-            ]);
-          } else {
-            state.values = apply(state.values.remove(action[1]), (it) => {
-              return it.add(action[1]);
-            });
-          }
-        }
+        state.values = apply(state.values.remove(action[1]), (it) => {
+          return it.add(action[1]);
+        });
         if (action[1].trigger_dependency) {
           state.trigger += 1;
         }
@@ -114,6 +102,14 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
+      state.trigger += 1;
+      break;
+    }
+    case "extension": {
+      state.extensions = action[1] as any;
+      break;
+    }
+    case "trigger": {
       state.trigger += 1;
       break;
     }
@@ -278,7 +274,6 @@ export function get_top_writeable_paths(
   );
   const labeled_permissions: HashSet<PathPermission> =
     get_shortlisted_permissions(permissions, state.labels);
-  console.log("labeled", labeled_permissions.length());
   let paths: HashSet<Path> = HashSet.of();
   for (let permission of labeled_permissions) {
     if (permission.path[0].length === 0) {
@@ -290,7 +285,6 @@ export function get_top_writeable_paths(
       );
     }
   }
-  console.log("--------paths.length()-------", paths.length());
   return mark_trigger_dependencies(struct, paths, state);
 }
 
@@ -449,16 +443,19 @@ function add_symbol(
     });
   } else {
     const symbol_name = path[0][0];
-    symbols[symbol_name].value.values = add_symbol(
-      apply({}, (it) => {
-        if (symbol_name in symbols) {
-          return symbols[symbol_name].value.values;
-        }
-        return it;
-      }),
-      [path[0].slice(1), path[1]],
-      field
-    );
+    symbols[symbol_name] = new Symbol({
+      value: undefined,
+      values: add_symbol(
+        apply({}, (it) => {
+          if (symbol_name in symbols) {
+            return symbols[symbol_name].value.values;
+          }
+          return it;
+        }),
+        [path[0].slice(1), path[1]],
+        field
+      ),
+    });
   }
   return symbols;
 }
@@ -485,178 +482,225 @@ export function get_symbols(
   return new Ok(symbols);
 }
 
+function dispatch_result(
+  state: State,
+  dispatch: React.Dispatch<Action>,
+  path_string: PathString,
+  expr_result: LispResult
+) {
+  for (let value of state.values) {
+    if (
+      value.path[0].length === path_string[0].length &&
+      value.path[1][0] === path_string[1]
+    ) {
+      let check = true;
+      for (let [index, field_name] of path_string[0].entries()) {
+        if (value.path[index][0] !== field_name) {
+          check = false;
+        }
+      }
+      if (check) {
+        const field = value.path[1][1];
+        switch (field.type) {
+          case "str":
+          case "lstr":
+          case "clob": {
+            if (expr_result instanceof Text) {
+              dispatch([
+                "value",
+                apply(value, (it) => {
+                  it.path[1] = [
+                    it.path[1][0],
+                    {
+                      type: field.type,
+                      value: expr_result.value as string,
+                    },
+                  ];
+                  return it;
+                }),
+              ]);
+            }
+            break;
+          }
+          case "i32":
+          case "u32":
+          case "i64":
+          case "u64": {
+            if (expr_result instanceof Num) {
+              dispatch([
+                "value",
+                apply(value, (it) => {
+                  it.path[1] = [
+                    it.path[1][0],
+                    {
+                      type: field.type,
+                      value: new Decimal(expr_result.value as number),
+                    },
+                  ];
+                  return it;
+                }),
+              ]);
+            }
+            break;
+          }
+          case "idouble":
+          case "udouble":
+          case "idecimal":
+          case "udecimal": {
+            if (expr_result instanceof Deci) {
+              dispatch([
+                "value",
+                apply(value, (it) => {
+                  it.path[1] = [
+                    it.path[1][0],
+                    {
+                      type: field.type,
+                      value: new Decimal(expr_result.value as number),
+                    },
+                  ];
+                  return it;
+                }),
+              ]);
+            }
+            break;
+          }
+          case "bool": {
+            if (expr_result instanceof Bool) {
+              dispatch([
+                "value",
+                apply(value, (it) => {
+                  it.path[1] = [
+                    it.path[1][0],
+                    {
+                      type: field.type,
+                      value: expr_result.value as boolean,
+                    },
+                  ];
+                  return it;
+                }),
+              ]);
+            }
+            break;
+          }
+          case "date":
+          case "time":
+          case "timestamp": {
+            if (expr_result instanceof Num) {
+              dispatch([
+                "value",
+                apply(value, (it) => {
+                  it.path[1] = [
+                    it.path[1][0],
+                    {
+                      type: field.type,
+                      value: new Date(expr_result.value as number),
+                    },
+                  ];
+                  return it;
+                }),
+              ]);
+            }
+            break;
+          }
+          case "other": {
+            if (expr_result instanceof Num) {
+              dispatch([
+                "value",
+                apply(value, (it) => {
+                  it.path[1] = [
+                    it.path[1][0],
+                    {
+                      type: field.type,
+                      other: field.other,
+                      value: new Decimal(expr_result.value as number),
+                    },
+                  ];
+                  return it;
+                }),
+              ]);
+            }
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = field;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+    }
+  }
+}
+
 function run_path_updates(
   state: State,
   dispatch: React.Dispatch<Action>,
-  path_updates: ReadonlyArray<[PathString, LispExpression]>
+  path_updates: ReadonlyArray<[PathString, LispExpression]>,
+  extension_update: [PathString, LispResult] | undefined
 ) {
+  let parent_updates: Array<
+    [State, React.Dispatch<Action>, PathString, LispResult]
+  > = [];
+  if (extension_update !== undefined) {
+    const path_string: PathString = extension_update[0];
+    const expr_result: LispResult = extension_update[1];
+    const first: string = apply(path_string[1], (it) => {
+      if (path_string[0].length !== 0) {
+        return path_string[0][0];
+      }
+      return it;
+    });
+    if (first in state.extensions) {
+      const extension = state.extensions[first];
+      parent_updates.push([
+        extension.state,
+        extension.dispatch,
+        [path_string[0].slice(1), path_string[1]],
+        expr_result,
+      ]);
+    } else {
+      dispatch_result(state, dispatch, path_string, expr_result);
+    }
+  }
   for (let path_update of path_updates) {
     const path_string: PathString = path_update[0];
     const expr = path_update[1];
     const result = get_symbols(state, expr);
     if (unwrap(result)) {
       const symbols = result.value;
-      for (let value of state.values) {
-        if (
-          value.path[0].length === path_string[0].length &&
-          value.path[1][0] === path_string[1]
-        ) {
-          let check = true;
-          for (let [index, field_name] of path_string[0].entries()) {
-            if (value.path[index][0] !== field_name) {
-              check = false;
-            }
+      const expr_result = expr.get_result(symbols);
+      if (unwrap(expr_result)) {
+        const first: string = apply(path_string[1], (it) => {
+          if (path_string[0].length !== 0) {
+            return path_string[0][0];
           }
-          if (check) {
-            const field = value.path[1][1];
-            switch (field.type) {
-              case "str":
-              case "lstr":
-              case "clob": {
-                const result = expr.get_result(symbols);
-                if (unwrap(result)) {
-                  if (result.value instanceof Text) {
-                    dispatch([
-                      "value",
-                      apply(value, (it) => {
-                        it.path[1] = [
-                          it.path[1][0],
-                          {
-                            type: field.type,
-                            value: result.value.value as string,
-                          },
-                        ];
-                        return it;
-                      }),
-                    ]);
-                  }
-                }
-                break;
-              }
-              case "i32":
-              case "u32":
-              case "i64":
-              case "u64": {
-                const result = expr.get_result(symbols);
-                if (unwrap(result)) {
-                  if (result.value instanceof Num) {
-                    dispatch([
-                      "value",
-                      apply(value, (it) => {
-                        it.path[1] = [
-                          it.path[1][0],
-                          {
-                            type: field.type,
-                            value: new Decimal(result.value.value as number),
-                          },
-                        ];
-                        return it;
-                      }),
-                    ]);
-                  }
-                }
-                break;
-              }
-              case "idouble":
-              case "udouble":
-              case "idecimal":
-              case "udecimal": {
-                const result = expr.get_result(symbols);
-                if (unwrap(result)) {
-                  if (result.value instanceof Deci) {
-                    dispatch([
-                      "value",
-                      apply(value, (it) => {
-                        it.path[1] = [
-                          it.path[1][0],
-                          {
-                            type: field.type,
-                            value: new Decimal(result.value.value as number),
-                          },
-                        ];
-                        return it;
-                      }),
-                    ]);
-                  }
-                }
-                break;
-              }
-              case "bool": {
-                const result = expr.get_result(symbols);
-                if (unwrap(result)) {
-                  if (result.value instanceof Bool) {
-                    result.value.value;
-                    dispatch([
-                      "value",
-                      apply(value, (it) => {
-                        it.path[1] = [
-                          it.path[1][0],
-                          {
-                            type: field.type,
-                            value: result.value.value as boolean,
-                          },
-                        ];
-                        return it;
-                      }),
-                    ]);
-                  }
-                }
-                break;
-              }
-              case "date":
-              case "time":
-              case "timestamp": {
-                const result = expr.get_result(symbols);
-                if (unwrap(result)) {
-                  if (result.value instanceof Num) {
-                    dispatch([
-                      "value",
-                      apply(value, (it) => {
-                        it.path[1] = [
-                          it.path[1][0],
-                          {
-                            type: field.type,
-                            value: new Date(result.value.value as number),
-                          },
-                        ];
-                        return it;
-                      }),
-                    ]);
-                  }
-                }
-                break;
-              }
-              case "other": {
-                const result = expr.get_result(symbols);
-                if (unwrap(result)) {
-                  if (result.value instanceof Num) {
-                    dispatch([
-                      "value",
-                      apply(value, (it) => {
-                        it.path[1] = [
-                          it.path[1][0],
-                          {
-                            type: field.type,
-                            other: field.other,
-                            value: new Decimal(result.value.value as number),
-                          },
-                        ];
-                        return it;
-                      }),
-                    ]);
-                  }
-                }
-                break;
-              }
-              default: {
-                const _exhaustiveCheck: never = field;
-                return _exhaustiveCheck;
-              }
-            }
-          }
+          return it;
+        });
+        if (first in state.extensions) {
+          const extension = state.extensions[first];
+          parent_updates.push([
+            extension.state,
+            extension.dispatch,
+            [path_string[0].slice(1), path_string[1]],
+            expr_result.value,
+          ]);
+        } else {
+          dispatch_result(state, dispatch, path_string, expr_result.value);
         }
       }
     }
+  }
+  for (let [
+    extension_state,
+    extension_dispatch,
+    path_string,
+    expr_result,
+  ] of parent_updates) {
+    run_path_updates(
+      extension_state,
+      extension_dispatch,
+      [],
+      [path_string, expr_result]
+    );
   }
 }
 
@@ -671,11 +715,21 @@ export async function run_triggers(
       if (state.mode === "write") {
         if (state.id.equals(-1)) {
           if (trigger.event.includes("after_creation")) {
-            run_path_updates(state, dispatch, trigger.operation.path_updates);
+            run_path_updates(
+              state,
+              dispatch,
+              trigger.operation.path_updates,
+              undefined
+            );
           }
         } else {
           if (trigger.event.includes("after_update")) {
-            run_path_updates(state, dispatch, trigger.operation.path_updates);
+            run_path_updates(
+              state,
+              dispatch,
+              trigger.operation.path_updates,
+              undefined
+            );
           }
         }
       }
