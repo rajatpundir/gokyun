@@ -6,7 +6,7 @@ import { PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { get_path } from "./fields";
 import { LispExpression, Symbol, Text, Num, Bool, Deci } from "./lisp";
-import { PathPermission } from "./permissions";
+import { get_permissions, PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import {
   Path,
@@ -36,6 +36,8 @@ export type State = Immutable<{
   >;
   labels: Array<[string, PathString]>;
   higher_structs: Array<[Struct, PathString]>;
+  user_paths: Array<PathString>;
+  borrows: Array<string>
 }>;
 
 export type Action =
@@ -267,12 +269,15 @@ function get_shortlisted_permissions(
 
 export function get_top_writeable_paths(
   struct: Struct,
-  permissions: HashSet<PathPermission>,
-  labels: Immutable<Array<[string, PathString]>>,
   state: State
 ): HashSet<Path> {
+  const permissions: HashSet<PathPermission> = get_permissions(
+    struct,
+    state.user_paths as PathString[],
+    state.borrows as string[]
+  )
   const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, labels);
+    get_shortlisted_permissions(permissions, state.labels);
   let paths: HashSet<Path> = HashSet.of();
   for (let permission of labeled_permissions) {
     if (permission.path[0].length === 0) {
@@ -284,6 +289,7 @@ export function get_top_writeable_paths(
       );
     }
   }
+  console.log("--------paths.length()-------", paths.length())
   return mark_trigger_dependencies(struct, paths, state);
 }
 
@@ -291,9 +297,13 @@ export function get_top_writeable_paths(
 export function get_writeable_paths(
   struct: Struct,
   paths: HashSet<Path>,
-  permissions: HashSet<PathPermission>,
   state: State
 ): HashSet<Path> {
+  const permissions: HashSet<PathPermission> = get_permissions(
+    struct,
+    state.user_paths as PathString[],
+    state.borrows as string[]
+  )
   let writeable_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     for (let permission of permissions) {
@@ -317,11 +327,16 @@ export function get_writeable_paths(
 }
 
 export function get_labeled_path_filters(
-  permissions: HashSet<PathPermission>,
-  labels: Immutable<Array<[string, PathString]>>
+  struct: Struct,
+  state: State,
 ): Array<[string, PathFilter]> {
+  const permissions: HashSet<PathPermission> = get_permissions(
+    struct,
+    state.user_paths as PathString[],
+    state.borrows as string[]
+  )
   const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, labels);
+    get_shortlisted_permissions(permissions, state.labels);
   const path_filters: Array<[string, PathFilter]> = [];
   for (let permission of labeled_permissions) {
     const path = apply(

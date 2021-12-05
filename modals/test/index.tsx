@@ -16,7 +16,7 @@ import {
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { get_permissions, log_permissions } from "../../main/utils/permissions";
+import { log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
 import { PathString, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
@@ -30,7 +30,6 @@ export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
   const struct = get_struct("Test");
-  const [user_paths, borrows]: [Array<PathString>, Array<string>] = [[], []];
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
     active: true,
@@ -60,6 +59,8 @@ export default function Component(
       ["USER NICKNAME", [["user"], "nickname"]],
     ],
     higher_structs: [],
+    user_paths: [],
+    borrows: []
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {
@@ -78,12 +79,7 @@ export default function Component(
     }
     const update_values = async () => {
       if (unwrap(struct)) {
-        const path_permissions = get_permissions(
-          struct.value,
-          user_paths,
-          borrows
-        );
-        log_permissions(struct.value, user_paths, borrows);
+        log_permissions(struct.value, state.user_paths as PathString[], state.borrows as string[]);
         if (state.id.equals(-1)) {
           dispatch([
             "variable",
@@ -95,8 +91,6 @@ export default function Component(
               state.updated_at,
               get_top_writeable_paths(
                 struct.value,
-                path_permissions,
-                state.labels,
                 state
               )
             ),
@@ -107,7 +101,7 @@ export default function Component(
             struct.value,
             state.id as Decimal,
             true,
-            get_labeled_path_filters(path_permissions, state.labels)
+            get_labeled_path_filters(struct.value,state)
           );
           if (unwrap(result)) {
             dispatch([
@@ -116,7 +110,6 @@ export default function Component(
                 it.paths = get_writeable_paths(
                   struct.value,
                   it.paths,
-                  path_permissions,
                   state
                 );
                 return it;
@@ -128,11 +121,12 @@ export default function Component(
     };
     update_values();
   }, [state.mode, state.id]);
-  React.useEffect(() => {
-    if (unwrap(struct)) {
-      run_triggers(struct.value, state, dispatch);
-    }
-  }, [state.trigger]);
+  // React.useEffect(() => {
+  //   if (unwrap(struct)) {
+  //     run_triggers(struct.value, state, dispatch);
+  //   }
+  // }, [state.trigger]);
+  console.log(state.values.length())
   if (unwrap(struct)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
