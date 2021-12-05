@@ -120,7 +120,7 @@ const schema: Record<
               new DecimalArithmeticExpression(
                 new Multiply<ToDeci>([
                   new DotExpression(new Dot(["udecimal"])),
-                  [new DotExpression(new Dot(["idecimal"]))],
+                  [new DotExpression(new Dot(["u32"]))],
                 ])
               ),
             ],
