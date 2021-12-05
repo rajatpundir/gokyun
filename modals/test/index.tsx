@@ -22,9 +22,6 @@ import { PathString, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// There should be change to marking trigger outputs and dependencies
-// Otherwise accessing and modifying paths should already be taken care of
-// Make triggers work with path extensions
 // Test triggers
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
