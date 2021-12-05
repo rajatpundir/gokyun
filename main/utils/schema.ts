@@ -5,6 +5,7 @@ import {
   And,
   BooleanLispExpression,
   Deci,
+  DecimalArithmeticExpression,
   DecimalComparatorExpression,
   Divide,
   Dot,
@@ -52,8 +53,8 @@ const schema: Record<
       i64: { type: "i64" },
       udouble: { type: "udouble" },
       idouble: { type: "idouble" },
-      udecimal: { type: "udecimal" },
-      idecimal: { type: "idecimal" },
+      udecimal: { type: "udecimal", default: new Decimal(5) },
+      idecimal: { type: "idecimal", default: new Decimal(7) },
       bool: { type: "bool" },
       date: { type: "date" },
       time: { type: "time" },
@@ -99,6 +100,27 @@ const schema: Record<
                 new Multiply<ToNum>([
                   new DotExpression(new Dot(["u32"])),
                   [new DotExpression(new Dot(["u64"]))],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
+      add_something_2: {
+        event: ["after_creation", "after_update"],
+        monitor: [
+          [[], "u32"],
+          [[], "u64"],
+        ],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [[], "udouble"],
+              new DecimalArithmeticExpression(
+                new Multiply<ToDeci>([
+                  new DotExpression(new Dot(["udecimal"])),
+                  [new DotExpression(new Dot(["idecimal"]))],
                 ])
               ),
             ],
