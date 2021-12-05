@@ -37,7 +37,7 @@ export type State = Immutable<{
   labels: Array<[string, PathString]>;
   higher_structs: Array<[Struct, PathString]>;
   user_paths: Array<PathString>;
-  borrows: Array<string>
+  borrows: Array<string>;
 }>;
 
 export type Action =
@@ -275,9 +275,10 @@ export function get_top_writeable_paths(
     struct,
     state.user_paths as PathString[],
     state.borrows as string[]
-  )
+  );
   const labeled_permissions: HashSet<PathPermission> =
     get_shortlisted_permissions(permissions, state.labels);
+  console.log("labeled", labeled_permissions.length());
   let paths: HashSet<Path> = HashSet.of();
   for (let permission of labeled_permissions) {
     if (permission.path[0].length === 0) {
@@ -289,7 +290,7 @@ export function get_top_writeable_paths(
       );
     }
   }
-  console.log("--------paths.length()-------", paths.length())
+  console.log("--------paths.length()-------", paths.length());
   return mark_trigger_dependencies(struct, paths, state);
 }
 
@@ -303,7 +304,7 @@ export function get_writeable_paths(
     struct,
     state.user_paths as PathString[],
     state.borrows as string[]
-  )
+  );
   let writeable_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     for (let permission of permissions) {
@@ -328,13 +329,13 @@ export function get_writeable_paths(
 
 export function get_labeled_path_filters(
   struct: Struct,
-  state: State,
+  state: State
 ): Array<[string, PathFilter]> {
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,
     state.user_paths as PathString[],
     state.borrows as string[]
-  )
+  );
   const labeled_permissions: HashSet<PathPermission> =
     get_shortlisted_permissions(permissions, state.labels);
   const path_filters: Array<[string, PathFilter]> = [];

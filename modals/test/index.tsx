@@ -60,7 +60,7 @@ export default function Component(
     ],
     higher_structs: [],
     user_paths: [],
-    borrows: []
+    borrows: [],
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {
@@ -79,7 +79,11 @@ export default function Component(
     }
     const update_values = async () => {
       if (unwrap(struct)) {
-        log_permissions(struct.value, state.user_paths as PathString[], state.borrows as string[]);
+        log_permissions(
+          struct.value,
+          state.user_paths as PathString[],
+          state.borrows as string[]
+        );
         if (state.id.equals(-1)) {
           dispatch([
             "variable",
@@ -89,10 +93,7 @@ export default function Component(
               state.active,
               state.created_at,
               state.updated_at,
-              get_top_writeable_paths(
-                struct.value,
-                state
-              )
+              get_top_writeable_paths(struct.value, state)
             ),
           ]);
         } else {
@@ -101,17 +102,13 @@ export default function Component(
             struct.value,
             state.id as Decimal,
             true,
-            get_labeled_path_filters(struct.value,state)
+            get_labeled_path_filters(struct.value, state)
           );
           if (unwrap(result)) {
             dispatch([
               "variable",
               apply(result.value, (it) => {
-                it.paths = get_writeable_paths(
-                  struct.value,
-                  it.paths,
-                  state
-                );
+                it.paths = get_writeable_paths(struct.value, it.paths, state);
                 return it;
               }),
             ]);
@@ -126,7 +123,7 @@ export default function Component(
   //     run_triggers(struct.value, state, dispatch);
   //   }
   // }, [state.trigger]);
-  console.log(state.values.length())
+  console.log(state.values.length());
   if (unwrap(struct)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
