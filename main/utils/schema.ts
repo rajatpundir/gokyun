@@ -194,6 +194,27 @@ const schema: Record<
           ],
         },
       },
+      add_something_2: {
+        event: ["after_creation", "after_update"],
+        monitor: [
+          [[], "u32"],
+          [[], "u64"],
+        ],
+        operation: {
+          op: "update",
+          path_updates: [
+            [
+              [[], "i32"],
+              new NumberArithmeticExpression(
+                new Multiply<ToNum>([
+                  new DotExpression(new Dot(["z", "i32"])),
+                  [new DotExpression(new Dot(["u32"]))],
+                ])
+              ),
+            ],
+          ],
+        },
+      },
     },
     checks: {},
   },

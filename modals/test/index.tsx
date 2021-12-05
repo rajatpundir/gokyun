@@ -22,7 +22,8 @@ import { PathString, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// Test triggers
+// Test trigger by adding some struct to higher_structs
+// Add and test Checks
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
 // Complete testing Test
