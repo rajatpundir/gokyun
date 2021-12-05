@@ -18,7 +18,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
-import { PathString, Variable } from "../../main/utils/variable";
+import { PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
@@ -60,9 +60,15 @@ export default function Component(
       ["USER", [[], "user"]],
       ["USER NICKNAME", [["user"], "nickname"]],
     ],
-    higher_structs: [],
+    higher_structs: apply([] as Array<[Struct, PathString]>, (it) => {
+      if (unwrap(struct2)) {
+        it.push([struct2.value, [[], "z"]]);
+      }
+      return it;
+    }),
     user_paths: [],
     borrows: [],
+    checks: {},
   });
   const [state2, dispatch2] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
@@ -96,6 +102,7 @@ export default function Component(
     higher_structs: [],
     user_paths: [],
     borrows: [],
+    checks: {},
   });
   React.useEffect(() => {
     const set_title = async (title: string) => {

@@ -447,7 +447,7 @@ export function compare_paths(
   ) {
     let check = true;
     for (let [index, field_name] of path_string[0].entries()) {
-      if (other_path_string[index] !== field_name) {
+      if (other_path_string[0][index] !== field_name) {
         check = false;
         break;
       }

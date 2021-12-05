@@ -46,6 +46,7 @@ export type State = Immutable<{
   higher_structs: Array<[Struct, PathString]>;
   user_paths: Array<PathString>;
   borrows: Array<string>;
+  checks: Record<string, Result<boolean>>;
 }>;
 
 export type Action =
@@ -125,7 +126,6 @@ function mark_trigger_outputs(
   paths: HashSet<Path>,
   state: State
 ) {
-  // Aside from struct passed here, state's higher_structs will be also be used to mark trigger outputs
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     const path_string: PathString = [
@@ -146,13 +146,13 @@ function mark_trigger_outputs(
     }
     for (let [higher_struct, higher_path_string] of state.higher_structs) {
       for (let trigger_name of Object.keys(higher_struct.triggers)) {
-        const trigger = struct.triggers[trigger_name];
+        const trigger = higher_struct.triggers[trigger_name];
         if (trigger.operation.op === "update") {
           for (let field of trigger.operation.path_updates) {
             const ref_path_string = field[0];
             if (
               compare_paths(
-                ref_path_string,
+                ref_path_string as PathString,
                 concat_path_strings(
                   higher_path_string as PathString,
                   path_string
@@ -206,13 +206,13 @@ function mark_trigger_dependencies(
     }
     for (let [higher_struct, higher_path_string] of state.higher_structs) {
       for (let trigger_name of Object.keys(higher_struct.triggers)) {
-        const trigger = struct.triggers[trigger_name];
+        const trigger = higher_struct.triggers[trigger_name];
         if (trigger.operation.op === "update") {
           for (let field of trigger.operation.path_updates) {
             const ref_path_string = field[0];
             if (
               compare_paths(
-                ref_path_string,
+                ref_path_string as PathString,
                 concat_path_strings(
                   higher_path_string as PathString,
                   path_string
