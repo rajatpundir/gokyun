@@ -16,6 +16,7 @@ import {
   LessThanEquals,
   LogicalBinaryExpression,
   LogicalUnaryExpression,
+  Modulus,
   Multiply,
   Not,
   Num,
@@ -47,7 +48,7 @@ const schema: Record<
       str: { type: "str" },
       lstr: { type: "lstr" },
       clob: { type: "clob" },
-      u32: { type: "u32", default: new Decimal(2) },
+      u32: { type: "u32", default: new Decimal(11) },
       i32: { type: "i32" },
       u64: { type: "u64", default: new Decimal(3) },
       i64: { type: "i64" },
@@ -128,7 +129,23 @@ const schema: Record<
         },
       },
     },
-    checks: {},
+    checks: {
+      u32_is_even: [
+        new NumberComparatorExpression(
+          new Equals<ToNum>([
+            new NumberArithmeticExpression(
+              new Modulus<ToNum>([
+                new DotExpression(new Dot(["u32"])),
+                [new Num(2)],
+              ])
+            ),
+            new Num(0),
+            [],
+          ])
+        ),
+        [errors.ErrEmptyField] as ErrMsg,
+      ],
+    },
   },
   Test2: {
     fields: {
@@ -216,7 +233,23 @@ const schema: Record<
         },
       },
     },
-    checks: {},
+    checks: {
+      z_u32_is_even: [
+        new NumberComparatorExpression(
+          new Equals<ToNum>([
+            new NumberArithmeticExpression(
+              new Modulus<ToNum>([
+                new DotExpression(new Dot(["z", "u32"])),
+                [new Num(2)],
+              ])
+            ),
+            new Num(0),
+            [],
+          ])
+        ),
+        [errors.ErrEmptyField] as ErrMsg,
+      ],
+    },
   },
   Product_Category: {
     fields: {

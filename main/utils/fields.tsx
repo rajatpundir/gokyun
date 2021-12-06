@@ -12,12 +12,10 @@ import Decimal from "decimal.js";
 import moment from "moment";
 
 import { Text as ThemedText } from "../../main/themed";
-import { apply, unwrap, Option, Ok } from "./prelude";
+import { apply, unwrap, Option, Ok, Result } from "./prelude";
 import { Action, State } from "./commons";
 import { useState } from "react";
 import { Path, PathString, Struct } from "./variable";
-import { HashSet } from "prelude-ts";
-import { Immutable } from "immer";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -1293,4 +1291,36 @@ export function Field(props: {
     }
     return null;
   });
+}
+
+export function Check(
+  props: Text["props"] & {
+    state: State;
+    name: string;
+    message: string;
+  }
+): JSX.Element | null {
+  console.log(props.state.checks);
+  const { state, style, ...otherProps } = props;
+  if (props.name in state.checks) {
+    const result = state.checks[props.name] as Result<boolean>;
+    if (unwrap(result)) {
+      if (!result.value) {
+        return (
+          <Text
+            style={[
+              {
+                color: "white",
+              },
+              style,
+            ]}
+            {...otherProps}
+          >
+            {props.message}
+          </Text>
+        );
+      }
+    }
+  }
+  return null;
 }

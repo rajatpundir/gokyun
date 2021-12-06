@@ -12,6 +12,7 @@ import {
   get_top_writeable_paths,
   get_writeable_paths,
   run_triggers,
+  compute_checks,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
@@ -19,10 +20,9 @@ import { HashSet } from "prelude-ts";
 import { log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
 import { PathString, Struct, Variable } from "../../main/utils/variable";
-import { Label, Field } from "../../main/utils/fields";
+import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// Add and test Checks
 // Push some users into DB
 // Get user selected to return a variable along with requested paths
 // Complete testing Test
@@ -38,7 +38,8 @@ export default function Component(
     updated_at: new Date(),
     values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
-    trigger: 0,
+    event_trigger: 0,
+    check_trigger: 0,
     extensions: {},
     labels: [
       ["STR", [[], "str"]],
@@ -76,7 +77,8 @@ export default function Component(
     updated_at: new Date(),
     values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
-    trigger: 0,
+    event_trigger: 0,
+    check_trigger: 0,
     extensions: {},
     labels: [
       ["STR2", [[], "str"]],
@@ -197,6 +199,7 @@ export default function Component(
     update_values();
   }, [state2.mode, state2.id]);
   React.useEffect(() => {
+    // state is getting embedded so state.values is necessary dependency for the effect
     if (unwrap(struct)) {
       dispatch2([
         "extension",
@@ -219,14 +222,25 @@ export default function Component(
   React.useEffect(() => {
     if (unwrap(struct)) {
       run_triggers(struct.value, state, dispatch);
-      dispatch2(["trigger"]);
+      dispatch2(["event_trigger"]);
     }
-  }, [state.trigger]);
+  }, [state.event_trigger]);
   React.useEffect(() => {
     if (unwrap(struct2)) {
       run_triggers(struct2.value, state2, dispatch2);
     }
-  }, [state2.trigger]);
+  }, [state2.event_trigger]);
+  React.useEffect(() => {
+    if (unwrap(struct)) {
+      compute_checks(struct.value, state, dispatch);
+      dispatch2(["check_trigger"]);
+    }
+  }, [state.check_trigger]);
+  React.useEffect(() => {
+    if (unwrap(struct2)) {
+      compute_checks(struct2.value, state2, dispatch2);
+    }
+  }, [state2.check_trigger]);
   if (unwrap(struct) && unwrap(struct2)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
@@ -271,6 +285,7 @@ function create_struct(reducer: {
       <View>
         <Label {...reducer} path={"u32"} />
         <Field {...reducer} path={"u32"} />
+        <Check {...reducer} name="u32_is_even" message="U32 cannot be odd" />
       </View>
       <View>
         <Label {...reducer} path={"i32"} />

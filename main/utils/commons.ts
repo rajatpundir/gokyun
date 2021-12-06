@@ -33,7 +33,8 @@ export type State = Immutable<{
   updated_at: Date;
   values: HashSet<Path>;
   mode: "read" | "write";
-  trigger: number;
+  event_trigger: number;
+  check_trigger: number;
   extensions: Record<
     string,
     {
@@ -67,7 +68,9 @@ export type Action =
         }
       >
     ]
-  | ["trigger"];
+  | ["event_trigger"]
+  | ["check_trigger"]
+  | ["check", string, Result<boolean>];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -93,7 +96,10 @@ export function reducer(state: Draft<State>, action: Action) {
           return it.add(action[1]);
         });
         if (action[1].trigger_dependency) {
-          state.trigger += 1;
+          state.event_trigger += 1;
+        }
+        if (action[1].check_dependency) {
+          state.check_trigger += 1;
         }
       }
       break;
@@ -103,15 +109,24 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
-      state.trigger += 1;
+      state.event_trigger += 1;
+      state.check_trigger += 1;
       break;
     }
     case "extension": {
       state.extensions = action[1] as any;
       break;
     }
-    case "trigger": {
-      state.trigger += 1;
+    case "event_trigger": {
+      state.event_trigger += 1;
+      break;
+    }
+    case "check_trigger": {
+      state.check_trigger += 1;
+      break;
+    }
+    case "check": {
+      state.checks[action[1]] = action[2];
       break;
     }
     default: {
@@ -121,11 +136,45 @@ export function reducer(state: Draft<State>, action: Action) {
   }
 }
 
+function mark_check_dependency(
+  struct: Struct,
+  paths: HashSet<Path>,
+  state: State
+): HashSet<Path> {
+  let marked_paths: HashSet<Path> = HashSet.of();
+  for (let path of paths) {
+    const path_string: PathString = [
+      path.path[0].map((x) => x[0]),
+      path.path[1][0],
+    ];
+    let is_check_dependency = false;
+    for (let check_name of Object.keys(struct.checks)) {
+      const check = struct.checks[check_name];
+      const expr = check[0];
+      for (let ref_path_string of expr.get_paths()) {
+        if (compare_paths(ref_path_string, path_string)) {
+          is_check_dependency = true;
+          break;
+        }
+      }
+    }
+    marked_paths = marked_paths.add(
+      apply(path, (it) => {
+        if (is_check_dependency) {
+          it.check_dependency = true;
+        }
+        return it;
+      })
+    );
+  }
+  return marked_paths;
+}
+
 function mark_trigger_outputs(
   struct: Struct,
   paths: HashSet<Path>,
   state: State
-) {
+): HashSet<Path> {
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     const path_string: PathString = [
@@ -140,6 +189,7 @@ function mark_trigger_outputs(
           const ref_path_string = field[0];
           if (compare_paths(ref_path_string, path_string)) {
             is_trigger_output = true;
+            break;
           }
         }
       }
@@ -160,6 +210,7 @@ function mark_trigger_outputs(
               )
             ) {
               is_trigger_output = true;
+              break;
             }
           }
         }
@@ -175,14 +226,14 @@ function mark_trigger_outputs(
       })
     );
   }
-  return marked_paths;
+  return mark_check_dependency(struct, marked_paths, state);
 }
 
 function mark_trigger_dependencies(
   struct: Struct,
   paths: HashSet<Path>,
   state: State
-) {
+): HashSet<Path> {
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
     const path_string: PathString = [
@@ -712,5 +763,30 @@ export async function run_triggers(
         }
       }
     }
+  }
+}
+
+export async function compute_checks(
+  struct: Struct,
+  state: State,
+  dispatch: React.Dispatch<Action>
+) {
+  for (let check_name of Object.keys(struct.checks)) {
+    let computed_result: Result<boolean> = new Err(
+      new CustomError([errors.ErrUnexpected] as ErrMsg)
+    );
+    const check = struct.checks[check_name];
+    const expr = check[0];
+    const result = get_symbols(state, expr as LispExpression);
+    if (unwrap(result)) {
+      const symbols = result.value;
+      const expr_result = expr.get_result(symbols);
+      if (unwrap(expr_result)) {
+        if (expr_result.value instanceof Bool) {
+          computed_result = new Ok(expr_result.value.value as boolean);
+        }
+      }
+    }
+    dispatch(["check", check_name, computed_result]);
   }
 }
