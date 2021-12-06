@@ -1300,7 +1300,6 @@ export function Check(
     message: string;
   }
 ): JSX.Element | null {
-  console.log(props.state.checks);
   const { state, style, ...otherProps } = props;
   if (props.name in state.checks) {
     const result = state.checks[props.name] as Result<boolean>;
