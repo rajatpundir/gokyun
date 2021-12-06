@@ -204,27 +204,6 @@ function mark_trigger_dependencies(
         }
       }
     }
-    for (let [higher_struct, higher_path_string] of state.higher_structs) {
-      for (let trigger_name of Object.keys(higher_struct.triggers)) {
-        const trigger = higher_struct.triggers[trigger_name];
-        if (trigger.operation.op === "update") {
-          for (let field of trigger.operation.path_updates) {
-            const ref_path_string = field[0];
-            if (
-              compare_paths(
-                ref_path_string as PathString,
-                concat_path_strings(
-                  higher_path_string as PathString,
-                  path_string
-                )
-              )
-            ) {
-              is_trigger_dependency = true;
-            }
-          }
-        }
-      }
-    }
     marked_paths = marked_paths.add(
       apply(path, (it) => {
         if (is_trigger_dependency) {
@@ -288,7 +267,6 @@ export function get_top_writeable_paths(
   return mark_trigger_dependencies(struct, paths, state);
 }
 
-// Marks writeable paths as writeable
 export function get_writeable_paths(
   struct: Struct,
   paths: HashSet<Path>,
