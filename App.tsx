@@ -65,10 +65,10 @@ export type NavigatorParams = {
     };
     path_filters: Array<[string, PathFilter]>;
     limit_offset: [Decimal, Decimal] | undefined;
-    render_list_element: (
-      variable: Variable,
-      disptach_values: (variable: Variable) => void
-    ) => JSX.Element;
+    render_list_element: (props: {
+      variable: Variable;
+      disptach_values: (variable: Variable) => void;
+    }) => JSX.Element;
     disptach_values: (variable: Variable) => void;
   };
   VariablesModal: {

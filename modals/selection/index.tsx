@@ -51,15 +51,17 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     props.route.params.limit_offset,
   ]);
   return (
-    <FlatList
-      data={state.variables}
-      renderItem={(list_item) =>
-        props.route.params.render_list_element(
-          list_item.item,
-          props.route.params.disptach_values
-        )
-      }
-      keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
-    />
+    <>
+      <FlatList
+        data={state.variables}
+        renderItem={(list_item) => (
+          <props.route.params.render_list_element
+            variable={list_item.item}
+            disptach_values={props.route.params.disptach_values}
+          />
+        )}
+        keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+      />
+    </>
   );
 }

@@ -925,13 +925,13 @@ function Timestamp_Field(
 function Other_Field(
   props: ComponentProps & {
     element: JSX.Element;
-    render_list_element: (
-      variable: Variable,
-      disptach_values: (variable: Variable) => void
-    ) => JSX.Element;
+    render_list_element: (props: {
+      variable: Variable;
+      disptach_values: (variable: Variable) => void;
+    }) => JSX.Element;
   }
 ): JSX.Element | null {
-  const { state, dispatch, render_list_element } = props;
+  const { state, dispatch } = props;
   const value = props.path.path[1][1];
   const navigation = useNavigation();
   if (value.type === "other") {
@@ -955,7 +955,7 @@ function Other_Field(
                 },
                 path_filters: get_other_path_filters(
                   props.struct,
-                  state,
+                  props.state,
                   props.path
                 ),
                 limit_offset: undefined,
@@ -1013,10 +1013,10 @@ export function Field(props: {
         "other",
         {
           element: JSX.Element;
-          render_list_element: (
-            variable: Variable,
-            disptach_values: (variable: Variable) => void
-          ) => JSX.Element;
+          render_list_element: (props: {
+            variable: Variable;
+            disptach_values: (variable: Variable) => void;
+          }) => JSX.Element;
         }
       ];
 }): JSX.Element | null {

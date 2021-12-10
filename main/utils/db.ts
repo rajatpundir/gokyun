@@ -15,7 +15,7 @@ import Decimal from "decimal.js";
 import { Path, StrongEnum, Struct, Variable } from "./variable";
 import { ErrMsg, errors } from "./errors";
 import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
-import { get_structs } from "./schema";
+import { get_struct, get_structs } from "./schema";
 
 // TODO. n per group should be performed, so that we get (struct_name, id) combination with max level
 // We could also have the HAVING clause eliminate possibility of nulls for aggregate column aliases
@@ -1898,3 +1898,31 @@ export async function remove_variables(
   }
   return new Ok([] as []);
 }
+
+async function load_test_data() {
+  const struct = get_struct("User");
+  if (unwrap(struct)) {
+    await replace_variables(
+      new Decimal(0),
+      HashSet.ofIterable([
+        new Variable(
+          struct.value,
+          new Decimal(1),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "JOHN SMITH" }],
+            ]),
+          ])
+        ),
+      ])
+    );
+  }
+  const x = await execute_transaction("SELECT * FROM VARS;", []);
+  console.log(x);
+}
+
+load_test_data();

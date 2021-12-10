@@ -355,6 +355,10 @@ function CreateComponent(props: {
         <Field {...props} path={"timestamp"} />
       </View>
       <View>
+        <Label {...props} path={[["user"], "nickname"]} />
+        <Field {...props} path={[["user"], "nickname"]} />
+      </View>
+      <View>
         <Label {...props} path={"user"} />
         <Field
           {...props}
@@ -363,18 +367,18 @@ function CreateComponent(props: {
             "other",
             {
               element: <Label {...props} path={"timestamp"} />,
-              render_list_element: (
-                variable: Variable,
-                disptach_values: (variable: Variable) => void
-              ) => {
+              render_list_element: (props: {
+                variable: Variable;
+                disptach_values: (variable: Variable) => void;
+              }) => {
                 const [state, dispatch] = useImmerReducer<State, Action>(
                   reducer,
                   {
-                    id: variable.id,
-                    active: variable.active,
-                    created_at: variable.created_at,
-                    updated_at: variable.updated_at,
-                    values: variable.paths,
+                    id: props.variable.id,
+                    active: props.variable.active,
+                    created_at: props.variable.created_at,
+                    updated_at: props.variable.updated_at,
+                    values: props.variable.paths,
                     mode: "read",
                     event_trigger: 0,
                     check_trigger: 0,
@@ -388,7 +392,7 @@ function CreateComponent(props: {
                 );
                 return apply(
                   {
-                    struct: variable.struct,
+                    struct: props.variable.struct,
                     state: state,
                     dispatch: dispatch,
                   },
@@ -400,7 +404,9 @@ function CreateComponent(props: {
                           <Field {...it} path={"nickname"} />
                           <Button
                             title="OK"
-                            onPress={() => disptach_values(variable)}
+                            onPress={() =>
+                              props.disptach_values(props.variable)
+                            }
                           />
                         </View>
                       </View>
