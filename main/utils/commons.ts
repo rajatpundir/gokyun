@@ -92,11 +92,11 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "value": {
       if (action[1].writeable || action[1].trigger_output) {
-        state.values = apply(state.values.remove(action[1]), (value) => {
-          return value.add(
-            apply(action[1], (it) => {
-              it.modified = true;
-              return it;
+        state.values = apply(state.values.remove(action[1]), (vals) => {
+          return vals.add(
+            apply(action[1], (val) => {
+              val.modified = true;
+              return val;
             })
           );
         });
@@ -110,7 +110,22 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "values": {
-      // To implement
+      for (let value of action[1]) {
+        state.values = apply(state.values.remove(value), (vals) => {
+          return vals.add(
+            apply(value, (val) => {
+              val.modified = true;
+              return val;
+            })
+          );
+        });
+        if (value.trigger_dependency) {
+          state.event_trigger += 1;
+        }
+        if (value.check_dependency) {
+          state.check_trigger += 1;
+        }
+      }
       break;
     }
     case "variable": {

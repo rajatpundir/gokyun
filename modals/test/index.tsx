@@ -23,7 +23,8 @@ import { PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// Get nested paths also in top writeable paths in creation
+// Field mode should be able to override all other behaviour
+// Preserve writeable etc fields on paths upon overwriting them in reducer values
 // Close selection component after selection
 // Design filters for modifying path filters, fields with passed filters cannot be overriden
 // Fix react navigation error related to serializability of props passed

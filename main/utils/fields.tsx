@@ -960,11 +960,13 @@ function Other_Field(
                 ),
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,
-                disptach_values: (variable: Variable) =>
+                disptach_values: (variable: Variable) => {
+                  console.log("YYYEESS");
                   dispatch([
                     "values",
                     get_upscaled_paths(props.path, variable),
-                  ]),
+                  ]);
+                },
               });
             }
           }}
