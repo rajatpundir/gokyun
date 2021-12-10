@@ -248,29 +248,41 @@ export default function Component(
       if (state.id.equals(new Decimal(-1))) {
         return (
           <>
-            {create_struct({
-              struct_name,
-              state,
-              dispatch,
-            })}
-            {/* {create_struct({
-              struct_name: struct2_name,
-              state: state2,
-              dispatch: dispatch2,
-            })} */}
+            <CreateComponent
+              struct_name={struct_name}
+              state={state}
+              dispatch={dispatch}
+            />
+            {/* <CreateComponent
+              struct_name={struct2_name}
+              state={state2}
+              dispatch={dispatch2}
+            /> */}
           </>
         );
       } else {
-        return update_struct({ struct_name, state, dispatch });
+        return (
+          <UpdateComponent
+            struct_name={struct_name}
+            state={state}
+            dispatch={dispatch}
+          />
+        );
       }
     } else {
-      return show_struct({ struct_name, state, dispatch });
+      return (
+        <ShowComponent
+          struct_name={struct_name}
+          state={state}
+          dispatch={dispatch}
+        />
+      );
     }
   }
   return <></>;
 }
 
-function create_struct(props: {
+function CreateComponent(props: {
   struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
@@ -404,7 +416,7 @@ function create_struct(props: {
   );
 }
 
-function update_struct(props: {
+function UpdateComponent(props: {
   struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
@@ -419,7 +431,7 @@ function update_struct(props: {
   );
 }
 
-function show_struct(props: {
+function ShowComponent(props: {
   struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
