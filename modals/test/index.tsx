@@ -23,8 +23,11 @@ import { PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 
-// Push some users into DB
-// Get user selected to return a variable along with requested paths
+// Get nested paths also in top writeable paths in creation
+// Close selection component after selection
+// Design filters for modifying path filters, fields with passed filters cannot be overriden
+// Fix react navigation error related to serializability of props passed
+
 // Complete testing Test
 export default function Component(
   props: RootNavigatorProps<"Test">
