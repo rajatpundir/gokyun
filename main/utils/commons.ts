@@ -301,7 +301,7 @@ export function get_shortlisted_permissions(
   return path_permissions;
 }
 
-export function get_top_writeable_paths(
+export function get_creation_paths(
   struct: Struct,
   state: State
 ): HashSet<Path> {
@@ -314,22 +314,35 @@ export function get_top_writeable_paths(
     get_shortlisted_permissions(permissions, state.labels);
   let paths: HashSet<Path> = HashSet.of();
   for (let permission of labeled_permissions) {
-    if (permission.path[0].length === 0) {
-      paths = paths.add(
-        apply(new Path(permission.label, [[], permission.path[1]]), (it) => {
+    paths = paths.add(
+      apply(
+        new Path(permission.label, [
+          permission.path[0].map((x) => [
+            x[0],
+            {
+              struct: x[1],
+              id: new Decimal(-1),
+              active: true,
+              created_at: new Date(),
+              updated_at: new Date(),
+            },
+          ]),
+          permission.path[1],
+        ]),
+        (it) => {
           it.writeable = true;
           return it;
-        })
-      );
-    }
+        }
+      )
+    );
   }
   return mark_trigger_dependencies(struct, paths, state);
 }
 
 export function get_writeable_paths(
   struct: Struct,
-  paths: HashSet<Path>,
-  state: State
+  state: State,
+  paths: HashSet<Path>
 ): HashSet<Path> {
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,

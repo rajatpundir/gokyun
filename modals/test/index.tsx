@@ -9,7 +9,7 @@ import {
   Action,
   reducer,
   get_labeled_path_filters,
-  get_top_writeable_paths,
+  get_creation_paths,
   get_writeable_paths,
   run_triggers,
   compute_checks,
@@ -141,7 +141,7 @@ export default function Component(
               state.active,
               state.created_at,
               state.updated_at,
-              get_top_writeable_paths(struct.value, state)
+              get_creation_paths(struct.value, state)
             ),
           ]);
         } else {
@@ -156,7 +156,7 @@ export default function Component(
             dispatch([
               "variable",
               apply(result.value, (it) => {
-                it.paths = get_writeable_paths(struct.value, it.paths, state);
+                it.paths = get_writeable_paths(struct.value, state, it.paths);
                 return it;
               }),
             ]);
@@ -178,7 +178,7 @@ export default function Component(
               state2.active,
               state2.created_at,
               state2.updated_at,
-              get_top_writeable_paths(struct2.value, state2)
+              get_creation_paths(struct2.value, state2)
             ),
           ]);
         } else {
@@ -193,7 +193,7 @@ export default function Component(
             dispatch2([
               "variable",
               apply(result.value, (it) => {
-                it.paths = get_writeable_paths(struct2.value, it.paths, state2);
+                it.paths = get_writeable_paths(struct2.value, state2, it.paths);
                 return it;
               }),
             ]);
@@ -369,7 +369,12 @@ function CreateComponent(props: {
           options={[
             "other",
             {
-              element: <Label {...props} path={"timestamp"} />,
+              element: (
+                <>
+                  <Label {...props} path={[["user"], "nickname"]} />
+                  <Field {...props} path={[["user"], "nickname"]} />
+                </>
+              ),
               render_list_element: (props: {
                 variable: Variable;
                 disptach_values: (variable: Variable) => void;
