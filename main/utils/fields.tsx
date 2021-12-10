@@ -23,7 +23,7 @@ import { useState } from "react";
 import { Path, PathString, StrongEnum, Struct, Variable } from "./variable";
 import { get_struct } from "./schema";
 import { HashSet } from "prelude-ts";
-import { get_variable, get_variables, PathFilter } from "./db";
+import { get_variables, PathFilter } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 
@@ -942,26 +942,29 @@ function Other_Field(
           onPress={() => {
             const struct = get_struct(value.other);
             if (unwrap(struct)) {
-              const fx = (variable: Variable) =>
-                dispatch(["values", get_upscaled_paths(props.path, variable)]);
               const navigation = useNavigation();
-              navigation.navigate("Main");
-
-              const path_filters: Array<[string, PathFilter]> =
-                get_other_path_filters(struct.value, state, props.path);
-
-              const variables = get_variables(
-                struct.value,
-                {
+              navigation.navigate("SelectionModal", {
+                struct: struct.value,
+                variable_filters: {
                   active: true,
                   level: undefined,
                   id: [],
                   created_at: [],
                   updated_at: [],
                 },
-                path_filters,
-                undefined
-              );
+                path_filters: get_other_path_filters(
+                  struct.value,
+                  state,
+                  props.path
+                ),
+                limit_offset: undefined,
+                render_list_element: props.render_list_element,
+                disptach_values: (variable: Variable) =>
+                  dispatch([
+                    "values",
+                    get_upscaled_paths(props.path, variable),
+                  ]),
+              });
             }
           }}
         >
@@ -1004,7 +1007,17 @@ export function Field(props: {
   options?:
     | ["text", TextInput["props"] & Text["props"]]
     | ["date", Text["props"]]
-    | ["bool", Switch["props"]];
+    | ["bool", Switch["props"]]
+    | [
+        "other",
+        {
+          element: JSX.Element;
+          render_list_element: (
+            variable: Variable,
+            disptach_values: (variable: Variable) => void
+          ) => JSX.Element;
+        }
+      ];
 }): JSX.Element | null {
   const path_string: PathString = apply(undefined, () => {
     if (typeof props.path === "string") {
@@ -1273,6 +1286,21 @@ export function Field(props: {
           return <Timestamp_Field mode={"read"} {...props} path={path.value} />;
         }
         case "other": {
+          if (
+            props.options !== null &&
+            props.options !== undefined &&
+            props.options[0] === "other"
+          ) {
+            return (
+              <Other_Field
+                mode={"read"}
+                {...props}
+                path={path.value}
+                element={props.options[1].element}
+                render_list_element={props.options[1].render_list_element}
+              />
+            );
+          }
           return <></>;
         }
         default: {
@@ -1316,7 +1344,7 @@ export function Check(
   return null;
 }
 
-export function get_other_path_filters(
+function get_other_path_filters(
   struct: Struct,
   state: State,
   path: Path
@@ -1334,7 +1362,6 @@ export function get_other_path_filters(
     ...path.path[0].map((x) => x[0]),
     path.path[1][0],
   ];
-  console.log("PREFIX:", path_prefix);
   const path_filters: Array<[string, PathFilter]> = [];
   if (path.path[1][1].type === "other") {
     const other_struct = get_struct(path.path[1][1].other);
@@ -1362,7 +1389,6 @@ export function get_other_path_filters(
             return it;
           }
         );
-        console.log("-----", path);
         const field: StrongEnum = permission.path[1][1];
         switch (field.type) {
           case "str":
@@ -1399,9 +1425,6 @@ export function get_other_path_filters(
           }
         }
       }
-      // Use path_filters to get Variable(s), transform paths received by appending prefix
-      console.log("####");
-      console.log(path_filters);
       return path_filters;
     }
   }

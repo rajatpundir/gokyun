@@ -24,12 +24,14 @@ import {
 import NotFoundScreen from "./main/NotFoundScreen";
 
 import { VariableFilter, VariablesModal } from "./main/utils/variables_modal";
+import SelectionModal from "./modals/selection";
 import { Struct, Variable } from "./main/utils/variable";
 
 import Test from "./modals/test";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
+import { PathFilter } from "./main/utils/db";
 
 declare global {
   namespace ReactNavigation {
@@ -40,6 +42,35 @@ declare global {
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
   NotFound: undefined;
+  SelectionModal: {
+    struct: Struct;
+    variable_filters: {
+      active: boolean;
+      level: Decimal | undefined;
+      id: ReadonlyArray<
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+        | ["between" | "not_between", [Decimal, Decimal]]
+        | undefined
+      >;
+      created_at: ReadonlyArray<
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      >;
+      updated_at: ReadonlyArray<
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      >;
+    };
+    path_filters: Array<[string, PathFilter]>;
+    limit_offset: [Decimal, Decimal] | undefined;
+    render_list_element: (
+      variable: Variable,
+      disptach_values: (variable: Variable) => void
+    ) => JSX.Element;
+    disptach_values: (variable: Variable) => void;
+  };
   VariablesModal: {
     struct: Struct;
     filter: VariableFilter;
@@ -110,6 +141,11 @@ export default function App() {
               name="Main"
               component={Navigator}
               options={{ headerShown: false, animation: "none" }}
+            />
+            <Stack.Screen
+              name="SelectionModal"
+              component={SelectionModal}
+              options={{ title: "Select variable" }}
             />
             <Stack.Screen
               name="VariablesModal"

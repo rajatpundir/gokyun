@@ -344,7 +344,33 @@ function create_struct(reducer: {
       </View>
       <View>
         <Label {...reducer} path={"user"} />
-        <Field {...reducer} path={"user"} />
+        <Field
+          {...reducer}
+          path={"user"}
+          options={[
+            "other",
+            {
+              element: (
+                <>
+                  <Field {...reducer} path={[["user"], "nickname"]} />
+                </>
+              ),
+              render_list_element: (
+                variable: Variable,
+                disptach_values: (variable: Variable) => void
+              ) => {
+                return (
+                  <>
+                    <View>
+                      {/* <Label {...reducer} path={"timestamp"} />
+                      <Field {...reducer} path={"timestamp"} /> */}
+                    </View>
+                  </>
+                );
+              },
+            },
+          ]}
+        />
       </View>
     </ScrollView>
   );
