@@ -282,13 +282,6 @@ export function get_shortlisted_permissions(
   let path_permissions: HashSet<PathPermission> = HashSet.of();
   for (let [label, path] of labels) {
     for (let permission of permissions) {
-      console.log(
-        label,
-        compare_paths(
-          [permission.path[0].map((x) => x[0]), permission.path[1][0]],
-          path as PathString
-        )
-      );
       if (
         compare_paths(
           [permission.path[0].map((x) => x[0]), permission.path[1][0]],
@@ -305,7 +298,6 @@ export function get_shortlisted_permissions(
       }
     }
   }
-  console.log("$$$$$$$$$$#########################", path_permissions.length());
   return path_permissions;
 }
 
