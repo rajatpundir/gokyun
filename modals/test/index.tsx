@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { Button, Pressable, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View } from "../../main/themed";
@@ -43,6 +43,13 @@ export default function Component(
     event_trigger: 0,
     check_trigger: 0,
     extensions: {},
+    higher_structs: apply([] as Array<[Struct, PathString]>, (it) => {
+      if (unwrap(struct2)) {
+        it.push([struct2.value, [[], "z"]]);
+      }
+      return it;
+    }),
+    checks: {},
     labels: [
       ["STR", [[], "str"]],
       ["LSTR", [[], "lstr"]],
@@ -62,15 +69,8 @@ export default function Component(
       ["USER", [[], "user"]],
       ["USER NICKNAME", [["user"], "nickname"]],
     ],
-    higher_structs: apply([] as Array<[Struct, PathString]>, (it) => {
-      if (unwrap(struct2)) {
-        it.push([struct2.value, [[], "z"]]);
-      }
-      return it;
-    }),
     user_paths: [],
     borrows: [],
-    checks: {},
   });
   const [state2, dispatch2] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
@@ -270,7 +270,7 @@ export default function Component(
   return <></>;
 }
 
-function create_struct(reducer: {
+function create_struct(props: {
   struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
@@ -278,94 +278,122 @@ function create_struct(reducer: {
   return (
     <ScrollView style={{ flex: 1 }}>
       <View>
-        <Label {...reducer} path={"str"} />
-        <Field {...reducer} path={"str"} />
+        <Label {...props} path={"str"} />
+        <Field {...props} path={"str"} />
       </View>
       <View>
-        <Label {...reducer} path={[["z"], "str"]} />
-        <Field {...reducer} path={[["z"], "str"]} />
+        <Label {...props} path={[["z"], "str"]} />
+        <Field {...props} path={[["z"], "str"]} />
       </View>
       <View>
-        <Label {...reducer} path={"lstr"} />
-        <Field {...reducer} path={"lstr"} />
+        <Label {...props} path={"lstr"} />
+        <Field {...props} path={"lstr"} />
       </View>
       <View>
-        <Label {...reducer} path={"clob"} />
-        <Field {...reducer} path={"clob"} />
+        <Label {...props} path={"clob"} />
+        <Field {...props} path={"clob"} />
       </View>
       <View>
-        <Label {...reducer} path={"u32"} />
-        <Field {...reducer} path={"u32"} />
-        <Check {...reducer} name="u32_is_even" message="U32 cannot be odd" />
+        <Label {...props} path={"u32"} />
+        <Field {...props} path={"u32"} />
+        <Check {...props} name="u32_is_even" message="U32 cannot be odd" />
       </View>
       <View>
-        <Label {...reducer} path={"i32"} />
-        <Field {...reducer} path={"i32"} />
+        <Label {...props} path={"i32"} />
+        <Field {...props} path={"i32"} />
       </View>
       <View>
-        <Label {...reducer} path={"u64"} />
-        <Field {...reducer} path={"u64"} />
+        <Label {...props} path={"u64"} />
+        <Field {...props} path={"u64"} />
       </View>
       <View>
-        <Label {...reducer} path={"i64"} />
-        <Field {...reducer} path={"i64"} />
+        <Label {...props} path={"i64"} />
+        <Field {...props} path={"i64"} />
       </View>
       <View>
-        <Label {...reducer} path={"udouble"} />
-        <Field {...reducer} path={"udouble"} />
+        <Label {...props} path={"udouble"} />
+        <Field {...props} path={"udouble"} />
       </View>
       <View>
-        <Label {...reducer} path={"idouble"} />
-        <Field {...reducer} path={"idouble"} />
+        <Label {...props} path={"idouble"} />
+        <Field {...props} path={"idouble"} />
       </View>
       <View>
-        <Label {...reducer} path={"udecimal"} />
-        <Field {...reducer} path={"udecimal"} />
+        <Label {...props} path={"udecimal"} />
+        <Field {...props} path={"udecimal"} />
       </View>
       <View>
-        <Label {...reducer} path={"idecimal"} />
-        <Field {...reducer} path={"idecimal"} />
+        <Label {...props} path={"idecimal"} />
+        <Field {...props} path={"idecimal"} />
       </View>
       <View>
-        <Label {...reducer} path={"bool"} />
-        <Field {...reducer} path={"bool"} />
+        <Label {...props} path={"bool"} />
+        <Field {...props} path={"bool"} />
       </View>
       <View>
-        <Label {...reducer} path={"date"} />
-        <Field {...reducer} path={"date"} />
+        <Label {...props} path={"date"} />
+        <Field {...props} path={"date"} />
       </View>
       <View>
-        <Label {...reducer} path={"time"} />
-        <Field {...reducer} path={"time"} />
+        <Label {...props} path={"time"} />
+        <Field {...props} path={"time"} />
       </View>
       <View>
-        <Label {...reducer} path={"timestamp"} />
-        <Field {...reducer} path={"timestamp"} />
+        <Label {...props} path={"timestamp"} />
+        <Field {...props} path={"timestamp"} />
       </View>
       <View>
-        <Label {...reducer} path={"user"} />
+        <Label {...props} path={"user"} />
         <Field
-          {...reducer}
+          {...props}
           path={"user"}
           options={[
             "other",
             {
-              element: (
-                <>
-                  <Field {...reducer} path={[["user"], "nickname"]} />
-                </>
-              ),
+              element: <Field {...props} path={[["user"], "nickname"]} />,
               render_list_element: (
                 variable: Variable,
                 disptach_values: (variable: Variable) => void
               ) => {
-                return (
-                  <>
-                    <View>
-                      {/* <Label {...reducer} path={"timestamp"} />
-                      <Field {...reducer} path={"timestamp"} /> */}
-                    </View>
-                  </>
+                const [state, dispatch] = useImmerReducer<State, Action>(
+                  reducer,
+                  {
+                    id: variable.id,
+                    active: variable.active,
+                    created_at: variable.created_at,
+                    updated_at: variable.updated_at,
+                    values: variable.paths,
+                    mode: "read",
+                    event_trigger: 0,
+                    check_trigger: 0,
+                    extensions: {},
+                    higher_structs: [],
+                    checks: {},
+                    labels: [["NICKNAME", [[], "nickname"]]],
+                    user_paths: [],
+                    borrows: [],
+                  }
+                );
+                return apply(
+                  {
+                    struct_name: variable.struct.name,
+                    state: state,
+                    dispatch: dispatch,
+                  },
+                  (it) => {
+                    return (
+                      <View style={{ flex: 1 }}>
+                        <View>
+                          <Label {...it} path={"nickname"} />
+                          <Field {...it} path={"nickname"} />
+                          <Button
+                            title="OK"
+                            onPress={() => disptach_values(variable)}
+                          />
+                        </View>
+                      </View>
+                    );
+                  }
                 );
               },
             },
@@ -376,7 +404,7 @@ function create_struct(reducer: {
   );
 }
 
-function update_struct(reducer: {
+function update_struct(props: {
   struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
@@ -384,14 +412,14 @@ function update_struct(reducer: {
   return (
     <View style={{ flex: 1 }}>
       <View>
-        <Label {...reducer} path={"str"} />
-        <Field {...reducer} path={"str"} />
+        <Label {...props} path={"str"} />
+        <Field {...props} path={"str"} />
       </View>
     </View>
   );
 }
 
-function show_struct(reducer: {
+function show_struct(props: {
   struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
@@ -399,8 +427,8 @@ function show_struct(reducer: {
   return (
     <View style={{ flex: 1 }}>
       <View>
-        <Label {...reducer} path={"str"} />
-        <Field {...reducer} path={"str"} />
+        <Label {...props} path={"str"} />
+        <Field {...props} path={"str"} />
       </View>
     </View>
   );
