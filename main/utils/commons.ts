@@ -4,7 +4,6 @@ import { HashSet } from "prelude-ts";
 import React from "react";
 import { PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
-import { get_path } from "./fields";
 import {
   LispExpression,
   Symbol,
@@ -15,7 +14,7 @@ import {
   LispResult,
 } from "./lisp";
 import { get_permissions, PathPermission } from "./permissions";
-import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { apply, CustomError, Err, Ok, Result, unwrap, Option } from "./prelude";
 import {
   Path,
   Variable,
@@ -56,6 +55,7 @@ export type Action =
   | ["created_at", Date]
   | ["updated_at", Date]
   | ["value", Path]
+  | ["values", HashSet<Path>]
   | ["variable", Variable]
   | [
       "extension",
@@ -92,8 +92,13 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "value": {
       if (action[1].writeable || action[1].trigger_output) {
-        state.values = apply(state.values.remove(action[1]), (it) => {
-          return it.add(action[1]);
+        state.values = apply(state.values.remove(action[1]), (value) => {
+          return value.add(
+            apply(action[1], (it) => {
+              it.modified = true;
+              return it;
+            })
+          );
         });
         if (action[1].trigger_dependency) {
           state.event_trigger += 1;
@@ -102,6 +107,10 @@ export function reducer(state: Draft<State>, action: Action) {
           state.check_trigger += 1;
         }
       }
+      break;
+    }
+    case "values": {
+      // To implement
       break;
     }
     case "variable": {
@@ -138,8 +147,7 @@ export function reducer(state: Draft<State>, action: Action) {
 
 function mark_check_dependency(
   struct: Struct,
-  paths: HashSet<Path>,
-  state: State
+  paths: HashSet<Path>
 ): HashSet<Path> {
   let marked_paths: HashSet<Path> = HashSet.of();
   for (let path of paths) {
@@ -226,7 +234,7 @@ function mark_trigger_outputs(
       })
     );
   }
-  return mark_check_dependency(struct, marked_paths, state);
+  return mark_check_dependency(struct, marked_paths);
 }
 
 function mark_trigger_dependencies(
@@ -267,7 +275,7 @@ function mark_trigger_dependencies(
   return mark_trigger_outputs(struct, marked_paths, state);
 }
 
-function get_shortlisted_permissions(
+export function get_shortlisted_permissions(
   permissions: HashSet<PathPermission>,
   labels: Immutable<Array<[string, PathString]>>
 ): HashSet<PathPermission> {
@@ -789,4 +797,78 @@ export async function compute_checks(
     }
     dispatch(["check", check_name, computed_result]);
   }
+}
+
+export function get_path(state: State, path_string: PathString): Option<Path> {
+  const first: string = apply(path_string[1], (it) => {
+    if (path_string[0].length !== 0) {
+      return path_string[0][0];
+    }
+    return it;
+  });
+  if (first in state.extensions) {
+    const extension = state.extensions[first];
+    const nested_path = get_path(extension.state, [
+      path_string[0].slice(1),
+      path_string[1],
+    ]);
+    if (unwrap(nested_path)) {
+      let label = "";
+      for (let [path_label, path] of state.labels) {
+        if (
+          path[0].length === path_string[0].length &&
+          path[1] === path_string[1]
+        ) {
+          let check = true;
+          for (let [index, field_name] of path_string[0].entries()) {
+            if (path[0][index] !== field_name) {
+              check = false;
+            }
+          }
+          if (check) {
+            label = path_label;
+            break;
+          }
+        }
+      }
+      return new Ok(
+        apply(nested_path.value, (it) => {
+          return new Path(label, [
+            [
+              [
+                first,
+                {
+                  struct: extension.struct as Struct,
+                  id: extension.state.id as Decimal,
+                  active: extension.state.active,
+                  created_at: extension.state.created_at,
+                  updated_at: extension.state.updated_at,
+                },
+              ],
+            ],
+            it.path[1],
+          ]);
+        })
+      );
+    }
+  } else {
+    for (let path of state.values) {
+      if (
+        path.path[0].length === path_string[0].length &&
+        path.path[1][0] === path_string[1]
+      ) {
+        let check = true;
+        for (let [index, [field_name, _]] of path.path[0].entries()) {
+          if (path_string[0][index] !== field_name) {
+            check = false;
+            break;
+          }
+        }
+        if (check) {
+          return new Ok(path);
+        }
+      }
+    }
+  }
+  return undefined;
 }

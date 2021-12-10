@@ -12,10 +12,20 @@ import Decimal from "decimal.js";
 import moment from "moment";
 
 import { Text as ThemedText } from "../../main/themed";
-import { apply, unwrap, Option, Ok, Result } from "./prelude";
-import { Action, State } from "./commons";
+import { apply, unwrap, Result } from "./prelude";
+import {
+  Action,
+  get_shortlisted_permissions,
+  State,
+  get_path,
+} from "./commons";
 import { useState } from "react";
-import { Path, PathString, Struct } from "./variable";
+import { Path, PathString, StrongEnum, Struct, Variable } from "./variable";
+import { get_struct } from "./schema";
+import { HashSet } from "prelude-ts";
+import { get_variable, get_variables, PathFilter } from "./db";
+import { PathPermission, get_permissions } from "./permissions";
+import { useNavigation } from "@react-navigation/native";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -911,78 +921,59 @@ function Timestamp_Field(
   return null;
 }
 
-export function get_path(state: State, path_string: PathString): Option<Path> {
-  const first: string = apply(path_string[1], (it) => {
-    if (path_string[0].length !== 0) {
-      return path_string[0][0];
-    }
-    return it;
-  });
-  if (first in state.extensions) {
-    const extension = state.extensions[first];
-    const nested_path = get_path(extension.state, [
-      path_string[0].slice(1),
-      path_string[1],
-    ]);
-    if (unwrap(nested_path)) {
-      let label = "";
-      for (let [path_label, path] of state.labels) {
-        if (
-          path[0].length === path_string[0].length &&
-          path[1] === path_string[1]
-        ) {
-          let check = true;
-          for (let [index, field_name] of path_string[0].entries()) {
-            if (path[0][index] !== field_name) {
-              check = false;
-            }
-          }
-          if (check) {
-            label = path_label;
-            break;
-          }
-        }
-      }
-      return new Ok(
-        apply(nested_path.value, (it) => {
-          return new Path(label, [
-            [
-              [
-                first,
+function Other_Field(
+  props: ComponentProps & {
+    element: JSX.Element;
+    render_list_element: (
+      variable: Variable,
+      disptach_values: (variable: Variable) => void
+    ) => JSX.Element;
+  }
+): JSX.Element | null {
+  const { state, dispatch, render_list_element } = props;
+  const value = props.path.path[1][1];
+  if (value.type === "other") {
+    if (
+      props.path.writeable &&
+      (state.id.equals(new Decimal(-1)) || props.mode === "write")
+    ) {
+      return (
+        <Pressable
+          onPress={() => {
+            const struct = get_struct(value.other);
+            if (unwrap(struct)) {
+              const fx = (variable: Variable) =>
+                dispatch(["values", get_upscaled_paths(props.path, variable)]);
+              const navigation = useNavigation();
+              navigation.navigate("Main");
+
+              const path_filters: Array<[string, PathFilter]> =
+                get_other_path_filters(struct.value, state, props.path);
+
+              const variables = get_variables(
+                struct.value,
                 {
-                  struct: extension.struct as Struct,
-                  id: extension.state.id as Decimal,
-                  active: extension.state.active,
-                  created_at: extension.state.created_at,
-                  updated_at: extension.state.updated_at,
+                  active: true,
+                  level: undefined,
+                  id: [],
+                  created_at: [],
+                  updated_at: [],
                 },
-              ],
-            ],
-            it.path[1],
-          ]);
-        })
+                path_filters,
+                undefined
+              );
+            }
+          }}
+        >
+          {props.element}
+        </Pressable>
       );
-    }
-  } else {
-    for (let path of state.values) {
-      if (
-        path.path[0].length === path_string[0].length &&
-        path.path[1][0] === path_string[1]
-      ) {
-        let check = true;
-        for (let [index, [field_name, _]] of path.path[0].entries()) {
-          if (path_string[0][index] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          return new Ok(path);
-        }
-      }
+    } else {
+      return props.element;
     }
   }
-  return undefined;
+  console.log("ERROR: Invalid path: ", props.path);
+  return null;
 }
 
 export function Label(props: {
@@ -1005,6 +996,7 @@ export function Label(props: {
 }
 
 export function Field(props: {
+  struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
   path: PathString | string;
@@ -1322,4 +1314,150 @@ export function Check(
     }
   }
   return null;
+}
+
+export function get_other_path_filters(
+  struct: Struct,
+  state: State,
+  path: Path
+): Array<[string, PathFilter]> {
+  const labeled_permissions: HashSet<PathPermission> =
+    get_shortlisted_permissions(
+      get_permissions(
+        struct,
+        state.user_paths as PathString[],
+        state.borrows as string[]
+      ),
+      state.labels
+    );
+  const path_prefix: ReadonlyArray<string> = [
+    ...path.path[0].map((x) => x[0]),
+    path.path[1][0],
+  ];
+  console.log("PREFIX:", path_prefix);
+  const path_filters: Array<[string, PathFilter]> = [];
+  if (path.path[1][1].type === "other") {
+    const other_struct = get_struct(path.path[1][1].other);
+    if (unwrap(other_struct)) {
+      let filtered_permissions: HashSet<PathPermission> = HashSet.of();
+      for (let permission of labeled_permissions) {
+        const permission_path_prefix: ReadonlyArray<string> =
+          permission.path[0].map((x) => x[0]);
+        let check = true;
+        for (let [index, field_name] of path_prefix.entries()) {
+          if (permission_path_prefix[index] !== field_name) {
+            check = false;
+            break;
+          }
+        }
+        if (check) {
+          filtered_permissions = filtered_permissions.add(permission);
+        }
+      }
+      for (let permission of filtered_permissions) {
+        const path = apply(
+          permission.path[0].slice(path_prefix.length).map((x) => x[0]),
+          (it) => {
+            it.push(permission.path[1][0]);
+            return it;
+          }
+        );
+        console.log("-----", path);
+        const field: StrongEnum = permission.path[1][1];
+        switch (field.type) {
+          case "str":
+          case "lstr":
+          case "clob":
+          case "i32":
+          case "u32":
+          case "i64":
+          case "u64":
+          case "idouble":
+          case "udouble":
+          case "idecimal":
+          case "udecimal":
+          case "bool":
+          case "date":
+          case "time":
+          case "timestamp": {
+            path_filters.push([
+              permission.label,
+              [path, field.type, undefined, []],
+            ]);
+            break;
+          }
+          case "other": {
+            path_filters.push([
+              permission.label,
+              [path, field.type, undefined, [], field.other],
+            ]);
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = field;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+      // Use path_filters to get Variable(s), transform paths received by appending prefix
+      console.log("####");
+      console.log(path_filters);
+      return path_filters;
+    }
+  }
+  return [];
+}
+
+function get_upscaled_paths(
+  base_path: Path,
+  variable: Variable
+): HashSet<Path> {
+  const base_value: StrongEnum = base_path.path[1][1];
+  let upscaled_paths: HashSet<Path> = HashSet.of();
+  if (base_value.type === "other") {
+    base_value.other;
+    if (variable.struct.name === base_value.other) {
+      for (let path of variable.paths) {
+        upscaled_paths = upscaled_paths.add(
+          apply(path, (it) => {
+            it.path = [
+              [
+                ...base_path.path[0],
+                [
+                  base_path.path[1][0],
+                  {
+                    struct: variable.struct,
+                    id: variable.id,
+                    active: variable.active,
+                    created_at: variable.created_at,
+                    updated_at: variable.updated_at,
+                  },
+                ],
+                ...it.path[0],
+              ],
+              it.path[1],
+            ];
+            return it;
+          })
+        );
+      }
+      upscaled_paths = upscaled_paths.add(
+        apply(base_path, (it) => {
+          it.path = [
+            it.path[0],
+            [
+              it.path[1][0],
+              {
+                type: "other",
+                other: base_value.other,
+                value: variable.id,
+              },
+            ],
+          ];
+          return it;
+        })
+      );
+    }
+  }
+  return upscaled_paths;
 }

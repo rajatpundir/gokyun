@@ -269,6 +269,7 @@ export class Path {
   trigger_dependency: boolean = false;
   trigger_output: boolean = false;
   check_dependency: boolean = false;
+  modified = false;
 
   constructor(
     label: string,

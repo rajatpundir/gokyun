@@ -29,8 +29,10 @@ import { apply, unwrap } from "../../main/utils/prelude";
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
-  const struct = get_struct("Test");
-  const struct2 = get_struct("Test2");
+  const struct_name = "Test";
+  const struct = get_struct(struct_name);
+  const struct2_name = "Test2";
+  const struct2 = get_struct(struct2_name);
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.route.params.id),
     active: true,
@@ -246,21 +248,30 @@ export default function Component(
       if (state.id.equals(new Decimal(-1))) {
         return (
           <>
-            {create_struct({ state, dispatch })}
-            {create_struct({ state: state2, dispatch: dispatch2 })}
+            {create_struct({
+              struct_name,
+              state,
+              dispatch,
+            })}
+            {/* {create_struct({
+              struct_name: struct2_name,
+              state: state2,
+              dispatch: dispatch2,
+            })} */}
           </>
         );
       } else {
-        return update_struct({ state, dispatch });
+        return update_struct({ struct_name, state, dispatch });
       }
     } else {
-      return show_struct({ state, dispatch });
+      return show_struct({ struct_name, state, dispatch });
     }
   }
   return <></>;
 }
 
 function create_struct(reducer: {
+  struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
@@ -331,11 +342,16 @@ function create_struct(reducer: {
         <Label {...reducer} path={"timestamp"} />
         <Field {...reducer} path={"timestamp"} />
       </View>
+      <View>
+        <Label {...reducer} path={"user"} />
+        <Field {...reducer} path={"user"} />
+      </View>
     </ScrollView>
   );
 }
 
 function update_struct(reducer: {
+  struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
@@ -350,6 +366,7 @@ function update_struct(reducer: {
 }
 
 function show_struct(reducer: {
+  struct_name: string;
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
