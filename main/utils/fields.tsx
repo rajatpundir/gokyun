@@ -23,12 +23,13 @@ import { useState } from "react";
 import { Path, PathString, StrongEnum, Struct, Variable } from "./variable";
 import { get_struct } from "./schema";
 import { HashSet } from "prelude-ts";
-import { get_variables, PathFilter } from "./db";
+import { PathFilter } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 
 type ComponentProps = {
   mode: "read" | "write";
+  struct: Struct;
   state: State;
   dispatch: React.Dispatch<Action>;
   path: Path;
@@ -932,6 +933,7 @@ function Other_Field(
 ): JSX.Element | null {
   const { state, dispatch, render_list_element } = props;
   const value = props.path.path[1][1];
+  const navigation = useNavigation();
   if (value.type === "other") {
     if (
       props.path.writeable &&
@@ -942,7 +944,6 @@ function Other_Field(
           onPress={() => {
             const struct = get_struct(value.other);
             if (unwrap(struct)) {
-              const navigation = useNavigation();
               navigation.navigate("SelectionModal", {
                 struct: struct.value,
                 variable_filters: {
@@ -953,7 +954,7 @@ function Other_Field(
                   updated_at: [],
                 },
                 path_filters: get_other_path_filters(
-                  struct.value,
+                  props.struct,
                   state,
                   props.path
                 ),
@@ -999,7 +1000,7 @@ export function Label(props: {
 }
 
 export function Field(props: {
-  struct_name: string;
+  struct: Struct;
   state: State;
   dispatch: React.Dispatch<Action>;
   path: PathString | string;

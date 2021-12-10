@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Pressable, ScrollView, StyleSheet } from "react-native";
+import { Button, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View } from "../../main/themed";
@@ -249,12 +249,12 @@ export default function Component(
         return (
           <>
             <CreateComponent
-              struct_name={struct_name}
+              struct={struct.value}
               state={state}
               dispatch={dispatch}
             />
             {/* <CreateComponent
-              struct_name={struct2_name}
+              struct={struct2.value}
               state={state2}
               dispatch={dispatch2}
             /> */}
@@ -263,7 +263,7 @@ export default function Component(
       } else {
         return (
           <UpdateComponent
-            struct_name={struct_name}
+            struct={struct.value}
             state={state}
             dispatch={dispatch}
           />
@@ -272,7 +272,7 @@ export default function Component(
     } else {
       return (
         <ShowComponent
-          struct_name={struct_name}
+          struct={struct.value}
           state={state}
           dispatch={dispatch}
         />
@@ -283,7 +283,7 @@ export default function Component(
 }
 
 function CreateComponent(props: {
-  struct_name: string;
+  struct: Struct;
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
@@ -362,7 +362,7 @@ function CreateComponent(props: {
           options={[
             "other",
             {
-              element: <Field {...props} path={[["user"], "nickname"]} />,
+              element: <Label {...props} path={"timestamp"} />,
               render_list_element: (
                 variable: Variable,
                 disptach_values: (variable: Variable) => void
@@ -388,7 +388,7 @@ function CreateComponent(props: {
                 );
                 return apply(
                   {
-                    struct_name: variable.struct.name,
+                    struct: variable.struct,
                     state: state,
                     dispatch: dispatch,
                   },
@@ -417,7 +417,7 @@ function CreateComponent(props: {
 }
 
 function UpdateComponent(props: {
-  struct_name: string;
+  struct: Struct;
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
@@ -432,7 +432,7 @@ function UpdateComponent(props: {
 }
 
 function ShowComponent(props: {
-  struct_name: string;
+  struct: Struct;
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {

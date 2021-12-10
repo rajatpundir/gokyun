@@ -1,3 +1,4 @@
+import React from "react";
 import { Draft } from "immer";
 import { useEffect } from "react";
 import { FlatList } from "react-native-gesture-handler";
@@ -42,6 +43,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         dispatch(["variables", variables.value]);
       }
     };
+    get_vars();
   }, [
     props.route.params.struct,
     props.route.params.variable_filters,
