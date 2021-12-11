@@ -43,6 +43,7 @@ export type NavigatorParams = {
   Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
   NotFound: undefined;
   SelectionModal: {
+    title: string;
     struct: Struct;
     variable_filters: {
       active: boolean;
@@ -145,12 +146,20 @@ export default function App() {
             <Stack.Screen
               name="SelectionModal"
               component={SelectionModal}
-              options={{ title: "Select variable" }}
+              options={{
+                title: "Select variable",
+                headerStyle: { backgroundColor: "black" },
+                headerTintColor: "white",
+              }}
             />
             <Stack.Screen
               name="VariablesModal"
               component={VariablesModal}
-              options={{ title: "Select your Variable!" }}
+              options={{
+                title: "Select your Variable!",
+                headerStyle: { backgroundColor: "black" },
+                headerTintColor: "white",
+              }}
             />
             <Stack.Screen
               name="Test"

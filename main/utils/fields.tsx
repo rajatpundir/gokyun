@@ -874,6 +874,7 @@ function Timestamp_Field(
 
 function Other_Field(
   props: ComponentProps & {
+    title: string;
     element: JSX.Element;
     render_list_element: (props: {
       variable: Variable;
@@ -892,6 +893,7 @@ function Other_Field(
             const struct = get_struct(value.other);
             if (unwrap(struct)) {
               navigation.navigate("SelectionModal", {
+                title: props.title,
                 struct: struct.value,
                 variable_filters: {
                   active: true,
@@ -907,11 +909,13 @@ function Other_Field(
                 ),
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,
-                disptach_values: (variable: Variable) =>
+                disptach_values: (variable: Variable) => {
                   dispatch([
                     "values",
                     get_upscaled_paths(props.path, variable),
-                  ]),
+                  ]);
+                  navigation.goBack();
+                },
               });
             }
           }}
@@ -959,6 +963,7 @@ export function Field(props: {
     | [
         "other",
         {
+          title: string;
           element: JSX.Element;
           render_list_element: (props: {
             variable: Variable;
@@ -1521,6 +1526,7 @@ export function Field(props: {
                 }
                 {...props}
                 path={path.value}
+                title={props.options[1].title}
                 element={props.options[1].element}
                 render_list_element={props.options[1].render_list_element}
               />

@@ -7,6 +7,7 @@ import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { get_variables } from "../../main/utils/db";
 import { unwrap } from "../../main/utils/prelude";
 import { Variable } from "../../main/utils/variable";
+import { View } from "../../main/themed";
 
 type State = {
   variables: Array<Variable>;
@@ -32,6 +33,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     variables: [],
   });
   useEffect(() => {
+    props.navigation.setOptions({ headerTitle: props.route.params.title });
     const get_vars = async () => {
       const variables = await get_variables(
         props.route.params.struct,
@@ -51,7 +53,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     props.route.params.limit_offset,
   ]);
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={state.variables}
         renderItem={(list_item) => (
@@ -62,6 +64,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         )}
         keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
       />
-    </>
+    </View>
   );
 }

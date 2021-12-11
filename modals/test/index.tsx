@@ -25,7 +25,6 @@ import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
 
-// Close selection component after selection
 // Design filters for modifying path filters, fields with passed filters cannot be overriden
 // Fix react navigation error related to serializability of props passed
 
@@ -370,6 +369,7 @@ function CreateComponent(props: {
           options={[
             "other",
             {
+              title: "Select User",
               element: apply(undefined, () => {
                 const result = get_path(props.state, [[], "user"]);
                 if (unwrap(result)) {
