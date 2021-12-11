@@ -14,18 +14,20 @@ import {
   run_triggers,
   compute_checks,
   get_path,
+  mark_trigger_dependencies,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
-import { PathString, Struct, Variable } from "../../main/utils/variable";
+import { Path, PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
 
 // Design filters for modifying path filters, fields with passed filters cannot be overriden
+// TODO 444
 // Fix react navigation error related to serializability of props passed
 
 // Complete testing Test
@@ -423,11 +425,24 @@ function CreateComponent(props: {
                     higher_structs: [],
                     checks: {},
                     labels: [],
+                    // user_paths and borrows fields does not play much role, since parent had already deduced permissions
                     user_paths: [],
                     borrows: [],
                   }
                 );
-                useEffect(() => {}, []);
+                useEffect(() => {
+                  // Mark triggers, checks, etc
+                  // Writeable fields would already have been correctly marked
+                  dispatch([
+                    "values",
+                    mark_trigger_dependencies(
+                      props.variable.struct,
+                      state.values as HashSet<Path>,
+                      state
+                    ),
+                  ]);
+                }, [props.variable.struct, props.variable.paths]);
+                // TODO. Try running trigger, checks, etc here.
                 return apply(
                   {
                     struct: props.variable.struct,

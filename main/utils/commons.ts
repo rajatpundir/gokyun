@@ -262,7 +262,7 @@ function mark_trigger_outputs(
   return mark_check_dependency(struct, marked_paths);
 }
 
-function mark_trigger_dependencies(
+export function mark_trigger_dependencies(
   struct: Struct,
   paths: HashSet<Path>,
   state: State
