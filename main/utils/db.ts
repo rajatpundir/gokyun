@@ -1920,6 +1920,10 @@ async function load_test_data() {
               [],
               ["mobile", { type: "str", value: "1234" }],
             ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: true }],
+            ]),
           ])
         ),
         new Variable(
@@ -1936,6 +1940,10 @@ async function load_test_data() {
             new Path("MOBILE", [
               [],
               ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
             ]),
           ])
         ),

@@ -14,7 +14,6 @@ import {
   run_triggers,
   compute_checks,
   get_path,
-  get_relabeled_paths,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
@@ -26,7 +25,6 @@ import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
 
-// Additional paths inside render_list_component
 // Design filters for modifying path filters, fields with passed filters cannot be overriden
 // Fix react navigation error related to serializability of props passed
 
@@ -401,6 +399,10 @@ function CreateComponent(props: {
                 }
                 return <></>;
               }),
+              labels: [
+                ["NICKNAME", [[], "nickname"]],
+                ["Knows english", [[], "knows_english"]],
+              ],
               render_list_element: (props: {
                 selected: number;
                 variable: Variable;
@@ -413,18 +415,13 @@ function CreateComponent(props: {
                     active: props.variable.active,
                     created_at: props.variable.created_at,
                     updated_at: props.variable.updated_at,
-                    // only paths and subpaths decalred by parent can be used
-                    // this could be improved to fetch extra paths that are not utilized by parent
-                    values: get_relabeled_paths(props.variable.paths, [
-                      ["NICKNAME", [[], "nickname"]],
-                    ]),
+                    values: props.variable.paths,
                     mode: "read",
                     event_trigger: 0,
                     check_trigger: 0,
                     extensions: {},
                     higher_structs: [],
                     checks: {},
-                    // parent labels are used by default, paths need to be relabeled
                     labels: [],
                     user_paths: [],
                     borrows: [],
@@ -446,8 +443,8 @@ function CreateComponent(props: {
                         <View>
                           <Label {...it} path={"nickname"} />
                           <Field {...it} path={"nickname"} />
-                          <Label {...it} path={"mobile"} />
-                          <Field {...it} path={"mobile"} />
+                          <Label {...it} path={"knows_english"} />
+                          <Field {...it} path={"knows_english"} />
                           <Button
                             title="OK"
                             onPress={() =>
@@ -461,8 +458,8 @@ function CreateComponent(props: {
                         <View>
                           <Label {...it} path={"nickname"} />
                           <Field {...it} path={"nickname"} />
-                          <Label {...it} path={"mobile"} />
-                          <Field {...it} path={"mobile"} />
+                          <Label {...it} path={"knows_english"} />
+                          <Field {...it} path={"knows_english"} />
                           <Button
                             title="OK"
                             onPress={() =>
@@ -478,10 +475,6 @@ function CreateComponent(props: {
             },
           ]}
         />
-      </View>
-      <View>
-        <Label {...props} path={[["user"], "nickname"]} />
-        <Field {...props} path={[["user"], "nickname"]} />
       </View>
     </ScrollView>
   );

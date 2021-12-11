@@ -17,6 +17,7 @@ import { Action, get_labeled_permissions, State, get_path } from "./commons";
 import { useState } from "react";
 import {
   compare_paths,
+  concat_path_strings,
   Path,
   PathString,
   StrongEnum,
@@ -883,6 +884,7 @@ function Timestamp_Field(
 function Other_Field(
   props: ComponentProps & {
     title: string;
+    labels: Immutable<Array<[string, PathString]>>;
     element: JSX.Element;
     render_list_element: (props: {
       selected: number;
@@ -915,7 +917,8 @@ function Other_Field(
                 path_filters: get_other_path_filters(
                   props.struct,
                   props.state,
-                  props.path
+                  props.path,
+                  props.labels
                 ),
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,
@@ -978,6 +981,7 @@ export function Field(props: {
         "other",
         {
           title: string;
+          labels: Immutable<Array<[string, PathString]>>;
           element: JSX.Element;
           render_list_element: (props: {
             selected: number;
@@ -1541,6 +1545,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 title={props.options[1].title}
+                labels={props.options[1].labels}
                 element={props.options[1].element}
                 render_list_element={props.options[1].render_list_element}
               />
@@ -1589,10 +1594,56 @@ export function Check(
   return null;
 }
 
+function get_upscaled_labels(
+  state: State,
+  path: Path,
+  labels: Immutable<Array<[string, PathString]>>
+): Immutable<Array<[string, PathString]>> {
+  const path_string: PathString = [
+    path.path[0].map((x) => x[0]),
+    path.path[1][0],
+  ];
+  console.log(path_string);
+  let new_labels: Array<[string, PathString]> = [];
+  for (let parent_label of state.labels) {
+    let new_label = parent_label[0];
+    for (let child_label of labels) {
+      if (
+        compare_paths(
+          parent_label[1],
+          concat_path_strings(path_string, child_label[1] as PathString)
+        )
+      ) {
+        new_label = child_label[0];
+        break;
+      }
+    }
+    new_labels.push([new_label, parent_label[1] as PathString]);
+  }
+  for (let child_label of labels) {
+    let check = true;
+    let new_label_path = concat_path_strings(
+      path_string,
+      child_label[1] as PathString
+    );
+    for (let parent_label of state.labels) {
+      if (compare_paths(parent_label[1], new_label_path)) {
+        check = false;
+        break;
+      }
+    }
+    if (check) {
+      new_labels.push([child_label[0], new_label_path]);
+    }
+  }
+  return new_labels;
+}
+
 function get_other_path_filters(
   struct: Struct,
   state: State,
-  path: Path
+  path: Path,
+  labels: Immutable<Array<[string, PathString]>>
 ): Array<[string, PathFilter]> {
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
     get_permissions(
@@ -1600,7 +1651,7 @@ function get_other_path_filters(
       state.user_paths as PathString[],
       state.borrows as string[]
     ),
-    state.labels
+    get_upscaled_labels(state, path, labels)
   );
   const path_prefix: ReadonlyArray<string> = [
     ...path.path[0].map((x) => x[0]),

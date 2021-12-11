@@ -913,31 +913,3 @@ export function get_path(state: State, path_string: PathString): Option<Path> {
   }
   return undefined;
 }
-
-export function get_relabeled_paths(
-  paths: HashSet<Path>,
-  labels: Array<[string, PathString]>
-): HashSet<Path> {
-  let relabeled_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
-    let new_label = path.label;
-    for (let label of labels) {
-      if (
-        compare_paths(label[1], [
-          path.path[0].map((x) => x[0]),
-          path.path[1][0],
-        ])
-      ) {
-        new_label = label[0];
-        break;
-      }
-    }
-    relabeled_paths = relabeled_paths.add(
-      apply(path, (it) => {
-        it.label = new_label;
-        return it;
-      })
-    );
-  }
-  return relabeled_paths;
-}
