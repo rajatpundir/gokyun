@@ -877,6 +877,7 @@ function Other_Field(
     title: string;
     element: JSX.Element;
     render_list_element: (props: {
+      selected: number;
       variable: Variable;
       disptach_values: (variable: Variable) => void;
     }) => JSX.Element;
@@ -894,6 +895,7 @@ function Other_Field(
             if (unwrap(struct)) {
               navigation.navigate("SelectionModal", {
                 title: props.title,
+                selected: value.value.toNumber(),
                 struct: struct.value,
                 variable_filters: {
                   active: true,
@@ -966,6 +968,7 @@ export function Field(props: {
           title: string;
           element: JSX.Element;
           render_list_element: (props: {
+            selected: number;
             variable: Variable;
             disptach_values: (variable: Variable) => void;
           }) => JSX.Element;
@@ -1004,7 +1007,6 @@ export function Field(props: {
               />
             );
           }
-          console.log(path_string, props.state.mode, path.value.writeable);
           return (
             <Str
               mode={

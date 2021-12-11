@@ -44,6 +44,7 @@ export type NavigatorParams = {
   NotFound: undefined;
   SelectionModal: {
     title: string;
+    selected: number;
     struct: Struct;
     variable_filters: {
       active: boolean;
@@ -67,6 +68,7 @@ export type NavigatorParams = {
     path_filters: Array<[string, PathFilter]>;
     limit_offset: [Decimal, Decimal] | undefined;
     render_list_element: (props: {
+      selected: number;
       variable: Variable;
       disptach_values: (variable: Variable) => void;
     }) => JSX.Element;

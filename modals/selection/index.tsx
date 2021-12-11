@@ -58,6 +58,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         data={state.variables}
         renderItem={(list_item) => (
           <props.route.params.render_list_element
+            selected={props.route.params.selected}
             variable={list_item.item}
             disptach_values={props.route.params.disptach_values}
           />

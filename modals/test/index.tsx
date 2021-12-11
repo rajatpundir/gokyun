@@ -358,10 +358,6 @@ function CreateComponent(props: {
         <Field {...props} path={"timestamp"} />
       </View>
       <View>
-        <Label {...props} path={[["user"], "nickname"]} />
-        <Field {...props} path={[["user"], "nickname"]} />
-      </View>
-      <View>
         <Label {...props} path={"user"} />
         <Field
           {...props}
@@ -404,6 +400,7 @@ function CreateComponent(props: {
                 return <></>;
               }),
               render_list_element: (props: {
+                selected: number;
                 variable: Variable;
                 disptach_values: (variable: Variable) => void;
               }) => {
@@ -433,26 +430,50 @@ function CreateComponent(props: {
                     dispatch: dispatch,
                   },
                   (it) => {
-                    return (
-                      <View style={{ flex: 1 }}>
-                        <View>
-                          <Label {...it} path={"nickname"} />
-                          <Field {...it} path={"nickname"} />
-                          <Button
-                            title="OK"
-                            onPress={() =>
-                              props.disptach_values(props.variable)
-                            }
-                          />
+                    if (
+                      !props.variable.id.equals(-1) &&
+                      props.variable.id.equals(props.selected)
+                    ) {
+                      return (
+                        <View style={{ flex: 1 }}>
+                          <View>
+                            <Label {...it} path={"nickname"} />
+                            <Field {...it} path={"nickname"} />
+                            <Button
+                              title="OK"
+                              onPress={() =>
+                                props.disptach_values(props.variable)
+                              }
+                            />
+                          </View>
                         </View>
-                      </View>
-                    );
+                      );
+                    } else {
+                      return (
+                        <View style={{ flex: 1 }}>
+                          <View>
+                            <Label {...it} path={"nickname"} />
+                            <Field {...it} path={"nickname"} />
+                            <Button
+                              title="OK"
+                              onPress={() =>
+                                props.disptach_values(props.variable)
+                              }
+                            />
+                          </View>
+                        </View>
+                      );
+                    }
                   }
                 );
               },
             },
           ]}
         />
+      </View>
+      <View>
+        <Label {...props} path={[["user"], "nickname"]} />
+        <Field {...props} path={[["user"], "nickname"]} />
       </View>
     </ScrollView>
   );
