@@ -91,39 +91,49 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "value": {
-      if (action[1].writeable || action[1].trigger_output) {
-        state.values = apply(state.values.remove(action[1]), (vals) => {
-          return vals.add(
-            apply(action[1], (val) => {
-              val.modified = true;
-              return val;
-            })
-          );
-        });
-        if (action[1].trigger_dependency) {
-          state.event_trigger += 1;
-        }
-        if (action[1].check_dependency) {
-          state.check_trigger += 1;
+      const result = state.values.findAny((x) => x.equals(action[1]));
+      if (result.isSome()) {
+        const path: Path = result.get();
+        if (path.writeable || path.trigger_output) {
+          state.values = apply(state.values.remove(path), (vals) => {
+            return vals.add(
+              apply(path, (path) => {
+                path.path[1] = [path.path[1][0], action[1].path[1][1]];
+                path.modified = true;
+                return path;
+              })
+            );
+          });
+          if (path.trigger_dependency) {
+            state.event_trigger += 1;
+          }
+          if (path.check_dependency) {
+            state.check_trigger += 1;
+          }
         }
       }
       break;
     }
     case "values": {
       for (let value of action[1]) {
-        state.values = apply(state.values.remove(value), (vals) => {
-          return vals.add(
-            apply(value, (val) => {
-              val.modified = true;
-              return val;
-            })
-          );
-        });
-        if (value.trigger_dependency) {
-          state.event_trigger += 1;
-        }
-        if (value.check_dependency) {
-          state.check_trigger += 1;
+        const result = state.values.findAny((x) => x.equals(value));
+        if (result.isSome()) {
+          const path: Path = result.get();
+          state.values = apply(state.values.remove(path), (vals) => {
+            return vals.add(
+              apply(path, (path) => {
+                path.path[1] = [path.path[1][0], value.path[1][1]];
+                path.modified = value.modified;
+                return path;
+              })
+            );
+          });
+          if (path.trigger_dependency) {
+            state.event_trigger += 1;
+          }
+          if (path.check_dependency) {
+            state.check_trigger += 1;
+          }
         }
       }
       break;
@@ -290,7 +300,7 @@ function mark_trigger_dependencies(
   return mark_trigger_outputs(struct, marked_paths, state);
 }
 
-export function get_shortlisted_permissions(
+export function get_labeled_permissions(
   permissions: HashSet<PathPermission>,
   labels: Immutable<Array<[string, PathString]>>
 ): HashSet<PathPermission> {
@@ -320,13 +330,14 @@ export function get_creation_paths(
   struct: Struct,
   state: State
 ): HashSet<Path> {
-  const permissions: HashSet<PathPermission> = get_permissions(
-    struct,
-    state.user_paths as PathString[],
-    state.borrows as string[]
+  const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
+    get_permissions(
+      struct,
+      state.user_paths as PathString[],
+      state.borrows as string[]
+    ),
+    state.labels
   );
-  const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, state.labels);
   let paths: HashSet<Path> = HashSet.of();
   for (let permission of labeled_permissions) {
     paths = paths.add(
@@ -345,7 +356,7 @@ export function get_creation_paths(
           permission.path[1],
         ]),
         (it) => {
-          it.writeable = true;
+          it.writeable = permission.writeable;
           return it;
         }
       )
@@ -395,8 +406,10 @@ export function get_labeled_path_filters(
     state.user_paths as PathString[],
     state.borrows as string[]
   );
-  const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(permissions, state.labels);
+  const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
+    permissions,
+    state.labels
+  );
   const path_filters: Array<[string, PathFilter]> = [];
   for (let permission of labeled_permissions) {
     const path = apply(

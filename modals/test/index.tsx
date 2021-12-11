@@ -2,7 +2,7 @@ import React from "react";
 import { Button, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { View } from "../../main/themed";
+import { View, Text } from "../../main/themed";
 import { useImmerReducer } from "use-immer";
 import {
   State,
@@ -13,6 +13,7 @@ import {
   get_writeable_paths,
   run_triggers,
   compute_checks,
+  get_path,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
@@ -22,9 +23,8 @@ import { get_variable } from "../../main/utils/db";
 import { PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
+import { FontAwesome } from "@expo/vector-icons";
 
-// Field mode should be able to override all other behaviour
-// Preserve writeable etc fields on paths upon overwriting them in reducer values
 // Close selection component after selection
 // Design filters for modifying path filters, fields with passed filters cannot be overriden
 // Fix react navigation error related to serializability of props passed
@@ -73,7 +73,7 @@ export default function Component(
       ["USER", [[], "user"]],
       ["USER NICKNAME", [["user"], "nickname"]],
     ],
-    user_paths: [],
+    user_paths: [[[], "user"]],
     borrows: [],
   });
   const [state2, dispatch2] = useImmerReducer<State, Action>(reducer, {
@@ -107,7 +107,7 @@ export default function Component(
       ["USER NICKNAME2", [["user"], "nickname"]],
     ],
     higher_structs: [],
-    user_paths: [],
+    user_paths: [[[], "user"]],
     borrows: [],
     checks: {},
   });
@@ -370,12 +370,39 @@ function CreateComponent(props: {
           options={[
             "other",
             {
-              element: (
-                <>
-                  <Label {...props} path={[["user"], "nickname"]} />
-                  <Field {...props} path={[["user"], "nickname"]} />
-                </>
-              ),
+              element: apply(undefined, () => {
+                const result = get_path(props.state, [[], "user"]);
+                if (unwrap(result)) {
+                  const path = result.value;
+                  if (path.writeable) {
+                    const value = path.path[1][1];
+                    if (value.type === "other" && value.value.equals(-1)) {
+                      return (
+                        <>
+                          <Text>Select User</Text>
+                          {props.state.mode === "write" ? (
+                            <FontAwesome name="edit" size={24} color="white" />
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      );
+                    } else {
+                      return (
+                        <>
+                          <Field {...props} path={[["user"], "nickname"]} />
+                          {props.state.mode === "write" ? (
+                            <FontAwesome name="edit" size={24} color="white" />
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      );
+                    }
+                  }
+                }
+                return <></>;
+              }),
               render_list_element: (props: {
                 variable: Variable;
                 disptach_values: (variable: Variable) => void;

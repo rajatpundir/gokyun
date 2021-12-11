@@ -65,7 +65,29 @@ const schema: Record<
     uniqueness: [],
     permissions: {
       borrow: {},
-      ownership: {},
+      ownership: {
+        user: {
+          read: [],
+          write: [
+            "str",
+            "lstr",
+            "clob",
+            "u32",
+            "i32",
+            "u64",
+            "i64",
+            "udouble",
+            "idouble",
+            "udecimal",
+            "idecimal",
+            "bool",
+            "date",
+            "time",
+            "timestamp",
+            "user",
+          ],
+        },
+      },
       public: [
         "str",
         "lstr",
@@ -169,7 +191,29 @@ const schema: Record<
     uniqueness: [],
     permissions: {
       borrow: {},
-      ownership: {},
+      ownership: {
+        user: {
+          read: [],
+          write: [
+            "str",
+            "lstr",
+            "clob",
+            "u32",
+            "i32",
+            "u64",
+            "i64",
+            "udouble",
+            "idouble",
+            "udecimal",
+            "idecimal",
+            "bool",
+            "date",
+            "time",
+            "timestamp",
+            "user",
+          ],
+        },
+      },
       public: [
         "str",
         "lstr",

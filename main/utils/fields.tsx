@@ -13,12 +13,7 @@ import moment from "moment";
 
 import { Text as ThemedText } from "../../main/themed";
 import { apply, unwrap, Result } from "./prelude";
-import {
-  Action,
-  get_shortlisted_permissions,
-  State,
-  get_path,
-} from "./commons";
+import { Action, get_labeled_permissions, State, get_path } from "./commons";
 import { useState } from "react";
 import { Path, PathString, StrongEnum, Struct, Variable } from "./variable";
 import { get_struct } from "./schema";
@@ -41,10 +36,7 @@ function Str(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "str") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -95,10 +87,7 @@ function Lstr(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "lstr") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -149,10 +138,7 @@ function Clob(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "clob") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -203,10 +189,7 @@ function I_32(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "i32") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -262,10 +245,7 @@ function U_32(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "u32") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -321,10 +301,7 @@ function I_64(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "i64") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -380,10 +357,7 @@ function U_64(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "u64") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -439,10 +413,7 @@ function I_Double(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "idouble") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -494,10 +465,7 @@ function U_Double(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "udouble") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -549,10 +517,7 @@ function I_Decimal(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "idecimal") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -604,10 +569,7 @@ function U_Decimal(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "udecimal") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
           style={[
@@ -658,10 +620,7 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "bool") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <Switch
           style={[{}, style]}
@@ -693,10 +652,7 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "date") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       const [showPicker, setPicker] = useState(false);
       return (
         <>
@@ -760,10 +716,7 @@ function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "time") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       const [showPicker, setPicker] = useState(false);
       return (
         <>
@@ -829,10 +782,7 @@ function Timestamp_Field(
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "timestamp") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       const [showPicker, setPicker] = useState(false);
       const [mode, setMode] = useState("date");
       let [date, setDate] = useState(new Date(value.value.getTime()));
@@ -935,10 +885,7 @@ function Other_Field(
   const value = props.path.path[1][1];
   const navigation = useNavigation();
   if (value.type === "other") {
-    if (
-      props.path.writeable &&
-      (state.id.equals(new Decimal(-1)) || props.mode === "write")
-    ) {
+    if (props.path.writeable && props.mode === "write") {
       return (
         <Pressable
           onPress={() => {
@@ -960,13 +907,11 @@ function Other_Field(
                 ),
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,
-                disptach_values: (variable: Variable) => {
-                  console.log("YYYEESS");
+                disptach_values: (variable: Variable) =>
                   dispatch([
                     "values",
                     get_upscaled_paths(props.path, variable),
-                  ]);
-                },
+                  ]),
               });
             }
           }}
@@ -1006,7 +951,7 @@ export function Field(props: {
   state: State;
   dispatch: React.Dispatch<Action>;
   path: PathString | string;
-  mode?: "read" | "write";
+  mode?: "read";
   options?:
     | ["text", TextInput["props"] & Text["props"]]
     | ["date", Text["props"]]
@@ -1041,14 +986,33 @@ export function Field(props: {
           ) {
             return (
               <Str
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Str mode={"read"} {...props} path={path.value} />;
+          console.log(path_string, props.state.mode, path.value.writeable);
+          return (
+            <Str
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "lstr": {
           if (
@@ -1058,14 +1022,32 @@ export function Field(props: {
           ) {
             return (
               <Lstr
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Lstr mode={"read"} {...props} path={path.value} />;
+          return (
+            <Lstr
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "clob": {
           if (
@@ -1075,14 +1057,32 @@ export function Field(props: {
           ) {
             return (
               <Clob
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Clob mode={"read"} {...props} path={path.value} />;
+          return (
+            <Clob
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "u32": {
           if (
@@ -1092,14 +1092,32 @@ export function Field(props: {
           ) {
             return (
               <U_32
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <U_32 mode={"read"} {...props} path={path.value} />;
+          return (
+            <U_32
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "i32": {
           if (
@@ -1109,14 +1127,32 @@ export function Field(props: {
           ) {
             return (
               <I_32
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <I_32 mode={"read"} {...props} path={path.value} />;
+          return (
+            <I_32
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "u64": {
           if (
@@ -1126,14 +1162,32 @@ export function Field(props: {
           ) {
             return (
               <U_64
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <U_64 mode={"read"} {...props} path={path.value} />;
+          return (
+            <U_64
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "i64": {
           if (
@@ -1143,14 +1197,32 @@ export function Field(props: {
           ) {
             return (
               <I_64
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <I_64 mode={"read"} {...props} path={path.value} />;
+          return (
+            <I_64
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "udouble": {
           if (
@@ -1160,14 +1232,32 @@ export function Field(props: {
           ) {
             return (
               <U_Double
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <U_Double mode={"read"} {...props} path={path.value} />;
+          return (
+            <U_Double
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "idouble": {
           if (
@@ -1177,14 +1267,32 @@ export function Field(props: {
           ) {
             return (
               <I_Double
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <I_Double mode={"read"} {...props} path={path.value} />;
+          return (
+            <I_Double
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "udecimal": {
           if (
@@ -1194,14 +1302,32 @@ export function Field(props: {
           ) {
             return (
               <U_Decimal
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <U_Decimal mode={"read"} {...props} path={path.value} />;
+          return (
+            <U_Decimal
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "idecimal": {
           if (
@@ -1211,14 +1337,32 @@ export function Field(props: {
           ) {
             return (
               <I_Decimal
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <I_Decimal mode={"read"} {...props} path={path.value} />;
+          return (
+            <I_Decimal
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "bool": {
           if (
@@ -1228,14 +1372,32 @@ export function Field(props: {
           ) {
             return (
               <Bool
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Bool mode={"read"} {...props} path={path.value} />;
+          return (
+            <Bool
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "date": {
           if (
@@ -1245,14 +1407,32 @@ export function Field(props: {
           ) {
             return (
               <Date_Field
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Date_Field mode={"read"} {...props} path={path.value} />;
+          return (
+            <Date_Field
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "time": {
           if (
@@ -1262,14 +1442,32 @@ export function Field(props: {
           ) {
             return (
               <Time_Field
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Time_Field mode={"read"} {...props} path={path.value} />;
+          return (
+            <Time_Field
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "timestamp": {
           if (
@@ -1279,14 +1477,32 @@ export function Field(props: {
           ) {
             return (
               <Timestamp_Field
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 {...props.options[1]}
               />
             );
           }
-          return <Timestamp_Field mode={"read"} {...props} path={path.value} />;
+          return (
+            <Timestamp_Field
+              mode={
+                props.state.mode === "write"
+                  ? path.value.writeable
+                    ? "write"
+                    : "read"
+                  : "read"
+              }
+              {...props}
+              path={path.value}
+            />
+          );
         }
         case "other": {
           if (
@@ -1296,7 +1512,13 @@ export function Field(props: {
           ) {
             return (
               <Other_Field
-                mode={"read"}
+                mode={
+                  props.state.mode === "write"
+                    ? path.value.writeable
+                      ? "write"
+                      : "read"
+                    : "read"
+                }
                 {...props}
                 path={path.value}
                 element={props.options[1].element}
@@ -1352,15 +1574,14 @@ function get_other_path_filters(
   state: State,
   path: Path
 ): Array<[string, PathFilter]> {
-  const labeled_permissions: HashSet<PathPermission> =
-    get_shortlisted_permissions(
-      get_permissions(
-        struct,
-        state.user_paths as PathString[],
-        state.borrows as string[]
-      ),
-      state.labels
-    );
+  const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
+    get_permissions(
+      struct,
+      state.user_paths as PathString[],
+      state.borrows as string[]
+    ),
+    state.labels
+  );
   const path_prefix: ReadonlyArray<string> = [
     ...path.path[0].map((x) => x[0]),
     path.path[1][0],
@@ -1480,6 +1701,7 @@ function get_upscaled_paths(
               },
             ],
           ];
+          it.modified = true;
           return it;
         })
       );
