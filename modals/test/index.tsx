@@ -435,32 +435,28 @@ function CreateComponent(props: {
                       props.variable.id.equals(props.selected)
                     ) {
                       return (
-                        <View style={{ flex: 1 }}>
-                          <View>
-                            <Label {...it} path={"nickname"} />
-                            <Field {...it} path={"nickname"} />
-                            <Button
-                              title="OK"
-                              onPress={() =>
-                                props.disptach_values(props.variable)
-                              }
-                            />
-                          </View>
+                        <View>
+                          <Label {...it} path={"nickname"} />
+                          <Field {...it} path={"nickname"} />
+                          <Button
+                            title="OK"
+                            onPress={() =>
+                              props.disptach_values(props.variable)
+                            }
+                          />
                         </View>
                       );
                     } else {
                       return (
-                        <View style={{ flex: 1 }}>
-                          <View>
-                            <Label {...it} path={"nickname"} />
-                            <Field {...it} path={"nickname"} />
-                            <Button
-                              title="OK"
-                              onPress={() =>
-                                props.disptach_values(props.variable)
-                              }
-                            />
-                          </View>
+                        <View>
+                          <Label {...it} path={"nickname"} />
+                          <Field {...it} path={"nickname"} />
+                          <Button
+                            title="OK"
+                            onPress={() =>
+                              props.disptach_values(props.variable)
+                            }
+                          />
                         </View>
                       );
                     }

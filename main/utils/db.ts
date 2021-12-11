@@ -1918,6 +1918,19 @@ async function load_test_data() {
             ]),
           ])
         ),
+        new Variable(
+          struct.value,
+          new Decimal(2),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER FOUR" }],
+            ]),
+          ])
+        ),
       ])
     );
   }
