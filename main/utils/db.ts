@@ -1916,6 +1916,10 @@ async function load_test_data() {
               [],
               ["nickname", { type: "str", value: "JOHN SMITH" }],
             ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "1234" }],
+            ]),
           ])
         ),
         new Variable(
@@ -1928,6 +1932,10 @@ async function load_test_data() {
             new Path("NICKNAME", [
               [],
               ["nickname", { type: "str", value: "NUMBER FOUR" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
             ]),
           ])
         ),

@@ -15,12 +15,20 @@ import { Text as ThemedText } from "../../main/themed";
 import { apply, unwrap, Result } from "./prelude";
 import { Action, get_labeled_permissions, State, get_path } from "./commons";
 import { useState } from "react";
-import { Path, PathString, StrongEnum, Struct, Variable } from "./variable";
+import {
+  compare_paths,
+  Path,
+  PathString,
+  StrongEnum,
+  Struct,
+  Variable,
+} from "./variable";
 import { get_struct } from "./schema";
 import { HashSet } from "prelude-ts";
 import { PathFilter } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
+import { Immutable } from "immer";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -914,7 +922,11 @@ function Other_Field(
                 disptach_values: (variable: Variable) => {
                   dispatch([
                     "values",
-                    get_upscaled_paths(props.path, variable),
+                    get_upscaled_paths(
+                      props.path,
+                      variable,
+                      props.state.labels
+                    ),
                   ]);
                   navigation.goBack();
                 },
@@ -1665,7 +1677,8 @@ function get_other_path_filters(
 
 function get_upscaled_paths(
   base_path: Path,
-  variable: Variable
+  variable: Variable,
+  labels: Immutable<Array<[string, PathString]>>
 ): HashSet<Path> {
   const base_value: StrongEnum = base_path.path[1][1];
   let upscaled_paths: HashSet<Path> = HashSet.of();
@@ -1692,6 +1705,17 @@ function get_upscaled_paths(
               ],
               it.path[1],
             ];
+            for (let label of labels) {
+              if (
+                compare_paths(label[1], [
+                  it.path[0].map((x) => x[0]),
+                  it.path[1][0],
+                ])
+              ) {
+                it.label = label[0];
+                break;
+              }
+            }
             return it;
           })
         );
@@ -1709,6 +1733,17 @@ function get_upscaled_paths(
               },
             ],
           ];
+          for (let label of labels) {
+            if (
+              compare_paths(label[1], [
+                it.path[0].map((x) => x[0]),
+                it.path[1][0],
+              ])
+            ) {
+              it.label = label[0];
+              break;
+            }
+          }
           it.modified = true;
           return it;
         })

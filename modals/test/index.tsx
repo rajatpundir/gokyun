@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
@@ -14,6 +14,7 @@ import {
   run_triggers,
   compute_checks,
   get_path,
+  get_relabeled_paths,
 } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
@@ -25,6 +26,7 @@ import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
 
+// Additional paths inside render_list_component
 // Design filters for modifying path filters, fields with passed filters cannot be overriden
 // Fix react navigation error related to serializability of props passed
 
@@ -411,18 +413,24 @@ function CreateComponent(props: {
                     active: props.variable.active,
                     created_at: props.variable.created_at,
                     updated_at: props.variable.updated_at,
-                    values: props.variable.paths,
+                    // only paths and subpaths decalred by parent can be used
+                    // this could be improved to fetch extra paths that are not utilized by parent
+                    values: get_relabeled_paths(props.variable.paths, [
+                      ["NICKNAME", [[], "nickname"]],
+                    ]),
                     mode: "read",
                     event_trigger: 0,
                     check_trigger: 0,
                     extensions: {},
                     higher_structs: [],
                     checks: {},
-                    labels: [["NICKNAME", [[], "nickname"]]],
+                    // parent labels are used by default, paths need to be relabeled
+                    labels: [],
                     user_paths: [],
                     borrows: [],
                   }
                 );
+                useEffect(() => {}, []);
                 return apply(
                   {
                     struct: props.variable.struct,
@@ -438,6 +446,8 @@ function CreateComponent(props: {
                         <View>
                           <Label {...it} path={"nickname"} />
                           <Field {...it} path={"nickname"} />
+                          <Label {...it} path={"mobile"} />
+                          <Field {...it} path={"mobile"} />
                           <Button
                             title="OK"
                             onPress={() =>
@@ -451,6 +461,8 @@ function CreateComponent(props: {
                         <View>
                           <Label {...it} path={"nickname"} />
                           <Field {...it} path={"nickname"} />
+                          <Label {...it} path={"mobile"} />
+                          <Field {...it} path={"mobile"} />
                           <Button
                             title="OK"
                             onPress={() =>

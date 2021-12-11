@@ -3,6 +3,7 @@ import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { ErrMsg } from "./errors";
 import { apply } from "./prelude";
+import { Immutable } from "immer";
 
 export type PathString = [ReadonlyArray<string>, string];
 
@@ -440,8 +441,8 @@ export function get_strong_enum(field: WeakEnum): StrongEnum {
 }
 
 export function compare_paths(
-  path_string: PathString,
-  other_path_string: PathString
+  path_string: Immutable<PathString>,
+  other_path_string: Immutable<PathString>
 ): boolean {
   if (
     path_string[0].length === other_path_string[0].length &&
