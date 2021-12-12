@@ -12,7 +12,14 @@ import {
   unwrap,
 } from "./prelude";
 import Decimal from "decimal.js";
-import { Path, StrongEnum, Struct, Variable } from "./variable";
+import {
+  compare_paths,
+  Path,
+  PathString,
+  StrongEnum,
+  Struct,
+  Variable,
+} from "./variable";
 import { ErrMsg, errors } from "./errors";
 import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
 import { get_struct, get_structs } from "./schema";
@@ -189,7 +196,7 @@ export type PathFilter =
       ReadonlyArray<
         | [
             "between" | "not_between",
-            [Decimal | ReadonlyArray<string>, Decimal | ReadonlyArray<string>]
+            [Date | ReadonlyArray<string>, Date | ReadonlyArray<string>]
           ]
         | undefined
       >
@@ -889,8 +896,8 @@ export function query(
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
                 stmt = apply(undefined, () => {
-                  if (is_decimal(start_value)) {
-                    if (is_decimal(end_value)) {
+                  if (start_value instanceof Date) {
+                    if (end_value instanceof Date) {
                       return `"${path_ref}" ${
                         op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } ${start_value.toString()} AND ${end_value.toString()}`;
@@ -900,7 +907,7 @@ export function query(
                       } ${start_value.toString()} AND "${end_value.join(".")}"`;
                     }
                   } else {
-                    if (is_decimal(end_value)) {
+                    if (end_value instanceof Date) {
                       return `"${path_ref}" ${
                         op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
                       } "${start_value.join(".")}" AND ${end_value.toString()}`;
@@ -1591,28 +1598,13 @@ export async function increment_struct_counter(
 
 export async function get_variables(
   struct: Struct,
-  variable_filters: {
-    active: boolean;
-    level: Decimal | undefined;
-    id: ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-      | ["between" | "not_between", [Decimal, Decimal]]
-      | undefined
-    >;
-    created_at: ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    >;
-    updated_at: ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    >;
-  },
-  path_filters: ReadonlyArray<[string, PathFilter]>,
+  active: boolean,
+  level: Decimal | undefined,
+  filters: ReadonlyArray<Filter>,
   limit_offset: [Decimal, Decimal] | undefined
 ): Promise<Result<Array<Variable>>> {
+  const variable_filters = get_variable_filters(active, level, filters);
+  const path_filters = get_path_filters(filters);
   try {
     const variables: Array<Variable> = [];
     const result_set = await query(
@@ -1799,23 +1791,24 @@ export async function get_variables(
 }
 
 export async function get_variable(
-  level: Decimal | undefined,
   struct: Struct,
-  id: Decimal,
   active: boolean,
-  path_filters: ReadonlyArray<[string, PathFilter]>
+  level: Decimal | undefined,
+  id: Decimal
 ): Promise<Result<Variable>> {
   try {
     const result = await get_variables(
       struct,
-      {
-        active: active,
-        level: level,
-        id: [["==", id]],
-        created_at: [],
-        updated_at: [],
-      },
-      path_filters,
+      active,
+      level,
+      [
+        {
+          id: ["==", id],
+          created_at: undefined,
+          updated_at: undefined,
+          filter_paths: HashSet.of<FilterPath>(),
+        },
+      ],
       [new Decimal(1), new Decimal(0)]
     );
     if (unwrap(result)) {
@@ -1898,6 +1891,684 @@ export async function remove_variables(
   return new Ok([] as []);
 }
 
+///////////////////////////////////
+
+type FilterPathValue =
+  | [
+      "str" | "lstr" | "clob",
+      "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
+      string | PathString
+    ]
+  | [
+      "str" | "lstr" | "clob",
+      "between" | "not_between",
+      [string | PathString, string | PathString]
+    ]
+  | [
+      (
+        | "i32"
+        | "u32"
+        | "i64"
+        | "u64"
+        | "idouble"
+        | "udouble"
+        | "idecimal"
+        | "udecimal"
+      ),
+      "==" | "!=" | ">=" | "<=" | ">" | "<",
+      Decimal | PathString
+    ]
+  | [
+      (
+        | "i32"
+        | "u32"
+        | "i64"
+        | "u64"
+        | "idouble"
+        | "udouble"
+        | "idecimal"
+        | "udecimal"
+      ),
+      "between" | "not_between",
+      [Decimal | PathString, Decimal | PathString]
+    ]
+  | ["bool", "==" | "!=", boolean | PathString]
+  | [
+      "date" | "time" | "timestamp",
+      "==" | "!=" | ">=" | "<=" | ">" | "<",
+      Date | PathString
+    ]
+  | [
+      "date" | "time" | "timestamp",
+      "between" | "not_between",
+      [Date | PathString, Date | PathString]
+    ]
+  | ["other", "==" | "!=", Decimal | PathString, Struct];
+
+export class FilterPath {
+  label: string;
+  active: boolean = false;
+  path: PathString;
+  value: FilterPathValue;
+  ordering: [Decimal, boolean] | undefined;
+
+  constructor(
+    label: string,
+    path: PathString,
+    value: FilterPathValue,
+    ordering: [Decimal, boolean] | undefined
+  ) {
+    this.label = label;
+    this.path = path;
+    this.value = value;
+    this.ordering = ordering;
+  }
+
+  equals(other: FilterPath): boolean {
+    if (!other) {
+      return false;
+    }
+    return compare_paths(this.path, other.path);
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return String({
+      path: this.path,
+      value: this.value,
+    });
+  }
+}
+
+export type Filter = {
+  id:
+    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+    | ["between" | "not_between", [Decimal, Decimal]]
+    | undefined;
+  created_at:
+    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+    | ["between" | "not_between", [Date, Date]]
+    | undefined;
+  updated_at:
+    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+    | ["between" | "not_between", [Date, Date]]
+    | undefined;
+  filter_paths: HashSet<FilterPath>;
+};
+
+function get_variable_filters(
+  active: boolean,
+  level: Decimal | undefined,
+  filters: ReadonlyArray<Filter>
+): {
+  active: boolean;
+  level: Decimal | undefined;
+  id: ReadonlyArray<
+    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+    | ["between" | "not_between", [Decimal, Decimal]]
+    | undefined
+  >;
+  created_at: ReadonlyArray<
+    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+    | ["between" | "not_between", [Date, Date]]
+    | undefined
+  >;
+  updated_at: ReadonlyArray<
+    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+    | ["between" | "not_between", [Date, Date]]
+    | undefined
+  >;
+} {
+  return {
+    active: active,
+    level: level,
+    id: filters.map((x) => x.id),
+    created_at: filters.map((x) => x.created_at),
+    updated_at: filters.map((x) => x.updated_at),
+  };
+}
+
+function get_path_filters(filters: ReadonlyArray<Filter>) {
+  const get_flattened_path = (x: PathString) => [...x[0], x[1]];
+  let path_filters: Array<[string, PathFilter]> = [];
+  const used_filter_paths: HashSet<FilterPath> = apply(
+    HashSet.of<FilterPath>(),
+    (it) => {
+      for (let filter of filters) {
+        for (let filter_path of filter.filter_paths) {
+          if (filter_path.active) {
+            it = it.add(filter_path);
+          }
+        }
+      }
+      return it;
+    }
+  );
+  for (let filter_path of used_filter_paths) {
+    const field_struct_name = filter_path.value[0];
+    switch (field_struct_name) {
+      case "str":
+      case "lstr":
+      case "clob": {
+        const field_filters_1: Array<
+          | [
+              "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
+              string | ReadonlyArray<string>
+            ]
+          | undefined
+        > = [];
+        const field_filters_2: Array<
+          | [
+              "between" | "not_between",
+              [string | ReadonlyArray<string>, string | ReadonlyArray<string>]
+            ]
+          | undefined
+        > = [];
+        for (let filter of filters) {
+          let check = true;
+          const result = filter.filter_paths.findAny((x) =>
+            x.equals(filter_path)
+          );
+          if (result.isSome()) {
+            const other_filter_path = result.get();
+            if (other_filter_path.value[0] === field_struct_name) {
+              const op = other_filter_path.value[1];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<":
+                case "like":
+                case "glob": {
+                  field_filters_2.push(undefined);
+                  const value = other_filter_path.value[2];
+                  if (typeof value === "object") {
+                    field_filters_1.push([op, get_flattened_path(value)]);
+                  } else {
+                    field_filters_1.push([op, value]);
+                  }
+                  break;
+                }
+                case "between":
+                case "not_between": {
+                  field_filters_1.push(undefined);
+                  const [value1, value2] = other_filter_path.value[2];
+                  if (typeof value1 === "object") {
+                    if (typeof value2 === "object") {
+                      field_filters_2.push([
+                        op,
+                        [
+                          get_flattened_path(value1),
+                          get_flattened_path(value2),
+                        ],
+                      ]);
+                    } else {
+                      field_filters_2.push([
+                        op,
+                        [get_flattened_path(value1), value2],
+                      ]);
+                    }
+                  } else {
+                    if (typeof value2 === "object") {
+                      field_filters_2.push([
+                        op,
+                        [value1, get_flattened_path(value2)],
+                      ]);
+                    } else {
+                      field_filters_2.push([op, [value1, value2]]);
+                    }
+                  }
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+              check = false;
+            }
+          }
+          if (check) {
+            field_filters_1.push(undefined);
+            field_filters_2.push(undefined);
+          }
+        }
+        if (
+          fold(false, field_filters_1, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters_1,
+            ],
+          ]);
+        }
+        if (
+          fold(false, field_filters_2, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters_2,
+            ],
+          ]);
+        }
+        break;
+      }
+      case "i32":
+      case "u32":
+      case "i64":
+      case "u64":
+      case "idouble":
+      case "udouble":
+      case "idecimal":
+      case "udecimal": {
+        const field_filters_1: Array<
+          | [
+              "==" | "!=" | ">=" | "<=" | ">" | "<",
+              Decimal | ReadonlyArray<string>
+            ]
+          | undefined
+        > = [];
+        const field_filters_2: Array<
+          | [
+              "between" | "not_between",
+              [Decimal | ReadonlyArray<string>, Decimal | ReadonlyArray<string>]
+            ]
+          | undefined
+        > = [];
+        for (let filter of filters) {
+          let check = true;
+          const result = filter.filter_paths.findAny((x) =>
+            x.equals(filter_path)
+          );
+          if (result.isSome()) {
+            const other_filter_path = result.get();
+            if (other_filter_path.value[0] === field_struct_name) {
+              const op = other_filter_path.value[1];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<": {
+                  field_filters_2.push(undefined);
+                  const value = other_filter_path.value[2];
+                  if (is_decimal(value)) {
+                    field_filters_1.push([op, value]);
+                  } else {
+                    field_filters_1.push([op, get_flattened_path(value)]);
+                  }
+                  break;
+                }
+                case "between":
+                case "not_between": {
+                  field_filters_1.push(undefined);
+                  const [value1, value2] = other_filter_path.value[2];
+                  if (is_decimal(value1)) {
+                    if (is_decimal(value2)) {
+                      field_filters_2.push([op, [value1, value2]]);
+                    } else {
+                      field_filters_2.push([
+                        op,
+                        [value1, get_flattened_path(value2)],
+                      ]);
+                    }
+                  } else {
+                    if (is_decimal(value2)) {
+                      field_filters_2.push([
+                        op,
+                        [get_flattened_path(value1), value2],
+                      ]);
+                    } else {
+                      field_filters_2.push([
+                        op,
+                        [
+                          get_flattened_path(value1),
+                          get_flattened_path(value2),
+                        ],
+                      ]);
+                    }
+                  }
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+              check = false;
+            }
+          }
+          if (check) {
+            field_filters_1.push(undefined);
+            field_filters_2.push(undefined);
+          }
+        }
+        if (
+          fold(false, field_filters_1, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters_1,
+            ],
+          ]);
+        }
+        if (
+          fold(false, field_filters_2, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters_2,
+            ],
+          ]);
+        }
+        break;
+      }
+      case "bool": {
+        const field_filters: Array<
+          ["==" | "!=", boolean | ReadonlyArray<string>] | undefined
+        > = [];
+        for (let filter of filters) {
+          let check = true;
+          const result = filter.filter_paths.findAny((x) =>
+            x.equals(filter_path)
+          );
+          if (result.isSome()) {
+            const other_filter_path = result.get();
+            if (other_filter_path.value[0] === field_struct_name) {
+              const op = other_filter_path.value[1];
+              switch (op) {
+                case "==":
+                case "!=": {
+                  const value = other_filter_path.value[2];
+                  if (typeof value === "object") {
+                    field_filters.push([op, get_flattened_path(value)]);
+                  } else {
+                    field_filters.push([op, value]);
+                  }
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+              check = false;
+            }
+          }
+          if (check) {
+            field_filters.push(undefined);
+          }
+        }
+        if (
+          fold(false, field_filters, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters,
+            ],
+          ]);
+        }
+        break;
+      }
+      case "date":
+      case "time":
+      case "timestamp": {
+        const field_filters_1: Array<
+          | [
+              "==" | "!=" | ">=" | "<=" | ">" | "<",
+              Date | ReadonlyArray<string>
+            ]
+          | undefined
+        > = [];
+        const field_filters_2: Array<
+          | [
+              "between" | "not_between",
+              [Date | ReadonlyArray<string>, Date | ReadonlyArray<string>]
+            ]
+          | undefined
+        > = [];
+        for (let filter of filters) {
+          let check = true;
+          const result = filter.filter_paths.findAny((x) =>
+            x.equals(filter_path)
+          );
+          if (result.isSome()) {
+            const other_filter_path = result.get();
+            if (other_filter_path.value[0] === field_struct_name) {
+              const op = other_filter_path.value[1];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<": {
+                  field_filters_2.push(undefined);
+                  const value = other_filter_path.value[2];
+                  if (value instanceof Date) {
+                    field_filters_1.push([op, value]);
+                  } else {
+                    field_filters_1.push([op, get_flattened_path(value)]);
+                  }
+                  break;
+                }
+                case "between":
+                case "not_between": {
+                  field_filters_1.push(undefined);
+                  const [value1, value2] = other_filter_path.value[2];
+                  if (value1 instanceof Date) {
+                    if (value2 instanceof Date) {
+                      field_filters_2.push([op, [value1, value2]]);
+                    } else {
+                      field_filters_2.push([
+                        op,
+                        [value1, get_flattened_path(value2)],
+                      ]);
+                    }
+                  } else {
+                    if (value2 instanceof Date) {
+                      field_filters_2.push([
+                        op,
+                        [get_flattened_path(value1), value2],
+                      ]);
+                    } else {
+                      field_filters_2.push([
+                        op,
+                        [
+                          get_flattened_path(value1),
+                          get_flattened_path(value2),
+                        ],
+                      ]);
+                    }
+                  }
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+              check = false;
+            }
+          }
+          if (check) {
+            field_filters_1.push(undefined);
+            field_filters_2.push(undefined);
+          }
+        }
+        if (
+          fold(false, field_filters_1, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters_1,
+            ],
+          ]);
+        }
+        if (
+          fold(false, field_filters_2, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters_2,
+            ],
+          ]);
+        }
+        break;
+      }
+      case "other": {
+        const field_filters: Array<
+          ["==" | "!=", Decimal | ReadonlyArray<string>] | undefined
+        > = [];
+        for (let filter of filters) {
+          let check = true;
+          const result = filter.filter_paths.findAny((x) =>
+            x.equals(filter_path)
+          );
+          if (result.isSome()) {
+            const other_filter_path = result.get();
+            if (other_filter_path.value[0] === field_struct_name) {
+              const op = other_filter_path.value[1];
+              switch (op) {
+                case "==":
+                case "!=": {
+                  const value = other_filter_path.value[2];
+                  if (is_decimal(value)) {
+                    field_filters.push([op, value]);
+                  } else {
+                    field_filters.push([op, get_flattened_path(value)]);
+                  }
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+              check = false;
+            }
+          }
+          if (check) {
+            field_filters.push(undefined);
+          }
+        }
+        if (
+          fold(false, field_filters, (acc, val) => {
+            if (!acc) {
+              if (val !== undefined) {
+                return true;
+              }
+            }
+            return acc;
+          })
+        ) {
+          path_filters.push([
+            filter_path.label,
+            [
+              get_flattened_path(filter_path.path),
+              field_struct_name,
+              filter_path.ordering,
+              field_filters,
+              filter_path.value[3].name,
+            ],
+          ]);
+        }
+        break;
+      }
+      default: {
+        const _exhaustiveCheck: never = field_struct_name;
+        return _exhaustiveCheck;
+      }
+    }
+  }
+  return path_filters;
+}
+
+///////////////////////////////////
+
 async function load_test_data() {
   const struct = get_struct("User");
   if (unwrap(struct)) {
@@ -1949,8 +2620,8 @@ async function load_test_data() {
       ])
     );
   }
-  const x = await execute_transaction("SELECT * FROM VARS;", []);
-  console.log(x);
+  // const x = await execute_transaction("SELECT * FROM VARS;", []);
+  // console.log(x);
 }
 
 load_test_data();

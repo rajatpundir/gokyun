@@ -31,7 +31,7 @@ import Test from "./modals/test";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
-import { PathFilter } from "./main/utils/db";
+import { Filter, PathFilter } from "./main/utils/db";
 
 declare global {
   namespace ReactNavigation {
@@ -46,26 +46,9 @@ export type NavigatorParams = {
     title: string;
     selected: number;
     struct: Struct;
-    variable_filters: {
-      active: boolean;
-      level: Decimal | undefined;
-      id: ReadonlyArray<
-        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-        | ["between" | "not_between", [Decimal, Decimal]]
-        | undefined
-      >;
-      created_at: ReadonlyArray<
-        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-        | ["between" | "not_between", [Date, Date]]
-        | undefined
-      >;
-      updated_at: ReadonlyArray<
-        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-        | ["between" | "not_between", [Date, Date]]
-        | undefined
-      >;
-    };
-    path_filters: Array<[string, PathFilter]>;
+    active: boolean;
+    level: Decimal | undefined;
+    filters: ReadonlyArray<Filter>;
     limit_offset: [Decimal, Decimal] | undefined;
     render_list_element: (props: {
       selected: number;

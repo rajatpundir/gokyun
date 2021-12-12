@@ -907,14 +907,9 @@ function Other_Field(
                 title: props.title,
                 selected: value.value.toNumber(),
                 struct: struct.value,
-                variable_filters: {
-                  active: true,
-                  level: undefined,
-                  id: [],
-                  created_at: [],
-                  updated_at: [],
-                },
-                path_filters: get_other_path_filters(
+                active: true,
+                level: undefined,
+                filters: get_other_path_filters(
                   props.struct,
                   props.state,
                   props.path,
@@ -1645,6 +1640,7 @@ function get_other_path_filters(
   path: Path,
   labels: Immutable<Array<[string, PathString]>>
 ): Array<[string, PathFilter]> {
+  // TODO. Return Array<Filter> instead
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
     get_permissions(
       struct,
