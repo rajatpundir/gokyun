@@ -135,26 +135,16 @@ type FilterPath =
   | [
       PathString,
       "str" | "lstr" | "clob",
-      [Decimal, boolean] | undefined,
-      (
-        | [
-            "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
-            string | PathString
-          ]
-        | undefined
-      )
+      "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
+      string | PathString,
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
       "str" | "lstr" | "clob",
-      [Decimal, boolean] | undefined,
-      (
-        | [
-            "between" | "not_between",
-            [string | PathString, string | PathString]
-          ]
-        | undefined
-      )
+      "between" | "not_between",
+      [string | PathString, string | PathString],
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
@@ -168,8 +158,9 @@ type FilterPath =
         | "idecimal"
         | "udecimal"
       ),
-      [Decimal, boolean] | undefined,
-      ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal | PathString] | undefined
+      "==" | "!=" | ">=" | "<=" | ">" | "<",
+      Decimal | PathString,
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
@@ -183,44 +174,37 @@ type FilterPath =
         | "idecimal"
         | "udecimal"
       ),
-      [Decimal, boolean] | undefined,
-      (
-        | [
-            "between" | "not_between",
-            [Decimal | PathString, Decimal | PathString]
-          ]
-        | undefined
-      )
+      "between" | "not_between",
+      [Decimal | PathString, Decimal | PathString],
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
       "bool",
-      [Decimal, boolean] | undefined,
-      ["==" | "!=", boolean | PathString] | undefined
+      "==" | "!=",
+      boolean | PathString,
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
       "date" | "time" | "timestamp",
-      [Decimal, boolean] | undefined,
-      ["==" | "!=" | ">=" | "<=" | ">" | "<", Date | PathString] | undefined
+      "==" | "!=" | ">=" | "<=" | ">" | "<",
+      Date | PathString,
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
       "date" | "time" | "timestamp",
-      [Decimal, boolean] | undefined,
-      (
-        | [
-            "between" | "not_between",
-            [Decimal | PathString, Decimal | PathString]
-          ]
-        | undefined
-      )
+      "between" | "not_between",
+      [Decimal | PathString, Decimal | PathString],
+      [Decimal, boolean] | undefined
     ]
   | [
       PathString,
       "other",
+      "==" | "!=",
+      Decimal | PathString,
       [Decimal, boolean] | undefined,
-      ["==" | "!=", Decimal | PathString] | undefined,
       Struct
     ];
 
@@ -383,66 +367,63 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 filter_path2[1] === field_struct_name &&
                 compare_paths(filter_path1[0], filter_path2[0])
               ) {
-                const filter_value = filter_path2[3];
-                if (filter_value !== undefined) {
-                  const ops = filter_value[0];
-                  switch (ops) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                    case ">":
-                    case "<":
-                    case "like":
-                    case "glob": {
-                      const value = filter_value[1];
-                      if (typeof value === "object") {
-                        field_filters_set_1.push([
+                const ops = filter_path2[2];
+                switch (ops) {
+                  case "==":
+                  case "!=":
+                  case ">=":
+                  case "<=":
+                  case ">":
+                  case "<":
+                  case "like":
+                  case "glob": {
+                    const value = filter_path2[3];
+                    if (typeof value === "object") {
+                      field_filters_set_1.push([
+                        ops,
+                        get_flattened_path(value),
+                      ]);
+                    } else {
+                      field_filters_set_1.push([ops, value]);
+                    }
+                    break;
+                  }
+                  case "between":
+                  case "not_between": {
+                    const [value1, value2] = filter_path2[3];
+                    if (typeof value1 === "object") {
+                      if (typeof value2 === "object") {
+                        field_filters_set_2.push([
                           ops,
-                          get_flattened_path(value),
+                          [
+                            get_flattened_path(value1),
+                            get_flattened_path(value2),
+                          ],
                         ]);
                       } else {
-                        field_filters_set_1.push([ops, value]);
+                        field_filters_set_2.push([
+                          ops,
+                          [get_flattened_path(value1), value2],
+                        ]);
                       }
-                      break;
-                    }
-                    case "between":
-                    case "not_between": {
-                      const [value1, value2] = filter_value[1];
-                      if (typeof value1 === "object") {
-                        if (typeof value2 === "object") {
-                          field_filters_set_2.push([
-                            ops,
-                            [
-                              get_flattened_path(value1),
-                              get_flattened_path(value2),
-                            ],
-                          ]);
-                        } else {
-                          field_filters_set_2.push([
-                            ops,
-                            [get_flattened_path(value1), value2],
-                          ]);
-                        }
+                    } else {
+                      if (typeof value2 === "object") {
+                        field_filters_set_2.push([
+                          ops,
+                          [value1, get_flattened_path(value2)],
+                        ]);
                       } else {
-                        if (typeof value2 === "object") {
-                          field_filters_set_2.push([
-                            ops,
-                            [value1, get_flattened_path(value2)],
-                          ]);
-                        } else {
-                          field_filters_set_2.push([ops, [value1, value2]]);
-                        }
+                        field_filters_set_2.push([ops, [value1, value2]]);
                       }
-                      break;
                     }
-                    default: {
-                      const _exhaustiveCheck: never = ops;
-                      return _exhaustiveCheck;
-                    }
+                    break;
                   }
-                } else {
+                  default: {
+                    const _exhaustiveCheck: never = ops;
+                    return _exhaustiveCheck;
+                  }
                 }
+                check = false;
                 break;
               }
             }
