@@ -935,7 +935,6 @@ export function query(
         break;
       }
       case "other": {
-        const field_struct_name = path_filter[4];
         for (let [index, filter] of path_filter[3].entries()) {
           let stmt: string | undefined = undefined;
           if (filter !== undefined) {
