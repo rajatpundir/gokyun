@@ -26,7 +26,7 @@ import {
 } from "./variable";
 import { get_struct } from "./schema";
 import { HashSet } from "prelude-ts";
-import { PathFilter } from "./db";
+import { Filter, FilterPath, PathFilter } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
@@ -909,12 +909,19 @@ function Other_Field(
                 struct: struct.value,
                 active: true,
                 level: undefined,
-                filters: get_other_path_filters(
-                  props.struct,
-                  props.state,
-                  props.path,
-                  props.labels
-                ),
+                filters: [
+                  {
+                    id: undefined,
+                    created_at: undefined,
+                    updated_at: undefined,
+                    filter_paths: get_other_filter_paths(
+                      props.struct,
+                      props.state,
+                      props.path,
+                      props.labels
+                    ),
+                  },
+                ],
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,
                 disptach_values: (variable: Variable) => {
@@ -1634,13 +1641,12 @@ function get_upscaled_labels(
   return new_labels;
 }
 
-function get_other_path_filters(
+function get_other_filter_paths(
   struct: Struct,
   state: State,
   path: Path,
   labels: Immutable<Array<[string, PathString]>>
-): Array<[string, PathFilter]> {
-  // TODO. Return Array<Filter> instead
+): HashSet<FilterPath> {
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
     get_permissions(
       struct,
@@ -1653,7 +1659,7 @@ function get_other_path_filters(
     ...path.path[0].map((x) => x[0]),
     path.path[1][0],
   ];
-  const path_filters: Array<[string, PathFilter]> = [];
+  let filter_paths: HashSet<FilterPath> = HashSet.of();
   if (path.path[1][1].type === "other") {
     const other_struct = get_struct(path.path[1][1].other);
     if (unwrap(other_struct)) {
@@ -1672,6 +1678,7 @@ function get_other_path_filters(
           filtered_permissions = filtered_permissions.add(permission);
         }
       }
+
       for (let permission of filtered_permissions) {
         const path = apply(
           permission.path[0].slice(path_prefix.length).map((x) => x[0]),
@@ -1680,6 +1687,10 @@ function get_other_path_filters(
             return it;
           }
         );
+        const path_string: PathString = [
+          permission.path[0].slice(path_prefix.length).map((x) => x[0]),
+          permission.path[1][0],
+        ];
         const field: StrongEnum = permission.path[1][1];
         switch (field.type) {
           case "str":
@@ -1697,17 +1708,28 @@ function get_other_path_filters(
           case "date":
           case "time":
           case "timestamp": {
-            path_filters.push([
-              permission.label,
-              [path, field.type, undefined, []],
-            ]);
+            filter_paths = filter_paths.add(
+              new FilterPath(
+                permission.label,
+                path_string,
+                [field.type, undefined],
+                undefined
+              )
+            );
             break;
           }
           case "other": {
-            path_filters.push([
-              permission.label,
-              [path, field.type, undefined, [], field.other],
-            ]);
+            const other_struct = get_struct(field.other);
+            if (unwrap(other_struct)) {
+              filter_paths = filter_paths.add(
+                new FilterPath(
+                  permission.label,
+                  path_string,
+                  [field.type, undefined, other_struct.value],
+                  undefined
+                )
+              );
+            }
             break;
           }
           default: {
@@ -1716,10 +1738,10 @@ function get_other_path_filters(
           }
         }
       }
-      return path_filters;
+      return filter_paths;
     }
   }
-  return [];
+  return filter_paths;
 }
 
 function get_upscaled_paths(

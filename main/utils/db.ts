@@ -1896,13 +1896,23 @@ export async function remove_variables(
 type FilterPathValue =
   | [
       "str" | "lstr" | "clob",
-      "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
-      string | PathString
+      (
+        | [
+            "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
+            string | PathString
+          ]
+        | undefined
+      )
     ]
   | [
       "str" | "lstr" | "clob",
-      "between" | "not_between",
-      [string | PathString, string | PathString]
+      (
+        | [
+            "between" | "not_between",
+            [string | PathString, string | PathString]
+          ]
+        | undefined
+      )
     ]
   | [
       (
@@ -1915,8 +1925,7 @@ type FilterPathValue =
         | "idecimal"
         | "udecimal"
       ),
-      "==" | "!=" | ">=" | "<=" | ">" | "<",
-      Decimal | PathString
+      ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal | PathString] | undefined
     ]
   | [
       (
@@ -1929,21 +1938,27 @@ type FilterPathValue =
         | "idecimal"
         | "udecimal"
       ),
-      "between" | "not_between",
-      [Decimal | PathString, Decimal | PathString]
+      (
+        | [
+            "between" | "not_between",
+            [Decimal | PathString, Decimal | PathString]
+          ]
+        | undefined
+      )
     ]
-  | ["bool", "==" | "!=", boolean | PathString]
+  | ["bool", ["==" | "!=", boolean | PathString] | undefined]
   | [
       "date" | "time" | "timestamp",
-      "==" | "!=" | ">=" | "<=" | ">" | "<",
-      Date | PathString
+      ["==" | "!=" | ">=" | "<=" | ">" | "<", Date | PathString] | undefined
     ]
   | [
       "date" | "time" | "timestamp",
-      "between" | "not_between",
-      [Date | PathString, Date | PathString]
+      (
+        | ["between" | "not_between", [Date | PathString, Date | PathString]]
+        | undefined
+      )
     ]
-  | ["other", "==" | "!=", Decimal | PathString, Struct];
+  | ["other", ["==" | "!=", Decimal | PathString] | undefined, Struct];
 
 export class FilterPath {
   label: string;
@@ -2074,8 +2089,11 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
           );
           if (result.isSome()) {
             const other_filter_path = result.get();
-            if (other_filter_path.value[0] === field_struct_name) {
-              const op = other_filter_path.value[1];
+            if (
+              other_filter_path.value[0] === field_struct_name &&
+              other_filter_path.value[1] !== undefined
+            ) {
+              const op = other_filter_path.value[1][0];
               switch (op) {
                 case "==":
                 case "!=":
@@ -2086,7 +2104,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case "like":
                 case "glob": {
                   field_filters_2.push(undefined);
-                  const value = other_filter_path.value[2];
+                  const value = other_filter_path.value[1][1];
                   if (typeof value === "object") {
                     field_filters_1.push([op, get_flattened_path(value)]);
                   } else {
@@ -2097,7 +2115,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case "between":
                 case "not_between": {
                   field_filters_1.push(undefined);
-                  const [value1, value2] = other_filter_path.value[2];
+                  const [value1, value2] = other_filter_path.value[1][1];
                   if (typeof value1 === "object") {
                     if (typeof value2 === "object") {
                       field_filters_2.push([
@@ -2209,8 +2227,11 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
           );
           if (result.isSome()) {
             const other_filter_path = result.get();
-            if (other_filter_path.value[0] === field_struct_name) {
-              const op = other_filter_path.value[1];
+            if (
+              other_filter_path.value[0] === field_struct_name &&
+              other_filter_path.value[1] !== undefined
+            ) {
+              const op = other_filter_path.value[1][0];
               switch (op) {
                 case "==":
                 case "!=":
@@ -2219,7 +2240,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case ">":
                 case "<": {
                   field_filters_2.push(undefined);
-                  const value = other_filter_path.value[2];
+                  const value = other_filter_path.value[1][1];
                   if (is_decimal(value)) {
                     field_filters_1.push([op, value]);
                   } else {
@@ -2230,7 +2251,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case "between":
                 case "not_between": {
                   field_filters_1.push(undefined);
-                  const [value1, value2] = other_filter_path.value[2];
+                  const [value1, value2] = other_filter_path.value[1][1];
                   if (is_decimal(value1)) {
                     if (is_decimal(value2)) {
                       field_filters_2.push([op, [value1, value2]]);
@@ -2324,12 +2345,15 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
           );
           if (result.isSome()) {
             const other_filter_path = result.get();
-            if (other_filter_path.value[0] === field_struct_name) {
-              const op = other_filter_path.value[1];
+            if (
+              other_filter_path.value[0] === field_struct_name &&
+              other_filter_path.value[1] !== undefined
+            ) {
+              const op = other_filter_path.value[1][0];
               switch (op) {
                 case "==":
                 case "!=": {
-                  const value = other_filter_path.value[2];
+                  const value = other_filter_path.value[1][1];
                   if (typeof value === "object") {
                     field_filters.push([op, get_flattened_path(value)]);
                   } else {
@@ -2395,8 +2419,11 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
           );
           if (result.isSome()) {
             const other_filter_path = result.get();
-            if (other_filter_path.value[0] === field_struct_name) {
-              const op = other_filter_path.value[1];
+            if (
+              other_filter_path.value[0] === field_struct_name &&
+              other_filter_path.value[1] !== undefined
+            ) {
+              const op = other_filter_path.value[1][0];
               switch (op) {
                 case "==":
                 case "!=":
@@ -2405,7 +2432,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case ">":
                 case "<": {
                   field_filters_2.push(undefined);
-                  const value = other_filter_path.value[2];
+                  const value = other_filter_path.value[1][1];
                   if (value instanceof Date) {
                     field_filters_1.push([op, value]);
                   } else {
@@ -2416,7 +2443,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case "between":
                 case "not_between": {
                   field_filters_1.push(undefined);
-                  const [value1, value2] = other_filter_path.value[2];
+                  const [value1, value2] = other_filter_path.value[1][1];
                   if (value1 instanceof Date) {
                     if (value2 instanceof Date) {
                       field_filters_2.push([op, [value1, value2]]);
@@ -2510,12 +2537,15 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
           );
           if (result.isSome()) {
             const other_filter_path = result.get();
-            if (other_filter_path.value[0] === field_struct_name) {
-              const op = other_filter_path.value[1];
+            if (
+              other_filter_path.value[0] === field_struct_name &&
+              other_filter_path.value[1] !== undefined
+            ) {
+              const op = other_filter_path.value[1][0];
               switch (op) {
                 case "==":
                 case "!=": {
-                  const value = other_filter_path.value[2];
+                  const value = other_filter_path.value[1][1];
                   if (is_decimal(value)) {
                     field_filters.push([op, value]);
                   } else {
@@ -2552,7 +2582,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
               field_struct_name,
               filter_path.ordering,
               field_filters,
-              filter_path.value[3].name,
+              filter_path.value[2].name,
             ],
           ]);
         }
