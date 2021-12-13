@@ -9,7 +9,7 @@ import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text, TextInput } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Platform, Pressable, Switch } from "react-native";
-import { apply, unwrap } from "../../main/utils/prelude";
+import { apply, is_decimal, unwrap } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -703,11 +703,66 @@ function render_filter_path(filter_path: FilterPath) {
                   case "<=":
                   case ">":
                   case "<": {
-                    break;
+                    const value = filter_path.value[1][1];
+                    if (is_decimal(value)) {
+                      return (
+                        <TextInput
+                          value={value.toString()}
+                          keyboardType={"number-pad"}
+                          onChangeText={(x) => {}}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
                   }
                   case "between":
                   case "not_between": {
-                    break;
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -718,7 +773,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "u32": {
               if (filter_path.value[1] !== undefined) {
@@ -730,11 +784,66 @@ function render_filter_path(filter_path: FilterPath) {
                   case "<=":
                   case ">":
                   case "<": {
-                    break;
+                    const value = filter_path.value[1][1];
+                    if (is_decimal(value)) {
+                      return (
+                        <TextInput
+                          value={value.toString()}
+                          keyboardType={"number-pad"}
+                          onChangeText={(x) => {}}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
                   }
                   case "between":
                   case "not_between": {
-                    break;
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -745,7 +854,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "i64": {
               if (filter_path.value[1] !== undefined) {
@@ -757,11 +865,66 @@ function render_filter_path(filter_path: FilterPath) {
                   case "<=":
                   case ">":
                   case "<": {
-                    break;
+                    const value = filter_path.value[1][1];
+                    if (is_decimal(value)) {
+                      return (
+                        <TextInput
+                          value={value.toString()}
+                          keyboardType={"number-pad"}
+                          onChangeText={(x) => {}}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
                   }
                   case "between":
                   case "not_between": {
-                    break;
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -772,7 +935,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "u64": {
               if (filter_path.value[1] !== undefined) {
@@ -784,11 +946,66 @@ function render_filter_path(filter_path: FilterPath) {
                   case "<=":
                   case ">":
                   case "<": {
-                    break;
+                    const value = filter_path.value[1][1];
+                    if (is_decimal(value)) {
+                      return (
+                        <TextInput
+                          value={value.toString()}
+                          keyboardType={"number-pad"}
+                          onChangeText={(x) => {}}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
                   }
                   case "between":
                   case "not_between": {
-                    break;
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -799,7 +1016,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "idouble":
             case "idecimal": {
@@ -812,11 +1028,66 @@ function render_filter_path(filter_path: FilterPath) {
                   case "<=":
                   case ">":
                   case "<": {
-                    break;
+                    const value = filter_path.value[1][1];
+                    if (is_decimal(value)) {
+                      return (
+                        <TextInput
+                          value={value.toString()}
+                          keyboardType={"number-pad"}
+                          onChangeText={(x) => {}}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
                   }
                   case "between":
                   case "not_between": {
-                    break;
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -827,7 +1098,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "udouble":
             case "udecimal": {
@@ -840,11 +1110,66 @@ function render_filter_path(filter_path: FilterPath) {
                   case "<=":
                   case ">":
                   case "<": {
-                    break;
+                    const value = filter_path.value[1][1];
+                    if (is_decimal(value)) {
+                      return (
+                        <TextInput
+                          value={value.toString()}
+                          keyboardType={"number-pad"}
+                          onChangeText={(x) => {}}
+                        />
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
                   }
                   case "between":
                   case "not_between": {
-                    break;
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (is_decimal(value)) {
+                            return (
+                              <TextInput
+                                value={value.toString()}
+                                keyboardType={"number-pad"}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -855,7 +1180,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "bool": {
               if (filter_path.value[1] !== undefined) {
