@@ -1187,6 +1187,173 @@ function render_filter_path(filter_path: FilterPath) {
                 switch (op) {
                   case "==":
                   case "!=": {
+                    const value = filter_path.value[1][1];
+                    if (typeof value === "boolean") {
+                      return <Switch value={value} onValueChange={(x) => {}} />;
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = op;
+                    return _exhaustiveCheck;
+                  }
+                }
+              } else {
+                // use a hook to help in selecting op and value
+                return <Text>Select Op</Text>;
+              }
+            }
+            case "date": {
+              if (filter_path.value[1] !== undefined) {
+                const op = filter_path.value[1][0];
+                switch (op) {
+                  case "==":
+                  case "!=":
+                  case ">=":
+                  case "<=":
+                  case ">":
+                  case "<": {
+                    const value = filter_path.value[1][1];
+                    if (value instanceof Date) {
+                      const [showPicker, setPicker] = useState(false);
+                      return (
+                        <>
+                          <Pressable onPress={() => setPicker(true)}>
+                            <Text>{moment(value).format("Do MMM YYYY")}</Text>
+                          </Pressable>
+                          <View>
+                            {showPicker && (
+                              <DateTimePicker
+                                mode={"date"}
+                                value={value}
+                                onChange={(
+                                  _temp: any,
+                                  date: Date | undefined
+                                ) => {
+                                  setPicker(Platform.OS === "ios");
+                                  // dispatch updated value
+                                }}
+                              />
+                            )}
+                          </View>
+                        </>
+                      );
+                    } else {
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
+                    }
+                  }
+                  case "between":
+                  case "not_between": {
+                    const [value1, value2] = filter_path.value[1][1];
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          if (value1 instanceof Date) {
+                            const [showPicker, setPicker] = useState(false);
+                            return (
+                              <>
+                                <Pressable onPress={() => setPicker(true)}>
+                                  <Text>
+                                    {moment(value1).format("Do MMM YYYY")}
+                                  </Text>
+                                </Pressable>
+                                <View>
+                                  {showPicker && (
+                                    <DateTimePicker
+                                      mode={"date"}
+                                      value={value1}
+                                      onChange={(
+                                        _temp: any,
+                                        date: Date | undefined
+                                      ) => {
+                                        setPicker(Platform.OS === "ios");
+                                        // dispatch updated value
+                                      }}
+                                    />
+                                  )}
+                                </View>
+                              </>
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value1[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          if (value2 instanceof Date) {
+                            const [showPicker, setPicker] = useState(false);
+                            return (
+                              <>
+                                <Pressable onPress={() => setPicker(true)}>
+                                  <Text>
+                                    {moment(value2).format("Do MMM YYYY")}
+                                  </Text>
+                                </Pressable>
+                                <View>
+                                  {showPicker && (
+                                    <DateTimePicker
+                                      mode={"date"}
+                                      value={value2}
+                                      onChange={(
+                                        _temp: any,
+                                        date: Date | undefined
+                                      ) => {
+                                        setPicker(Platform.OS === "ios");
+                                        // dispatch updated value
+                                      }}
+                                    />
+                                  )}
+                                </View>
+                              </>
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value2[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = op;
+                    return _exhaustiveCheck;
+                  }
+                }
+              } else {
+                // use a hook to help in selecting op and value
+                return <Text>Select Op</Text>;
+              }
+              break;
+            }
+            case "time": {
+              if (filter_path.value[1] !== undefined) {
+                const op = filter_path.value[1][0];
+                switch (op) {
+                  case "==":
+                  case "!=":
+                  case ">=":
+                  case "<=":
+                  case ">":
+                  case "<": {
+                    break;
+                  }
+                  case "between":
+                  case "not_between": {
                     break;
                   }
                   default: {
@@ -1200,8 +1367,6 @@ function render_filter_path(filter_path: FilterPath) {
               }
               break;
             }
-            case "date":
-            case "time":
             case "timestamp": {
               if (filter_path.value[1] !== undefined) {
                 const op = filter_path.value[1][0];
