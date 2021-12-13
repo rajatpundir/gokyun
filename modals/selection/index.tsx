@@ -665,11 +665,14 @@ function render_filter(filter: Filter): JSX.Element {
         }
         return null;
       })}
+      {filter.filter_paths.toArray().map((x, index) => {
+        return <View key={index}>{render_filter_path(x)}</View>;
+      })}
     </>
   );
 }
 
-function render_filter_path(filter_path: FilterPath) {
+function render_filter_path(filter_path: FilterPath): JSX.Element {
   return (
     <>
       <Switch value={filter_path.active} onValueChange={(x) => {}} />
