@@ -2047,7 +2047,6 @@ function get_variable_filters(
 }
 
 function get_path_filters(filters: ReadonlyArray<Filter>) {
-  console.log("-------------", filters, "----------------");
   const get_flattened_path = (x: PathString) => [...x[0], x[1]];
   let path_filters: Array<[string, PathFilter]> = [];
   const used_filter_paths: HashSet<FilterPath> = apply(
@@ -2063,7 +2062,6 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
       return it;
     }
   );
-  console.log(used_filter_paths);
   for (let filter_path of used_filter_paths) {
     const field_struct_name = filter_path.value[0];
     switch (field_struct_name) {

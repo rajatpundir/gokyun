@@ -83,6 +83,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           <Text>Level</Text>
           <Text>{state.level ? state.level.toString() : "0"}</Text>
         </View>
+        {/* // Render Filters and their filter paths */}
       </View>
       <FlatList
         data={state.variables}

@@ -1605,7 +1605,6 @@ function get_upscaled_labels(
     path.path[0].map((x) => x[0]),
     path.path[1][0],
   ];
-  console.log(path_string);
   let new_labels: Array<[string, PathString]> = [];
   for (let parent_label of state.labels) {
     let new_label = parent_label[0];
@@ -1680,13 +1679,6 @@ function get_other_filter_paths(
       }
 
       for (let permission of filtered_permissions) {
-        const path = apply(
-          permission.path[0].slice(path_prefix.length).map((x) => x[0]),
-          (it) => {
-            it.push(permission.path[1][0]);
-            return it;
-          }
-        );
         const path_string: PathString = [
           permission.path[0].slice(path_prefix.length).map((x) => x[0]),
           permission.path[1][0],
