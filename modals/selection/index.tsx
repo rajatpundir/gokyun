@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Draft } from "immer";
 import { useEffect } from "react";
 import { FlatList } from "react-native-gesture-handler";
@@ -8,8 +8,10 @@ import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text, TextInput } from "../../main/themed";
 import Decimal from "decimal.js";
-import { Switch } from "react-native";
+import { Platform, Pressable, Switch } from "react-native";
 import { apply, unwrap } from "../../main/utils/prelude";
+import moment from "moment";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 type State = {
   struct: Struct;
@@ -120,13 +122,11 @@ function render_filter(filter: Filter): JSX.Element {
                   case ">":
                   case "<": {
                     return (
-                      <>
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1].toString()}
-                          onChangeText={() => {}}
-                        />
-                      </>
+                      <TextInput
+                        keyboardType={"number-pad"}
+                        value={value[1].toString()}
+                        onChangeText={(x) => {}}
+                      />
                     );
                   }
                   case "between":
@@ -136,12 +136,12 @@ function render_filter(filter: Filter): JSX.Element {
                         <TextInput
                           keyboardType={"number-pad"}
                           value={value[1][0].toString()}
-                          onChangeText={() => {}}
+                          onChangeText={(x) => {}}
                         />
                         <TextInput
                           keyboardType={"number-pad"}
                           value={value[1][1].toString()}
-                          onChangeText={() => {}}
+                          onChangeText={(x) => {}}
                         />
                       </>
                     );
@@ -173,30 +173,198 @@ function render_filter(filter: Filter): JSX.Element {
                   case "<=":
                   case ">":
                   case "<": {
+                    const [showPicker, setPicker] = useState(false);
+                    const [mode, setMode] = useState("date");
+                    let [date, setDate] = useState(
+                      new Date(value[1].getTime())
+                    );
                     return (
                       <>
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1].toString()}
-                          onChangeText={() => {}}
-                        />
+                        <Pressable onPress={() => setPicker(true)}>
+                          <Text>
+                            {moment(value[1]).format("Do MMM YYYY, h:mm A")}
+                          </Text>
+                        </Pressable>
+                        <View>
+                          {showPicker && (
+                            <DateTimePicker
+                              mode={mode as "date" | "time"}
+                              value={value[1]}
+                              onChange={(
+                                _temp: any,
+                                selectedValue: Date | undefined
+                              ) => {
+                                setPicker(Platform.OS === "ios");
+                                if (selectedValue !== undefined) {
+                                  if (mode === "date") {
+                                    setDate(
+                                      apply(date, (it) => {
+                                        it.setFullYear(
+                                          selectedValue.getFullYear()
+                                        );
+                                        it.setMonth(selectedValue.getMonth());
+                                        it.setDate(selectedValue.getDate());
+                                        return it;
+                                      })
+                                    );
+                                    setMode("time");
+                                    setPicker(Platform.OS !== "ios");
+                                  } else {
+                                    setDate(
+                                      apply(date, (it) => {
+                                        it.setHours(selectedValue.getHours());
+                                        it.setMinutes(
+                                          selectedValue.getMinutes()
+                                        );
+                                        it.setSeconds(
+                                          selectedValue.getSeconds()
+                                        );
+                                        it.setMilliseconds(
+                                          selectedValue.getMilliseconds()
+                                        );
+                                        return it;
+                                      })
+                                    );
+                                    // dispatch updated value
+                                    setMode("date");
+                                  }
+                                } else {
+                                  setDate(new Date(value[1].getTime()));
+                                  setMode("date");
+                                }
+                              }}
+                            />
+                          )}
+                        </View>
                       </>
                     );
                   }
                   case "between":
                   case "not_between": {
+                    const [showPicker1, setPicker1] = useState(false);
+                    const [mode1, setMode1] = useState("date");
+                    let [date1, setDate1] = useState(
+                      new Date(value[1][0].getTime())
+                    );
+                    const [showPicker2, setPicker2] = useState(false);
+                    const [mode2, setMode2] = useState("date");
+                    let [date2, setDate2] = useState(
+                      new Date(value[1][0].getTime())
+                    );
                     return (
                       <>
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1][0].toString()}
-                          onChangeText={() => {}}
-                        />
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1][1].toString()}
-                          onChangeText={() => {}}
-                        />
+                        <Pressable onPress={() => setPicker1(true)}>
+                          <Text>
+                            {moment(value[1][0]).format("Do MMM YYYY, h:mm A")}
+                          </Text>
+                        </Pressable>
+                        <View>
+                          {showPicker1 && (
+                            <DateTimePicker
+                              mode={mode1 as "date" | "time"}
+                              value={value[1][0]}
+                              onChange={(
+                                _temp: any,
+                                selectedValue: Date | undefined
+                              ) => {
+                                setPicker1(Platform.OS === "ios");
+                                if (selectedValue !== undefined) {
+                                  if (mode1 === "date") {
+                                    setDate1(
+                                      apply(date1, (it) => {
+                                        it.setFullYear(
+                                          selectedValue.getFullYear()
+                                        );
+                                        it.setMonth(selectedValue.getMonth());
+                                        it.setDate(selectedValue.getDate());
+                                        return it;
+                                      })
+                                    );
+                                    setMode1("time");
+                                    setPicker1(Platform.OS !== "ios");
+                                  } else {
+                                    setDate1(
+                                      apply(date1, (it) => {
+                                        it.setHours(selectedValue.getHours());
+                                        it.setMinutes(
+                                          selectedValue.getMinutes()
+                                        );
+                                        it.setSeconds(
+                                          selectedValue.getSeconds()
+                                        );
+                                        it.setMilliseconds(
+                                          selectedValue.getMilliseconds()
+                                        );
+                                        return it;
+                                      })
+                                    );
+                                    // dispatch updated value
+                                    setMode1("date");
+                                  }
+                                } else {
+                                  setDate1(new Date(value[1][0].getTime()));
+                                  setMode1("date");
+                                }
+                              }}
+                            />
+                          )}
+                        </View>
+                        <Pressable onPress={() => setPicker2(true)}>
+                          <Text>
+                            {moment(value[1][1]).format("Do MMM YYYY, h:mm A")}
+                          </Text>
+                        </Pressable>
+                        <View>
+                          {showPicker2 && (
+                            <DateTimePicker
+                              mode={mode2 as "date" | "time"}
+                              value={value[1][1]}
+                              onChange={(
+                                _temp: any,
+                                selectedValue: Date | undefined
+                              ) => {
+                                setPicker2(Platform.OS === "ios");
+                                if (selectedValue !== undefined) {
+                                  if (mode2 === "date") {
+                                    setDate2(
+                                      apply(date2, (it) => {
+                                        it.setFullYear(
+                                          selectedValue.getFullYear()
+                                        );
+                                        it.setMonth(selectedValue.getMonth());
+                                        it.setDate(selectedValue.getDate());
+                                        return it;
+                                      })
+                                    );
+                                    setMode2("time");
+                                    setPicker2(Platform.OS !== "ios");
+                                  } else {
+                                    setDate2(
+                                      apply(date2, (it) => {
+                                        it.setHours(selectedValue.getHours());
+                                        it.setMinutes(
+                                          selectedValue.getMinutes()
+                                        );
+                                        it.setSeconds(
+                                          selectedValue.getSeconds()
+                                        );
+                                        it.setMilliseconds(
+                                          selectedValue.getMilliseconds()
+                                        );
+                                        return it;
+                                      })
+                                    );
+                                    // dispatch updated value
+                                    setMode2("date");
+                                  }
+                                } else {
+                                  setDate2(new Date(value[1][1].getTime()));
+                                  setMode2("date");
+                                }
+                              }}
+                            />
+                          )}
+                        </View>
                       </>
                     );
                   }
@@ -227,30 +395,198 @@ function render_filter(filter: Filter): JSX.Element {
                   case "<=":
                   case ">":
                   case "<": {
+                    const [showPicker, setPicker] = useState(false);
+                    const [mode, setMode] = useState("date");
+                    let [date, setDate] = useState(
+                      new Date(value[1].getTime())
+                    );
                     return (
                       <>
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1].toString()}
-                          onChangeText={() => {}}
-                        />
+                        <Pressable onPress={() => setPicker(true)}>
+                          <Text>
+                            {moment(value[1]).format("Do MMM YYYY, h:mm A")}
+                          </Text>
+                        </Pressable>
+                        <View>
+                          {showPicker && (
+                            <DateTimePicker
+                              mode={mode as "date" | "time"}
+                              value={value[1]}
+                              onChange={(
+                                _temp: any,
+                                selectedValue: Date | undefined
+                              ) => {
+                                setPicker(Platform.OS === "ios");
+                                if (selectedValue !== undefined) {
+                                  if (mode === "date") {
+                                    setDate(
+                                      apply(date, (it) => {
+                                        it.setFullYear(
+                                          selectedValue.getFullYear()
+                                        );
+                                        it.setMonth(selectedValue.getMonth());
+                                        it.setDate(selectedValue.getDate());
+                                        return it;
+                                      })
+                                    );
+                                    setMode("time");
+                                    setPicker(Platform.OS !== "ios");
+                                  } else {
+                                    setDate(
+                                      apply(date, (it) => {
+                                        it.setHours(selectedValue.getHours());
+                                        it.setMinutes(
+                                          selectedValue.getMinutes()
+                                        );
+                                        it.setSeconds(
+                                          selectedValue.getSeconds()
+                                        );
+                                        it.setMilliseconds(
+                                          selectedValue.getMilliseconds()
+                                        );
+                                        return it;
+                                      })
+                                    );
+                                    // dispatch updated value
+                                    setMode("date");
+                                  }
+                                } else {
+                                  setDate(new Date(value[1].getTime()));
+                                  setMode("date");
+                                }
+                              }}
+                            />
+                          )}
+                        </View>
                       </>
                     );
                   }
                   case "between":
                   case "not_between": {
+                    const [showPicker1, setPicker1] = useState(false);
+                    const [mode1, setMode1] = useState("date");
+                    let [date1, setDate1] = useState(
+                      new Date(value[1][0].getTime())
+                    );
+                    const [showPicker2, setPicker2] = useState(false);
+                    const [mode2, setMode2] = useState("date");
+                    let [date2, setDate2] = useState(
+                      new Date(value[1][0].getTime())
+                    );
                     return (
                       <>
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1][0].toString()}
-                          onChangeText={() => {}}
-                        />
-                        <TextInput
-                          keyboardType={"number-pad"}
-                          value={value[1][1].toString()}
-                          onChangeText={() => {}}
-                        />
+                        <Pressable onPress={() => setPicker1(true)}>
+                          <Text>
+                            {moment(value[1][0]).format("Do MMM YYYY, h:mm A")}
+                          </Text>
+                        </Pressable>
+                        <View>
+                          {showPicker1 && (
+                            <DateTimePicker
+                              mode={mode1 as "date" | "time"}
+                              value={value[1][0]}
+                              onChange={(
+                                _temp: any,
+                                selectedValue: Date | undefined
+                              ) => {
+                                setPicker1(Platform.OS === "ios");
+                                if (selectedValue !== undefined) {
+                                  if (mode1 === "date") {
+                                    setDate1(
+                                      apply(date1, (it) => {
+                                        it.setFullYear(
+                                          selectedValue.getFullYear()
+                                        );
+                                        it.setMonth(selectedValue.getMonth());
+                                        it.setDate(selectedValue.getDate());
+                                        return it;
+                                      })
+                                    );
+                                    setMode1("time");
+                                    setPicker1(Platform.OS !== "ios");
+                                  } else {
+                                    setDate1(
+                                      apply(date1, (it) => {
+                                        it.setHours(selectedValue.getHours());
+                                        it.setMinutes(
+                                          selectedValue.getMinutes()
+                                        );
+                                        it.setSeconds(
+                                          selectedValue.getSeconds()
+                                        );
+                                        it.setMilliseconds(
+                                          selectedValue.getMilliseconds()
+                                        );
+                                        return it;
+                                      })
+                                    );
+                                    // dispatch updated value
+                                    setMode1("date");
+                                  }
+                                } else {
+                                  setDate1(new Date(value[1][0].getTime()));
+                                  setMode1("date");
+                                }
+                              }}
+                            />
+                          )}
+                        </View>
+                        <Pressable onPress={() => setPicker2(true)}>
+                          <Text>
+                            {moment(value[1][1]).format("Do MMM YYYY, h:mm A")}
+                          </Text>
+                        </Pressable>
+                        <View>
+                          {showPicker2 && (
+                            <DateTimePicker
+                              mode={mode2 as "date" | "time"}
+                              value={value[1][1]}
+                              onChange={(
+                                _temp: any,
+                                selectedValue: Date | undefined
+                              ) => {
+                                setPicker2(Platform.OS === "ios");
+                                if (selectedValue !== undefined) {
+                                  if (mode2 === "date") {
+                                    setDate2(
+                                      apply(date2, (it) => {
+                                        it.setFullYear(
+                                          selectedValue.getFullYear()
+                                        );
+                                        it.setMonth(selectedValue.getMonth());
+                                        it.setDate(selectedValue.getDate());
+                                        return it;
+                                      })
+                                    );
+                                    setMode2("time");
+                                    setPicker2(Platform.OS !== "ios");
+                                  } else {
+                                    setDate2(
+                                      apply(date2, (it) => {
+                                        it.setHours(selectedValue.getHours());
+                                        it.setMinutes(
+                                          selectedValue.getMinutes()
+                                        );
+                                        it.setSeconds(
+                                          selectedValue.getSeconds()
+                                        );
+                                        it.setMilliseconds(
+                                          selectedValue.getMilliseconds()
+                                        );
+                                        return it;
+                                      })
+                                    );
+                                    // dispatch updated value
+                                    setMode2("date");
+                                  }
+                                } else {
+                                  setDate2(new Date(value[1][1].getTime()));
+                                  setMode2("date");
+                                }
+                              }}
+                            />
+                          )}
+                        </View>
                       </>
                     );
                   }
@@ -294,16 +630,58 @@ function render_filter_path(filter_path: FilterPath) {
                   case "glob": {
                     const value = filter_path.value[1][1];
                     if (typeof value === "string") {
-                      value;
+                      return (
+                        <TextInput value={value} onChangeText={(x) => {}} />
+                      );
                     } else {
-                      value;
+                      return (
+                        <Pressable onPress={() => {}}>
+                          <Text>{value[0]}</Text>
+                        </Pressable>
+                      );
                     }
-                    break;
                   }
                   case "between":
                   case "not_between": {
                     const [value1, value2] = filter_path.value[1][1];
-                    break;
+                    return (
+                      <>
+                        {apply(undefined, () => {
+                          const value = value1;
+                          if (typeof value === "string") {
+                            return (
+                              <TextInput
+                                value={value}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                        {apply(undefined, () => {
+                          const value = value2;
+                          if (typeof value === "string") {
+                            return (
+                              <TextInput
+                                value={value}
+                                onChangeText={(x) => {}}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Pressable onPress={() => {}}>
+                                <Text>{value[0]}</Text>
+                              </Pressable>
+                            );
+                          }
+                        })}
+                      </>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = op;
@@ -314,7 +692,6 @@ function render_filter_path(filter_path: FilterPath) {
                 // use a hook to help in selecting op and value
                 return <Text>Select Op</Text>;
               }
-              break;
             }
             case "i32": {
               if (filter_path.value[1] !== undefined) {

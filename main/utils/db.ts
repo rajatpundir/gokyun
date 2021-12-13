@@ -1899,7 +1899,7 @@ type FilterPathValue =
       (
         | [
             "==" | "!=" | ">=" | "<=" | ">" | "<" | "like" | "glob",
-            string | PathString
+            string | [string, PathString]
           ]
         | undefined
       )
@@ -1909,7 +1909,7 @@ type FilterPathValue =
       (
         | [
             "between" | "not_between",
-            [string | PathString, string | PathString]
+            [string | [string, PathString], string | [string, PathString]]
           ]
         | undefined
       )
@@ -1925,7 +1925,13 @@ type FilterPathValue =
         | "idecimal"
         | "udecimal"
       ),
-      ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal | PathString] | undefined
+      (
+        | [
+            "==" | "!=" | ">=" | "<=" | ">" | "<",
+            Decimal | [string, PathString]
+          ]
+        | undefined
+      )
     ]
   | [
       (
@@ -1941,24 +1947,34 @@ type FilterPathValue =
       (
         | [
             "between" | "not_between",
-            [Decimal | PathString, Decimal | PathString]
+            [Decimal | [string, PathString], Decimal | [string, PathString]]
           ]
         | undefined
       )
     ]
-  | ["bool", ["==" | "!=", boolean | PathString] | undefined]
+  | ["bool", ["==" | "!=", boolean | [string, PathString]] | undefined]
   | [
       "date" | "time" | "timestamp",
-      ["==" | "!=" | ">=" | "<=" | ">" | "<", Date | PathString] | undefined
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date | [string, PathString]]
+        | undefined
+      )
     ]
   | [
       "date" | "time" | "timestamp",
       (
-        | ["between" | "not_between", [Date | PathString, Date | PathString]]
+        | [
+            "between" | "not_between",
+            [Date | [string, PathString], Date | [string, PathString]]
+          ]
         | undefined
       )
     ]
-  | ["other", ["==" | "!=", Decimal | PathString] | undefined, Struct];
+  | [
+      "other",
+      ["==" | "!=", Decimal | [string, PathString]] | undefined,
+      Struct
+    ];
 
 export class FilterPath {
   label: string;
@@ -2133,7 +2149,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                   field_filters_2.push(undefined);
                   const value = other_filter_path.value[1][1];
                   if (typeof value === "object") {
-                    field_filters_1.push([op, get_flattened_path(value)]);
+                    field_filters_1.push([op, get_flattened_path(value[1])]);
                   } else {
                     field_filters_1.push([op, value]);
                   }
@@ -2148,21 +2164,21 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                       field_filters_2.push([
                         op,
                         [
-                          get_flattened_path(value1),
-                          get_flattened_path(value2),
+                          get_flattened_path(value1[1]),
+                          get_flattened_path(value2[1]),
                         ],
                       ]);
                     } else {
                       field_filters_2.push([
                         op,
-                        [get_flattened_path(value1), value2],
+                        [get_flattened_path(value1[1]), value2],
                       ]);
                     }
                   } else {
                     if (typeof value2 === "object") {
                       field_filters_2.push([
                         op,
-                        [value1, get_flattened_path(value2)],
+                        [value1, get_flattened_path(value2[1])],
                       ]);
                     } else {
                       field_filters_2.push([op, [value1, value2]]);
@@ -2287,7 +2303,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                   if (is_decimal(value)) {
                     field_filters_1.push([op, value]);
                   } else {
-                    field_filters_1.push([op, get_flattened_path(value)]);
+                    field_filters_1.push([op, get_flattened_path(value[1])]);
                   }
                   break;
                 }
@@ -2301,21 +2317,21 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                     } else {
                       field_filters_2.push([
                         op,
-                        [value1, get_flattened_path(value2)],
+                        [value1, get_flattened_path(value2[1])],
                       ]);
                     }
                   } else {
                     if (is_decimal(value2)) {
                       field_filters_2.push([
                         op,
-                        [get_flattened_path(value1), value2],
+                        [get_flattened_path(value1[1]), value2],
                       ]);
                     } else {
                       field_filters_2.push([
                         op,
                         [
-                          get_flattened_path(value1),
-                          get_flattened_path(value2),
+                          get_flattened_path(value1[1]),
+                          get_flattened_path(value2[1]),
                         ],
                       ]);
                     }
@@ -2414,7 +2430,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                 case "!=": {
                   const value = other_filter_path.value[1][1];
                   if (typeof value === "object") {
-                    field_filters.push([op, get_flattened_path(value)]);
+                    field_filters.push([op, get_flattened_path(value[1])]);
                   } else {
                     field_filters.push([op, value]);
                   }
@@ -2484,7 +2500,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                   if (value instanceof Date) {
                     field_filters_1.push([op, value]);
                   } else {
-                    field_filters_1.push([op, get_flattened_path(value)]);
+                    field_filters_1.push([op, get_flattened_path(value[1])]);
                   }
                   break;
                 }
@@ -2498,21 +2514,21 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                     } else {
                       field_filters_2.push([
                         op,
-                        [value1, get_flattened_path(value2)],
+                        [value1, get_flattened_path(value2[1])],
                       ]);
                     }
                   } else {
                     if (value2 instanceof Date) {
                       field_filters_2.push([
                         op,
-                        [get_flattened_path(value1), value2],
+                        [get_flattened_path(value1[1]), value2],
                       ]);
                     } else {
                       field_filters_2.push([
                         op,
                         [
-                          get_flattened_path(value1),
-                          get_flattened_path(value2),
+                          get_flattened_path(value1[1]),
+                          get_flattened_path(value2[1]),
                         ],
                       ]);
                     }
@@ -2613,7 +2629,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
                   if (is_decimal(value)) {
                     field_filters.push([op, value]);
                   } else {
-                    field_filters.push([op, get_flattened_path(value)]);
+                    field_filters.push([op, get_flattened_path(value[1])]);
                   }
                   break;
                 }
