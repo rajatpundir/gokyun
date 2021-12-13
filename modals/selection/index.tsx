@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { Filter, get_variables, PathFilter } from "../../main/utils/db";
+import { Filter, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";

@@ -26,7 +26,7 @@ import {
 } from "./variable";
 import { get_struct } from "./schema";
 import { HashSet } from "prelude-ts";
-import { Filter, FilterPath, PathFilter } from "./db";
+import { FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
@@ -1709,11 +1709,17 @@ function get_other_filter_paths(
           case "time":
           case "timestamp": {
             filter_paths = filter_paths.add(
-              new FilterPath(
-                permission.label,
-                path_string,
-                [field.type, undefined],
-                undefined
+              apply(
+                new FilterPath(
+                  permission.label,
+                  path_string,
+                  [field.type, undefined],
+                  undefined
+                ),
+                (it) => {
+                  it.active = true;
+                  return it;
+                }
               )
             );
             break;
@@ -1722,11 +1728,17 @@ function get_other_filter_paths(
             const other_struct = get_struct(field.other);
             if (unwrap(other_struct)) {
               filter_paths = filter_paths.add(
-                new FilterPath(
-                  permission.label,
-                  path_string,
-                  [field.type, undefined, other_struct.value],
-                  undefined
+                apply(
+                  new FilterPath(
+                    permission.label,
+                    path_string,
+                    [field.type, undefined, other_struct.value],
+                    undefined
+                  ),
+                  (it) => {
+                    it.active = true;
+                    return it;
+                  }
                 )
               );
             }

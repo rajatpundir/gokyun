@@ -2047,6 +2047,7 @@ function get_variable_filters(
 }
 
 function get_path_filters(filters: ReadonlyArray<Filter>) {
+  console.log("-------------", filters, "----------------");
   const get_flattened_path = (x: PathString) => [...x[0], x[1]];
   let path_filters: Array<[string, PathFilter]> = [];
   const used_filter_paths: HashSet<FilterPath> = apply(
@@ -2062,6 +2063,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
       return it;
     }
   );
+  console.log(used_filter_paths);
   for (let filter_path of used_filter_paths) {
     const field_struct_name = filter_path.value[0];
     switch (field_struct_name) {
@@ -2156,46 +2158,62 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
             field_filters_2.push(undefined);
           }
         }
-        if (
-          fold(false, field_filters_1, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
+        apply(
+          [
+            fold(false as boolean, field_filters_1, (acc, val) => {
+              if (!acc) {
+                if (val !== undefined) {
+                  return true;
+                }
+              }
+              return acc;
+            }),
+            fold(false as boolean, field_filters_2, (acc, val) => {
+              if (!acc) {
+                if (val !== undefined) {
+                  return true;
+                }
+              }
+              return acc;
+            }),
+          ] as [boolean, boolean],
+          ([field_filters_check_1, field_filters_check_2]) => {
+            if (!field_filters_check_1 && !field_filters_check_2) {
+              path_filters.push([
+                filter_path.label,
+                [
+                  get_flattened_path(filter_path.path),
+                  field_struct_name,
+                  filter_path.ordering,
+                  field_filters_1,
+                ],
+              ]);
+            } else {
+              if (field_filters_check_1) {
+                path_filters.push([
+                  filter_path.label,
+                  [
+                    get_flattened_path(filter_path.path),
+                    field_struct_name,
+                    filter_path.ordering,
+                    field_filters_1,
+                  ],
+                ]);
+              }
+              if (field_filters_check_2) {
+                path_filters.push([
+                  filter_path.label,
+                  [
+                    get_flattened_path(filter_path.path),
+                    field_struct_name,
+                    filter_path.ordering,
+                    field_filters_2,
+                  ],
+                ]);
               }
             }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters_1,
-            ],
-          ]);
-        }
-        if (
-          fold(false, field_filters_2, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
-              }
-            }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters_2,
-            ],
-          ]);
-        }
+          }
+        );
         break;
       }
       case "i32":
@@ -2292,46 +2310,62 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
             field_filters_2.push(undefined);
           }
         }
-        if (
-          fold(false, field_filters_1, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
+        apply(
+          [
+            fold(false as boolean, field_filters_1, (acc, val) => {
+              if (!acc) {
+                if (val !== undefined) {
+                  return true;
+                }
+              }
+              return acc;
+            }),
+            fold(false as boolean, field_filters_2, (acc, val) => {
+              if (!acc) {
+                if (val !== undefined) {
+                  return true;
+                }
+              }
+              return acc;
+            }),
+          ] as [boolean, boolean],
+          ([field_filters_check_1, field_filters_check_2]) => {
+            if (!field_filters_check_1 && !field_filters_check_2) {
+              path_filters.push([
+                filter_path.label,
+                [
+                  get_flattened_path(filter_path.path),
+                  field_struct_name,
+                  filter_path.ordering,
+                  field_filters_1,
+                ],
+              ]);
+            } else {
+              if (field_filters_check_1) {
+                path_filters.push([
+                  filter_path.label,
+                  [
+                    get_flattened_path(filter_path.path),
+                    field_struct_name,
+                    filter_path.ordering,
+                    field_filters_1,
+                  ],
+                ]);
+              }
+              if (field_filters_check_2) {
+                path_filters.push([
+                  filter_path.label,
+                  [
+                    get_flattened_path(filter_path.path),
+                    field_struct_name,
+                    filter_path.ordering,
+                    field_filters_2,
+                  ],
+                ]);
               }
             }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters_1,
-            ],
-          ]);
-        }
-        if (
-          fold(false, field_filters_2, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
-              }
-            }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters_2,
-            ],
-          ]);
-        }
+          }
+        );
         break;
       }
       case "bool": {
@@ -2373,26 +2407,15 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
             field_filters.push(undefined);
           }
         }
-        if (
-          fold(false, field_filters, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
-              }
-            }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters,
-            ],
-          ]);
-        }
+        path_filters.push([
+          filter_path.label,
+          [
+            get_flattened_path(filter_path.path),
+            field_struct_name,
+            filter_path.ordering,
+            field_filters,
+          ],
+        ]);
         break;
       }
       case "date":
@@ -2484,46 +2507,62 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
             field_filters_2.push(undefined);
           }
         }
-        if (
-          fold(false, field_filters_1, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
+        apply(
+          [
+            fold(false as boolean, field_filters_1, (acc, val) => {
+              if (!acc) {
+                if (val !== undefined) {
+                  return true;
+                }
+              }
+              return acc;
+            }),
+            fold(false as boolean, field_filters_2, (acc, val) => {
+              if (!acc) {
+                if (val !== undefined) {
+                  return true;
+                }
+              }
+              return acc;
+            }),
+          ] as [boolean, boolean],
+          ([field_filters_check_1, field_filters_check_2]) => {
+            if (!field_filters_check_1 && !field_filters_check_2) {
+              path_filters.push([
+                filter_path.label,
+                [
+                  get_flattened_path(filter_path.path),
+                  field_struct_name,
+                  filter_path.ordering,
+                  field_filters_1,
+                ],
+              ]);
+            } else {
+              if (field_filters_check_1) {
+                path_filters.push([
+                  filter_path.label,
+                  [
+                    get_flattened_path(filter_path.path),
+                    field_struct_name,
+                    filter_path.ordering,
+                    field_filters_1,
+                  ],
+                ]);
+              }
+              if (field_filters_check_2) {
+                path_filters.push([
+                  filter_path.label,
+                  [
+                    get_flattened_path(filter_path.path),
+                    field_struct_name,
+                    filter_path.ordering,
+                    field_filters_2,
+                  ],
+                ]);
               }
             }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters_1,
-            ],
-          ]);
-        }
-        if (
-          fold(false, field_filters_2, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
-              }
-            }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters_2,
-            ],
-          ]);
-        }
+          }
+        );
         break;
       }
       case "other": {
@@ -2565,27 +2604,16 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
             field_filters.push(undefined);
           }
         }
-        if (
-          fold(false, field_filters, (acc, val) => {
-            if (!acc) {
-              if (val !== undefined) {
-                return true;
-              }
-            }
-            return acc;
-          })
-        ) {
-          path_filters.push([
-            filter_path.label,
-            [
-              get_flattened_path(filter_path.path),
-              field_struct_name,
-              filter_path.ordering,
-              field_filters,
-              filter_path.value[2].name,
-            ],
-          ]);
-        }
+        path_filters.push([
+          filter_path.label,
+          [
+            get_flattened_path(filter_path.path),
+            field_struct_name,
+            filter_path.ordering,
+            field_filters,
+            filter_path.value[2].name,
+          ],
+        ]);
         break;
       }
       default: {
