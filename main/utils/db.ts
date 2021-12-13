@@ -1803,9 +1803,9 @@ export async function get_variable(
       level,
       [
         {
-          id: ["==", id],
-          created_at: undefined,
-          updated_at: undefined,
+          id: [true, ["==", id]],
+          created_at: [false, undefined],
+          updated_at: [false, undefined],
           filter_paths: HashSet.of<FilterPath>(),
         },
       ],
@@ -1999,18 +1999,30 @@ export class FilterPath {
 }
 
 export type Filter = {
-  id:
-    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-    | ["between" | "not_between", [Decimal, Decimal]]
-    | undefined;
-  created_at:
-    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-    | ["between" | "not_between", [Date, Date]]
-    | undefined;
-  updated_at:
-    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-    | ["between" | "not_between", [Date, Date]]
-    | undefined;
+  id: [
+    boolean,
+    (
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+      | ["between" | "not_between", [Decimal, Decimal]]
+      | undefined
+    )
+  ];
+  created_at: [
+    boolean,
+    (
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    )
+  ];
+  updated_at: [
+    boolean,
+    (
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    )
+  ];
   filter_paths: HashSet<FilterPath>;
 };
 
@@ -2040,9 +2052,24 @@ function get_variable_filters(
   return {
     active: active,
     level: level,
-    id: filters.map((x) => x.id),
-    created_at: filters.map((x) => x.created_at),
-    updated_at: filters.map((x) => x.updated_at),
+    id: filters.map((x) => {
+      if (x.id[0]) {
+        return x.id[1];
+      }
+      return undefined;
+    }),
+    created_at: filters.map((x) => {
+      if (x.created_at[0]) {
+        return x.created_at[1];
+      }
+      return undefined;
+    }),
+    updated_at: filters.map((x) => {
+      if (x.updated_at[0]) {
+        return x.updated_at[1];
+      }
+      return undefined;
+    }),
   };
 }
 

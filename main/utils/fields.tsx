@@ -911,9 +911,9 @@ function Other_Field(
                 level: undefined,
                 filters: [
                   {
-                    id: undefined,
-                    created_at: undefined,
-                    updated_at: undefined,
+                    id: [false, undefined],
+                    created_at: [false, undefined],
+                    updated_at: [false, undefined],
                     filter_paths: get_other_filter_paths(
                       props.struct,
                       props.state,
