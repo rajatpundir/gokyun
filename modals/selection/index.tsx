@@ -435,7 +435,12 @@ function render_filter(
                                         return it;
                                       })
                                     );
-                                    // dispatch updated value
+                                    dispatch([
+                                      "filters",
+                                      0,
+                                      "created_at",
+                                      [true, [op, date1 || new Date()]],
+                                    ]);
                                     setMode1("date");
                                   }
                                 } else {
@@ -498,7 +503,18 @@ function render_filter(
                                         return it;
                                       })
                                     );
-                                    // dispatch updated value
+                                    dispatch([
+                                      "filters",
+                                      0,
+                                      "created_at",
+                                      [
+                                        true,
+                                        [
+                                          op,
+                                          [date1 || new Date(), value[1][1]],
+                                        ],
+                                      ],
+                                    ]);
                                     setMode1("date");
                                   }
                                 } else {
@@ -554,7 +570,18 @@ function render_filter(
                                         return it;
                                       })
                                     );
-                                    // dispatch updated value
+                                    dispatch([
+                                      "filters",
+                                      0,
+                                      "created_at",
+                                      [
+                                        true,
+                                        [
+                                          op,
+                                          [value[1][0], date2 || new Date()],
+                                        ],
+                                      ],
+                                    ]);
                                     setMode2("date");
                                   }
                                 } else {
