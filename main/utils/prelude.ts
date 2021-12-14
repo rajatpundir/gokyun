@@ -82,3 +82,26 @@ export function fold_prev<T, U>(
 export function is_decimal(value: any): value is Decimal {
   return Decimal.isDecimal(value);
 }
+
+type Function<T, U> = [(x: T) => U, (x: U) => T];
+
+export function get_array_item<T>(
+  array: ReadonlyArray<T>,
+  index: number | Decimal
+): Option<T> {
+  return apply(
+    apply(undefined, () => {
+      if (is_decimal(index)) {
+        return index.abs().truncated().toNumber();
+      } else {
+        return Math.abs(index);
+      }
+    }),
+    (it) => {
+      if (it < array.length) {
+        return new Ok(array[it]);
+      }
+      return undefined;
+    }
+  );
+}
