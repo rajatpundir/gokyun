@@ -1224,9 +1224,9 @@ export function FilterComponent(props: {
         onPress={() =>
           props.dispatch([
             "filters",
-            0,
+            props.index,
             "created_at",
-            [true, ["between", [new Date(0), new Date(0)]]],
+            [false, ["between", [new Date(0), new Date(0)]]],
           ])
         }
       >
@@ -1236,9 +1236,9 @@ export function FilterComponent(props: {
         onPress={() =>
           props.dispatch([
             "filters",
-            0,
+            props.index,
             "updated_at",
-            [true, ["between", [new Date(0), new Date(0)]]],
+            [false, ["between", [new Date(0), new Date(0)]]],
           ])
         }
       >
@@ -1252,7 +1252,7 @@ export function FilterComponent(props: {
               <Switch
                 value={active}
                 onValueChange={(x) => {
-                  props.dispatch(["filters", 0, "id", [x, value]]);
+                  props.dispatch(["filters", props.index, "id", [x, value]]);
                 }}
               />
               <Text>ID</Text>
@@ -1272,7 +1272,7 @@ export function FilterComponent(props: {
                         onChangeText={(x) => {
                           props.dispatch([
                             "filters",
-                            0,
+                            props.index,
                             "id",
                             [
                               true,
@@ -1293,7 +1293,7 @@ export function FilterComponent(props: {
                           onChangeText={(x) => {
                             props.dispatch([
                               "filters",
-                              0,
+                              props.index,
                               "id",
                               [
                                 true,
@@ -1314,7 +1314,7 @@ export function FilterComponent(props: {
                           onChangeText={(x) => {
                             props.dispatch([
                               "filters",
-                              0,
+                              props.index,
                               "id",
                               [
                                 true,
@@ -1340,7 +1340,12 @@ export function FilterComponent(props: {
               })}
               <Pressable
                 onPress={() =>
-                  props.dispatch(["filters", 0, "id", [true, undefined]])
+                  props.dispatch([
+                    "filters",
+                    props.index,
+                    "id",
+                    [true, undefined],
+                  ])
                 }
               >
                 <Text>X</Text>
@@ -1414,7 +1419,12 @@ export function FilterComponent(props: {
               <Switch
                 value={active}
                 onValueChange={(x) => {
-                  props.dispatch(["filters", 0, "created_at", [x, value]]);
+                  props.dispatch([
+                    "filters",
+                    props.index,
+                    "created_at",
+                    [x, value],
+                  ]);
                 }}
               />
               <Text>Created At</Text>
@@ -1476,7 +1486,7 @@ export function FilterComponent(props: {
                                     );
                                     props.dispatch([
                                       "filters",
-                                      0,
+                                      props.index,
                                       "created_at",
                                       [true, [op, date1 || new Date()]],
                                     ]);
@@ -1544,7 +1554,7 @@ export function FilterComponent(props: {
                                     );
                                     props.dispatch([
                                       "filters",
-                                      0,
+                                      props.index,
                                       "created_at",
                                       [
                                         true,
@@ -1611,7 +1621,7 @@ export function FilterComponent(props: {
                                     );
                                     props.dispatch([
                                       "filters",
-                                      0,
+                                      props.index,
                                       "created_at",
                                       [
                                         true,
@@ -1644,7 +1654,7 @@ export function FilterComponent(props: {
                 onPress={() =>
                   props.dispatch([
                     "filters",
-                    0,
+                    props.index,
                     "created_at",
                     [true, undefined],
                   ])
@@ -1721,7 +1731,12 @@ export function FilterComponent(props: {
               <Switch
                 value={active}
                 onValueChange={(x) => {
-                  props.dispatch(["filters", 0, "updated_at", [x, value]]);
+                  props.dispatch([
+                    "filters",
+                    props.index,
+                    "updated_at",
+                    [x, value],
+                  ]);
                 }}
               />
               <Text>Updated At</Text>
@@ -1783,7 +1798,7 @@ export function FilterComponent(props: {
                                     );
                                     props.dispatch([
                                       "filters",
-                                      0,
+                                      props.index,
                                       "updated_at",
                                       [true, [op, date1 || new Date()]],
                                     ]);
@@ -1851,7 +1866,7 @@ export function FilterComponent(props: {
                                     );
                                     props.dispatch([
                                       "filters",
-                                      0,
+                                      props.index,
                                       "updated_at",
                                       [
                                         true,
@@ -1918,7 +1933,7 @@ export function FilterComponent(props: {
                                     );
                                     props.dispatch([
                                       "filters",
-                                      0,
+                                      props.index,
                                       "updated_at",
                                       [
                                         true,
@@ -1951,7 +1966,7 @@ export function FilterComponent(props: {
                 onPress={() =>
                   props.dispatch([
                     "filters",
-                    0,
+                    props.index,
                     "updated_at",
                     [true, undefined],
                   ])

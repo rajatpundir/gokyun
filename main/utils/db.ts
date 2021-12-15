@@ -600,7 +600,8 @@ export function query(
       }
       if (stmt !== undefined) {
         if (index >= where_filters_stmt_1.length) {
-          for (let j = 0; j <= index - where_filters_stmt_1.length; j++) {
+          const x = where_filters_stmt_1.length;
+          for (let j = 0; j <= index - x; j++) {
             where_filters_stmt_1.push([]);
           }
         }
@@ -637,7 +638,8 @@ export function query(
       }
       if (stmt !== undefined) {
         if (index >= where_filters_stmt_1.length) {
-          for (let j = 0; j <= index - where_filters_stmt_1.length; j++) {
+          const x = where_filters_stmt_1.length;
+          for (let j = 0; j <= index - x; j++) {
             where_filters_stmt_1.push([]);
           }
         }
@@ -674,7 +676,8 @@ export function query(
       }
       if (stmt !== undefined) {
         if (index >= where_filters_stmt_1.length) {
-          for (let j = 0; j <= index - where_filters_stmt_1.length; j++) {
+          const x = where_filters_stmt_1.length;
+          for (let j = 0; j <= index - x; j++) {
             where_filters_stmt_1.push([]);
           }
         }
@@ -693,6 +696,7 @@ export function query(
 
   const where_filters_stmt_2: Array<Array<string>> = [];
   for (let [index, filter] of variable_filters.id[1].entries()) {
+    console.log(index, filter);
     let stmt: string | undefined = undefined;
     if (filter !== undefined) {
       const op = filter[0];
@@ -723,7 +727,8 @@ export function query(
       }
       if (stmt !== undefined) {
         if (index >= where_filters_stmt_2.length) {
-          for (let j = 0; j <= index - where_filters_stmt_2.length; j++) {
+          const x = where_filters_stmt_2.length;
+          for (let j = 0; j <= index - x; j++) {
             where_filters_stmt_2.push([]);
           }
         }
@@ -731,6 +736,7 @@ export function query(
       }
     }
   }
+
   for (let [index, filter] of variable_filters.created_at[1].entries()) {
     let stmt: string | undefined = undefined;
     if (filter !== undefined) {
@@ -760,7 +766,8 @@ export function query(
       }
       if (stmt !== undefined) {
         if (index >= where_filters_stmt_2.length) {
-          for (let j = 0; j <= index - where_filters_stmt_2.length; j++) {
+          const x = where_filters_stmt_2.length;
+          for (let j = 0; j <= index - x; j++) {
             where_filters_stmt_2.push([]);
           }
         }
@@ -797,7 +804,8 @@ export function query(
       }
       if (stmt !== undefined) {
         if (index >= where_filters_stmt_2.length) {
-          for (let j = 0; j <= index - where_filters_stmt_2.length; j++) {
+          const x = where_filters_stmt_2.length;
+          for (let j = 0; j <= index - x; j++) {
             where_filters_stmt_2.push([]);
           }
         }
@@ -806,7 +814,13 @@ export function query(
     }
   }
   apply(
-    `${where_filters_stmt_2.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    `${where_filters_stmt_2
+      .filter((x) => {
+        console.log(x);
+        return true;
+      })
+      .map((x) => `(${x.join(" AND ")})`)
+      .join(" OR ")}`,
     (it) => {
       if (it !== "") {
         append_to_where_stmt(it);
@@ -896,7 +910,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_1.length) {
-              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+              const x = having_filters_stmt_1.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_1.push([]);
               }
             }
@@ -1007,7 +1022,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_1.length) {
-              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+              const x = having_filters_stmt_1.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_1.push([]);
               }
             }
@@ -1042,7 +1058,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_1.length) {
-              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+              const x = having_filters_stmt_1.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_1.push([]);
               }
             }
@@ -1116,7 +1133,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_1.length) {
-              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+              const x = having_filters_stmt_1.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_1.push([]);
               }
             }
@@ -1153,7 +1171,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_1.length) {
-              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+              const x = having_filters_stmt_1.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_1.push([]);
               }
             }
@@ -1248,7 +1267,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_2.length) {
-              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+              const x = having_filters_stmt_2.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_2.push([]);
               }
             }
@@ -1359,7 +1379,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_2.length) {
-              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+              const x = having_filters_stmt_2.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_2.push([]);
               }
             }
@@ -1394,7 +1415,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_2.length) {
-              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+              const x = having_filters_stmt_2.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_2.push([]);
               }
             }
@@ -1468,7 +1490,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_2.length) {
-              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+              const x = having_filters_stmt_2.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_2.push([]);
               }
             }
@@ -1505,7 +1528,8 @@ export function query(
           }
           if (stmt !== undefined) {
             if (index >= having_filters_stmt_2.length) {
-              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+              const x = having_filters_stmt_2.length;
+              for (let j = 0; j <= index - x; j++) {
                 having_filters_stmt_2.push([]);
               }
             }
