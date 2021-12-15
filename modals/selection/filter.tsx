@@ -7,7 +7,8 @@ import { apply, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Action } from "./index";
-import { Picker } from "@react-native-picker/picker";
+import { Select } from "native-base";
+import { FlatList } from "react-native-gesture-handler";
 
 function RenderFilterPath(props: {
   filter_path: FilterPath;
@@ -1198,26 +1199,49 @@ function RenderFilterPath(props: {
 }
 
 export function FilterComponent(props: {
+  init_filter: Filter;
   filter: Filter;
   index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
-  const [selectedLanguage, setSelectedLanguage] = useState();
+  //   let [service, setService] = React.useState("");
   return (
     <>
-      <Picker
-        style={{
-          backgroundColor: "black",
-          color: "white",
-        }}
-        prompt="whatever"
-        dropdownIconColor={"white"}
-        selectedValue={selectedLanguage}
-        onValueChange={(itemValue, itemIndex) => setSelectedLanguage(itemValue)}
+      {/* <Select
+        placeholder="Choose Service"
+        color={"white"}
+        mt={1}
+        // _selectedItem={{
+        //   bg: "teal.600",
+        //   endIcon: <CheckIcon size="5" />,
+        // }}
+        selectedValue={service}
+        onValueChange={(itemValue) => setService(itemValue)}
       >
-        <Picker.Item label="Java" value="java" />
-        <Picker.Item label="JavaScript" value="js" />
-      </Picker>
+        <Select.Item label="UX Research" value="ux" />
+        <Select.Item label="Web Development" value="web" />
+        <Select.Item label="Cross Platform Development" value="cross" />
+        <Select.Item label="UI Designing" value="ui" />
+        <Select.Item label="Backend Development" value="backend" />
+      </Select> */}
+      <Pressable
+        onPress={() =>
+          props.dispatch([
+            "filters",
+            props.index,
+            "id",
+            [false, ["==", new Decimal(0)]],
+          ])
+        }
+      >
+        <Text>ID</Text>
+      </Pressable>
+      <FlatList
+        data={[]}
+        renderItem={(list_item) => {
+          return <></>;
+        }}
+      ></FlatList>
       <Pressable
         onPress={() =>
           // dispatch(["filters", 0, "id", [true, ["==", new Decimal(1)]]])

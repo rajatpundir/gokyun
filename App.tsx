@@ -31,7 +31,9 @@ import Test from "./modals/test";
 
 import Decimal from "decimal.js";
 import { Immutable } from "immer";
-import { Filter, PathFilter } from "./main/utils/db";
+import { Filter } from "./main/utils/db";
+
+import { NativeBaseProvider, Box } from "native-base";
 
 declare global {
   namespace ReactNavigation {
@@ -48,7 +50,7 @@ export type NavigatorParams = {
     struct: Struct;
     active: boolean;
     level: Decimal | undefined;
-    filters: ReadonlyArray<Filter>;
+    filters: [Filter, ReadonlyArray<Filter>];
     limit_offset: [Decimal, Decimal] | undefined;
     render_list_element: (props: {
       selected: number;
@@ -117,53 +119,55 @@ export default function App() {
     return null;
   } else {
     return (
-      <SafeAreaProvider>
-        <NavigationContainer
-          linking={linking}
-          theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Main"
-              component={Navigator}
-              options={{ headerShown: false, animation: "none" }}
-            />
-            <Stack.Screen
-              name="SelectionModal"
-              component={SelectionModal}
-              options={{
-                title: "Select variable",
-                headerStyle: { backgroundColor: "black" },
-                headerTintColor: "white",
-              }}
-            />
-            <Stack.Screen
-              name="VariablesModal"
-              component={VariablesModal}
-              options={{
-                title: "Select your Variable!",
-                headerStyle: { backgroundColor: "black" },
-                headerTintColor: "white",
-              }}
-            />
-            <Stack.Screen
-              name="Test"
-              component={Test}
-              options={{
-                title: "Test",
-                headerStyle: { backgroundColor: "black" },
-                headerTintColor: "white",
-              }}
-            />
-            <Stack.Screen
-              name="NotFound"
-              component={NotFoundScreen}
-              options={{ title: "Oops!" }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-        <StatusBar />
-      </SafeAreaProvider>
+      <NativeBaseProvider>
+        <SafeAreaProvider>
+          <NavigationContainer
+            linking={linking}
+            theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
+          >
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Main"
+                component={Navigator}
+                options={{ headerShown: false, animation: "none" }}
+              />
+              <Stack.Screen
+                name="SelectionModal"
+                component={SelectionModal}
+                options={{
+                  title: "Select variable",
+                  headerStyle: { backgroundColor: "black" },
+                  headerTintColor: "white",
+                }}
+              />
+              <Stack.Screen
+                name="VariablesModal"
+                component={VariablesModal}
+                options={{
+                  title: "Select your Variable!",
+                  headerStyle: { backgroundColor: "black" },
+                  headerTintColor: "white",
+                }}
+              />
+              <Stack.Screen
+                name="Test"
+                component={Test}
+                options={{
+                  title: "Test",
+                  headerStyle: { backgroundColor: "black" },
+                  headerTintColor: "white",
+                }}
+              />
+              <Stack.Screen
+                name="NotFound"
+                component={NotFoundScreen}
+                options={{ title: "Oops!" }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+          <StatusBar />
+        </SafeAreaProvider>
+      </NativeBaseProvider>
     );
   }
 }

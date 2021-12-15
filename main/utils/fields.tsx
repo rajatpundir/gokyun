@@ -928,6 +928,7 @@ function Other_Field(
                       props.labels
                     ),
                   },
+                  [],
                 ],
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,

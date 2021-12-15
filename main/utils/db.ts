@@ -214,27 +214,50 @@ export function query(
   variable_filters: {
     active: boolean;
     level: Decimal | undefined;
-    id: ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-      | ["between" | "not_between", [Decimal, Decimal]]
-      | undefined
-    >;
-    created_at: ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    >;
-    updated_at: ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    >;
+    id: [
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+        | ["between" | "not_between", [Decimal, Decimal]]
+        | undefined
+      ),
+      ReadonlyArray<
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+        | ["between" | "not_between", [Decimal, Decimal]]
+        | undefined
+      >
+    ];
+    created_at: [
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      ),
+      ReadonlyArray<
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      >
+    ];
+    updated_at: [
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      ),
+      ReadonlyArray<
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      >
+    ];
   },
-  path_filters: ReadonlyArray<PathFilter>,
+  path_filters: [ReadonlyArray<PathFilter>, ReadonlyArray<PathFilter>],
   limit_offset: [Decimal, Decimal] | undefined
 ): Promise<SQLite.SQLResultSet> {
-  const join_count: number = fold(0, path_filters, (acc, val) =>
-    Math.max(acc, val[0].length)
+  const join_count: number = fold(
+    0,
+    [...path_filters[0], ...path_filters[1]],
+    (acc, val) => Math.max(acc, val[0].length)
   );
 
   let select_stmt: string = "SELECT \n";
@@ -266,7 +289,7 @@ export function query(
   };
   apply(undefined, () => {
     let intermediate_paths = HashSet.of<Vector<string>>();
-    path_filters.map((path_filter) => {
+    [...path_filters[0], ...path_filters[1]].map((path_filter) => {
       const path: ReadonlyArray<string> = path_filter[0];
       const path_name_expression = get_path_name_expression(path.length);
       if (path.length > 1) {
@@ -386,7 +409,9 @@ export function query(
           if (
             !intermediate_paths.contains(temp_path) &&
             !HashSet.ofIterable(
-              path_filters.map((x) => Vector.ofIterable(x[0]))
+              [...path_filters[0], ...path_filters[1]].map((x) =>
+                Vector.ofIterable(x[0])
+              )
             ).contains(temp_path)
           ) {
             const temp_var_ref: number =
@@ -478,11 +503,11 @@ export function query(
       `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level > rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
     );
   }
-  append_to_where_stmt(
-    path_filters
+
+  apply(
+    path_filters[0]
       .map((path_filter) => {
         const path: ReadonlyArray<string> = path_filter[0];
-        const path_length: number = path.length;
         let stmt = path
           .slice(0, path.length - 1)
           .map((field_name, i) => `v${i * 2 + 2}.field_name = '${path[i]}'`)
@@ -503,11 +528,48 @@ export function query(
         }.field_struct_name = '${field_struct_name}'`;
         return `(${stmt})`;
       })
-      .join(" OR ")
+      .join(" OR "),
+    (it) => {
+      if (it !== "") {
+        append_to_where_stmt(it);
+      }
+    }
   );
 
-  const where_filters_stmt: Array<Array<string>> = [];
-  for (let [index, filter] of variable_filters.id.entries()) {
+  apply(
+    path_filters[1]
+      .map((path_filter) => {
+        const path: ReadonlyArray<string> = path_filter[0];
+        let stmt = path
+          .slice(0, path.length - 1)
+          .map((field_name, i) => `v${i * 2 + 2}.field_name = '${path[i]}'`)
+          .join(" AND ");
+        const field_struct_name = apply(path_filter[1], (it) => {
+          if (path_filter[1] === "other") {
+            return path_filter[4];
+          }
+          return it;
+        });
+        if (stmt !== "") {
+          stmt += " AND ";
+        }
+        stmt += `v${(path.length - 1) * 2 + 2}.field_name = '${
+          path[path.length - 1]
+        }' AND v${
+          (path.length - 1) * 2 + 2
+        }.field_struct_name = '${field_struct_name}'`;
+        return `(${stmt})`;
+      })
+      .join(" OR "),
+    (it) => {
+      if (it !== "") {
+        append_to_where_stmt(it);
+      }
+    }
+  );
+
+  const where_filters_stmt_1: Array<Array<string>> = [];
+  for (let [index, filter] of [variable_filters.id[0]].entries()) {
     let stmt: string | undefined = undefined;
     if (filter !== undefined) {
       const op = filter[0];
@@ -537,16 +599,16 @@ export function query(
         }
       }
       if (stmt !== undefined) {
-        if (index >= where_filters_stmt.length) {
-          for (let j = 0; j <= index - where_filters_stmt.length; j++) {
-            where_filters_stmt.push([]);
+        if (index >= where_filters_stmt_1.length) {
+          for (let j = 0; j <= index - where_filters_stmt_1.length; j++) {
+            where_filters_stmt_1.push([]);
           }
         }
-        where_filters_stmt[index].push(stmt);
+        where_filters_stmt_1[index].push(stmt);
       }
     }
   }
-  for (let [index, filter] of variable_filters.created_at.entries()) {
+  for (let [index, filter] of [variable_filters.created_at[0]].entries()) {
     let stmt: string | undefined = undefined;
     if (filter !== undefined) {
       const op = filter[0];
@@ -574,16 +636,16 @@ export function query(
         }
       }
       if (stmt !== undefined) {
-        if (index >= where_filters_stmt.length) {
-          for (let j = 0; j <= index - where_filters_stmt.length; j++) {
-            where_filters_stmt.push([]);
+        if (index >= where_filters_stmt_1.length) {
+          for (let j = 0; j <= index - where_filters_stmt_1.length; j++) {
+            where_filters_stmt_1.push([]);
           }
         }
-        where_filters_stmt[index].push(stmt);
+        where_filters_stmt_1[index].push(stmt);
       }
     }
   }
-  for (let [index, filter] of variable_filters.updated_at.entries()) {
+  for (let [index, filter] of [variable_filters.updated_at[0]].entries()) {
     let stmt: string | undefined = undefined;
     if (filter !== undefined) {
       const op = filter[0];
@@ -611,17 +673,140 @@ export function query(
         }
       }
       if (stmt !== undefined) {
-        if (index >= where_filters_stmt.length) {
-          for (let j = 0; j <= index - where_filters_stmt.length; j++) {
-            where_filters_stmt.push([]);
+        if (index >= where_filters_stmt_1.length) {
+          for (let j = 0; j <= index - where_filters_stmt_1.length; j++) {
+            where_filters_stmt_1.push([]);
           }
         }
-        where_filters_stmt[index].push(stmt);
+        where_filters_stmt_1[index].push(stmt);
       }
     }
   }
   apply(
-    `${where_filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    `${where_filters_stmt_1.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    (it) => {
+      if (it !== "") {
+        append_to_where_stmt(it);
+      }
+    }
+  );
+
+  const where_filters_stmt_2: Array<Array<string>> = [];
+  for (let [index, filter] of variable_filters.id[1].entries()) {
+    let stmt: string | undefined = undefined;
+    if (filter !== undefined) {
+      const op = filter[0];
+      switch (op) {
+        case "==":
+        case "!=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<": {
+          const value = filter[1];
+          stmt = `v1.id ${op} ${value.truncated().toString()}`;
+          break;
+        }
+        case "between":
+        case "not_between": {
+          const start_value = filter[1][0];
+          const end_value = filter[1][1];
+          stmt = `v1.id BETWEEN ${start_value
+            .truncated()
+            .toString()} AND ${end_value.truncated().toString()}`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = op;
+          return _exhaustiveCheck;
+        }
+      }
+      if (stmt !== undefined) {
+        if (index >= where_filters_stmt_2.length) {
+          for (let j = 0; j <= index - where_filters_stmt_2.length; j++) {
+            where_filters_stmt_2.push([]);
+          }
+        }
+        where_filters_stmt_2[index].push(stmt);
+      }
+    }
+  }
+  for (let [index, filter] of variable_filters.created_at[1].entries()) {
+    let stmt: string | undefined = undefined;
+    if (filter !== undefined) {
+      const op = filter[0];
+      switch (op) {
+        case "==":
+        case "!=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<": {
+          const value = filter[1];
+          stmt = `v1.created_at ${op} ${value.getTime()}`;
+          break;
+        }
+        case "between":
+        case "not_between": {
+          const start_value = filter[1][0];
+          const end_value = filter[1][1];
+          stmt = `v1.created_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = op;
+          return _exhaustiveCheck;
+        }
+      }
+      if (stmt !== undefined) {
+        if (index >= where_filters_stmt_2.length) {
+          for (let j = 0; j <= index - where_filters_stmt_2.length; j++) {
+            where_filters_stmt_2.push([]);
+          }
+        }
+        where_filters_stmt_2[index].push(stmt);
+      }
+    }
+  }
+  for (let [index, filter] of variable_filters.updated_at[1].entries()) {
+    let stmt: string | undefined = undefined;
+    if (filter !== undefined) {
+      const op = filter[0];
+      switch (op) {
+        case "==":
+        case "!=":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<": {
+          const value = filter[1];
+          stmt = `v1.updated_at ${op} ${value.getTime()}`;
+          break;
+        }
+        case "between":
+        case "not_between": {
+          const start_value = filter[1][0];
+          const end_value = filter[1][1];
+          stmt = `v1.updated_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = op;
+          return _exhaustiveCheck;
+        }
+      }
+      if (stmt !== undefined) {
+        if (index >= where_filters_stmt_2.length) {
+          for (let j = 0; j <= index - where_filters_stmt_2.length; j++) {
+            where_filters_stmt_2.push([]);
+          }
+        }
+        where_filters_stmt_2[index].push(stmt);
+      }
+    }
+  }
+  apply(
+    `${where_filters_stmt_2.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
     (it) => {
       if (it !== "") {
         append_to_where_stmt(it);
@@ -640,11 +825,10 @@ export function query(
     });
   };
 
-  const having_filters_stmt: Array<Array<string>> = [];
-  for (let path_filter of path_filters) {
+  const having_filters_stmt_1: Array<Array<string>> = [];
+  for (let path_filter of path_filters[0]) {
     const path: ReadonlyArray<string> = path_filter[0];
     const path_ref: string = path.join(".");
-    const val_ref: number = path_filter[0].length * 2;
     const field_struct_name = path_filter[1];
     switch (field_struct_name) {
       case "str":
@@ -711,12 +895,12 @@ export function query(
             }
           }
           if (stmt !== undefined) {
-            if (index >= having_filters_stmt.length) {
-              for (let j = 0; j <= index - having_filters_stmt.length; j++) {
-                having_filters_stmt.push([]);
+            if (index >= having_filters_stmt_1.length) {
+              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+                having_filters_stmt_1.push([]);
               }
             }
-            having_filters_stmt[index].push(stmt);
+            having_filters_stmt_1[index].push(stmt);
           }
         }
         break;
@@ -822,12 +1006,12 @@ export function query(
             }
           }
           if (stmt !== undefined) {
-            if (index >= having_filters_stmt.length) {
-              for (let j = 0; j <= index - having_filters_stmt.length; j++) {
-                having_filters_stmt.push([]);
+            if (index >= having_filters_stmt_1.length) {
+              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+                having_filters_stmt_1.push([]);
               }
             }
-            having_filters_stmt[index].push(stmt);
+            having_filters_stmt_1[index].push(stmt);
           }
         }
         break;
@@ -857,12 +1041,12 @@ export function query(
             }
           }
           if (stmt !== undefined) {
-            if (index >= having_filters_stmt.length) {
-              for (let j = 0; j <= index - having_filters_stmt.length; j++) {
-                having_filters_stmt.push([]);
+            if (index >= having_filters_stmt_1.length) {
+              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+                having_filters_stmt_1.push([]);
               }
             }
-            having_filters_stmt[index].push(stmt);
+            having_filters_stmt_1[index].push(stmt);
           }
         }
         break;
@@ -931,12 +1115,12 @@ export function query(
             }
           }
           if (stmt !== undefined) {
-            if (index >= having_filters_stmt.length) {
-              for (let j = 0; j <= index - having_filters_stmt.length; j++) {
-                having_filters_stmt.push([]);
+            if (index >= having_filters_stmt_1.length) {
+              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+                having_filters_stmt_1.push([]);
               }
             }
-            having_filters_stmt[index].push(stmt);
+            having_filters_stmt_1[index].push(stmt);
           }
         }
         break;
@@ -968,12 +1152,12 @@ export function query(
             }
           }
           if (stmt !== undefined) {
-            if (index >= having_filters_stmt.length) {
-              for (let j = 0; j <= index - having_filters_stmt.length; j++) {
-                having_filters_stmt.push([]);
+            if (index >= having_filters_stmt_1.length) {
+              for (let j = 0; j <= index - having_filters_stmt_1.length; j++) {
+                having_filters_stmt_1.push([]);
               }
             }
-            having_filters_stmt[index].push(stmt);
+            having_filters_stmt_1[index].push(stmt);
           }
         }
         break;
@@ -985,7 +1169,359 @@ export function query(
     }
   }
   apply(
-    `${having_filters_stmt.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    `${having_filters_stmt_1.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    (it) => {
+      if (it !== "") {
+        append_to_having_stmt(it);
+      }
+    }
+  );
+
+  const having_filters_stmt_2: Array<Array<string>> = [];
+  for (let path_filter of path_filters[1]) {
+    const path: ReadonlyArray<string> = path_filter[0];
+    const path_ref: string = path.join(".");
+    const field_struct_name = path_filter[1];
+    switch (field_struct_name) {
+      case "str":
+      case "lstr":
+      case "clob": {
+        for (let [index, filter] of path_filter[3].entries()) {
+          let stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<":
+              case "like":
+              case "glob": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (typeof value === "object") {
+                    return `"${path_ref}" ${op} "${value.join(".")}"`;
+                  } else {
+                    return `"${path_ref}" ${op} '${value}'`;
+                  }
+                });
+                break;
+              }
+              case "between":
+              case "not_between": {
+                const start_value = filter[1][0];
+                const end_value = filter[1][1];
+                stmt = apply(undefined, () => {
+                  if (typeof start_value === "object") {
+                    if (typeof end_value === "object") {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } "${start_value.join(".")}" AND "${end_value.join(
+                        "."
+                      )}"`;
+                    } else {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } "${start_value.join(".")}" AND '${end_value}'`;
+                    }
+                  } else {
+                    if (typeof end_value === "object") {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } '${start_value}' AND "${end_value.join(".")}"`;
+                    } else {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } '${start_value}' AND '${end_value}'`;
+                    }
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          if (stmt !== undefined) {
+            if (index >= having_filters_stmt_2.length) {
+              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+                having_filters_stmt_2.push([]);
+              }
+            }
+            having_filters_stmt_2[index].push(stmt);
+          }
+        }
+        break;
+      }
+      case "i32":
+      case "u32":
+      case "i64":
+      case "u64":
+      case "idouble":
+      case "udouble":
+      case "idecimal":
+      case "udecimal": {
+        const integer_fields = ["i32", "u32", "i64", "u64"];
+        for (let [index, filter] of path_filter[3].entries()) {
+          let stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (is_decimal(value)) {
+                    return `"${path_ref}" ${op} ${apply(undefined, () => {
+                      if (integer_fields.includes(field_struct_name)) {
+                        return value.truncated().toString();
+                      } else {
+                        return value.toString();
+                      }
+                    })}`;
+                  } else {
+                    return `"${path_ref}" ${op} "${value.join(".")}")`;
+                  }
+                });
+                break;
+              }
+              case "between":
+              case "not_between": {
+                const start_value = filter[1][0];
+                const end_value = filter[1][1];
+                stmt = apply(undefined, () => {
+                  if (is_decimal(start_value)) {
+                    if (is_decimal(end_value)) {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } ${apply(undefined, () => {
+                        if (integer_fields.includes(field_struct_name)) {
+                          return start_value.truncated().toString();
+                        } else {
+                          return start_value.toString();
+                        }
+                      })} AND ${apply(undefined, () => {
+                        if (integer_fields.includes(field_struct_name)) {
+                          return end_value.truncated().toString();
+                        } else {
+                          return end_value.toString();
+                        }
+                      })}`;
+                    } else {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } ${apply(undefined, () => {
+                        if (integer_fields.includes(field_struct_name)) {
+                          return start_value.truncated().toString();
+                        } else {
+                          return start_value.toString();
+                        }
+                      })} AND "${end_value.join(".")}"`;
+                    }
+                  } else {
+                    if (is_decimal(end_value)) {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } "${start_value.join(".")}" AND ${apply(
+                        undefined,
+                        () => {
+                          if (integer_fields.includes(field_struct_name)) {
+                            return end_value.truncated().toString();
+                          } else {
+                            return end_value.toString();
+                          }
+                        }
+                      )}`;
+                    } else {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } "${start_value.join(".")}" AND "${end_value.join(
+                        "."
+                      )}"`;
+                    }
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          if (stmt !== undefined) {
+            if (index >= having_filters_stmt_2.length) {
+              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+                having_filters_stmt_2.push([]);
+              }
+            }
+            having_filters_stmt_2[index].push(stmt);
+          }
+        }
+        break;
+      }
+      case "bool": {
+        for (let [index, filter] of path_filter[3].entries()) {
+          let stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (typeof value === "object") {
+                    return `"${path_ref}" ${op} "${value.join(".")}"`;
+                  } else {
+                    return `"${path_ref}" ${op} ${value ? 1 : 0}`;
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          if (stmt !== undefined) {
+            if (index >= having_filters_stmt_2.length) {
+              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+                having_filters_stmt_2.push([]);
+              }
+            }
+            having_filters_stmt_2[index].push(stmt);
+          }
+        }
+        break;
+      }
+      case "date":
+      case "time":
+      case "timestamp": {
+        for (let [index, filter] of path_filter[3].entries()) {
+          let stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (value instanceof Date) {
+                    return `"${path_ref}" ${op} ${value.getTime()}`;
+                  } else {
+                    return `"${path_ref}" ${op} "${value.join(".")}"`;
+                  }
+                });
+                break;
+              }
+              case "between":
+              case "not_between": {
+                const start_value = filter[1][0];
+                const end_value = filter[1][1];
+                stmt = apply(undefined, () => {
+                  if (start_value instanceof Date) {
+                    if (end_value instanceof Date) {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } ${start_value.toString()} AND ${end_value.toString()}`;
+                    } else {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } ${start_value.toString()} AND "${end_value.join(".")}"`;
+                    }
+                  } else {
+                    if (end_value instanceof Date) {
+                      return `"${path_ref}" ${
+                        op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                      } "${start_value.join(".")}" AND ${end_value.toString()}`;
+                    } else {
+                      if (is_decimal(end_value)) {
+                        return `"${path_ref}" ${
+                          op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                        } "${start_value.join(".")}" AND "${end_value.join(
+                          "."
+                        )}"`;
+                      }
+                    }
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          if (stmt !== undefined) {
+            if (index >= having_filters_stmt_2.length) {
+              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+                having_filters_stmt_2.push([]);
+              }
+            }
+            having_filters_stmt_2[index].push(stmt);
+          }
+        }
+        break;
+      }
+      case "other": {
+        for (let [index, filter] of path_filter[3].entries()) {
+          let stmt: string | undefined = undefined;
+          if (filter !== undefined) {
+            const op = filter[0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                const value = filter[1];
+                stmt = apply(undefined, () => {
+                  if (is_decimal(value)) {
+                    return `"${path_ref}" ${op} ${value
+                      .truncated()
+                      .toString()}`;
+                  } else {
+                    return `"${path_ref}" ${op} "${value.join(".")}"`;
+                  }
+                });
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          if (stmt !== undefined) {
+            if (index >= having_filters_stmt_2.length) {
+              for (let j = 0; j <= index - having_filters_stmt_2.length; j++) {
+                having_filters_stmt_2.push([]);
+              }
+            }
+            having_filters_stmt_2[index].push(stmt);
+          }
+        }
+        break;
+      }
+      default: {
+        const _exhaustiveCheck: never = field_struct_name;
+        return _exhaustiveCheck;
+      }
+    }
+  }
+  apply(
+    `${having_filters_stmt_2.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
     (it) => {
       if (it !== "") {
         append_to_having_stmt(it);
@@ -1006,7 +1542,7 @@ export function query(
     });
   };
   apply(
-    path_filters
+    [...path_filters[0], ...path_filters[1]]
       .map((path_filter) => ({
         path: path_filter[0],
         type: path_filter[1],
@@ -1600,7 +2136,7 @@ export async function get_variables(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
-  filters: ReadonlyArray<Filter>,
+  filters: [Filter, ReadonlyArray<Filter>],
   limit_offset: [Decimal, Decimal] | undefined
 ): Promise<Result<Array<Variable>>> {
   const variable_filters = get_variable_filters(active, level, filters);
@@ -1610,12 +2146,15 @@ export async function get_variables(
     const result_set = await query(
       struct.name,
       variable_filters,
-      path_filters.map((x) => x[1]),
+      [path_filters[0].map((x) => x[1]), path_filters[1].map((x) => x[1])],
       limit_offset
     );
     for (let result of result_set.rows._array) {
       const paths: Array<Path> = [];
-      for (let [label, path_filter] of path_filters) {
+      for (let [label, path_filter] of [
+        ...path_filters[0],
+        ...path_filters[1],
+      ]) {
         const path: ReadonlyArray<string> = path_filter[0];
         if (path.length !== 0) {
           const init: ReadonlyArray<string> = path.slice(0, path.length - 1);
@@ -1786,6 +2325,7 @@ export async function get_variables(
     }
     return new Ok(variables);
   } catch (err) {
+    console.log("SOMOMOMOMOMOEETTHHIINNNGG", err);
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
 }
@@ -1808,6 +2348,7 @@ export async function get_variable(
           updated_at: [false, undefined],
           filter_paths: HashSet.of<FilterPath>(),
         },
+        [],
       ],
       [new Decimal(1), new Decimal(0)]
     );
@@ -2045,53 +2586,97 @@ export type Filter = {
 function get_variable_filters(
   active: boolean,
   level: Decimal | undefined,
-  filters: ReadonlyArray<Filter>
+  filters: [Filter, ReadonlyArray<Filter>]
 ): {
   active: boolean;
   level: Decimal | undefined;
-  id: ReadonlyArray<
-    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-    | ["between" | "not_between", [Decimal, Decimal]]
-    | undefined
-  >;
-  created_at: ReadonlyArray<
-    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-    | ["between" | "not_between", [Date, Date]]
-    | undefined
-  >;
-  updated_at: ReadonlyArray<
-    | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-    | ["between" | "not_between", [Date, Date]]
-    | undefined
-  >;
+  id: [
+    (
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+      | ["between" | "not_between", [Decimal, Decimal]]
+      | undefined
+    ),
+    ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+      | ["between" | "not_between", [Decimal, Decimal]]
+      | undefined
+    >
+  ];
+  created_at: [
+    (
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    ),
+    ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    >
+  ];
+  updated_at: [
+    (
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    ),
+    ReadonlyArray<
+      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+      | ["between" | "not_between", [Date, Date]]
+      | undefined
+    >
+  ];
 } {
   return {
     active: active,
     level: level,
-    id: filters.map((x) => {
-      if (x.id[0]) {
-        return x.id[1];
-      }
-      return undefined;
-    }),
-    created_at: filters.map((x) => {
-      if (x.created_at[0]) {
-        return x.created_at[1];
-      }
-      return undefined;
-    }),
-    updated_at: filters.map((x) => {
-      if (x.updated_at[0]) {
-        return x.updated_at[1];
-      }
-      return undefined;
-    }),
+    id: [
+      apply(filters[0], (x) => {
+        if (x.id[0]) {
+          return x.id[1];
+        }
+        return undefined;
+      }),
+      filters[1].map((x) => {
+        if (x.id[0]) {
+          return x.id[1];
+        }
+        return undefined;
+      }),
+    ],
+    created_at: [
+      apply(filters[0], (x) => {
+        if (x.created_at[0]) {
+          return x.created_at[1];
+        }
+        return undefined;
+      }),
+      filters[1].map((x) => {
+        if (x.created_at[0]) {
+          return x.created_at[1];
+        }
+        return undefined;
+      }),
+    ],
+    updated_at: [
+      apply(filters[0], (x) => {
+        if (x.updated_at[0]) {
+          return x.updated_at[1];
+        }
+        return undefined;
+      }),
+      filters[1].map((x) => {
+        if (x.updated_at[0]) {
+          return x.updated_at[1];
+        }
+        return undefined;
+      }),
+    ],
   };
 }
 
-function get_path_filters(filters: ReadonlyArray<Filter>) {
+function Q(filters: ReadonlyArray<Filter>): Array<[string, PathFilter]> {
   const get_flattened_path = (x: PathString) => [...x[0], x[1]];
-  let path_filters: Array<[string, PathFilter]> = [];
   const used_filter_paths: HashSet<FilterPath> = apply(
     HashSet.of<FilterPath>(),
     (it) => {
@@ -2105,6 +2690,7 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
       return it;
     }
   );
+  let path_filters: Array<[string, PathFilter]> = [];
   for (let filter_path of used_filter_paths) {
     const field_struct_name = filter_path.value[0];
     switch (field_struct_name) {
@@ -2664,6 +3250,12 @@ function get_path_filters(filters: ReadonlyArray<Filter>) {
     }
   }
   return path_filters;
+}
+
+function get_path_filters(
+  filters: [Filter, ReadonlyArray<Filter>]
+): [ReadonlyArray<[string, PathFilter]>, ReadonlyArray<[string, PathFilter]>] {
+  return [Q([filters[0]]), Q(filters[1])];
 }
 
 ///////////////////////////////////

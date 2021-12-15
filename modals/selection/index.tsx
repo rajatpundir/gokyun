@@ -8,7 +8,7 @@ import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
-import { ScrollView, Switch } from "react-native";
+import { Pressable, ScrollView, Switch } from "react-native";
 import { get_array_item, unwrap } from "../../main/utils/prelude";
 import { FilterComponent } from "./filter";
 
@@ -16,7 +16,7 @@ type State = {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
-  filters: ReadonlyArray<Filter>;
+  filters: [Filter, ReadonlyArray<Filter>];
   limit_offset: [Decimal, Decimal] | undefined;
   variables: Array<Variable>;
 };
@@ -74,7 +74,7 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "filters": {
-      const result = get_array_item(state.filters, action[1]);
+      const result = get_array_item(state.filters[1], action[1]);
       if (unwrap(result)) {
         const filter = result.value;
         switch (action[2]) {
@@ -170,10 +170,18 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           />
           <Text>{state.level ? state.level.toString() : "0"}</Text>
         </View>
-        {state.filters.map((x, index) => {
+        <Pressable onPress={() => {}}>
+          <Text>Add Filter</Text>
+        </Pressable>
+        {state.filters[1].map((x, index) => {
           return (
             <View key={index}>
-              <FilterComponent filter={x} index={index} dispatch={dispatch} />
+              <FilterComponent
+                init_filter={state.filters[0]}
+                filter={x}
+                index={index}
+                dispatch={dispatch}
+              />
             </View>
           );
         })}
