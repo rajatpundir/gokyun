@@ -7,6 +7,7 @@ import { apply, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Action } from "./index";
+import { Picker } from "@react-native-picker/picker";
 
 function RenderFilterPath(props: {
   filter_path: FilterPath;
@@ -1201,8 +1202,22 @@ export function FilterComponent(props: {
   index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
+  const [selectedLanguage, setSelectedLanguage] = useState();
   return (
     <>
+      <Picker
+        style={{
+          backgroundColor: "black",
+          color: "white",
+        }}
+        prompt="whatever"
+        dropdownIconColor={"white"}
+        selectedValue={selectedLanguage}
+        onValueChange={(itemValue, itemIndex) => setSelectedLanguage(itemValue)}
+      >
+        <Picker.Item label="Java" value="java" />
+        <Picker.Item label="JavaScript" value="js" />
+      </Picker>
       <Pressable
         onPress={() =>
           // dispatch(["filters", 0, "id", [true, ["==", new Decimal(1)]]])
