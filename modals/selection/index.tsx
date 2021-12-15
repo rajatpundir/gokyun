@@ -8,9 +8,10 @@ import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
-import { Pressable, ScrollView, Switch } from "react-native";
+import { Pressable, ScrollView, SectionList, Switch } from "react-native";
 import { get_array_item, unwrap } from "../../main/utils/prelude";
 import { FilterComponent } from "./filter";
+import { HashSet } from "prelude-ts";
 
 type State = {
   struct: Struct;
@@ -26,6 +27,8 @@ export type Action =
   | ["active", boolean]
   | ["level", Decimal | undefined]
   | ["limit_offset", [Decimal, Decimal] | undefined]
+  | ["filter", "add"]
+  | ["filter", "remove", number]
   | [
       "filters",
       number,
@@ -71,6 +74,29 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "limit_offset": {
       state.limit_offset = action[1];
+      break;
+    }
+    case "filter": {
+      switch (action[1]) {
+        case "add": {
+          state.filters[1].push({
+            id: [false, undefined],
+            created_at: [false, undefined],
+            updated_at: [false, undefined],
+            filter_paths: HashSet.of(),
+          });
+          break;
+        }
+        case "remove": {
+          if (action[2] > -1 && action[2] < state.filters[1].length) {
+            state.filters[1] = [
+              ...state.filters[1].splice(0, action[2]),
+              ...state.filters[1].splice(action[2], state.filters[1].length),
+            ];
+          }
+          break;
+        }
+      }
       break;
     }
     case "filters": {
@@ -170,22 +196,34 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           />
           <Text>{state.level ? state.level.toString() : "0"}</Text>
         </View>
-        <Pressable onPress={() => {}}>
+        <Pressable
+          onPress={() => {
+            dispatch(["filter", "add"]);
+          }}
+        >
           <Text>Add Filter</Text>
         </Pressable>
-        {state.filters[1].map((x, index) => {
-          return (
-            <View key={index}>
-              <FilterComponent
-                init_filter={state.filters[0]}
-                filter={x}
-                index={index}
-                dispatch={dispatch}
-              />
-            </View>
-          );
-        })}
       </ScrollView>
+      <SectionList
+        sections={state.filters[1].map((x, index) => ({
+          index: index,
+          data: [x],
+        }))}
+        renderSectionHeader={({ section: { index } }) => {
+          return <Text>Filter {index}</Text>;
+        }}
+        renderItem={(list_item) => {
+          return (
+            <FilterComponent
+              key={list_item.index}
+              init_filter={state.filters[0]}
+              filter={list_item.item}
+              index={list_item.index}
+              dispatch={dispatch}
+            />
+          );
+        }}
+      />
       <FlatList
         data={state.variables}
         renderItem={(list_item) => (

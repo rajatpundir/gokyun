@@ -7,8 +7,6 @@ import { apply, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Action } from "./index";
-import { Select } from "native-base";
-import { FlatList } from "react-native-gesture-handler";
 
 function RenderFilterPath(props: {
   filter_path: FilterPath;
@@ -1206,24 +1204,10 @@ export function FilterComponent(props: {
 }): JSX.Element {
   //   let [service, setService] = React.useState("");
   return (
-    <>
-      {/* <Select
-        placeholder="Choose Service"
-        color={"white"}
-        mt={1}
-        // _selectedItem={{
-        //   bg: "teal.600",
-        //   endIcon: <CheckIcon size="5" />,
-        // }}
-        selectedValue={service}
-        onValueChange={(itemValue) => setService(itemValue)}
-      >
-        <Select.Item label="UX Research" value="ux" />
-        <Select.Item label="Web Development" value="web" />
-        <Select.Item label="Cross Platform Development" value="cross" />
-        <Select.Item label="UI Designing" value="ui" />
-        <Select.Item label="Backend Development" value="backend" />
-      </Select> */}
+    <View>
+      <Pressable onPress={() => {}}>
+        <Text>Add Field</Text>
+      </Pressable>
       <Pressable
         onPress={() =>
           props.dispatch([
@@ -1236,15 +1220,20 @@ export function FilterComponent(props: {
       >
         <Text>ID</Text>
       </Pressable>
-      <FlatList
-        data={[]}
-        renderItem={(list_item) => {
-          return <></>;
-        }}
-      ></FlatList>
       <Pressable
         onPress={() =>
-          // dispatch(["filters", 0, "id", [true, ["==", new Decimal(1)]]])
+          props.dispatch([
+            "filters",
+            0,
+            "created_at",
+            [true, ["between", [new Date(0), new Date(0)]]],
+          ])
+        }
+      >
+        <Text>Created At</Text>
+      </Pressable>
+      <Pressable
+        onPress={() =>
           props.dispatch([
             "filters",
             0,
@@ -1253,7 +1242,7 @@ export function FilterComponent(props: {
           ])
         }
       >
-        <Text>Add Field</Text>
+        <Text>Updated At</Text>
       </Pressable>
       {apply(undefined, () => {
         const [active, value] = props.filter.id;
@@ -1986,6 +1975,6 @@ export function FilterComponent(props: {
           </View>
         );
       })}
-    </>
+    </View>
   );
 }
