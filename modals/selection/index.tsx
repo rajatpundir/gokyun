@@ -91,7 +91,7 @@ export function reducer(state: Draft<State>, action: Action) {
           if (action[2] > -1 && action[2] < state.filters[1].length) {
             state.filters[1] = [
               ...state.filters[1].splice(0, action[2]),
-              ...state.filters[1].splice(action[2], state.filters[1].length),
+              ...state.filters[1].splice(action[2] + 1),
             ];
           }
           break;

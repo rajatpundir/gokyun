@@ -1205,9 +1205,14 @@ export function FilterComponent(props: {
   //   let [service, setService] = React.useState("");
   return (
     <View>
-      <Pressable onPress={() => {}}>
-        <Text>Add Field</Text>
+      <Pressable
+        onPress={() => props.dispatch(["filter", "remove", props.index])}
+      >
+        <Text>Remove Filter</Text>
       </Pressable>
+      {/* <Pressable onPress={() => {}}>
+        <Text>Add Field</Text>
+      </Pressable> */}
       <Pressable
         onPress={() =>
           props.dispatch([
