@@ -89,7 +89,6 @@ export function get_array_item<T>(
   array: ReadonlyArray<T>,
   index: number | Decimal
 ): Option<T> {
-  console.log("$$$$", index);
   return apply(
     apply(undefined, () => {
       if (is_decimal(index)) {
@@ -99,7 +98,6 @@ export function get_array_item<T>(
       }
     }),
     (it) => {
-      console.log("$$$$", it);
       if (it < array.length) {
         return new Ok(array[it]);
       }

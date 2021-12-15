@@ -8,7 +8,7 @@ import {
   State,
   Action,
   reducer,
-  get_labeled_path_filters,
+  get_filter_paths,
   get_creation_paths,
   get_writeable_paths,
   run_triggers,
@@ -148,11 +148,11 @@ export default function Component(
           ]);
         } else {
           const result = await get_variable(
-            undefined,
             struct.value,
-            state.id as Decimal,
             true,
-            get_labeled_path_filters(struct.value, state)
+            undefined,
+            state.id as Decimal,
+            get_filter_paths(struct.value, state)
           );
           if (unwrap(result)) {
             dispatch([
@@ -185,11 +185,11 @@ export default function Component(
           ]);
         } else {
           const result = await get_variable(
-            undefined,
             struct2.value,
-            state2.id as Decimal,
             true,
-            get_labeled_path_filters(struct2.value, state2)
+            undefined,
+            state2.id as Decimal,
+            get_filter_paths(struct2.value, state2)
           );
           if (unwrap(result)) {
             dispatch2([

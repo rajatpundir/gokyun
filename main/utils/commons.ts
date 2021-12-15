@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
 import React from "react";
-import { PathFilter } from "./db";
+import { FilterPath, PathFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import {
   LispExpression,
@@ -15,6 +15,7 @@ import {
 } from "./lisp";
 import { get_permissions, PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result, unwrap, Option } from "./prelude";
+import { get_struct } from "./schema";
 import {
   Path,
   Variable,
@@ -397,10 +398,10 @@ export function get_writeable_paths(
   return mark_trigger_dependencies(struct, writeable_paths, state);
 }
 
-export function get_labeled_path_filters(
+export function get_filter_paths(
   struct: Struct,
   state: State
-): Array<[string, PathFilter]> {
+): HashSet<FilterPath> {
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,
     state.user_paths as PathString[],
@@ -410,7 +411,7 @@ export function get_labeled_path_filters(
     permissions,
     state.labels
   );
-  const path_filters: Array<[string, PathFilter]> = [];
+  let filter_paths: HashSet<FilterPath> = HashSet.of();
   for (let permission of labeled_permissions) {
     const path = apply(
       permission.path[0].map((x) => x[0]),
@@ -419,6 +420,10 @@ export function get_labeled_path_filters(
         return it;
       }
     );
+    const path_string: PathString = [
+      permission.path[0].map((x) => x[0]),
+      permission.path[1][0],
+    ];
     const field: StrongEnum = permission.path[1][1];
     switch (field.type) {
       case "str":
@@ -436,17 +441,28 @@ export function get_labeled_path_filters(
       case "date":
       case "time":
       case "timestamp": {
-        path_filters.push([
-          permission.label,
-          [path, field.type, undefined, []],
-        ]);
+        filter_paths = filter_paths.add(
+          new FilterPath(
+            permission.label,
+            path_string,
+            [field.type, undefined],
+            undefined
+          )
+        );
         break;
       }
       case "other": {
-        path_filters.push([
-          permission.label,
-          [path, field.type, undefined, [], field.other],
-        ]);
+        const other_struct = get_struct(field.other);
+        if (unwrap(other_struct)) {
+          filter_paths = filter_paths.add(
+            new FilterPath(
+              permission.label,
+              path_string,
+              [field.type, undefined, other_struct.value],
+              undefined
+            )
+          );
+        }
         break;
       }
       default: {
@@ -455,7 +471,7 @@ export function get_labeled_path_filters(
       }
     }
   }
-  return path_filters;
+  return filter_paths;
 }
 
 function add_symbol(

@@ -2363,7 +2363,8 @@ export async function get_variable(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
-  id: Decimal
+  id: Decimal,
+  filter_paths: HashSet<FilterPath>
 ): Promise<Result<Variable>> {
   try {
     const result = await get_variables(
@@ -2375,7 +2376,7 @@ export async function get_variable(
           id: [true, ["==", id]],
           created_at: [false, undefined],
           updated_at: [false, undefined],
-          filter_paths: HashSet.of<FilterPath>(),
+          filter_paths: filter_paths,
         },
         [],
       ],
@@ -2704,7 +2705,9 @@ function get_variable_filters(
   };
 }
 
-function Q(filters: ReadonlyArray<Filter>): Array<[string, PathFilter]> {
+function transform_filters(
+  filters: ReadonlyArray<Filter>
+): Array<[string, PathFilter]> {
   const get_flattened_path = (x: PathString) => [...x[0], x[1]];
   const used_filter_paths: HashSet<FilterPath> = apply(
     HashSet.of<FilterPath>(),
@@ -3284,7 +3287,7 @@ function Q(filters: ReadonlyArray<Filter>): Array<[string, PathFilter]> {
 function get_path_filters(
   filters: [Filter, ReadonlyArray<Filter>]
 ): [ReadonlyArray<[string, PathFilter]>, ReadonlyArray<[string, PathFilter]>] {
-  return [Q([filters[0]]), Q(filters[1])];
+  return [transform_filters([filters[0]]), transform_filters(filters[1])];
 }
 
 ///////////////////////////////////
