@@ -660,9 +660,9 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
 function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [showPicker, setPicker] = useState(false);
   if (value.type === "date") {
     if (props.path.writeable && props.mode === "write") {
-      const [showPicker, setPicker] = useState(false);
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
@@ -724,9 +724,9 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
 function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [showPicker, setPicker] = useState(false);
   if (value.type === "time") {
     if (props.path.writeable && props.mode === "write") {
-      const [showPicker, setPicker] = useState(false);
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
@@ -790,11 +790,18 @@ function Timestamp_Field(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [showPicker, setPicker] = useState(false);
+  const [mode, setMode] = useState("date");
+  let [date, setDate] = useState(
+    apply(new Date(), (it) => {
+      if (value.type === "timestamp") {
+        return new Date(value.value.getTime());
+      }
+      return it;
+    })
+  );
   if (value.type === "timestamp") {
     if (props.path.writeable && props.mode === "write") {
-      const [showPicker, setPicker] = useState(false);
-      const [mode, setMode] = useState("date");
-      let [date, setDate] = useState(new Date(value.value.getTime()));
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
