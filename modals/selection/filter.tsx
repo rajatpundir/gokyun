@@ -18,25 +18,13 @@ function RenderFilterPath(props: {
       {apply(undefined, (it) => {
         if (props.filter_path.value[1] !== undefined) {
           return (
-            <Switch
-              value={props.filter_path.active}
-              onValueChange={(x) =>
-                props.dispatch([
-                  "filters",
-                  props.index,
-                  "replace",
-                  apply(props.filter_path, (it) => {
-                    it.active = x;
-                    return it;
-                  }),
-                ])
-              }
-            />
+            <>
+              <Text>{props.filter_path.label}</Text>
+            </>
           );
         }
         return <></>;
       })}
-      <Text>{props.filter_path.label}</Text>
       {apply(undefined, () => {
         if (props.filter_path.active) {
           const field_struct_name = props.filter_path.value[0];
@@ -115,10 +103,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "i32": {
               if (props.filter_path.value[1] !== undefined) {
@@ -196,10 +182,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "u32": {
               if (props.filter_path.value[1] !== undefined) {
@@ -277,10 +261,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "i64": {
               if (props.filter_path.value[1] !== undefined) {
@@ -358,10 +340,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "u64": {
               if (props.filter_path.value[1] !== undefined) {
@@ -439,10 +419,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "idouble":
             case "idecimal": {
@@ -521,10 +499,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "udouble":
             case "udecimal": {
@@ -603,10 +579,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "bool": {
               if (props.filter_path.value[1] !== undefined) {
@@ -630,10 +604,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "date": {
               if (props.filter_path.value[1] !== undefined) {
@@ -761,10 +733,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "time": {
               if (props.filter_path.value[1] !== undefined) {
@@ -890,10 +860,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             case "timestamp": {
               if (props.filter_path.value[1] !== undefined) {
@@ -1159,10 +1127,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
               break;
             }
             case "other": {
@@ -1193,10 +1159,8 @@ function RenderFilterPath(props: {
                     return _exhaustiveCheck;
                   }
                 }
-              } else {
-                // use a hook to help in selecting op and value
-                return <Text>Select Op</Text>;
               }
+              return <></>;
             }
             default: {
               const _exhaustiveCheck: never = field_struct_name;
