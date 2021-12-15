@@ -686,7 +686,10 @@ export function query(
     }
   }
   apply(
-    `${where_filters_stmt_1.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    `${where_filters_stmt_1
+      .map((x) => `(${x.join(" AND ")})`)
+      .filter((x) => x !== "()")
+      .join(" OR ")}`,
     (it) => {
       if (it !== "") {
         append_to_where_stmt(it);
@@ -696,7 +699,6 @@ export function query(
 
   const where_filters_stmt_2: Array<Array<string>> = [];
   for (let [index, filter] of variable_filters.id[1].entries()) {
-    console.log(index, filter);
     let stmt: string | undefined = undefined;
     if (filter !== undefined) {
       const op = filter[0];
@@ -815,11 +817,8 @@ export function query(
   }
   apply(
     `${where_filters_stmt_2
-      .filter((x) => {
-        console.log(x);
-        return true;
-      })
       .map((x) => `(${x.join(" AND ")})`)
+      .filter((x) => x !== "()")
       .join(" OR ")}`,
     (it) => {
       if (it !== "") {
@@ -1188,7 +1187,10 @@ export function query(
     }
   }
   apply(
-    `${having_filters_stmt_1.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    `${having_filters_stmt_1
+      .map((x) => `(${x.join(" AND ")})`)
+      .filter((x) => x !== "()")
+      .join(" OR ")}`,
     (it) => {
       if (it !== "") {
         append_to_having_stmt(it);
@@ -1545,7 +1547,10 @@ export function query(
     }
   }
   apply(
-    `${having_filters_stmt_2.map((x) => `(${x.join(" AND ")})`).join(" OR ")}`,
+    `${having_filters_stmt_2
+      .map((x) => `(${x.join(" AND ")})`)
+      .filter((x) => x !== "()")
+      .join(" OR ")}`,
     (it) => {
       if (it !== "") {
         append_to_having_stmt(it);
