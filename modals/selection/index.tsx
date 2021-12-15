@@ -8,7 +8,7 @@ import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
-import { Switch } from "react-native";
+import { ScrollView, Switch } from "react-native";
 import { get_array_item, unwrap } from "../../main/utils/prelude";
 import { FilterComponent } from "./filter";
 
@@ -152,7 +152,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   ]);
   return (
     <View style={{ flex: 1 }}>
-      <View>
+      <ScrollView>
         <View>
           <Text>Active</Text>
           <Switch
@@ -173,11 +173,11 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         {state.filters.map((x, index) => {
           return (
             <View key={index}>
-              <FilterComponent filter={x} dispatch={dispatch} />
+              <FilterComponent filter={x} index={index} dispatch={dispatch} />
             </View>
           );
         })}
-      </View>
+      </ScrollView>
       <FlatList
         data={state.variables}
         renderItem={(list_item) => (

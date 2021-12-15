@@ -8,10 +8,34 @@ import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Action } from "./index";
 
-function RenderFilterPath(props: { filter_path: FilterPath }): JSX.Element {
+function RenderFilterPath(props: {
+  filter_path: FilterPath;
+  index: number;
+  dispatch: React.Dispatch<Action>;
+}): JSX.Element {
   return (
     <>
-      <Switch value={props.filter_path.active} onValueChange={(x) => {}} />
+      {apply(undefined, (it) => {
+        if (props.filter_path.value[1] !== undefined) {
+          return (
+            <Switch
+              value={props.filter_path.active}
+              onValueChange={(x) =>
+                props.dispatch([
+                  "filters",
+                  props.index,
+                  "replace",
+                  apply(props.filter_path, (it) => {
+                    it.active = x;
+                    return it;
+                  }),
+                ])
+              }
+            />
+          );
+        }
+        return <></>;
+      })}
       <Text>{props.filter_path.label}</Text>
       {apply(undefined, () => {
         if (props.filter_path.active) {
@@ -1182,12 +1206,35 @@ function RenderFilterPath(props: { filter_path: FilterPath }): JSX.Element {
         }
         return null;
       })}
+      {apply(undefined, (it) => {
+        if (props.filter_path.value[1] !== undefined) {
+          return (
+            <Pressable
+              onPress={() =>
+                props.dispatch([
+                  "filters",
+                  props.index,
+                  "replace",
+                  apply(props.filter_path, (it) => {
+                    it.value[1] = undefined;
+                    return it;
+                  }),
+                ])
+              }
+            >
+              <Text>X</Text>
+            </Pressable>
+          );
+        }
+        return <></>;
+      })}
     </>
   );
 }
 
 export function FilterComponent(props: {
   filter: Filter;
+  index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
   return (
@@ -1925,9 +1972,17 @@ export function FilterComponent(props: {
         }
         return null;
       })}
-      {/* {filter.filter_paths.toArray().map((x, index) => {
-            return <View key={index}>{render_filter_path(x)}</View>;
-          })} */}
+      {props.filter.filter_paths.toArray().map((x, index) => {
+        return (
+          <View key={index}>
+            <RenderFilterPath
+              filter_path={x}
+              index={props.index}
+              dispatch={props.dispatch}
+            />
+          </View>
+        );
+      })}
     </>
   );
 }
