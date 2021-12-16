@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { Draft } from "immer";
 import { useEffect } from "react";
 import { FlatList } from "react-native-gesture-handler";
@@ -8,10 +8,14 @@ import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
-import { Pressable, ScrollView, SectionList, Switch } from "react-native";
+import { Button, Pressable, SectionList, Switch } from "react-native";
 import { get_array_item, unwrap } from "../../main/utils/prelude";
 import { FilterComponent } from "./filter";
 import { HashSet } from "prelude-ts";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 
 type State = {
   struct: Struct;
@@ -176,65 +180,99 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     state.filters,
     state.limit_offset,
   ]);
+
+  const snapPoints = useMemo(() => ["25%", "50%", "100%"], []);
+
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+
+  const z = "#164e63";
+
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView>
-        <View>
+    <BottomSheetModalProvider>
+      <View style={{ flex: 1 }}>
+        <Button
+          onPress={handlePresentModalPress}
+          title="Filter"
+          color="black"
+        />
+        <View style={{ backgroundColor: z }}>
           <Text>Active</Text>
           <Switch
             value={state.active}
             onValueChange={(x) => dispatch(["active", x])}
           />
         </View>
-        <View>
-          <Text>Level</Text>
-          <Switch
-            value={!state.level ? true : false}
-            onValueChange={(x) =>
-              dispatch(["level", x ? undefined : new Decimal(0)])
-            }
-          />
-          <Text>{state.level ? state.level.toString() : "0"}</Text>
-        </View>
-        <Pressable
-          onPress={() => {
-            dispatch(["filter", "add"]);
+        <FlatList
+          data={state.variables}
+          renderItem={(list_item) => (
+            <props.route.params.render_list_element
+              selected={props.route.params.selected}
+              variable={list_item.item}
+              disptach_values={props.route.params.disptach_values}
+            />
+          )}
+          keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+        />
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          snapPoints={snapPoints}
+          index={1}
+          backgroundStyle={{
+            backgroundColor: "#155e75",
           }}
         >
-          <Text>Add Filter</Text>
-        </Pressable>
-      </ScrollView>
-      <SectionList
-        sections={state.filters[1].map((x, index) => ({
-          index: index,
-          data: [x],
-        }))}
-        renderSectionHeader={({ section: { index } }) => {
-          return <Text>Filter {index}</Text>;
-        }}
-        renderItem={(list_item) => {
-          return (
-            <FilterComponent
-              key={list_item.section.index}
-              init_filter={state.filters[0]}
-              filter={list_item.item}
-              index={list_item.section.index}
-              dispatch={dispatch}
+          <View style={{ flex: 1, backgroundColor: z }}>
+            <View style={{ backgroundColor: z }}>
+              <View style={{ backgroundColor: z }}>
+                <Text>Level</Text>
+                <Switch
+                  value={!state.level ? true : false}
+                  onValueChange={(x) =>
+                    dispatch(["level", x ? undefined : new Decimal(0)])
+                  }
+                />
+                <Text>{state.level ? state.level.toString() : "0"}</Text>
+              </View>
+              <Pressable
+                onPress={() => {
+                  dispatch(["filter", "add"]);
+                }}
+              >
+                <Text>Add Filter</Text>
+              </Pressable>
+            </View>
+            <SectionList
+              sections={state.filters[1].map((x, index) => ({
+                index: index,
+                data: [x],
+              }))}
+              renderSectionHeader={({ section: { index } }) => {
+                return <Text>Filter {index}</Text>;
+              }}
+              renderItem={(list_item) => {
+                return (
+                  <FilterComponent
+                    key={list_item.section.index}
+                    init_filter={state.filters[0]}
+                    filter={list_item.item}
+                    index={list_item.section.index}
+                    dispatch={dispatch}
+                  />
+                );
+              }}
             />
-          );
-        }}
-      />
-      <FlatList
-        data={state.variables}
-        renderItem={(list_item) => (
-          <props.route.params.render_list_element
-            selected={props.route.params.selected}
-            variable={list_item.item}
-            disptach_values={props.route.params.disptach_values}
-          />
-        )}
-        keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
-      />
-    </View>
+          </View>
+        </BottomSheetModal>
+      </View>
+    </BottomSheetModalProvider>
   );
 }

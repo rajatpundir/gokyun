@@ -804,8 +804,6 @@ export function query(
     });
   };
 
-  console.log(path_filters[0], path_filters[1]);
-
   const having_filters_stmt_1: Array<Array<string>> = [];
   for (let path_filter of path_filters[0]) {
     const path: ReadonlyArray<string> = path_filter[0];
@@ -3255,9 +3253,6 @@ function transform_filters(
 function get_path_filters(
   filters: [Filter, ReadonlyArray<Filter>]
 ): [ReadonlyArray<[string, PathFilter]>, ReadonlyArray<[string, PathFilter]>] {
-  console.log("-----------------=-=-=---------------");
-  console.log(filters[0], filters[1]);
-  console.log("-----------------=-=-=---------------");
   return [transform_filters([filters[0]]), transform_filters(filters[1])];
 }
 

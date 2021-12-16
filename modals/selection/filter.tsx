@@ -8,7 +8,7 @@ import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Action } from "./index";
 
-function RenderFilterPath(props: {
+function FilterPathComponent(props: {
   filter_path: FilterPath;
   index: number;
   dispatch: React.Dispatch<Action>;
@@ -2827,7 +2827,7 @@ export function FilterComponent(props: {
       {props.filter.filter_paths.toArray().map((x, index) => {
         return (
           <View key={index}>
-            <RenderFilterPath
+            <FilterPathComponent
               filter_path={x}
               index={props.index}
               dispatch={props.dispatch}

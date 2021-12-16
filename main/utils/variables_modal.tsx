@@ -90,18 +90,18 @@ export function VariablesModal(
   };
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, init);
   useEffect(() => {
-    const update_variables = async () => {
-      const result = await get_variables(
-        props.route.params.struct,
-        state.offline_filters.variable_filters as any,
-        state.offline_filters.path_filters as any,
-        state.offline_filters.limit_offset as any
-      );
-      if (unwrap(result)) {
-        dispatch(["variables", HashSet.ofIterable(result.value)]);
-      }
-    };
-    update_variables();
+    // const update_variables = async () => {
+    //   const result = await get_variables(
+    //     props.route.params.struct,
+    //     state.offline_filters.variable_filters as any,
+    //     state.offline_filters.path_filters as any,
+    //     state.offline_filters.limit_offset as any
+    //   );
+    //   if (unwrap(result)) {
+    //     dispatch(["variables", HashSet.ofIterable(result.value)]);
+    //   }
+    // };
+    // update_variables();
   }, [state.offline_filters, state.online_filters]);
 
   // ref
