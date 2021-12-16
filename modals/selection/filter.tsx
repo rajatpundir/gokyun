@@ -13,6 +13,198 @@ function RenderFilterPath(props: {
   index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
+  const [showPicker1, setPicker1] = useState(false);
+  const [mode1, setMode1] = useState("date");
+  let [date1, setDate1] = useState(
+    apply(new Date(), (it) => {
+      if (props.filter_path.value[1] !== undefined) {
+        const field_struct_name = props.filter_path.value[0];
+        switch (field_struct_name) {
+          case "date": {
+            const op = props.filter_path.value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                const value = props.filter_path.value[1][1];
+                if (value instanceof Date) {
+                  return value;
+                }
+                break;
+              }
+              case "between":
+              case "not_between": {
+                const [value1, value2] = props.filter_path.value[1][1];
+                if (value1 instanceof Date) {
+                  return value1;
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            break;
+          }
+          case "time": {
+            const op = props.filter_path.value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                const value = props.filter_path.value[1][1];
+                if (value instanceof Date) {
+                  return value;
+                }
+                break;
+              }
+              case "between":
+              case "not_between": {
+                const [value1, value2] = props.filter_path.value[1][1];
+                if (value1 instanceof Date) {
+                  return value1;
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            break;
+          }
+          case "timestamp": {
+            const op = props.filter_path.value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                const value = props.filter_path.value[1][1];
+                if (value instanceof Date) {
+                  return value;
+                }
+                break;
+              }
+              case "between":
+              case "not_between": {
+                const [value1, value2] = props.filter_path.value[1][1];
+                if (value1 instanceof Date) {
+                  return value1;
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            break;
+          }
+        }
+      }
+      return it;
+    })
+  );
+  const [showPicker2, setPicker2] = useState(false);
+  const [mode2, setMode2] = useState("date");
+  let [date2, setDate2] = useState(
+    apply(new Date(), (it) => {
+      if (props.filter_path.value[1] !== undefined) {
+        const field_struct_name = props.filter_path.value[0];
+        switch (field_struct_name) {
+          case "date": {
+            const op = props.filter_path.value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                return it;
+              }
+              case "between":
+              case "not_between": {
+                const [value1, value2] = props.filter_path.value[1][1];
+                if (value2 instanceof Date) {
+                  return value2;
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            break;
+          }
+          case "time": {
+            const op = props.filter_path.value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                return it;
+              }
+              case "between":
+              case "not_between": {
+                const [value1, value2] = props.filter_path.value[1][1];
+                if (value2 instanceof Date) {
+                  return value2;
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            break;
+          }
+          case "timestamp": {
+            const op = props.filter_path.value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                return it;
+              }
+              case "between":
+              case "not_between": {
+                const [value1, value2] = props.filter_path.value[1][1];
+                if (value2 instanceof Date) {
+                  return value2;
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+            break;
+          }
+        }
+      }
+      return it;
+    })
+  );
   return (
     <>
       {props.filter_path.value[1] !== undefined ? (
@@ -1036,14 +1228,13 @@ function RenderFilterPath(props: {
                   case "<": {
                     const value = props.filter_path.value[1][1];
                     if (value instanceof Date) {
-                      const [showPicker, setPicker] = useState(false);
                       return (
                         <>
-                          <Pressable onPress={() => setPicker(true)}>
+                          <Pressable onPress={() => setPicker1(true)}>
                             <Text>{moment(value).format("Do MMM YYYY")}</Text>
                           </Pressable>
                           <View>
-                            {showPicker && (
+                            {showPicker1 && (
                               <DateTimePicker
                                 mode={"date"}
                                 value={value}
@@ -1051,7 +1242,7 @@ function RenderFilterPath(props: {
                                   _temp: any,
                                   date: Date | undefined
                                 ) => {
-                                  setPicker(Platform.OS === "ios");
+                                  setPicker1(Platform.OS === "ios");
                                   props.dispatch([
                                     "filters",
                                     props.index,
@@ -1085,16 +1276,15 @@ function RenderFilterPath(props: {
                       <>
                         {apply(undefined, () => {
                           if (value1 instanceof Date) {
-                            const [showPicker, setPicker] = useState(false);
                             return (
                               <>
-                                <Pressable onPress={() => setPicker(true)}>
+                                <Pressable onPress={() => setPicker1(true)}>
                                   <Text>
                                     {moment(value1).format("Do MMM YYYY")}
                                   </Text>
                                 </Pressable>
                                 <View>
-                                  {showPicker && (
+                                  {showPicker1 && (
                                     <DateTimePicker
                                       mode={"date"}
                                       value={value1}
@@ -1102,7 +1292,7 @@ function RenderFilterPath(props: {
                                         _temp: any,
                                         date: Date | undefined
                                       ) => {
-                                        setPicker(Platform.OS === "ios");
+                                        setPicker1(Platform.OS === "ios");
                                         props.dispatch([
                                           "filters",
                                           props.index,
@@ -1134,16 +1324,15 @@ function RenderFilterPath(props: {
                         })}
                         {apply(undefined, () => {
                           if (value2 instanceof Date) {
-                            const [showPicker, setPicker] = useState(false);
                             return (
                               <>
-                                <Pressable onPress={() => setPicker(true)}>
+                                <Pressable onPress={() => setPicker2(true)}>
                                   <Text>
                                     {moment(value2).format("Do MMM YYYY")}
                                   </Text>
                                 </Pressable>
                                 <View>
-                                  {showPicker && (
+                                  {showPicker2 && (
                                     <DateTimePicker
                                       mode={"date"}
                                       value={value2}
@@ -1151,7 +1340,7 @@ function RenderFilterPath(props: {
                                         _temp: any,
                                         date: Date | undefined
                                       ) => {
-                                        setPicker(Platform.OS === "ios");
+                                        setPicker2(Platform.OS === "ios");
                                         props.dispatch([
                                           "filters",
                                           props.index,
@@ -1204,14 +1393,13 @@ function RenderFilterPath(props: {
                   case "<": {
                     const value = props.filter_path.value[1][1];
                     if (value instanceof Date) {
-                      const [showPicker, setPicker] = useState(false);
                       return (
                         <>
-                          <Pressable onPress={() => setPicker(true)}>
+                          <Pressable onPress={() => setPicker1(true)}>
                             <Text>{moment(value).format("h:mm A")}</Text>
                           </Pressable>
                           <View>
-                            {showPicker && (
+                            {showPicker1 && (
                               <DateTimePicker
                                 mode={"time"}
                                 value={value}
@@ -1219,7 +1407,7 @@ function RenderFilterPath(props: {
                                   _temp: any,
                                   date: Date | undefined
                                 ) => {
-                                  setPicker(Platform.OS === "ios");
+                                  setPicker1(Platform.OS === "ios");
                                   props.dispatch([
                                     "filters",
                                     props.index,
@@ -1254,14 +1442,13 @@ function RenderFilterPath(props: {
                         {apply(undefined, () => {
                           const value = value1;
                           if (value instanceof Date) {
-                            const [showPicker, setPicker] = useState(false);
                             return (
                               <>
-                                <Pressable onPress={() => setPicker(true)}>
+                                <Pressable onPress={() => setPicker1(true)}>
                                   <Text>{moment(value).format("h:mm A")}</Text>
                                 </Pressable>
                                 <View>
-                                  {showPicker && (
+                                  {showPicker1 && (
                                     <DateTimePicker
                                       mode={"time"}
                                       value={value}
@@ -1269,7 +1456,7 @@ function RenderFilterPath(props: {
                                         _temp: any,
                                         date: Date | undefined
                                       ) => {
-                                        setPicker(Platform.OS === "ios");
+                                        setPicker1(Platform.OS === "ios");
                                         props.dispatch([
                                           "filters",
                                           props.index,
@@ -1302,14 +1489,13 @@ function RenderFilterPath(props: {
                         {apply(undefined, () => {
                           const value = value2;
                           if (value instanceof Date) {
-                            const [showPicker, setPicker] = useState(false);
                             return (
                               <>
-                                <Pressable onPress={() => setPicker(true)}>
+                                <Pressable onPress={() => setPicker2(true)}>
                                   <Text>{moment(value).format("h:mm A")}</Text>
                                 </Pressable>
                                 <View>
-                                  {showPicker && (
+                                  {showPicker2 && (
                                     <DateTimePicker
                                       mode={"time"}
                                       value={value}
@@ -1317,7 +1503,7 @@ function RenderFilterPath(props: {
                                         _temp: any,
                                         date: Date | undefined
                                       ) => {
-                                        setPicker(Platform.OS === "ios");
+                                        setPicker2(Platform.OS === "ios");
                                         props.dispatch([
                                           "filters",
                                           props.index,
@@ -1370,30 +1556,27 @@ function RenderFilterPath(props: {
                   case "<": {
                     const value = props.filter_path.value[1][1];
                     if (value instanceof Date) {
-                      const [showPicker, setPicker] = useState(false);
-                      const [mode, setMode] = useState("date");
-                      let [date, setDate] = useState(new Date(value.getTime()));
                       return (
                         <>
-                          <Pressable onPress={() => setPicker(true)}>
+                          <Pressable onPress={() => setPicker1(true)}>
                             <Text>
                               {moment(value).format("Do MMM YYYY, h:mm A")}
                             </Text>
                           </Pressable>
                           <View>
-                            {showPicker && (
+                            {showPicker1 && (
                               <DateTimePicker
-                                mode={mode as "date" | "time"}
+                                mode={mode1 as "date" | "time"}
                                 value={value}
                                 onChange={(
                                   _temp: any,
                                   selectedValue: Date | undefined
                                 ) => {
-                                  setPicker(Platform.OS === "ios");
+                                  setPicker1(Platform.OS === "ios");
                                   if (selectedValue !== undefined) {
-                                    if (mode === "date") {
-                                      setDate(
-                                        apply(date, (it) => {
+                                    if (mode1 === "date") {
+                                      setDate1(
+                                        apply(date1, (it) => {
                                           it.setFullYear(
                                             selectedValue.getFullYear()
                                           );
@@ -1402,11 +1585,11 @@ function RenderFilterPath(props: {
                                           return it;
                                         })
                                       );
-                                      setMode("time");
-                                      setPicker(Platform.OS !== "ios");
+                                      setMode1("time");
+                                      setPicker1(Platform.OS !== "ios");
                                     } else {
-                                      setDate(
-                                        apply(date, (it) => {
+                                      setDate1(
+                                        apply(date1, (it) => {
                                           it.setHours(selectedValue.getHours());
                                           it.setMinutes(
                                             selectedValue.getMinutes()
@@ -1427,16 +1610,16 @@ function RenderFilterPath(props: {
                                         apply(props.filter_path, (it) => {
                                           it.value = [
                                             field_struct_name,
-                                            [op, new Date(date.getTime())],
+                                            [op, new Date(date1.getTime())],
                                           ];
                                           return it;
                                         }),
                                       ]);
-                                      setMode("date");
+                                      setMode1("date");
                                     }
                                   } else {
-                                    setDate(new Date(value.getTime()));
-                                    setMode("date");
+                                    setDate1(new Date(value.getTime()));
+                                    setMode1("date");
                                   }
                                 }}
                               />
@@ -1460,14 +1643,9 @@ function RenderFilterPath(props: {
                         {apply(undefined, () => {
                           const value = value1;
                           if (value instanceof Date) {
-                            const [showPicker, setPicker] = useState(false);
-                            const [mode, setMode] = useState("date");
-                            let [date, setDate] = useState(
-                              new Date(value.getTime())
-                            );
                             return (
                               <>
-                                <Pressable onPress={() => setPicker(true)}>
+                                <Pressable onPress={() => setPicker1(true)}>
                                   <Text>
                                     {moment(value).format(
                                       "Do MMM YYYY, h:mm A"
@@ -1475,19 +1653,19 @@ function RenderFilterPath(props: {
                                   </Text>
                                 </Pressable>
                                 <View>
-                                  {showPicker && (
+                                  {showPicker1 && (
                                     <DateTimePicker
-                                      mode={mode as "date" | "time"}
+                                      mode={mode1 as "date" | "time"}
                                       value={value}
                                       onChange={(
                                         _temp: any,
                                         selectedValue: Date | undefined
                                       ) => {
-                                        setPicker(Platform.OS === "ios");
+                                        setPicker1(Platform.OS === "ios");
                                         if (selectedValue !== undefined) {
-                                          if (mode === "date") {
-                                            setDate(
-                                              apply(date, (it) => {
+                                          if (mode1 === "date") {
+                                            setDate1(
+                                              apply(date1, (it) => {
                                                 it.setFullYear(
                                                   selectedValue.getFullYear()
                                                 );
@@ -1500,11 +1678,11 @@ function RenderFilterPath(props: {
                                                 return it;
                                               })
                                             );
-                                            setMode("time");
-                                            setPicker(Platform.OS !== "ios");
+                                            setMode1("time");
+                                            setPicker1(Platform.OS !== "ios");
                                           } else {
-                                            setDate(
-                                              apply(date, (it) => {
+                                            setDate1(
+                                              apply(date1, (it) => {
                                                 it.setHours(
                                                   selectedValue.getHours()
                                                 );
@@ -1530,7 +1708,7 @@ function RenderFilterPath(props: {
                                                   [
                                                     op,
                                                     [
-                                                      new Date(date.getTime()),
+                                                      new Date(date1.getTime()),
                                                       value2,
                                                     ],
                                                   ],
@@ -1538,11 +1716,11 @@ function RenderFilterPath(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            setMode("date");
+                                            setMode1("date");
                                           }
                                         } else {
-                                          setDate(new Date(value.getTime()));
-                                          setMode("date");
+                                          setDate1(new Date(value.getTime()));
+                                          setMode1("date");
                                         }
                                       }}
                                     />
@@ -1561,14 +1739,9 @@ function RenderFilterPath(props: {
                         {apply(undefined, () => {
                           const value = value2;
                           if (value instanceof Date) {
-                            const [showPicker, setPicker] = useState(false);
-                            const [mode, setMode] = useState("date");
-                            let [date, setDate] = useState(
-                              new Date(value.getTime())
-                            );
                             return (
                               <>
-                                <Pressable onPress={() => setPicker(true)}>
+                                <Pressable onPress={() => setPicker2(true)}>
                                   <Text>
                                     {moment(value).format(
                                       "Do MMM YYYY, h:mm A"
@@ -1576,19 +1749,19 @@ function RenderFilterPath(props: {
                                   </Text>
                                 </Pressable>
                                 <View>
-                                  {showPicker && (
+                                  {showPicker2 && (
                                     <DateTimePicker
-                                      mode={mode as "date" | "time"}
+                                      mode={mode2 as "date" | "time"}
                                       value={value}
                                       onChange={(
                                         _temp: any,
                                         selectedValue: Date | undefined
                                       ) => {
-                                        setPicker(Platform.OS === "ios");
+                                        setPicker2(Platform.OS === "ios");
                                         if (selectedValue !== undefined) {
-                                          if (mode === "date") {
-                                            setDate(
-                                              apply(date, (it) => {
+                                          if (mode2 === "date") {
+                                            setDate2(
+                                              apply(date2, (it) => {
                                                 it.setFullYear(
                                                   selectedValue.getFullYear()
                                                 );
@@ -1601,11 +1774,11 @@ function RenderFilterPath(props: {
                                                 return it;
                                               })
                                             );
-                                            setMode("time");
-                                            setPicker(Platform.OS !== "ios");
+                                            setMode2("time");
+                                            setPicker2(Platform.OS !== "ios");
                                           } else {
-                                            setDate(
-                                              apply(date, (it) => {
+                                            setDate2(
+                                              apply(date2, (it) => {
                                                 it.setHours(
                                                   selectedValue.getHours()
                                                 );
@@ -1632,18 +1805,18 @@ function RenderFilterPath(props: {
                                                     op,
                                                     [
                                                       value1,
-                                                      new Date(date.getTime()),
+                                                      new Date(date2.getTime()),
                                                     ],
                                                   ],
                                                 ];
                                                 return it;
                                               }),
                                             ]);
-                                            setMode("date");
+                                            setMode2("date");
                                           }
                                         } else {
-                                          setDate(new Date(value.getTime()));
-                                          setMode("date");
+                                          setDate2(new Date(value.getTime()));
+                                          setMode2("date");
                                         }
                                       }}
                                     />
@@ -1669,7 +1842,6 @@ function RenderFilterPath(props: {
                 }
               }
               return <></>;
-              break;
             }
             case "other": {
               if (props.filter_path.value[1] !== undefined) {
@@ -1725,7 +1897,7 @@ function RenderFilterPath(props: {
         }
         return null;
       })}
-      {apply(undefined, (it) => {
+      {apply(undefined, () => {
         if (props.filter_path.value[1] !== undefined) {
           return (
             <Pressable
