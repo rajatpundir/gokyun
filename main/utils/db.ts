@@ -534,38 +534,6 @@ export function query(
     }
   );
 
-  apply(
-    path_filters[1]
-      .map((path_filter) => {
-        const path: ReadonlyArray<string> = path_filter[0];
-        let stmt = path
-          .slice(0, path.length - 1)
-          .map((field_name, i) => `v${i * 2 + 2}.field_name = '${path[i]}'`)
-          .join(" AND ");
-        const field_struct_name = apply(path_filter[1], (it) => {
-          if (path_filter[1] === "other") {
-            return path_filter[4];
-          }
-          return it;
-        });
-        if (stmt !== "") {
-          stmt += " AND ";
-        }
-        stmt += `v${(path.length - 1) * 2 + 2}.field_name = '${
-          path[path.length - 1]
-        }' AND v${
-          (path.length - 1) * 2 + 2
-        }.field_struct_name = '${field_struct_name}'`;
-        return `(${stmt})`;
-      })
-      .join(" OR "),
-    (it) => {
-      if (it !== "") {
-        append_to_where_stmt(it);
-      }
-    }
-  );
-
   const where_filters_stmt_1: Array<Array<string>> = [];
   for (let [index, filter] of [variable_filters.id[0]].entries()) {
     let stmt: string | undefined = undefined;
