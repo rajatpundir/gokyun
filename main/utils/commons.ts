@@ -442,11 +442,17 @@ export function get_filter_paths(
       case "time":
       case "timestamp": {
         filter_paths = filter_paths.add(
-          new FilterPath(
-            permission.label,
-            path_string,
-            [field.type, undefined],
-            undefined
+          apply(
+            new FilterPath(
+              permission.label,
+              path_string,
+              [field.type, undefined],
+              undefined
+            ),
+            (it) => {
+              it.active = true;
+              return it;
+            }
           )
         );
         break;
@@ -455,11 +461,17 @@ export function get_filter_paths(
         const other_struct = get_struct(field.other);
         if (unwrap(other_struct)) {
           filter_paths = filter_paths.add(
-            new FilterPath(
-              permission.label,
-              path_string,
-              [field.type, undefined, other_struct.value],
-              undefined
+            apply(
+              new FilterPath(
+                permission.label,
+                path_string,
+                [field.type, undefined, other_struct.value],
+                undefined
+              ),
+              (it) => {
+                it.active = true;
+                return it;
+              }
             )
           );
         }

@@ -15,18 +15,29 @@ function RenderFilterPath(props: {
 }): JSX.Element {
   return (
     <>
-      {apply(undefined, (it) => {
-        if (props.filter_path.value[1] !== undefined) {
-          return (
-            <>
-              <Text>{props.filter_path.label}</Text>
-            </>
-          );
-        }
-        return <></>;
-      })}
+      {props.filter_path.value[1] !== undefined ? (
+        <>
+          <Switch
+            value={props.filter_path.active}
+            onValueChange={(x) => {
+              props.dispatch([
+                "filters",
+                props.index,
+                "replace",
+                apply(props.filter_path, (it) => {
+                  it.active = x;
+                  return it;
+                }),
+              ]);
+            }}
+          />
+          <Text>{props.filter_path.label}</Text>
+        </>
+      ) : (
+        <></>
+      )}
       {apply(undefined, () => {
-        if (props.filter_path.active) {
+        if (props.filter_path.value[1] !== undefined) {
           const field_struct_name = props.filter_path.value[0];
           switch (field_struct_name) {
             case "str":
@@ -46,7 +57,20 @@ function RenderFilterPath(props: {
                     const value = props.filter_path.value[1][1];
                     if (typeof value === "string") {
                       return (
-                        <TextInput value={value} onChangeText={(x) => {}} />
+                        <TextInput
+                          value={value}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, x]];
+                                return it;
+                              }),
+                            ])
+                          }
+                        />
                       );
                     } else {
                       return (
@@ -67,7 +91,20 @@ function RenderFilterPath(props: {
                             return (
                               <TextInput
                                 value={value}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [x, value2]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -84,7 +121,20 @@ function RenderFilterPath(props: {
                             return (
                               <TextInput
                                 value={value}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [value1, x]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -122,7 +172,27 @@ function RenderFilterPath(props: {
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [
+                                    op,
+                                    Decimal.clamp(
+                                      new Decimal(x || "0").truncated(),
+                                      -2147483648,
+                                      2147483648
+                                    ),
+                                  ],
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -145,7 +215,30 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              -2147483648,
+                                              2147483648
+                                            ),
+                                            value2,
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -163,7 +256,30 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            value1,
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              -2147483648,
+                                              2147483648
+                                            ),
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -201,7 +317,27 @@ function RenderFilterPath(props: {
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [
+                                    op,
+                                    Decimal.clamp(
+                                      new Decimal(x || "0").truncated(),
+                                      0,
+                                      2147483648
+                                    ),
+                                  ],
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -224,7 +360,30 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              0,
+                                              2147483648
+                                            ),
+                                            value2,
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -242,7 +401,30 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            value1,
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              0,
+                                              2147483648
+                                            ),
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -280,7 +462,27 @@ function RenderFilterPath(props: {
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [
+                                    op,
+                                    Decimal.clamp(
+                                      new Decimal(x || "0").truncated(),
+                                      new Decimal("-9223372036854775807"),
+                                      new Decimal("9223372036854775807")
+                                    ),
+                                  ],
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -303,7 +505,32 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              new Decimal(
+                                                "-9223372036854775807"
+                                              ),
+                                              new Decimal("9223372036854775807")
+                                            ),
+                                            value2,
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -321,7 +548,32 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            value1,
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              new Decimal(
+                                                "-9223372036854775807"
+                                              ),
+                                              new Decimal("9223372036854775807")
+                                            ),
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -359,7 +611,27 @@ function RenderFilterPath(props: {
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [
+                                    op,
+                                    Decimal.clamp(
+                                      new Decimal(x || "0").truncated(),
+                                      0,
+                                      new Decimal("9223372036854775807")
+                                    ),
+                                  ],
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -382,7 +654,30 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              0,
+                                              new Decimal("9223372036854775807")
+                                            ),
+                                            value2,
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -400,7 +695,30 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [
+                                            value1,
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              0,
+                                              new Decimal("9223372036854775807")
+                                            ),
+                                          ],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -439,7 +757,20 @@ function RenderFilterPath(props: {
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [op, new Decimal(x || "0")],
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -462,7 +793,20 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [new Decimal(x || "0"), value2]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -480,7 +824,20 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [value1, new Decimal(x || "0")]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -519,7 +876,20 @@ function RenderFilterPath(props: {
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [op, new Decimal(x || "0").abs()],
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -542,7 +912,23 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [new Decimal(x || "0").abs(), value2],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -560,7 +946,23 @@ function RenderFilterPath(props: {
                               <TextInput
                                 value={value.toString()}
                                 keyboardType={"number-pad"}
-                                onChangeText={(x) => {}}
+                                onChangeText={(x) =>
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [
+                                          op,
+                                          [value1, new Decimal(x || "0").abs()],
+                                        ],
+                                      ];
+                                      return it;
+                                    }),
+                                  ])
+                                }
                               />
                             );
                           } else {
@@ -590,7 +992,22 @@ function RenderFilterPath(props: {
                   case "!=": {
                     const value = props.filter_path.value[1][1];
                     if (typeof value === "boolean") {
-                      return <Switch value={value} onValueChange={(x) => {}} />;
+                      return (
+                        <Switch
+                          value={value}
+                          onValueChange={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, x]];
+                                return it;
+                              }),
+                            ])
+                          }
+                        />
+                      );
                     } else {
                       return (
                         <Pressable onPress={() => {}}>
@@ -635,7 +1052,18 @@ function RenderFilterPath(props: {
                                   date: Date | undefined
                                 ) => {
                                   setPicker(Platform.OS === "ios");
-                                  // dispatch updated value
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, date || new Date()],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
                                 }}
                               />
                             )}
@@ -675,7 +1103,21 @@ function RenderFilterPath(props: {
                                         date: Date | undefined
                                       ) => {
                                         setPicker(Platform.OS === "ios");
-                                        // dispatch updated value
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [
+                                                op,
+                                                [date || new Date(), value2],
+                                              ],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
                                       }}
                                     />
                                   )}
@@ -710,7 +1152,21 @@ function RenderFilterPath(props: {
                                         date: Date | undefined
                                       ) => {
                                         setPicker(Platform.OS === "ios");
-                                        // dispatch updated value
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [
+                                                op,
+                                                [value1, date || new Date()],
+                                              ],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
                                       }}
                                     />
                                   )}
@@ -764,7 +1220,18 @@ function RenderFilterPath(props: {
                                   date: Date | undefined
                                 ) => {
                                   setPicker(Platform.OS === "ios");
-                                  // dispatch updated value
+                                  props.dispatch([
+                                    "filters",
+                                    props.index,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, date || new Date()],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
                                 }}
                               />
                             )}
@@ -803,7 +1270,21 @@ function RenderFilterPath(props: {
                                         date: Date | undefined
                                       ) => {
                                         setPicker(Platform.OS === "ios");
-                                        // dispatch updated value
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [
+                                                op,
+                                                [date || new Date(), value2],
+                                              ],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
                                       }}
                                     />
                                   )}
@@ -837,7 +1318,21 @@ function RenderFilterPath(props: {
                                         date: Date | undefined
                                       ) => {
                                         setPicker(Platform.OS === "ios");
-                                        // dispatch updated value
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [
+                                                op,
+                                                [value1, date || new Date()],
+                                              ],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
                                       }}
                                     />
                                   )}
@@ -925,7 +1420,18 @@ function RenderFilterPath(props: {
                                           return it;
                                         })
                                       );
-                                      // dispatch updated value
+                                      props.dispatch([
+                                        "filters",
+                                        props.index,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [op, new Date(date.getTime())],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
                                       setMode("date");
                                     }
                                   } else {
@@ -1014,7 +1520,24 @@ function RenderFilterPath(props: {
                                                 return it;
                                               })
                                             );
-                                            // dispatch updated value
+                                            props.dispatch([
+                                              "filters",
+                                              props.index,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      new Date(date.getTime()),
+                                                      value2,
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
                                             setMode("date");
                                           }
                                         } else {
@@ -1098,7 +1621,24 @@ function RenderFilterPath(props: {
                                                 return it;
                                               })
                                             );
-                                            // dispatch updated value
+                                            props.dispatch([
+                                              "filters",
+                                              props.index,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      value1,
+                                                      new Date(date.getTime()),
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
                                             setMode("date");
                                           }
                                         } else {
@@ -1137,13 +1677,28 @@ function RenderFilterPath(props: {
                 switch (op) {
                   case "==":
                   case "!=": {
+                    const other_struct = props.filter_path.value[2];
                     const value = props.filter_path.value[1][1];
                     if (is_decimal(value)) {
                       return (
                         <TextInput
                           value={value.toString()}
                           keyboardType={"number-pad"}
-                          onChangeText={(x) => {}}
+                          onChangeText={(x) =>
+                            props.dispatch([
+                              "filters",
+                              props.index,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [op, new Decimal(x || "0")],
+                                  other_struct,
+                                ];
+                                return it;
+                              }),
+                            ])
+                          }
                         />
                       );
                     } else {
@@ -1178,11 +1733,8 @@ function RenderFilterPath(props: {
                 props.dispatch([
                   "filters",
                   props.index,
-                  "replace",
-                  apply(props.filter_path, (it) => {
-                    it.value[1] = undefined;
-                    return it;
-                  }),
+                  "remove",
+                  props.filter_path,
                 ])
               }
             >
@@ -1202,7 +1754,6 @@ export function FilterComponent(props: {
   index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
-  //   let [service, setService] = React.useState("");
   return (
     <View>
       <Pressable
@@ -1210,45 +1761,162 @@ export function FilterComponent(props: {
       >
         <Text>Remove Filter</Text>
       </Pressable>
-      {/* <Pressable onPress={() => {}}>
-        <Text>Add Field</Text>
-      </Pressable> */}
-      <Pressable
-        onPress={() =>
-          props.dispatch([
-            "filters",
-            props.index,
-            "id",
-            [false, ["==", new Decimal(0)]],
-          ])
-        }
-      >
-        <Text>ID</Text>
-      </Pressable>
-      <Pressable
-        onPress={() =>
-          props.dispatch([
-            "filters",
-            props.index,
-            "created_at",
-            [false, ["between", [new Date(0), new Date(0)]]],
-          ])
-        }
-      >
-        <Text>Created At</Text>
-      </Pressable>
-      <Pressable
-        onPress={() =>
-          props.dispatch([
-            "filters",
-            props.index,
-            "updated_at",
-            [false, ["between", [new Date(0), new Date(0)]]],
-          ])
-        }
-      >
-        <Text>Updated At</Text>
-      </Pressable>
+      {props.filter.id[1] === undefined ? (
+        <Pressable
+          onPress={() =>
+            props.dispatch([
+              "filters",
+              props.index,
+              "id",
+              [false, ["==", new Decimal(0)]],
+            ])
+          }
+        >
+          <Text>ID</Text>
+        </Pressable>
+      ) : (
+        <></>
+      )}
+      {props.filter.created_at[1] === undefined ? (
+        <Pressable
+          onPress={() =>
+            props.dispatch([
+              "filters",
+              props.index,
+              "created_at",
+              [false, ["between", [new Date(0), new Date(0)]]],
+            ])
+          }
+        >
+          <Text>Created At</Text>
+        </Pressable>
+      ) : (
+        <></>
+      )}
+      {props.filter.updated_at[1] === undefined ? (
+        <Pressable
+          onPress={() =>
+            props.dispatch([
+              "filters",
+              props.index,
+              "updated_at",
+              [false, ["between", [new Date(0), new Date(0)]]],
+            ])
+          }
+        >
+          <Text>Updated At</Text>
+        </Pressable>
+      ) : (
+        <></>
+      )}
+      {props.init_filter.filter_paths
+        .toArray()
+        .filter(
+          (filter_path) =>
+            !props.filter.filter_paths.anyMatch(
+              (x) => x.equals(filter_path) && x.value[1] !== undefined
+            )
+        )
+        .map((filter_path, index) => {
+          return (
+            <Pressable
+              key={index}
+              onPress={() => {
+                const field_struct_type = filter_path.value[0];
+                switch (field_struct_type) {
+                  case "str":
+                  case "lstr":
+                  case "clob": {
+                    props.dispatch([
+                      "filters",
+                      props.index,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [field_struct_type, ["==", "opopoo"]],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "i32":
+                  case "u32":
+                  case "i64":
+                  case "u64":
+                  case "idouble":
+                  case "udouble":
+                  case "idecimal":
+                  case "udecimal": {
+                    props.dispatch([
+                      "filters",
+                      props.index,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [field_struct_type, ["==", new Decimal(0)]],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "bool": {
+                    props.dispatch([
+                      "filters",
+                      props.index,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [field_struct_type, ["==", true]],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "date":
+                  case "time":
+                  case "timestamp": {
+                    props.dispatch([
+                      "filters",
+                      props.index,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [field_struct_type, ["==", new Date(0)]],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "other": {
+                    const other_struct = filter_path.value[2];
+                    props.dispatch([
+                      "filters",
+                      props.index,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [
+                          field_struct_type,
+                          ["==", new Decimal(-1)],
+                          other_struct,
+                        ],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                }
+              }}
+            >
+              <Text>{filter_path.label}</Text>
+            </Pressable>
+          );
+        })}
       {apply(undefined, () => {
         const [active, value] = props.filter.id;
         if (value !== undefined) {

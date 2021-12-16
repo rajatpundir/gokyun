@@ -289,7 +289,7 @@ export function query(
   };
   apply(undefined, () => {
     let intermediate_paths = HashSet.of<Vector<string>>();
-    [...path_filters[0], ...path_filters[1]].map((path_filter) => {
+    path_filters[0].map((path_filter) => {
       const path: ReadonlyArray<string> = path_filter[0];
       const path_name_expression = get_path_name_expression(path.length);
       if (path.length > 1) {
@@ -409,9 +409,7 @@ export function query(
           if (
             !intermediate_paths.contains(temp_path) &&
             !HashSet.ofIterable(
-              [...path_filters[0], ...path_filters[1]].map((x) =>
-                Vector.ofIterable(x[0])
-              )
+              path_filters[0].map((x) => Vector.ofIterable(x[0]))
             ).contains(temp_path)
           ) {
             const temp_var_ref: number =
@@ -837,6 +835,8 @@ export function query(
       }
     });
   };
+
+  console.log(path_filters[0], path_filters[1]);
 
   const having_filters_stmt_1: Array<Array<string>> = [];
   for (let path_filter of path_filters[0]) {
@@ -3287,6 +3287,9 @@ function transform_filters(
 function get_path_filters(
   filters: [Filter, ReadonlyArray<Filter>]
 ): [ReadonlyArray<[string, PathFilter]>, ReadonlyArray<[string, PathFilter]>] {
+  console.log("-----------------=-=-=---------------");
+  console.log(filters[0], filters[1]);
+  console.log("-----------------=-=-=---------------");
   return [transform_filters([filters[0]]), transform_filters(filters[1])];
 }
 
