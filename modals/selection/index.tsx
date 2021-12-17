@@ -310,6 +310,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               >
                 <Text
                   style={{
+                    backgroundColor: "#71717a",
                     alignSelf: "flex-end",
                     paddingHorizontal: 8,
                     paddingVertical: 2,
