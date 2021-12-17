@@ -8,7 +8,7 @@ import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
-import { Button, Pressable, SectionList, Switch } from "react-native";
+import { Pressable } from "react-native";
 import { get_array_item, unwrap } from "../../main/utils/prelude";
 import { FilterComponent } from "./filter";
 import { HashSet } from "prelude-ts";
@@ -17,7 +17,8 @@ import {
   BottomSheetModalProvider,
   BottomSheetSectionList,
 } from "@gorhom/bottom-sheet";
-import { AntDesign, Octicons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import Checkbox from "expo-checkbox";
 
 type State = {
   struct: Struct;
@@ -205,8 +206,9 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               fontSize: 15,
               fontWeight: "bold",
               textAlign: "right",
-              padding: 5,
               paddingRight: 10,
+              paddingTop: 0,
+              paddingBottom: 5,
               borderColor: "white",
               // borderWidth: 1,
             }}
@@ -214,13 +216,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             Filters
           </Text>
         </Pressable>
-        <View>
-          <Text>Active</Text>
-          <Switch
-            value={state.active}
-            onValueChange={(x) => dispatch(["active", x])}
-          />
-        </View>
+
         <FlatList
           data={state.variables}
           renderItem={(list_item) => (
@@ -245,6 +241,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           <View
             style={{
               flex: 1,
+              flexDirection: "column",
               backgroundColor: "black",
               borderColor: "white",
               borderLeftWidth: 1,
@@ -264,22 +261,36 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
 
             <View
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingHorizontal: 10,
+                paddingHorizontal: 4,
+                paddingVertical: 4,
+              }}
+            >
+              <Text>Active</Text>
+              <Checkbox
+                value={state.active}
+                onValueChange={(x) => dispatch(["active", x])}
+                style={{
+                  alignSelf: "center",
+                  marginRight: 6,
+                }}
+              />
+            </View>
+
+            <View
+              style={{
+                paddingHorizontal: 4,
+                paddingVertical: 4,
               }}
             >
               <Text>Level</Text>
-              <Switch
+              <Checkbox
                 value={!state.level ? true : false}
                 onValueChange={(x) =>
                   dispatch(["level", x ? undefined : new Decimal(0)])
                 }
                 style={{
-                  padding: 0,
-                  margin: 0,
-                  alignSelf: "flex-end",
+                  alignSelf: "center",
+                  marginRight: 6,
                 }}
               />
             </View>
@@ -289,25 +300,14 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 dispatch(["filter", "add"]);
               }}
             >
-              {/* <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "200",
-                  textAlign: "right",
-                  padding: 10,
-                }}
-              >
-                Add Filter
-              </Text> */}
-              <AntDesign
-                name="plussquareo"
-                size={24}
-                color="white"
+              <Text
                 style={{
                   alignSelf: "flex-end",
                   padding: 3,
                 }}
-              />
+              >
+                Add Filter
+              </Text>
             </Pressable>
 
             <BottomSheetSectionList
@@ -315,18 +315,47 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 index: index,
                 data: [x],
               }))}
-              renderSectionHeader={({ section: { index } }) => {
+              renderSectionHeader={(list_item) => {
                 return (
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "200",
-                      textAlign: "center",
-                      padding: 5,
-                    }}
-                  >
-                    Filter {index + 1}
-                  </Text>
+                  <View>
+                    <View
+                      style={{
+                        justifyContent: "flex-start",
+                        paddingHorizontal: 0,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "200",
+                        }}
+                      >
+                        Filter {list_item.section.index + 1}{" "}
+                      </Text>
+                      <Pressable
+                        onPress={() =>
+                          dispatch([
+                            "filter",
+                            "remove",
+                            list_item.section.index,
+                          ])
+                        }
+                        style={{
+                          alignSelf: "center",
+                        }}
+                      >
+                        <AntDesign name="delete" size={16} color="white" />
+                      </Pressable>
+                    </View>
+                    <AntDesign
+                      name="plussquareo"
+                      size={24}
+                      color="white"
+                      style={{
+                        padding: 3,
+                      }}
+                    />
+                  </View>
                 );
               }}
               renderItem={(list_item) => {
