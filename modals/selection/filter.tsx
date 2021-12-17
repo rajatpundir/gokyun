@@ -1282,7 +1282,7 @@ function FilterPathComponent(props: {
                             <Pressable onPress={() => setPicker1(true)}>
                               <Text>{moment(value).format("Do MMM YYYY")}</Text>
                             </Pressable>
-                            <View>
+                            <>
                               {showPicker1 && (
                                 <DateTimePicker
                                   mode={"date"}
@@ -1307,7 +1307,7 @@ function FilterPathComponent(props: {
                                   }}
                                 />
                               )}
-                            </View>
+                            </>
                           </>
                         );
                       } else {
@@ -1332,7 +1332,7 @@ function FilterPathComponent(props: {
                                       {moment(value1).format("Do MMM YYYY")}
                                     </Text>
                                   </Pressable>
-                                  <View>
+                                  <>
                                     {showPicker1 && (
                                       <DateTimePicker
                                         mode={"date"}
@@ -1360,7 +1360,7 @@ function FilterPathComponent(props: {
                                         }}
                                       />
                                     )}
-                                  </View>
+                                  </>
                                 </>
                               );
                             } else {
@@ -1380,7 +1380,7 @@ function FilterPathComponent(props: {
                                       {moment(value2).format("Do MMM YYYY")}
                                     </Text>
                                   </Pressable>
-                                  <View>
+                                  <>
                                     {showPicker2 && (
                                       <DateTimePicker
                                         mode={"date"}
@@ -1408,7 +1408,7 @@ function FilterPathComponent(props: {
                                         }}
                                       />
                                     )}
-                                  </View>
+                                  </>
                                 </>
                               );
                             } else {
@@ -1447,7 +1447,7 @@ function FilterPathComponent(props: {
                             <Pressable onPress={() => setPicker1(true)}>
                               <Text>{moment(value).format("h:mm A")}</Text>
                             </Pressable>
-                            <View>
+                            <>
                               {showPicker1 && (
                                 <DateTimePicker
                                   mode={"time"}
@@ -1472,7 +1472,7 @@ function FilterPathComponent(props: {
                                   }}
                                 />
                               )}
-                            </View>
+                            </>
                           </>
                         );
                       } else {
@@ -1498,7 +1498,7 @@ function FilterPathComponent(props: {
                                       {moment(value).format("h:mm A")}
                                     </Text>
                                   </Pressable>
-                                  <View>
+                                  <>
                                     {showPicker1 && (
                                       <DateTimePicker
                                         mode={"time"}
@@ -1526,7 +1526,7 @@ function FilterPathComponent(props: {
                                         }}
                                       />
                                     )}
-                                  </View>
+                                  </>
                                 </>
                               );
                             } else {
@@ -1547,7 +1547,7 @@ function FilterPathComponent(props: {
                                       {moment(value).format("h:mm A")}
                                     </Text>
                                   </Pressable>
-                                  <View>
+                                  <>
                                     {showPicker2 && (
                                       <DateTimePicker
                                         mode={"time"}
@@ -1575,7 +1575,7 @@ function FilterPathComponent(props: {
                                         }}
                                       />
                                     )}
-                                  </View>
+                                  </>
                                 </>
                               );
                             } else {
@@ -1616,7 +1616,7 @@ function FilterPathComponent(props: {
                                 {moment(value).format("Do MMM YYYY, h:mm A")}
                               </Text>
                             </Pressable>
-                            <View>
+                            <>
                               {showPicker1 && (
                                 <DateTimePicker
                                   mode={mode1 as "date" | "time"}
@@ -1681,7 +1681,7 @@ function FilterPathComponent(props: {
                                   }}
                                 />
                               )}
-                            </View>
+                            </>
                           </>
                         );
                       } else {
@@ -1709,7 +1709,7 @@ function FilterPathComponent(props: {
                                       )}
                                     </Text>
                                   </Pressable>
-                                  <View>
+                                  <>
                                     {showPicker1 && (
                                       <DateTimePicker
                                         mode={mode1 as "date" | "time"}
@@ -1787,7 +1787,7 @@ function FilterPathComponent(props: {
                                         }}
                                       />
                                     )}
-                                  </View>
+                                  </>
                                 </>
                               );
                             } else {
@@ -1810,7 +1810,7 @@ function FilterPathComponent(props: {
                                       )}
                                     </Text>
                                   </Pressable>
-                                  <View>
+                                  <>
                                     {showPicker2 && (
                                       <DateTimePicker
                                         mode={mode2 as "date" | "time"}
@@ -1888,7 +1888,7 @@ function FilterPathComponent(props: {
                                         }}
                                       />
                                     )}
-                                  </View>
+                                  </>
                                 </>
                               );
                             } else {
@@ -2368,7 +2368,7 @@ export function FilterComponent(props: {
                             {moment(value[1]).format("Do MMM YYYY, h:mm A")}
                           </Text>
                         </Pressable>
-                        <View>
+                        <>
                           {showPicker1 && (
                             <DateTimePicker
                               mode={mode1 as "date" | "time"}
@@ -2423,7 +2423,7 @@ export function FilterComponent(props: {
                               }}
                             />
                           )}
-                        </View>
+                        </>
                       </>
                     );
                   }
@@ -2436,7 +2436,7 @@ export function FilterComponent(props: {
                             {moment(value[1][0]).format("Do MMM YYYY, h:mm A")}
                           </Text>
                         </Pressable>
-                        <View>
+                        <>
                           {showPicker1 && (
                             <DateTimePicker
                               mode={mode1 as "date" | "time"}
@@ -2497,13 +2497,13 @@ export function FilterComponent(props: {
                               }}
                             />
                           )}
-                        </View>
+                        </>
                         <Pressable onPress={() => setPicker2(true)}>
                           <Text>
                             {moment(value[1][1]).format("Do MMM YYYY, h:mm A")}
                           </Text>
                         </Pressable>
-                        <View>
+                        <>
                           {showPicker2 && (
                             <DateTimePicker
                               mode={mode2 as "date" | "time"}
@@ -2564,7 +2564,7 @@ export function FilterComponent(props: {
                               }}
                             />
                           )}
-                        </View>
+                        </>
                       </>
                     );
                   }
@@ -2680,7 +2680,7 @@ export function FilterComponent(props: {
                             {moment(value[1]).format("Do MMM YYYY, h:mm A")}
                           </Text>
                         </Pressable>
-                        <View>
+                        <>
                           {showPicker1 && (
                             <DateTimePicker
                               mode={mode1 as "date" | "time"}
@@ -2735,7 +2735,7 @@ export function FilterComponent(props: {
                               }}
                             />
                           )}
-                        </View>
+                        </>
                       </>
                     );
                   }
@@ -2748,7 +2748,7 @@ export function FilterComponent(props: {
                             {moment(value[1][0]).format("Do MMM YYYY, h:mm A")}
                           </Text>
                         </Pressable>
-                        <View>
+                        <>
                           {showPicker1 && (
                             <DateTimePicker
                               mode={mode1 as "date" | "time"}
@@ -2809,13 +2809,13 @@ export function FilterComponent(props: {
                               }}
                             />
                           )}
-                        </View>
+                        </>
                         <Pressable onPress={() => setPicker2(true)}>
                           <Text>
                             {moment(value[1][1]).format("Do MMM YYYY, h:mm A")}
                           </Text>
                         </Pressable>
-                        <View>
+                        <>
                           {showPicker2 && (
                             <DateTimePicker
                               mode={mode2 as "date" | "time"}
@@ -2876,7 +2876,7 @@ export function FilterComponent(props: {
                               }}
                             />
                           )}
-                        </View>
+                        </>
                       </>
                     );
                   }
