@@ -2039,7 +2039,7 @@ export function FilterComponent(props: {
             ])
           }
         >
-          <Text>Created At</Text>
+          <Text>Created</Text>
         </Pressable>
       ) : (
         <></>
@@ -2055,7 +2055,7 @@ export function FilterComponent(props: {
             ])
           }
         >
-          <Text>Updated At</Text>
+          <Text>Updated</Text>
         </Pressable>
       ) : (
         <></>
@@ -2376,257 +2376,296 @@ export function FilterComponent(props: {
           );
           if (value !== undefined) {
             return (
-              <View>
-                <Checkbox
-                  value={active}
-                  onValueChange={(x) => {
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "created_at",
-                      [x, value],
-                    ]);
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                }}
+              >
+                <View>
+                  <Checkbox
+                    value={active}
+                    onValueChange={(x) => {
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "created_at",
+                        [x, value],
+                      ]);
+                    }}
+                  />
+                  <Text>Created</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row-reverse",
+                    flexGrow: 999,
                   }}
-                />
-                <Text>Created At</Text>
-                {apply(undefined, () => {
-                  const op = value[0];
-                  switch (op) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                    case ">":
-                    case "<": {
-                      return (
-                        <>
-                          <Pressable onPress={() => setPicker1(true)}>
-                            <Text>
-                              {moment(value[1]).format("Do MMM YYYY, h:mm A")}
-                            </Text>
-                          </Pressable>
+                >
+                  {apply(undefined, () => {
+                    const op = value[0];
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        return (
                           <>
-                            {showPicker1 && (
-                              <DateTimePicker
-                                mode={mode1 as "date" | "time"}
-                                value={value[1]}
-                                onChange={(
-                                  _temp: any,
-                                  selectedValue: Date | undefined
-                                ) => {
-                                  setPicker1(Platform.OS === "ios");
-                                  if (selectedValue !== undefined) {
-                                    if (mode1 === "date") {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setFullYear(
-                                            selectedValue.getFullYear()
-                                          );
-                                          it.setMonth(selectedValue.getMonth());
-                                          it.setDate(selectedValue.getDate());
-                                          return it;
-                                        })
-                                      );
-                                      setMode1("time");
-                                      setPicker1(Platform.OS !== "ios");
+                            <Pressable onPress={() => setPicker1(true)}>
+                              <Text>
+                                {moment(value[1]).format("Do MMM YYYY, h:mm A")}
+                              </Text>
+                            </Pressable>
+                            <>
+                              {showPicker1 && (
+                                <DateTimePicker
+                                  mode={mode1 as "date" | "time"}
+                                  value={value[1]}
+                                  onChange={(
+                                    _temp: any,
+                                    selectedValue: Date | undefined
+                                  ) => {
+                                    setPicker1(Platform.OS === "ios");
+                                    if (selectedValue !== undefined) {
+                                      if (mode1 === "date") {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setFullYear(
+                                              selectedValue.getFullYear()
+                                            );
+                                            it.setMonth(
+                                              selectedValue.getMonth()
+                                            );
+                                            it.setDate(selectedValue.getDate());
+                                            return it;
+                                          })
+                                        );
+                                        setMode1("time");
+                                        setPicker1(Platform.OS !== "ios");
+                                      } else {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setHours(
+                                              selectedValue.getHours()
+                                            );
+                                            it.setMinutes(
+                                              selectedValue.getMinutes()
+                                            );
+                                            it.setSeconds(
+                                              selectedValue.getSeconds()
+                                            );
+                                            it.setMilliseconds(
+                                              selectedValue.getMilliseconds()
+                                            );
+                                            return it;
+                                          })
+                                        );
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "created_at",
+                                          [true, [op, date1 || new Date()]],
+                                        ]);
+                                        setMode1("date");
+                                      }
                                     } else {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setHours(selectedValue.getHours());
-                                          it.setMinutes(
-                                            selectedValue.getMinutes()
-                                          );
-                                          it.setSeconds(
-                                            selectedValue.getSeconds()
-                                          );
-                                          it.setMilliseconds(
-                                            selectedValue.getMilliseconds()
-                                          );
-                                          return it;
-                                        })
-                                      );
-                                      props.dispatch([
-                                        "filters",
-                                        props.index,
-                                        "created_at",
-                                        [true, [op, date1 || new Date()]],
-                                      ]);
+                                      setDate1(new Date(value[1].getTime()));
                                       setMode1("date");
                                     }
-                                  } else {
-                                    setDate1(new Date(value[1].getTime()));
-                                    setMode1("date");
-                                  }
-                                }}
-                              />
-                            )}
-                          </>
-                        </>
-                      );
-                    }
-                    case "between":
-                    case "not_between": {
-                      return (
-                        <>
-                          <Pressable onPress={() => setPicker1(true)}>
-                            <Text>
-                              {moment(value[1][0]).format(
-                                "Do MMM YYYY, h:mm A"
+                                  }}
+                                />
                               )}
-                            </Text>
-                          </Pressable>
+                            </>
+                          </>
+                        );
+                      }
+                      case "between":
+                      case "not_between": {
+                        return (
                           <>
-                            {showPicker1 && (
-                              <DateTimePicker
-                                mode={mode1 as "date" | "time"}
-                                value={value[1][0]}
-                                onChange={(
-                                  _temp: any,
-                                  selectedValue: Date | undefined
-                                ) => {
-                                  setPicker1(Platform.OS === "ios");
-                                  if (selectedValue !== undefined) {
-                                    if (mode1 === "date") {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setFullYear(
-                                            selectedValue.getFullYear()
-                                          );
-                                          it.setMonth(selectedValue.getMonth());
-                                          it.setDate(selectedValue.getDate());
-                                          return it;
-                                        })
-                                      );
-                                      setMode1("time");
-                                      setPicker1(Platform.OS !== "ios");
-                                    } else {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setHours(selectedValue.getHours());
-                                          it.setMinutes(
-                                            selectedValue.getMinutes()
-                                          );
-                                          it.setSeconds(
-                                            selectedValue.getSeconds()
-                                          );
-                                          it.setMilliseconds(
-                                            selectedValue.getMilliseconds()
-                                          );
-                                          return it;
-                                        })
-                                      );
-                                      props.dispatch([
-                                        "filters",
-                                        props.index,
-                                        "created_at",
-                                        [
-                                          true,
+                            <Pressable onPress={() => setPicker1(true)}>
+                              <Text>
+                                {moment(value[1][0]).format(
+                                  "Do MMM YYYY, h:mm A"
+                                )}
+                              </Text>
+                            </Pressable>
+                            <>
+                              {showPicker1 && (
+                                <DateTimePicker
+                                  mode={mode1 as "date" | "time"}
+                                  value={value[1][0]}
+                                  onChange={(
+                                    _temp: any,
+                                    selectedValue: Date | undefined
+                                  ) => {
+                                    setPicker1(Platform.OS === "ios");
+                                    if (selectedValue !== undefined) {
+                                      if (mode1 === "date") {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setFullYear(
+                                              selectedValue.getFullYear()
+                                            );
+                                            it.setMonth(
+                                              selectedValue.getMonth()
+                                            );
+                                            it.setDate(selectedValue.getDate());
+                                            return it;
+                                          })
+                                        );
+                                        setMode1("time");
+                                        setPicker1(Platform.OS !== "ios");
+                                      } else {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setHours(
+                                              selectedValue.getHours()
+                                            );
+                                            it.setMinutes(
+                                              selectedValue.getMinutes()
+                                            );
+                                            it.setSeconds(
+                                              selectedValue.getSeconds()
+                                            );
+                                            it.setMilliseconds(
+                                              selectedValue.getMilliseconds()
+                                            );
+                                            return it;
+                                          })
+                                        );
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "created_at",
                                           [
-                                            op,
-                                            [date1 || new Date(), value[1][1]],
+                                            true,
+                                            [
+                                              op,
+                                              [
+                                                date1 || new Date(),
+                                                value[1][1],
+                                              ],
+                                            ],
                                           ],
-                                        ],
-                                      ]);
+                                        ]);
+                                        setMode1("date");
+                                      }
+                                    } else {
+                                      setDate1(new Date(value[1][0].getTime()));
                                       setMode1("date");
                                     }
-                                  } else {
-                                    setDate1(new Date(value[1][0].getTime()));
-                                    setMode1("date");
-                                  }
-                                }}
-                              />
-                            )}
-                          </>
-                          <Pressable onPress={() => setPicker2(true)}>
-                            <Text>
-                              {moment(value[1][1]).format(
-                                "Do MMM YYYY, h:mm A"
+                                  }}
+                                />
                               )}
-                            </Text>
-                          </Pressable>
-                          <>
-                            {showPicker2 && (
-                              <DateTimePicker
-                                mode={mode2 as "date" | "time"}
-                                value={value[1][1]}
-                                onChange={(
-                                  _temp: any,
-                                  selectedValue: Date | undefined
-                                ) => {
-                                  setPicker2(Platform.OS === "ios");
-                                  if (selectedValue !== undefined) {
-                                    if (mode2 === "date") {
-                                      setDate2(
-                                        apply(date2, (it) => {
-                                          it.setFullYear(
-                                            selectedValue.getFullYear()
-                                          );
-                                          it.setMonth(selectedValue.getMonth());
-                                          it.setDate(selectedValue.getDate());
-                                          return it;
-                                        })
-                                      );
-                                      setMode2("time");
-                                      setPicker2(Platform.OS !== "ios");
-                                    } else {
-                                      setDate2(
-                                        apply(date2, (it) => {
-                                          it.setHours(selectedValue.getHours());
-                                          it.setMinutes(
-                                            selectedValue.getMinutes()
-                                          );
-                                          it.setSeconds(
-                                            selectedValue.getSeconds()
-                                          );
-                                          it.setMilliseconds(
-                                            selectedValue.getMilliseconds()
-                                          );
-                                          return it;
-                                        })
-                                      );
-                                      props.dispatch([
-                                        "filters",
-                                        props.index,
-                                        "created_at",
-                                        [
-                                          true,
+                            </>
+                            <Pressable onPress={() => setPicker2(true)}>
+                              <Text>
+                                {moment(value[1][1]).format(
+                                  "Do MMM YYYY, h:mm A"
+                                )}
+                              </Text>
+                            </Pressable>
+                            <>
+                              {showPicker2 && (
+                                <DateTimePicker
+                                  mode={mode2 as "date" | "time"}
+                                  value={value[1][1]}
+                                  onChange={(
+                                    _temp: any,
+                                    selectedValue: Date | undefined
+                                  ) => {
+                                    setPicker2(Platform.OS === "ios");
+                                    if (selectedValue !== undefined) {
+                                      if (mode2 === "date") {
+                                        setDate2(
+                                          apply(date2, (it) => {
+                                            it.setFullYear(
+                                              selectedValue.getFullYear()
+                                            );
+                                            it.setMonth(
+                                              selectedValue.getMonth()
+                                            );
+                                            it.setDate(selectedValue.getDate());
+                                            return it;
+                                          })
+                                        );
+                                        setMode2("time");
+                                        setPicker2(Platform.OS !== "ios");
+                                      } else {
+                                        setDate2(
+                                          apply(date2, (it) => {
+                                            it.setHours(
+                                              selectedValue.getHours()
+                                            );
+                                            it.setMinutes(
+                                              selectedValue.getMinutes()
+                                            );
+                                            it.setSeconds(
+                                              selectedValue.getSeconds()
+                                            );
+                                            it.setMilliseconds(
+                                              selectedValue.getMilliseconds()
+                                            );
+                                            return it;
+                                          })
+                                        );
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "created_at",
                                           [
-                                            op,
-                                            [value[1][0], date2 || new Date()],
+                                            true,
+                                            [
+                                              op,
+                                              [
+                                                value[1][0],
+                                                date2 || new Date(),
+                                              ],
+                                            ],
                                           ],
-                                        ],
-                                      ]);
+                                        ]);
+                                        setMode2("date");
+                                      }
+                                    } else {
+                                      setDate2(new Date(value[1][1].getTime()));
                                       setMode2("date");
                                     }
-                                  } else {
-                                    setDate2(new Date(value[1][1].getTime()));
-                                    setMode2("date");
-                                  }
-                                }}
-                              />
-                            )}
+                                  }}
+                                />
+                              )}
+                            </>
                           </>
-                        </>
-                      );
+                        );
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = op;
+                        return _exhaustiveCheck;
+                      }
                     }
-                    default: {
-                      const _exhaustiveCheck: never = op;
-                      return _exhaustiveCheck;
-                    }
-                  }
-                })}
-                <Pressable
-                  onPress={() =>
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "created_at",
-                      [true, undefined],
-                    ])
-                  }
+                  })}
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row-reverse",
+                    flexGrow: 1,
+                    alignSelf: "center",
+                  }}
                 >
-                  <Text>X</Text>
-                </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "created_at",
+                        [true, undefined],
+                      ])
+                    }
+                  >
+                    <Entypo name="cross" size={24} color="white" />
+                  </Pressable>
+                </View>
               </View>
             );
           }
@@ -2692,257 +2731,296 @@ export function FilterComponent(props: {
           );
           if (value !== undefined) {
             return (
-              <View>
-                <Checkbox
-                  value={active}
-                  onValueChange={(x) => {
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "updated_at",
-                      [x, value],
-                    ]);
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                }}
+              >
+                <View>
+                  <Checkbox
+                    value={active}
+                    onValueChange={(x) => {
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "updated_at",
+                        [x, value],
+                      ]);
+                    }}
+                  />
+                  <Text>Updated</Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row-reverse",
+                    flexGrow: 999,
                   }}
-                />
-                <Text>Updated At</Text>
-                {apply(undefined, () => {
-                  const op = value[0];
-                  switch (op) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                    case ">":
-                    case "<": {
-                      return (
-                        <>
-                          <Pressable onPress={() => setPicker1(true)}>
-                            <Text>
-                              {moment(value[1]).format("Do MMM YYYY, h:mm A")}
-                            </Text>
-                          </Pressable>
+                >
+                  {apply(undefined, () => {
+                    const op = value[0];
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        return (
                           <>
-                            {showPicker1 && (
-                              <DateTimePicker
-                                mode={mode1 as "date" | "time"}
-                                value={value[1]}
-                                onChange={(
-                                  _temp: any,
-                                  selectedValue: Date | undefined
-                                ) => {
-                                  setPicker1(Platform.OS === "ios");
-                                  if (selectedValue !== undefined) {
-                                    if (mode1 === "date") {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setFullYear(
-                                            selectedValue.getFullYear()
-                                          );
-                                          it.setMonth(selectedValue.getMonth());
-                                          it.setDate(selectedValue.getDate());
-                                          return it;
-                                        })
-                                      );
-                                      setMode1("time");
-                                      setPicker1(Platform.OS !== "ios");
+                            <Pressable onPress={() => setPicker1(true)}>
+                              <Text>
+                                {moment(value[1]).format("Do MMM YYYY, h:mm A")}
+                              </Text>
+                            </Pressable>
+                            <>
+                              {showPicker1 && (
+                                <DateTimePicker
+                                  mode={mode1 as "date" | "time"}
+                                  value={value[1]}
+                                  onChange={(
+                                    _temp: any,
+                                    selectedValue: Date | undefined
+                                  ) => {
+                                    setPicker1(Platform.OS === "ios");
+                                    if (selectedValue !== undefined) {
+                                      if (mode1 === "date") {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setFullYear(
+                                              selectedValue.getFullYear()
+                                            );
+                                            it.setMonth(
+                                              selectedValue.getMonth()
+                                            );
+                                            it.setDate(selectedValue.getDate());
+                                            return it;
+                                          })
+                                        );
+                                        setMode1("time");
+                                        setPicker1(Platform.OS !== "ios");
+                                      } else {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setHours(
+                                              selectedValue.getHours()
+                                            );
+                                            it.setMinutes(
+                                              selectedValue.getMinutes()
+                                            );
+                                            it.setSeconds(
+                                              selectedValue.getSeconds()
+                                            );
+                                            it.setMilliseconds(
+                                              selectedValue.getMilliseconds()
+                                            );
+                                            return it;
+                                          })
+                                        );
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "updated_at",
+                                          [true, [op, date1 || new Date()]],
+                                        ]);
+                                        setMode1("date");
+                                      }
                                     } else {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setHours(selectedValue.getHours());
-                                          it.setMinutes(
-                                            selectedValue.getMinutes()
-                                          );
-                                          it.setSeconds(
-                                            selectedValue.getSeconds()
-                                          );
-                                          it.setMilliseconds(
-                                            selectedValue.getMilliseconds()
-                                          );
-                                          return it;
-                                        })
-                                      );
-                                      props.dispatch([
-                                        "filters",
-                                        props.index,
-                                        "updated_at",
-                                        [true, [op, date1 || new Date()]],
-                                      ]);
+                                      setDate1(new Date(value[1].getTime()));
                                       setMode1("date");
                                     }
-                                  } else {
-                                    setDate1(new Date(value[1].getTime()));
-                                    setMode1("date");
-                                  }
-                                }}
-                              />
-                            )}
-                          </>
-                        </>
-                      );
-                    }
-                    case "between":
-                    case "not_between": {
-                      return (
-                        <>
-                          <Pressable onPress={() => setPicker1(true)}>
-                            <Text>
-                              {moment(value[1][0]).format(
-                                "Do MMM YYYY, h:mm A"
+                                  }}
+                                />
                               )}
-                            </Text>
-                          </Pressable>
+                            </>
+                          </>
+                        );
+                      }
+                      case "between":
+                      case "not_between": {
+                        return (
                           <>
-                            {showPicker1 && (
-                              <DateTimePicker
-                                mode={mode1 as "date" | "time"}
-                                value={value[1][0]}
-                                onChange={(
-                                  _temp: any,
-                                  selectedValue: Date | undefined
-                                ) => {
-                                  setPicker1(Platform.OS === "ios");
-                                  if (selectedValue !== undefined) {
-                                    if (mode1 === "date") {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setFullYear(
-                                            selectedValue.getFullYear()
-                                          );
-                                          it.setMonth(selectedValue.getMonth());
-                                          it.setDate(selectedValue.getDate());
-                                          return it;
-                                        })
-                                      );
-                                      setMode1("time");
-                                      setPicker1(Platform.OS !== "ios");
-                                    } else {
-                                      setDate1(
-                                        apply(date1, (it) => {
-                                          it.setHours(selectedValue.getHours());
-                                          it.setMinutes(
-                                            selectedValue.getMinutes()
-                                          );
-                                          it.setSeconds(
-                                            selectedValue.getSeconds()
-                                          );
-                                          it.setMilliseconds(
-                                            selectedValue.getMilliseconds()
-                                          );
-                                          return it;
-                                        })
-                                      );
-                                      props.dispatch([
-                                        "filters",
-                                        props.index,
-                                        "updated_at",
-                                        [
-                                          true,
+                            <Pressable onPress={() => setPicker1(true)}>
+                              <Text>
+                                {moment(value[1][0]).format(
+                                  "Do MMM YYYY, h:mm A"
+                                )}
+                              </Text>
+                            </Pressable>
+                            <>
+                              {showPicker1 && (
+                                <DateTimePicker
+                                  mode={mode1 as "date" | "time"}
+                                  value={value[1][0]}
+                                  onChange={(
+                                    _temp: any,
+                                    selectedValue: Date | undefined
+                                  ) => {
+                                    setPicker1(Platform.OS === "ios");
+                                    if (selectedValue !== undefined) {
+                                      if (mode1 === "date") {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setFullYear(
+                                              selectedValue.getFullYear()
+                                            );
+                                            it.setMonth(
+                                              selectedValue.getMonth()
+                                            );
+                                            it.setDate(selectedValue.getDate());
+                                            return it;
+                                          })
+                                        );
+                                        setMode1("time");
+                                        setPicker1(Platform.OS !== "ios");
+                                      } else {
+                                        setDate1(
+                                          apply(date1, (it) => {
+                                            it.setHours(
+                                              selectedValue.getHours()
+                                            );
+                                            it.setMinutes(
+                                              selectedValue.getMinutes()
+                                            );
+                                            it.setSeconds(
+                                              selectedValue.getSeconds()
+                                            );
+                                            it.setMilliseconds(
+                                              selectedValue.getMilliseconds()
+                                            );
+                                            return it;
+                                          })
+                                        );
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "updated_at",
                                           [
-                                            op,
-                                            [date1 || new Date(), value[1][1]],
+                                            true,
+                                            [
+                                              op,
+                                              [
+                                                date1 || new Date(),
+                                                value[1][1],
+                                              ],
+                                            ],
                                           ],
-                                        ],
-                                      ]);
+                                        ]);
+                                        setMode1("date");
+                                      }
+                                    } else {
+                                      setDate1(new Date(value[1][0].getTime()));
                                       setMode1("date");
                                     }
-                                  } else {
-                                    setDate1(new Date(value[1][0].getTime()));
-                                    setMode1("date");
-                                  }
-                                }}
-                              />
-                            )}
-                          </>
-                          <Pressable onPress={() => setPicker2(true)}>
-                            <Text>
-                              {moment(value[1][1]).format(
-                                "Do MMM YYYY, h:mm A"
+                                  }}
+                                />
                               )}
-                            </Text>
-                          </Pressable>
-                          <>
-                            {showPicker2 && (
-                              <DateTimePicker
-                                mode={mode2 as "date" | "time"}
-                                value={value[1][1]}
-                                onChange={(
-                                  _temp: any,
-                                  selectedValue: Date | undefined
-                                ) => {
-                                  setPicker2(Platform.OS === "ios");
-                                  if (selectedValue !== undefined) {
-                                    if (mode2 === "date") {
-                                      setDate2(
-                                        apply(date2, (it) => {
-                                          it.setFullYear(
-                                            selectedValue.getFullYear()
-                                          );
-                                          it.setMonth(selectedValue.getMonth());
-                                          it.setDate(selectedValue.getDate());
-                                          return it;
-                                        })
-                                      );
-                                      setMode2("time");
-                                      setPicker2(Platform.OS !== "ios");
-                                    } else {
-                                      setDate2(
-                                        apply(date2, (it) => {
-                                          it.setHours(selectedValue.getHours());
-                                          it.setMinutes(
-                                            selectedValue.getMinutes()
-                                          );
-                                          it.setSeconds(
-                                            selectedValue.getSeconds()
-                                          );
-                                          it.setMilliseconds(
-                                            selectedValue.getMilliseconds()
-                                          );
-                                          return it;
-                                        })
-                                      );
-                                      props.dispatch([
-                                        "filters",
-                                        props.index,
-                                        "updated_at",
-                                        [
-                                          true,
+                            </>
+                            <Pressable onPress={() => setPicker2(true)}>
+                              <Text>
+                                {moment(value[1][1]).format(
+                                  "Do MMM YYYY, h:mm A"
+                                )}
+                              </Text>
+                            </Pressable>
+                            <>
+                              {showPicker2 && (
+                                <DateTimePicker
+                                  mode={mode2 as "date" | "time"}
+                                  value={value[1][1]}
+                                  onChange={(
+                                    _temp: any,
+                                    selectedValue: Date | undefined
+                                  ) => {
+                                    setPicker2(Platform.OS === "ios");
+                                    if (selectedValue !== undefined) {
+                                      if (mode2 === "date") {
+                                        setDate2(
+                                          apply(date2, (it) => {
+                                            it.setFullYear(
+                                              selectedValue.getFullYear()
+                                            );
+                                            it.setMonth(
+                                              selectedValue.getMonth()
+                                            );
+                                            it.setDate(selectedValue.getDate());
+                                            return it;
+                                          })
+                                        );
+                                        setMode2("time");
+                                        setPicker2(Platform.OS !== "ios");
+                                      } else {
+                                        setDate2(
+                                          apply(date2, (it) => {
+                                            it.setHours(
+                                              selectedValue.getHours()
+                                            );
+                                            it.setMinutes(
+                                              selectedValue.getMinutes()
+                                            );
+                                            it.setSeconds(
+                                              selectedValue.getSeconds()
+                                            );
+                                            it.setMilliseconds(
+                                              selectedValue.getMilliseconds()
+                                            );
+                                            return it;
+                                          })
+                                        );
+                                        props.dispatch([
+                                          "filters",
+                                          props.index,
+                                          "updated_at",
                                           [
-                                            op,
-                                            [value[1][0], date2 || new Date()],
+                                            true,
+                                            [
+                                              op,
+                                              [
+                                                value[1][0],
+                                                date2 || new Date(),
+                                              ],
+                                            ],
                                           ],
-                                        ],
-                                      ]);
+                                        ]);
+                                        setMode2("date");
+                                      }
+                                    } else {
+                                      setDate2(new Date(value[1][1].getTime()));
                                       setMode2("date");
                                     }
-                                  } else {
-                                    setDate2(new Date(value[1][1].getTime()));
-                                    setMode2("date");
-                                  }
-                                }}
-                              />
-                            )}
+                                  }}
+                                />
+                              )}
+                            </>
                           </>
-                        </>
-                      );
+                        );
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = op;
+                        return _exhaustiveCheck;
+                      }
                     }
-                    default: {
-                      const _exhaustiveCheck: never = op;
-                      return _exhaustiveCheck;
-                    }
-                  }
-                })}
-                <Pressable
-                  onPress={() =>
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "updated_at",
-                      [true, undefined],
-                    ])
-                  }
+                  })}
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row-reverse",
+                    flexGrow: 1,
+                    alignSelf: "center",
+                  }}
                 >
-                  <Text>X</Text>
-                </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "updated_at",
+                        [true, undefined],
+                      ])
+                    }
+                  >
+                    <Entypo name="cross" size={24} color="white" />
+                  </Pressable>
+                </View>
               </View>
             );
           }

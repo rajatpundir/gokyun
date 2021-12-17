@@ -50,7 +50,7 @@ export function View(props: ViewProps) {
           paddingHorizontal: 3,
           paddingVertical: 0,
           borderColor: "white",
-          borderWidth: 1,
+          // borderWidth: 1,
         },
         style,
       ]}
