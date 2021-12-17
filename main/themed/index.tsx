@@ -47,11 +47,10 @@ export function View(props: ViewProps) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          padding: 1,
           paddingHorizontal: 3,
           paddingVertical: 0,
           borderColor: "white",
-          // borderWidth: 1,
+          borderWidth: 1,
         },
         style,
       ]}
