@@ -387,14 +387,14 @@ function CreateComponent(props: {
                       );
                     } else {
                       return (
-                        <>
+                        <View>
                           <Field {...props} path={[["user"], "nickname"]} />
                           {props.state.mode === "write" ? (
                             <FontAwesome name="edit" size={24} color="white" />
                           ) : (
                             <></>
                           )}
-                        </>
+                        </View>
                       );
                     }
                   }
