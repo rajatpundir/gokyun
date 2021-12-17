@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Filter, FilterPath } from "../../main/utils/db";
 import { View, Text, TextInput } from "../../main/themed";
 import Decimal from "decimal.js";
@@ -9,6 +9,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Action } from "./index";
 import { Entypo } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 function FilterPathComponent(props: {
   filter_path: FilterPath;
@@ -2002,6 +2003,21 @@ export function FilterComponent(props: {
   index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
+  const data = useMemo(
+    () =>
+      Array(50)
+        .fill(0)
+        .map((_, index) => `index-${index}`),
+    []
+  );
+  const renderItem = useCallback(
+    (item) => (
+      <View key={item}>
+        <Text>{item}</Text>
+      </View>
+    ),
+    []
+  );
   return (
     <View
       style={{
@@ -2012,167 +2028,199 @@ export function FilterComponent(props: {
         borderBottomWidth: 1,
       }}
     >
-      {props.filter.id[1] === undefined ? (
-        <Pressable
-          onPress={() =>
-            props.dispatch([
-              "filters",
-              props.index,
-              "id",
-              [false, ["==", new Decimal(0)]],
-            ])
-          }
-        >
-          <Text>ID</Text>
-        </Pressable>
-      ) : (
-        <></>
-      )}
-      {props.filter.created_at[1] === undefined ? (
-        <Pressable
-          onPress={() =>
-            props.dispatch([
-              "filters",
-              props.index,
-              "created_at",
-              [false, ["between", [new Date(0), new Date(0)]]],
-            ])
-          }
-        >
-          <Text>Created</Text>
-        </Pressable>
-      ) : (
-        <></>
-      )}
-      {props.filter.updated_at[1] === undefined ? (
-        <Pressable
-          onPress={() =>
-            props.dispatch([
-              "filters",
-              props.index,
-              "updated_at",
-              [false, ["between", [new Date(0), new Date(0)]]],
-            ])
-          }
-        >
-          <Text>Updated</Text>
-        </Pressable>
-      ) : (
-        <></>
-      )}
-      {props.init_filter.filter_paths
-        .toArray()
-        .filter(
-          (filter_path) =>
-            !props.filter.filter_paths.anyMatch(
-              (x) => x.equals(filter_path) && x.value[1] !== undefined
-            )
-        )
-        .map((filter_path, index) => {
-          return (
-            <Pressable
-              key={index}
-              onPress={() => {
-                const field_struct_type = filter_path.value[0];
-                switch (field_struct_type) {
-                  case "str":
-                  case "lstr":
-                  case "clob": {
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "replace",
-                      new FilterPath(
-                        filter_path.label,
-                        filter_path.path,
-                        [field_struct_type, ["==", "opopoo"]],
-                        undefined
-                      ),
-                    ]);
-                    break;
+      <BottomSheetScrollView
+        horizontal={true}
+        style={{
+          borderColor: "white",
+          borderTopWidth: 1,
+          borderBottomWidth: 1,
+          marginBottom: 10,
+        }}
+      >
+        {props.filter.id[1] === undefined ? (
+          <Pressable
+            onPress={() =>
+              props.dispatch([
+                "filters",
+                props.index,
+                "id",
+                [false, ["==", new Decimal(0)]],
+              ])
+            }
+            style={{
+              borderColor: "white",
+              borderLeftWidth: 1,
+              borderRightWidth: 1,
+              padding: 3,
+            }}
+          >
+            <Text>Unique ID</Text>
+          </Pressable>
+        ) : (
+          <></>
+        )}
+        {props.filter.created_at[1] === undefined ? (
+          <Pressable
+            onPress={() =>
+              props.dispatch([
+                "filters",
+                props.index,
+                "created_at",
+                [false, ["between", [new Date(0), new Date(0)]]],
+              ])
+            }
+            style={{
+              borderColor: "white",
+              borderLeftWidth: 1,
+              borderRightWidth: 1,
+              padding: 3,
+            }}
+          >
+            <Text>Created</Text>
+          </Pressable>
+        ) : (
+          <></>
+        )}
+        {props.filter.updated_at[1] === undefined ? (
+          <Pressable
+            onPress={() =>
+              props.dispatch([
+                "filters",
+                props.index,
+                "updated_at",
+                [false, ["between", [new Date(0), new Date(0)]]],
+              ])
+            }
+            style={{
+              borderColor: "white",
+              borderLeftWidth: 1,
+              borderRightWidth: 1,
+              padding: 3,
+            }}
+          >
+            <Text>Updated</Text>
+          </Pressable>
+        ) : (
+          <></>
+        )}
+        {props.init_filter.filter_paths
+          .toArray()
+          .filter(
+            (filter_path) =>
+              !props.filter.filter_paths.anyMatch(
+                (x) => x.equals(filter_path) && x.value[1] !== undefined
+              )
+          )
+          .map((filter_path, index) => {
+            return (
+              <Pressable
+                key={index}
+                style={{
+                  borderColor: "white",
+                  borderLeftWidth: 1,
+                  borderRightWidth: 1,
+                  padding: 3,
+                }}
+                onPress={() => {
+                  const field_struct_type = filter_path.value[0];
+                  switch (field_struct_type) {
+                    case "str":
+                    case "lstr":
+                    case "clob": {
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [field_struct_type, ["==", ""]],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "i32":
+                    case "u32":
+                    case "i64":
+                    case "u64":
+                    case "idouble":
+                    case "udouble":
+                    case "idecimal":
+                    case "udecimal": {
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [field_struct_type, ["==", new Decimal(0)]],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "bool": {
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [field_struct_type, ["==", true]],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "date":
+                    case "time":
+                    case "timestamp": {
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [field_struct_type, ["==", new Date(0)]],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "other": {
+                      const other_struct = filter_path.value[2];
+                      props.dispatch([
+                        "filters",
+                        props.index,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [
+                            field_struct_type,
+                            ["==", new Decimal(-1)],
+                            other_struct,
+                          ],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
                   }
-                  case "i32":
-                  case "u32":
-                  case "i64":
-                  case "u64":
-                  case "idouble":
-                  case "udouble":
-                  case "idecimal":
-                  case "udecimal": {
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "replace",
-                      new FilterPath(
-                        filter_path.label,
-                        filter_path.path,
-                        [field_struct_type, ["==", new Decimal(0)]],
-                        undefined
-                      ),
-                    ]);
-                    break;
-                  }
-                  case "bool": {
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "replace",
-                      new FilterPath(
-                        filter_path.label,
-                        filter_path.path,
-                        [field_struct_type, ["==", true]],
-                        undefined
-                      ),
-                    ]);
-                    break;
-                  }
-                  case "date":
-                  case "time":
-                  case "timestamp": {
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "replace",
-                      new FilterPath(
-                        filter_path.label,
-                        filter_path.path,
-                        [field_struct_type, ["==", new Date(0)]],
-                        undefined
-                      ),
-                    ]);
-                    break;
-                  }
-                  case "other": {
-                    const other_struct = filter_path.value[2];
-                    props.dispatch([
-                      "filters",
-                      props.index,
-                      "replace",
-                      new FilterPath(
-                        filter_path.label,
-                        filter_path.path,
-                        [
-                          field_struct_type,
-                          ["==", new Decimal(-1)],
-                          other_struct,
-                        ],
-                        undefined
-                      ),
-                    ]);
-                    break;
-                  }
-                }
-              }}
-            >
-              <Text>{filter_path.label}</Text>
-            </Pressable>
-          );
-        })}
-
+                }}
+              >
+                <Text>{filter_path.label}</Text>
+              </Pressable>
+            );
+          })}
+      </BottomSheetScrollView>
       <View
         style={{
           flexDirection: "column",
-          marginBottom: 1,
         }}
       >
         {apply(undefined, () => {

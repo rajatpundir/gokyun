@@ -48,6 +48,7 @@ export function View(props: ViewProps) {
           flexDirection: "row",
           justifyContent: "space-between",
           paddingHorizontal: 3,
+          marginBottom: 1,
           paddingVertical: 0,
           borderColor: "white",
           // borderWidth: 1,

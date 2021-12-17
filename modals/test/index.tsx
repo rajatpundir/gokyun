@@ -463,13 +463,14 @@ function CreateComponent(props: {
                             borderRadius: 5,
                             paddingVertical: 5,
                             marginVertical: 5,
+                            backgroundColor: "#111827",
                           }}
                         >
-                          <View>
+                          <View style={{ backgroundColor: "#111827" }}>
                             <Label {...it} path={"nickname"} />
                             <Field {...it} path={"nickname"} />
                           </View>
-                          <View>
+                          <View style={{ backgroundColor: "#111827" }}>
                             <Label {...it} path={"knows_english"} />
                             <Field {...it} path={"knows_english"} />
                           </View>
@@ -477,12 +478,20 @@ function CreateComponent(props: {
                             onPress={() =>
                               props.disptach_values(props.variable)
                             }
+                            style={{
+                              alignSelf: "flex-end",
+                              paddingVertical: 10,
+                              paddingRight: 5,
+                            }}
                           >
                             <Text
                               style={{
-                                backgroundColor: "aquamarine",
-                                textAlign: "right",
-                                width: "auto",
+                                backgroundColor: "#155e75",
+                                paddingHorizontal: 6,
+                                paddingVertical: 2,
+                                borderWidth: 1,
+                                borderRadius: 8,
+                                fontWeight: "400",
                               }}
                             >
                               OK
@@ -514,12 +523,20 @@ function CreateComponent(props: {
                             onPress={() =>
                               props.disptach_values(props.variable)
                             }
+                            style={{
+                              alignSelf: "flex-end",
+                              paddingVertical: 10,
+                              paddingRight: 5,
+                            }}
                           >
                             <Text
                               style={{
-                                backgroundColor: "aquamarine",
-                                textAlign: "right",
-                                width: "auto",
+                                backgroundColor: "#155e75",
+                                paddingHorizontal: 6,
+                                paddingVertical: 2,
+                                borderWidth: 1,
+                                borderRadius: 8,
+                                fontWeight: "400",
                               }}
                             >
                               OK

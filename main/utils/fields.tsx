@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   Text as DefaultText,
   TextInput as DefaultTextInput,
-  Switch,
   Pressable,
   Platform,
 } from "react-native";
@@ -29,6 +28,7 @@ import { FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
+import Checkbox, { CheckboxComponent, CheckboxProps } from "expo-checkbox";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -624,13 +624,13 @@ function U_Decimal(
 }
 
 // TODO. Add a expo-checkbox based implemention as well
-function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
+function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "bool") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <Switch
+        <Checkbox
           style={[{}, style]}
           {...otherProps}
           value={value.value}
@@ -649,7 +649,9 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
         />
       );
     } else {
-      return <Switch style={[{}, style]} {...otherProps} value={value.value} />;
+      return (
+        <Checkbox style={[{}, style]} {...otherProps} value={value.value} />
+      );
     }
   }
   console.log("ERROR: Invalid path: ", props.path);
@@ -997,7 +999,7 @@ export function Field(props: {
   options?:
     | ["text", DefaultTextInput["props"] & DefaultText["props"]]
     | ["date", DefaultText["props"]]
-    | ["bool", Switch["props"]]
+    | ["bool", CheckboxProps]
     | [
         "other",
         {

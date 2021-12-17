@@ -17,7 +17,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetSectionList,
 } from "@gorhom/bottom-sheet";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 
 type State = {
@@ -203,17 +203,19 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         <Pressable onPress={handlePresentModalPress}>
           <Text
             style={{
+              alignSelf: "flex-end",
               fontSize: 15,
               fontWeight: "bold",
-              textAlign: "right",
-              paddingRight: 10,
-              paddingTop: 0,
-              paddingBottom: 5,
+              textAlign: "center",
+              paddingHorizontal: 10,
+              paddingVertical: 2,
               borderColor: "white",
-              // borderWidth: 1,
+              borderWidth: 1,
+              borderRadius: 8,
             }}
           >
-            Filters
+            Filter
+            <FontAwesome name="filter" size={16} color="white" />
           </Text>
         </Pressable>
 
@@ -285,6 +287,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 style={{
                   paddingHorizontal: 4,
                   paddingVertical: 4,
+                  marginBottom: 2,
                 }}
               >
                 <Text>Unsaved</Text>
@@ -308,7 +311,12 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 <Text
                   style={{
                     alignSelf: "flex-end",
-                    padding: 3,
+                    paddingHorizontal: 8,
+                    paddingVertical: 2,
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    fontWeight: "700",
+                    marginRight: 1,
                   }}
                 >
                   Add Filter
@@ -336,31 +344,19 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                           fontWeight: "200",
                         }}
                       >
-                        Filter {list_item.section.index + 1}{" "}
+                        Filter {list_item.section.index + 1}
                       </Text>
-                      <Pressable
-                        onPress={() =>
-                          dispatch([
-                            "filter",
-                            "remove",
-                            list_item.section.index,
-                          ])
-                        }
-                        style={{
-                          alignSelf: "center",
-                        }}
-                      >
-                        <AntDesign name="delete" size={16} color="white" />
-                      </Pressable>
                     </View>
-                    <AntDesign
-                      name="plussquareo"
-                      size={24}
-                      color="white"
+                    <Pressable
+                      onPress={() =>
+                        dispatch(["filter", "remove", list_item.section.index])
+                      }
                       style={{
                         padding: 3,
                       }}
-                    />
+                    >
+                      <Entypo name="cross" size={24} color="white" />
+                    </Pressable>
                   </View>
                 );
               }}
