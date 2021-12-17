@@ -230,7 +230,7 @@ function FilterPathComponent(props: {
                   }),
                 ]);
               }}
-              color={props.filter_path.active ? "#ef4444" : undefined}
+              color={props.filter_path.active ? "#71717a" : undefined}
               style={{
                 alignSelf: "center",
                 marginRight: 6,
@@ -2243,6 +2243,7 @@ export function FilterComponent(props: {
                         [x, value],
                       ]);
                     }}
+                    color={active ? "#71717a" : undefined}
                     style={{
                       alignSelf: "center",
                       marginRight: 6,
@@ -2440,6 +2441,7 @@ export function FilterComponent(props: {
                         [x, value],
                       ]);
                     }}
+                    color={active ? "#71717a" : undefined}
                   />
                   <Text>Created</Text>
                 </View>
@@ -2795,6 +2797,7 @@ export function FilterComponent(props: {
                         [x, value],
                       ]);
                     }}
+                    color={active ? "#71717a" : undefined}
                   />
                   <Text>Updated</Text>
                 </View>

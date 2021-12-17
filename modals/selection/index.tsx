@@ -16,6 +16,8 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetSectionList,
+  useBottomSheet,
+  useBottomSheetModal,
 } from "@gorhom/bottom-sheet";
 import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
@@ -161,6 +163,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     limit_offset: props.route.params.limit_offset,
     variables: [],
   });
+
   useEffect(() => {
     props.navigation.setOptions({ headerTitle: props.route.params.title });
     const get_vars = async () => {
@@ -184,23 +187,15 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     state.limit_offset,
   ]);
 
-  const snapPoints = useMemo(() => ["25%", "50%", "100%"], []);
-
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
+  const showBottomSheetModal = useCallback(() => {
     bottomSheetModalRef.current?.present();
-  }, []);
-
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
   }, []);
 
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
-        <Pressable onPress={handlePresentModalPress}>
+        <Pressable onPress={showBottomSheetModal}>
           <Text
             style={{
               alignSelf: "flex-end",
@@ -232,7 +227,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         />
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          snapPoints={snapPoints}
+          snapPoints={["25%", "50%", "100%"]}
           index={1}
           backgroundStyle={{
             backgroundColor: "black",
@@ -276,6 +271,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 <Checkbox
                   value={state.active}
                   onValueChange={(x) => dispatch(["active", x])}
+                  color={state.active ? "#71717a" : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -296,6 +292,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
+                  color={state.active ? "#71717a" : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
