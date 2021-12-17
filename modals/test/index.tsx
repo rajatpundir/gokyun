@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Pressable, ScrollView, StyleSheet } from "react-native";
+import { Pressable, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View, Text } from "../../main/themed";

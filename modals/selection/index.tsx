@@ -16,10 +16,8 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetSectionList,
-  useBottomSheet,
-  useBottomSheetModal,
 } from "@gorhom/bottom-sheet";
-import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
+import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 
 type State = {
