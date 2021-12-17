@@ -1927,11 +1927,25 @@ export function FilterComponent(props: {
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
   return (
-    <View>
+    <View
+      style={{
+        borderColor: "white",
+        borderBottomWidth: 1,
+      }}
+    >
       <Pressable
         onPress={() => props.dispatch(["filter", "remove", props.index])}
       >
-        <Text>Remove Filter</Text>
+        <Text
+          style={{
+            fontSize: 15,
+            fontWeight: "200",
+            textAlign: "center",
+            padding: 5,
+          }}
+        >
+          Remove Filter
+        </Text>
       </Pressable>
       {props.filter.id[1] === undefined ? (
         <Pressable

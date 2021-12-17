@@ -39,7 +39,25 @@ export function View(props: ViewProps) {
     { light: lightColor, dark: darkColor },
     "background"
   );
-  return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;
+  return (
+    <DefaultView
+      style={[
+        {
+          backgroundColor,
+          borderColor: "white",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          padding: 1,
+          paddingHorizontal: 3,
+          paddingVertical: 0,
+          // borderWidth: 1,
+        },
+        style,
+      ]}
+      {...otherProps}
+    />
+  );
 }
 
 export type TextProps = ThemeProps & DefaultText["props"];
@@ -47,19 +65,44 @@ export type TextProps = ThemeProps & DefaultText["props"];
 export function Text(props: TextProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  return <DefaultText style={[{ color }, style]} {...otherProps} />;
+  return (
+    <DefaultText
+      style={[
+        {
+          color,
+          textAlignVertical: "center",
+          borderColor: "white",
+          paddingRight: 5,
+          // borderWidth: 1,
+        },
+        style,
+      ]}
+      {...otherProps}
+    />
+  );
 }
-
-// export function MonoText(props: TextProps) {
-//   return (
-//     <Text {...props} style={[props.style, { fontFamily: "space-mono" }]} />
-//   );
-// }
 
 export type TextInputProps = ThemeProps & DefaultTextInput["props"];
 
 export function TextInput(props: TextInputProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  return <DefaultTextInput style={[{ color }, style]} {...otherProps} />;
+  return (
+    <DefaultTextInput
+      selectionColor={"white"}
+      underlineColorAndroid={"#ff0000"}
+      placeholder="Enter text"
+      placeholderTextColor={"#64748b"}
+      style={[
+        {
+          color,
+          height: 40,
+          textAlign: "auto",
+          paddingRight: 5,
+        },
+        style,
+      ]}
+      {...otherProps}
+    />
+  );
 }

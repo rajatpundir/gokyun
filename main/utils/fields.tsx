@@ -1,8 +1,7 @@
 import * as React from "react";
 import {
-  View,
-  Text,
-  TextInput,
+  Text as DefaultText,
+  TextInput as DefaultTextInput,
   Switch,
   Pressable,
   Platform,
@@ -11,7 +10,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import Decimal from "decimal.js";
 import moment from "moment";
 
-import { Text as ThemedText } from "../../main/themed";
+import { View, Text, TextInput } from "../../main/themed";
 import { apply, unwrap, Result } from "./prelude";
 import { Action, get_labeled_permissions, State, get_path } from "./commons";
 import { useState } from "react";
@@ -40,7 +39,7 @@ type ComponentProps = {
 };
 
 function Str(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -91,7 +90,7 @@ function Str(
 }
 
 function Lstr(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -142,7 +141,7 @@ function Lstr(
 }
 
 function Clob(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -193,7 +192,7 @@ function Clob(
 }
 
 function I_32(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -249,7 +248,7 @@ function I_32(
 }
 
 function U_32(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -305,7 +304,7 @@ function U_32(
 }
 
 function I_64(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -361,7 +360,7 @@ function I_64(
 }
 
 function U_64(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -417,7 +416,7 @@ function U_64(
 }
 
 function I_Double(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -469,7 +468,7 @@ function I_Double(
 }
 
 function U_Double(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -521,7 +520,7 @@ function U_Double(
 }
 
 function I_Decimal(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -573,7 +572,7 @@ function I_Decimal(
 }
 
 function U_Decimal(
-  props: TextInput["props"] & Text["props"] & ComponentProps
+  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -657,7 +656,9 @@ function Bool(props: Switch["props"] & ComponentProps): JSX.Element | null {
   return null;
 }
 
-function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
+function Date_Field(
+  props: DefaultText["props"] & ComponentProps
+): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [showPicker, setPicker] = useState(false);
@@ -678,7 +679,7 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
               {moment(value.value).format("Do MMM YYYY")}
             </Text>
           </Pressable>
-          <View>
+          <>
             {showPicker && (
               <DateTimePicker
                 mode={"date"}
@@ -698,7 +699,7 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
                 }}
               />
             )}
-          </View>
+          </>
         </>
       );
     } else {
@@ -721,7 +722,9 @@ function Date_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
   return null;
 }
 
-function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
+function Time_Field(
+  props: DefaultText["props"] & ComponentProps
+): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [showPicker, setPicker] = useState(false);
@@ -742,7 +745,7 @@ function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
               {moment(value.value).format("h:mm A")}
             </Text>
           </Pressable>
-          <View>
+          <>
             {showPicker && (
               <DateTimePicker
                 mode={"time"}
@@ -762,7 +765,7 @@ function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
                 }}
               />
             )}
-          </View>
+          </>
         </>
       );
     } else {
@@ -786,7 +789,7 @@ function Time_Field(props: Text["props"] & ComponentProps): JSX.Element | null {
 }
 
 function Timestamp_Field(
-  props: Text["props"] & ComponentProps
+  props: DefaultText["props"] & ComponentProps
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -817,7 +820,7 @@ function Timestamp_Field(
               {moment(value.value).format("Do MMM YYYY, h:mm A")}
             </Text>
           </Pressable>
-          <View>
+          <>
             {showPicker && (
               <DateTimePicker
                 mode={mode as "date" | "time"}
@@ -865,7 +868,7 @@ function Timestamp_Field(
                 }}
               />
             )}
-          </View>
+          </>
         </>
       );
     } else {
@@ -971,7 +974,15 @@ export function Label(props: {
   });
   return apply(get_path(props.state, path_string), (path) => {
     if (unwrap(path)) {
-      return <ThemedText>{path.value.label}</ThemedText>;
+      return (
+        <Text
+          style={{
+            fontWeight: "600",
+          }}
+        >
+          {path.value.label}
+        </Text>
+      );
     }
     return null;
   });
@@ -984,8 +995,8 @@ export function Field(props: {
   path: PathString | string;
   mode?: "read";
   options?:
-    | ["text", TextInput["props"] & Text["props"]]
-    | ["date", Text["props"]]
+    | ["text", DefaultTextInput["props"] & DefaultText["props"]]
+    | ["date", DefaultText["props"]]
     | ["bool", Switch["props"]]
     | [
         "other",
@@ -1574,7 +1585,7 @@ export function Field(props: {
 }
 
 export function Check(
-  props: Text["props"] & {
+  props: DefaultText["props"] & {
     state: State;
     name: string;
     message: string;

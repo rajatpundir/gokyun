@@ -15,7 +15,9 @@ import { HashSet } from "prelude-ts";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetSectionList,
 } from "@gorhom/bottom-sheet";
+import { AntDesign, Octicons } from "@expo/vector-icons";
 
 type State = {
   struct: Struct;
@@ -194,17 +196,25 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     console.log("handleSheetChanges", index);
   }, []);
 
-  const z = "#164e63";
-
   return (
     <BottomSheetModalProvider>
-      <View style={{ flex: 1 }}>
-        <Button
-          onPress={handlePresentModalPress}
-          title="Filter"
-          color="black"
-        />
-        <View style={{ backgroundColor: z }}>
+      <View style={{ flex: 1, flexDirection: "column" }}>
+        <Pressable onPress={handlePresentModalPress}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: "bold",
+              textAlign: "right",
+              padding: 5,
+              paddingRight: 10,
+              borderColor: "white",
+              // borderWidth: 1,
+            }}
+          >
+            Filters
+          </Text>
+        </Pressable>
+        <View>
           <Text>Active</Text>
           <Switch
             value={state.active}
@@ -227,36 +237,97 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           snapPoints={snapPoints}
           index={1}
           backgroundStyle={{
-            backgroundColor: "#155e75",
+            backgroundColor: "black",
+            borderColor: "white",
+            borderWidth: 1,
           }}
         >
-          <View style={{ flex: 1, backgroundColor: z }}>
-            <View style={{ backgroundColor: z }}>
-              <View style={{ backgroundColor: z }}>
-                <Text>Level</Text>
-                <Switch
-                  value={!state.level ? true : false}
-                  onValueChange={(x) =>
-                    dispatch(["level", x ? undefined : new Decimal(0)])
-                  }
-                />
-                <Text>{state.level ? state.level.toString() : "0"}</Text>
-              </View>
-              <Pressable
-                onPress={() => {
-                  dispatch(["filter", "add"]);
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "black",
+              borderColor: "white",
+              borderLeftWidth: 1,
+              borderRightWidth: 1,
+              padding: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              FILTERS
+            </Text>
+
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 10,
+              }}
+            >
+              <Text>Level</Text>
+              <Switch
+                value={!state.level ? true : false}
+                onValueChange={(x) =>
+                  dispatch(["level", x ? undefined : new Decimal(0)])
+                }
+                style={{
+                  padding: 0,
+                  margin: 0,
+                  alignSelf: "flex-end",
+                }}
+              />
+            </View>
+
+            <Pressable
+              onPress={() => {
+                dispatch(["filter", "add"]);
+              }}
+            >
+              {/* <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "200",
+                  textAlign: "right",
+                  padding: 10,
                 }}
               >
-                <Text>Add Filter</Text>
-              </Pressable>
-            </View>
-            <SectionList
+                Add Filter
+              </Text> */}
+              <AntDesign
+                name="plussquareo"
+                size={24}
+                color="white"
+                style={{
+                  alignSelf: "flex-end",
+                  padding: 3,
+                }}
+              />
+            </Pressable>
+
+            <BottomSheetSectionList
               sections={state.filters[1].map((x, index) => ({
                 index: index,
                 data: [x],
               }))}
               renderSectionHeader={({ section: { index } }) => {
-                return <Text>Filter {index}</Text>;
+                return (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "200",
+                      textAlign: "center",
+                      padding: 5,
+                    }}
+                  >
+                    Filter {index + 1}
+                  </Text>
+                );
               }}
               renderItem={(list_item) => {
                 return (
@@ -268,6 +339,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                     dispatch={dispatch}
                   />
                 );
+              }}
+              style={{
+                borderColor: "white",
+                borderTopWidth: 1,
               }}
             />
           </View>

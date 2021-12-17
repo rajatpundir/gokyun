@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, ScrollView, StyleSheet } from "react-native";
+import { Button, Pressable, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View, Text } from "../../main/themed";
@@ -376,14 +376,14 @@ function CreateComponent(props: {
                     const value = path.path[1][1];
                     if (value.type === "other" && value.value.equals(-1)) {
                       return (
-                        <>
+                        <View>
                           <Text>Select User</Text>
                           {props.state.mode === "write" ? (
                             <FontAwesome name="edit" size={24} color="white" />
                           ) : (
                             <></>
                           )}
-                        </>
+                        </View>
                       );
                     } else {
                       return (
@@ -402,7 +402,7 @@ function CreateComponent(props: {
                 return <></>;
               }),
               labels: [
-                ["NICKNAME", [[], "nickname"]],
+                ["Nickname", [[], "nickname"]],
                 ["Knows english", [[], "knows_english"]],
               ],
               render_list_element: (props: {
@@ -455,32 +455,76 @@ function CreateComponent(props: {
                       props.variable.id.equals(props.selected)
                     ) {
                       return (
-                        <View>
-                          <Label {...it} path={"nickname"} />
-                          <Field {...it} path={"nickname"} />
-                          <Label {...it} path={"knows_english"} />
-                          <Field {...it} path={"knows_english"} />
-                          <Button
-                            title="OK"
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            paddingVertical: 5,
+                            marginVertical: 5,
+                          }}
+                        >
+                          <View>
+                            <Label {...it} path={"nickname"} />
+                            <Field {...it} path={"nickname"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"knows_english"} />
+                            <Field {...it} path={"knows_english"} />
+                          </View>
+                          <Pressable
                             onPress={() =>
                               props.disptach_values(props.variable)
                             }
-                          />
+                          >
+                            <Text
+                              style={{
+                                backgroundColor: "aquamarine",
+                                textAlign: "right",
+                                width: "auto",
+                              }}
+                            >
+                              OK
+                            </Text>
+                          </Pressable>
                         </View>
                       );
                     } else {
                       return (
-                        <View>
-                          <Label {...it} path={"nickname"} />
-                          <Field {...it} path={"nickname"} />
-                          <Label {...it} path={"knows_english"} />
-                          <Field {...it} path={"knows_english"} />
-                          <Button
-                            title="OK"
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            paddingVertical: 5,
+                            marginVertical: 5,
+                          }}
+                        >
+                          <View>
+                            <Label {...it} path={"nickname"} />
+                            <Field {...it} path={"nickname"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"knows_english"} />
+                            <Field {...it} path={"knows_english"} />
+                          </View>
+                          <Pressable
                             onPress={() =>
                               props.disptach_values(props.variable)
                             }
-                          />
+                          >
+                            <Text
+                              style={{
+                                backgroundColor: "aquamarine",
+                                textAlign: "right",
+                                width: "auto",
+                              }}
+                            >
+                              OK
+                            </Text>
+                          </Pressable>
                         </View>
                       );
                     }
