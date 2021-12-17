@@ -486,11 +486,9 @@ function CreateComponent(props: {
                           >
                             <Text
                               style={{
-                                backgroundColor: "#155e75",
+                                backgroundColor: "#ff0000",
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
-                                borderWidth: 1,
-                                borderRadius: 8,
                                 fontWeight: "400",
                               }}
                             >
@@ -531,11 +529,9 @@ function CreateComponent(props: {
                           >
                             <Text
                               style={{
-                                backgroundColor: "#155e75",
+                                backgroundColor: "#ff0000",
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
-                                borderWidth: 1,
-                                borderRadius: 8,
                                 fontWeight: "400",
                               }}
                             >

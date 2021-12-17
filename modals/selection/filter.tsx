@@ -230,7 +230,7 @@ function FilterPathComponent(props: {
                   }),
                 ]);
               }}
-              color={props.filter_path.active ? "#71717a" : undefined}
+              color={props.filter_path.active ? "#ff0000" : undefined}
               style={{
                 alignSelf: "center",
                 marginRight: 6,
@@ -1248,6 +1248,7 @@ function FilterPathComponent(props: {
                                 }),
                               ])
                             }
+                            color={value ? "#ff0000" : undefined}
                           />
                         );
                       } else {
@@ -2243,7 +2244,7 @@ export function FilterComponent(props: {
                         [x, value],
                       ]);
                     }}
-                    color={active ? "#71717a" : undefined}
+                    color={active ? "#ff0000" : undefined}
                     style={{
                       alignSelf: "center",
                       marginRight: 6,
@@ -2441,7 +2442,7 @@ export function FilterComponent(props: {
                         [x, value],
                       ]);
                     }}
-                    color={active ? "#71717a" : undefined}
+                    color={active ? "#ff0000" : undefined}
                   />
                   <Text>Created</Text>
                 </View>
@@ -2797,7 +2798,7 @@ export function FilterComponent(props: {
                         [x, value],
                       ]);
                     }}
-                    color={active ? "#71717a" : undefined}
+                    color={active ? "#ff0000" : undefined}
                   />
                   <Text>Updated</Text>
                 </View>

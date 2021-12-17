@@ -89,8 +89,8 @@ export function TextInput(props: TextInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
   return (
     <DefaultTextInput
-      selectionColor={"#a5f3fc"}
-      underlineColorAndroid={"aquamarine"}
+      selectionColor={"#ff0000"}
+      underlineColorAndroid={"#ff0000"}
       placeholder="Enter text"
       placeholderTextColor={"#64748b"}
       style={[

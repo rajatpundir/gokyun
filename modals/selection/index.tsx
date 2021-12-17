@@ -269,7 +269,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 <Checkbox
                   value={state.active}
                   onValueChange={(x) => dispatch(["active", x])}
-                  color={state.active ? "#71717a" : undefined}
+                  color={state.active ? "#ff0000" : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -290,7 +290,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={state.active ? "#71717a" : undefined}
+                  color={state.active ? "#ff0000" : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -305,12 +305,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               >
                 <Text
                   style={{
-                    backgroundColor: "#71717a",
+                    backgroundColor: "#ff0000",
                     alignSelf: "flex-end",
                     paddingHorizontal: 8,
                     paddingVertical: 2,
-                    borderWidth: 1,
-                    borderRadius: 8,
                     fontWeight: "700",
                     marginRight: 1,
                   }}

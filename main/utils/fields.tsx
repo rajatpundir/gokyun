@@ -28,7 +28,7 @@ import { FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
-import Checkbox, { CheckboxComponent, CheckboxProps } from "expo-checkbox";
+import Checkbox, { CheckboxProps } from "expo-checkbox";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -646,11 +646,17 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
               }),
             ])
           }
+          color={value.value ? "#ff0000" : undefined}
         />
       );
     } else {
       return (
-        <Checkbox style={[{}, style]} {...otherProps} value={value.value} />
+        <Checkbox
+          style={[{}, style]}
+          {...otherProps}
+          color={value.value ? "#ff0000" : undefined}
+          value={value.value}
+        />
       );
     }
   }
