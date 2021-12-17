@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Filter, FilterPath } from "../../main/utils/db";
 import { View, Text, TextInput } from "../../main/themed";
 import Decimal from "decimal.js";
@@ -2004,21 +2004,6 @@ export function FilterComponent(props: {
   index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
-  const data = useMemo(
-    () =>
-      Array(50)
-        .fill(0)
-        .map((_, index) => `index-${index}`),
-    []
-  );
-  const renderItem = useCallback(
-    (item) => (
-      <View key={item}>
-        <Text>{item}</Text>
-      </View>
-    ),
-    []
-  );
   return (
     <View
       style={{
