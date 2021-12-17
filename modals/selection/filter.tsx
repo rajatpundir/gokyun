@@ -2903,16 +2903,23 @@ export function FilterComponent(props: {
         }
         return null;
       })}
-      {props.filter.filter_paths.toArray().map((x, index) => {
-        return (
-          <FilterPathComponent
-            key={index}
-            filter_path={x}
-            index={props.index}
-            dispatch={props.dispatch}
-          />
-        );
-      })}
+      <View
+        style={{
+          flexDirection: "column",
+          marginBottom: 1,
+        }}
+      >
+        {props.filter.filter_paths.toArray().map((x, index) => {
+          return (
+            <FilterPathComponent
+              key={index}
+              filter_path={x}
+              index={props.index}
+              dispatch={props.dispatch}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 }

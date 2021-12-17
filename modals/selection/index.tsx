@@ -249,66 +249,72 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               padding: 5,
             }}
           >
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              FILTERS
-            </Text>
-
             <View
               style={{
-                paddingHorizontal: 4,
-                paddingVertical: 4,
-              }}
-            >
-              <Text>Active</Text>
-              <Checkbox
-                value={state.active}
-                onValueChange={(x) => dispatch(["active", x])}
-                style={{
-                  alignSelf: "center",
-                  marginRight: 6,
-                }}
-              />
-            </View>
-
-            <View
-              style={{
-                paddingHorizontal: 4,
-                paddingVertical: 4,
-              }}
-            >
-              <Text>Level</Text>
-              <Checkbox
-                value={!state.level ? true : false}
-                onValueChange={(x) =>
-                  dispatch(["level", x ? undefined : new Decimal(0)])
-                }
-                style={{
-                  alignSelf: "center",
-                  marginRight: 6,
-                }}
-              />
-            </View>
-
-            <Pressable
-              onPress={() => {
-                dispatch(["filter", "add"]);
+                borderBottomWidth: 1,
               }}
             >
               <Text
                 style={{
-                  alignSelf: "flex-end",
-                  padding: 3,
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  textAlign: "center",
                 }}
               >
-                Add Filter
+                FILTERS
               </Text>
-            </Pressable>
+
+              <View
+                style={{
+                  paddingHorizontal: 4,
+                  paddingVertical: 4,
+                }}
+              >
+                <Text>Active</Text>
+                <Checkbox
+                  value={state.active}
+                  onValueChange={(x) => dispatch(["active", x])}
+                  style={{
+                    alignSelf: "center",
+                    marginRight: 6,
+                  }}
+                />
+              </View>
+
+              <View
+                style={{
+                  paddingHorizontal: 4,
+                  paddingVertical: 4,
+                }}
+              >
+                <Text>Unsaved</Text>
+                <Checkbox
+                  value={!state.level ? true : false}
+                  onValueChange={(x) =>
+                    dispatch(["level", x ? undefined : new Decimal(0)])
+                  }
+                  style={{
+                    alignSelf: "center",
+                    marginRight: 6,
+                  }}
+                />
+              </View>
+
+              <Pressable
+                onPress={() => {
+                  dispatch(["filter", "add"]);
+                }}
+              >
+                <Text
+                  style={{
+                    alignSelf: "flex-end",
+                    padding: 3,
+                  }}
+                >
+                  Add Filter
+                </Text>
+              </Pressable>
+            </View>
 
             <BottomSheetSectionList
               sections={state.filters[1].map((x, index) => ({
@@ -368,10 +374,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                     dispatch={dispatch}
                   />
                 );
-              }}
-              style={{
-                borderColor: "white",
-                borderTopWidth: 1,
               }}
             />
           </View>
