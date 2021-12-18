@@ -23,14 +23,12 @@ import {
 
 import NotFoundScreen from "./main/NotFoundScreen";
 
-import { VariableFilter, VariablesModal } from "./main/utils/variables_modal";
 import SelectionModal from "./modals/selection";
 import { Struct, Variable } from "./main/utils/variable";
 
 import Test from "./modals/test";
 
 import Decimal from "decimal.js";
-import { Immutable } from "immer";
 import { Filter } from "./main/utils/db";
 
 import { NativeBaseProvider, Box } from "native-base";
@@ -59,17 +57,6 @@ export type NavigatorParams = {
       disptach_values: (variable: Variable) => void;
     }) => JSX.Element;
     disptach_values: (variable: Variable) => void;
-  };
-  VariablesModal: {
-    struct: Struct;
-    filter: VariableFilter;
-    selected: Decimal;
-    set_selected: (selected: Decimal) => void;
-    render_item: (
-      variable: Variable,
-      selected: Immutable<Decimal>,
-      set_selected: (selected: Decimal) => void
-    ) => JSX.Element;
   };
   Test: {
     id: number;
@@ -137,15 +124,6 @@ export default function App() {
                 component={SelectionModal}
                 options={{
                   title: "Select variable",
-                  headerStyle: { backgroundColor: "black" },
-                  headerTintColor: "white",
-                }}
-              />
-              <Stack.Screen
-                name="VariablesModal"
-                component={VariablesModal}
-                options={{
-                  title: "Select your Variable!",
                   headerStyle: { backgroundColor: "black" },
                   headerTintColor: "white",
                 }}
