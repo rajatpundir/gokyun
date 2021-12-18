@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { Draft } from "immer";
 import { useEffect } from "react";
 import { FlatList } from "react-native-gesture-handler";
@@ -20,6 +20,15 @@ import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 
+// Fix layout of field path filters
+// Select field operations
+// Select field paths as values
+// Ordering
+// Limit Offset
+// Custom outer filter fields
+// Create / Update Test component
+// List Test component
+
 type State = {
   struct: Struct;
   active: boolean;
@@ -37,32 +46,6 @@ export type Action =
   | ["filter", "add"]
   | ["filter", "remove", number]
   | ["filter", "replace", Filter]
-  | [
-      "filters",
-      Filter,
-      "id",
-      [
-        boolean,
-        (
-          | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-          | ["between" | "not_between", [Decimal, Decimal]]
-          | undefined
-        )
-      ]
-    ]
-  | [
-      "filters",
-      Filter,
-      "created_at" | "updated_at",
-      [
-        boolean,
-        (
-          | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-          | ["between" | "not_between", [Date, Date]]
-          | undefined
-        )
-      ]
-    ]
   | ["filters", Filter, "remove", FilterPath]
   | ["filters", Filter, "replace", FilterPath];
 
@@ -123,19 +106,6 @@ export function reducer(state: Draft<State>, action: Action) {
       if (result.isSome()) {
         state.filters[1] = apply(result.get(), (filter) => {
           switch (action[2]) {
-            case "id": {
-              filter.id[0] = action[3][0];
-              filter.id[1] = action[3][1];
-              break;
-            }
-            case "created_at": {
-              filter.created_at = action[3];
-              break;
-            }
-            case "updated_at": {
-              filter.updated_at = action[3];
-              break;
-            }
             case "replace": {
               filter.filter_paths = filter.filter_paths.add(action[3]);
               break;
@@ -213,7 +183,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             style={{
               alignSelf: "flex-end",
               fontSize: 15,
-              fontWeight: "bold",
+              fontWeight: "500",
               textAlign: "center",
               paddingHorizontal: 10,
               paddingVertical: 2,
@@ -243,7 +213,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           snapPoints={["60%", "100%"]}
           index={0}
           backgroundStyle={{
-            backgroundColor: "black",
+            backgroundColor: "#111827",
             borderColor: "white",
             borderWidth: 1,
           }}
@@ -252,7 +222,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             style={{
               flex: 1,
               flexDirection: "column",
-              backgroundColor: "black",
+              backgroundColor: "#111827",
               borderColor: "white",
               borderLeftWidth: 1,
               borderRightWidth: 1,
@@ -262,6 +232,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             <View
               style={{
                 borderBottomWidth: 1,
+                backgroundColor: "#111827",
               }}
             >
               <Text
@@ -278,6 +249,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 style={{
                   paddingHorizontal: 4,
                   paddingVertical: 4,
+                  backgroundColor: "#111827",
                 }}
               >
                 <Text>Active</Text>
@@ -297,6 +269,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   paddingHorizontal: 4,
                   paddingVertical: 4,
                   marginBottom: 2,
+                  backgroundColor: "#111827",
                 }}
               >
                 <Text>Unsaved</Text>
@@ -305,7 +278,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={state.active ? "#ff0000" : undefined}
+                  color={!state.level ? "#ff0000" : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -324,8 +297,9 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                     alignSelf: "flex-end",
                     paddingHorizontal: 8,
                     paddingVertical: 2,
-                    fontWeight: "700",
+                    fontWeight: "600",
                     marginRight: 1,
+                    color: "black",
                   }}
                 >
                   Add Filter
@@ -340,11 +314,16 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               }))}
               renderSectionHeader={(list_item) => {
                 return (
-                  <View>
+                  <View
+                    style={{
+                      backgroundColor: "#111827",
+                    }}
+                  >
                     <View
                       style={{
                         justifyContent: "flex-start",
                         paddingHorizontal: 0,
+                        backgroundColor: "#111827",
                       }}
                     >
                       <Text

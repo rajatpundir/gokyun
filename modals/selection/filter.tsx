@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Filter, FilterPath } from "../../main/utils/db";
-import { View, Text, TextInput } from "../../main/themed";
+import {
+  View as DefaultView,
+  ViewProps,
+  Text,
+  TextInput,
+} from "../../main/themed";
 import Decimal from "decimal.js";
 import { Platform, Pressable } from "react-native";
 import { apply, is_decimal } from "../../main/utils/prelude";
@@ -10,6 +15,29 @@ import { Entypo } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+
+function View(props: ViewProps) {
+  const { style, ...otherProps } = props;
+  return (
+    <DefaultView
+      style={[
+        {
+          backgroundColor: "#111827",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingHorizontal: 3,
+          marginBottom: 1,
+          paddingVertical: 0,
+          borderColor: "white",
+          // borderWidth: 1,
+        },
+        style,
+      ]}
+      {...otherProps}
+    />
+  );
+}
 
 export function FilterComponent(props: {
   init_filter: Filter;
@@ -22,7 +50,6 @@ export function FilterComponent(props: {
       style={{
         flex: 1,
         flexDirection: "column",
-        backgroundColor: "black",
         borderColor: "white",
         borderBottomWidth: 1,
       }}
@@ -40,10 +67,12 @@ export function FilterComponent(props: {
           <Pressable
             onPress={() =>
               props.dispatch([
-                "filters",
-                props.filter,
-                "id",
-                [false, ["==", new Decimal(0)]],
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.id = [false, ["==", new Decimal(0)]];
+                  return it;
+                }),
               ])
             }
             style={{
@@ -62,10 +91,15 @@ export function FilterComponent(props: {
           <Pressable
             onPress={() =>
               props.dispatch([
-                "filters",
-                props.filter,
-                "created_at",
-                [false, ["between", [new Date(0), new Date(0)]]],
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.created_at = [
+                    false,
+                    ["between", [new Date(0), new Date(0)]],
+                  ];
+                  return it;
+                }),
               ])
             }
             style={{
@@ -84,10 +118,15 @@ export function FilterComponent(props: {
           <Pressable
             onPress={() =>
               props.dispatch([
-                "filters",
-                props.filter,
-                "updated_at",
-                [false, ["between", [new Date(0), new Date(0)]]],
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.updated_at = [
+                    false,
+                    ["between", [new Date(0), new Date(0)]],
+                  ];
+                  return it;
+                }),
               ])
             }
             style={{
@@ -285,7 +324,7 @@ export function FilterComponent(props: {
             return null;
           })}
           {apply(undefined, () => {
-            const [active, value] = props.filter.id;
+            const value = props.filter.id[1];
             if (value !== undefined) {
               return (
                 <View
@@ -446,7 +485,7 @@ export function FilterComponent(props: {
             return null;
           })}
           {apply(undefined, () => {
-            const [active, value] = props.filter.created_at;
+            const value = props.filter.created_at[1];
             const [showPicker1, setPicker1] = useState(false);
             const [mode1, setMode1] = useState("date");
             let [date1, setDate1] = useState(
@@ -571,10 +610,15 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "created_at",
-                                          [active, [op, date1 || new Date()]],
+                                          "filter",
+                                          "replace",
+                                          apply(props.filter, (it) => {
+                                            it.created_at[1] = [
+                                              op,
+                                              date1 || new Date(),
+                                            ];
+                                            return it;
+                                          }),
                                         ]);
                                         setMode1("date");
                                       }
@@ -644,20 +688,20 @@ export function FilterComponent(props: {
                                             return it;
                                           })
                                         );
+
                                         props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "created_at",
-                                          [
-                                            active,
-                                            [
+                                          "filter",
+                                          "replace",
+                                          apply(props.filter, (it) => {
+                                            it.created_at[1] = [
                                               op,
                                               [
                                                 date1 || new Date(),
                                                 value[1][1],
                                               ],
-                                            ],
-                                          ],
+                                            ];
+                                            return it;
+                                          }),
                                         ]);
                                         setMode1("date");
                                       }
@@ -721,19 +765,18 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "created_at",
-                                          [
-                                            active,
-                                            [
+                                          "filter",
+                                          "replace",
+                                          apply(props.filter, (it) => {
+                                            it.created_at[1] = [
                                               op,
                                               [
                                                 value[1][0],
                                                 date2 || new Date(),
                                               ],
-                                            ],
-                                          ],
+                                            ];
+                                            return it;
+                                          }),
                                         ]);
                                         setMode2("date");
                                       }
@@ -823,7 +866,7 @@ export function FilterComponent(props: {
             return null;
           })}
           {apply(undefined, () => {
-            const [active, value] = props.filter.updated_at;
+            const value = props.filter.updated_at[1];
             const [showPicker1, setPicker1] = useState(false);
             const [mode1, setMode1] = useState("date");
             let [date1, setDate1] = useState(
@@ -948,10 +991,15 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "updated_at",
-                                          [active, [op, date1 || new Date()]],
+                                          "filter",
+                                          "replace",
+                                          apply(props.filter, (it) => {
+                                            it.updated_at[1] = [
+                                              op,
+                                              date1 || new Date(),
+                                            ];
+                                            return it;
+                                          }),
                                         ]);
                                         setMode1("date");
                                       }
@@ -1022,19 +1070,18 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "updated_at",
-                                          [
-                                            active,
-                                            [
+                                          "filter",
+                                          "replace",
+                                          apply(props.filter, (it) => {
+                                            it.updated_at[1] = [
                                               op,
                                               [
                                                 date1 || new Date(),
                                                 value[1][1],
                                               ],
-                                            ],
-                                          ],
+                                            ];
+                                            return it;
+                                          }),
                                         ]);
                                         setMode1("date");
                                       }
@@ -1098,19 +1145,18 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "updated_at",
-                                          [
-                                            active,
-                                            [
+                                          "filter",
+                                          "replace",
+                                          apply(props.filter, (it) => {
+                                            it.updated_at[1] = [
                                               op,
                                               [
                                                 value[1][0],
                                                 date2 || new Date(),
                                               ],
-                                            ],
-                                          ],
+                                            ];
+                                            return it;
+                                          }),
                                         ]);
                                         setMode2("date");
                                       }
