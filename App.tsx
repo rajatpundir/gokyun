@@ -34,6 +34,7 @@ import { Immutable } from "immer";
 import { Filter } from "./main/utils/db";
 
 import { NativeBaseProvider, Box } from "native-base";
+import { HashSet } from "prelude-ts";
 
 declare global {
   namespace ReactNavigation {
@@ -50,7 +51,7 @@ export type NavigatorParams = {
     struct: Struct;
     active: boolean;
     level: Decimal | undefined;
-    filters: [Filter, ReadonlyArray<Filter>];
+    filters: [Filter, HashSet<Filter>];
     limit_offset: [Decimal, Decimal] | undefined;
     render_list_element: (props: {
       selected: number;

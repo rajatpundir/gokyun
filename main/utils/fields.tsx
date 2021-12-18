@@ -24,7 +24,7 @@ import {
 } from "./variable";
 import { get_struct } from "./schema";
 import { HashSet } from "prelude-ts";
-import { FilterPath } from "./db";
+import { Filter, FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
@@ -928,18 +928,19 @@ function Other_Field(
                 active: true,
                 level: undefined,
                 filters: [
-                  {
-                    id: [false, undefined],
-                    created_at: [false, undefined],
-                    updated_at: [false, undefined],
-                    filter_paths: get_other_filter_paths(
+                  new Filter(
+                    0,
+                    [false, undefined],
+                    [false, undefined],
+                    [false, undefined],
+                    get_other_filter_paths(
                       props.struct,
                       props.state,
                       props.path,
                       props.labels
-                    ),
-                  },
-                  [],
+                    )
+                  ),
+                  HashSet.of(),
                 ],
                 limit_offset: undefined,
                 render_list_element: props.render_list_element,

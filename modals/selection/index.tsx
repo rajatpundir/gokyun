@@ -9,8 +9,7 @@ import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
-import { get_array_item, unwrap } from "../../main/utils/prelude";
-import { FilterComponent } from "./filter";
+import { apply, unwrap } from "../../main/utils/prelude";
 import { HashSet } from "prelude-ts";
 import {
   BottomSheetModal,
@@ -19,12 +18,13 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
+import { FilterComponent } from "./filter";
 
 type State = {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
-  filters: [Filter, ReadonlyArray<Filter>];
+  filters: [Filter, HashSet<Filter>];
   limit_offset: [Decimal, Decimal] | undefined;
   variables: Array<Variable>;
 };
@@ -36,9 +36,10 @@ export type Action =
   | ["limit_offset", [Decimal, Decimal] | undefined]
   | ["filter", "add"]
   | ["filter", "remove", number]
+  | ["filter", "replace", Filter]
   | [
       "filters",
-      number,
+      Filter,
       "id",
       [
         boolean,
@@ -51,7 +52,7 @@ export type Action =
     ]
   | [
       "filters",
-      number,
+      Filter,
       "created_at" | "updated_at",
       [
         boolean,
@@ -62,8 +63,8 @@ export type Action =
         )
       ]
     ]
-  | ["filters", number, "remove", FilterPath]
-  | ["filters", number, "replace", FilterPath];
+  | ["filters", Filter, "remove", FilterPath]
+  | ["filters", Filter, "replace", FilterPath];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -86,56 +87,70 @@ export function reducer(state: Draft<State>, action: Action) {
     case "filter": {
       switch (action[1]) {
         case "add": {
-          state.filters[1].push({
-            id: [false, undefined],
-            created_at: [false, undefined],
-            updated_at: [false, undefined],
-            filter_paths: HashSet.of(),
-          });
+          state.filters[1] = state.filters[1].add(
+            new Filter(
+              1 +
+                Math.max(-1, ...state.filters[1].map((x) => x.index).toArray()),
+              [false, undefined],
+              [false, undefined],
+              [false, undefined],
+              HashSet.of()
+            )
+          );
           break;
         }
         case "remove": {
-          if (action[2] > -1 && action[2] < state.filters[1].length) {
-            state.filters[1] = [
-              ...state.filters[1].splice(0, action[2]),
-              ...state.filters[1].splice(action[2] + 1),
-            ];
+          const result = state.filters[1].findAny((x) => x.index === action[2]);
+          if (result.isSome()) {
+            state.filters[1] = state.filters[1].remove(result.get());
           }
           break;
+        }
+        case "replace": {
+          state.filters[1] = state.filters[1].remove(action[2]);
+          state.filters[1] = state.filters[1].add(action[2]);
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = action[1];
+          return _exhaustiveCheck;
         }
       }
       break;
     }
     case "filters": {
-      const result = get_array_item(state.filters[1], action[1]);
-      if (unwrap(result)) {
-        const filter = result.value;
-        switch (action[2]) {
-          case "id": {
-            filter.id = action[3];
-            break;
+      const result = state.filters[1].findAny((x) => x === action[1]);
+      if (result.isSome()) {
+        state.filters[1] = apply(result.get(), (filter) => {
+          switch (action[2]) {
+            case "id": {
+              filter.id[0] = action[3][0];
+              filter.id[1] = action[3][1];
+              break;
+            }
+            case "created_at": {
+              filter.created_at = action[3];
+              break;
+            }
+            case "updated_at": {
+              filter.updated_at = action[3];
+              break;
+            }
+            case "replace": {
+              filter.filter_paths = filter.filter_paths.add(action[3]);
+              break;
+            }
+            case "remove": {
+              filter.filter_paths = filter.filter_paths.remove(action[3]);
+              break;
+            }
+            default: {
+              const _exhaustiveCheck: never = action[2];
+              return _exhaustiveCheck;
+            }
           }
-          case "created_at": {
-            filter.created_at = action[3];
-            break;
-          }
-          case "updated_at": {
-            filter.updated_at = action[3];
-            break;
-          }
-          case "replace": {
-            filter.filter_paths = filter.filter_paths.add(action[3]);
-            break;
-          }
-          case "remove": {
-            filter.filter_paths = filter.filter_paths.remove(action[3]);
-            break;
-          }
-          default: {
-            const _exhaustiveCheck: never = action[2];
-            return _exhaustiveCheck;
-          }
-        }
+          return state.filters[1].add(filter);
+        });
       }
       break;
     }
@@ -319,7 +334,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             </View>
 
             <BottomSheetSectionList
-              sections={state.filters[1].map((x, index) => ({
+              sections={state.filters[1].toArray().map((x, index) => ({
                 index: index,
                 data: [x],
               }))}

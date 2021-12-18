@@ -2131,7 +2131,7 @@ export async function get_variables(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
-  filters: [Filter, ReadonlyArray<Filter>],
+  filters: [Filter, HashSet<Filter>],
   limit_offset: [Decimal, Decimal] | undefined
 ): Promise<Result<Array<Variable>>> {
   const variable_filters = get_variable_filters(active, level, filters);
@@ -2338,13 +2338,14 @@ export async function get_variable(
       active,
       level,
       [
-        {
-          id: [true, ["==", id]],
-          created_at: [false, undefined],
-          updated_at: [false, undefined],
-          filter_paths: filter_paths,
-        },
-        [],
+        new Filter(
+          0,
+          [true, ["==", id]],
+          [false, undefined],
+          [false, undefined],
+          filter_paths
+        ),
+        HashSet.of(),
       ],
       [new Decimal(1), new Decimal(0)]
     );
@@ -2551,7 +2552,8 @@ export class FilterPath {
   }
 }
 
-export type Filter = {
+export class Filter {
+  index: number;
   id: [
     boolean,
     (
@@ -2577,12 +2579,62 @@ export type Filter = {
     )
   ];
   filter_paths: HashSet<FilterPath>;
-};
+
+  constructor(
+    index: number,
+    id: [
+      boolean,
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
+        | ["between" | "not_between", [Decimal, Decimal]]
+        | undefined
+      )
+    ],
+    created_at: [
+      boolean,
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      )
+    ],
+    updated_at: [
+      boolean,
+      (
+        | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
+        | ["between" | "not_between", [Date, Date]]
+        | undefined
+      )
+    ],
+    filter_paths: HashSet<FilterPath>
+  ) {
+    this.index = index;
+    this.id = id;
+    this.created_at = created_at;
+    this.updated_at = updated_at;
+    this.filter_paths = filter_paths;
+  }
+
+  equals(other: Filter): boolean {
+    if (!other) {
+      return false;
+    }
+    return this.index === other.index;
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return "";
+  }
+}
 
 function get_variable_filters(
   active: boolean,
   level: Decimal | undefined,
-  filters: [Filter, ReadonlyArray<Filter>]
+  filters: [Filter, HashSet<Filter>]
 ): {
   active: boolean;
   level: Decimal | undefined;
@@ -2633,7 +2685,7 @@ function get_variable_filters(
         }
         return undefined;
       }),
-      filters[1].map((x) => {
+      filters[1].toArray().map((x) => {
         if (x.id[0]) {
           return x.id[1];
         }
@@ -2647,7 +2699,7 @@ function get_variable_filters(
         }
         return undefined;
       }),
-      filters[1].map((x) => {
+      filters[1].toArray().map((x) => {
         if (x.created_at[0]) {
           return x.created_at[1];
         }
@@ -2661,7 +2713,7 @@ function get_variable_filters(
         }
         return undefined;
       }),
-      filters[1].map((x) => {
+      filters[1].toArray().map((x) => {
         if (x.updated_at[0]) {
           return x.updated_at[1];
         }
@@ -2672,7 +2724,7 @@ function get_variable_filters(
 }
 
 function transform_filters(
-  filters: ReadonlyArray<Filter>
+  filters: HashSet<Filter>
 ): Array<[string, PathFilter]> {
   const get_flattened_path = (x: PathString) => [...x[0], x[1]];
   const used_filter_paths: HashSet<FilterPath> = apply(
@@ -3251,9 +3303,12 @@ function transform_filters(
 }
 
 function get_path_filters(
-  filters: [Filter, ReadonlyArray<Filter>]
+  filters: [Filter, HashSet<Filter>]
 ): [ReadonlyArray<[string, PathFilter]>, ReadonlyArray<[string, PathFilter]>] {
-  return [transform_filters([filters[0]]), transform_filters(filters[1])];
+  return [
+    transform_filters(HashSet.of(filters[0])),
+    transform_filters(filters[1]),
+  ];
 }
 
 ///////////////////////////////////
