@@ -404,6 +404,8 @@ function CreateComponent(props: {
               labels: [
                 ["Nickname", [[], "nickname"]],
                 ["Knows english", [[], "knows_english"]],
+                ["Mobile", [[], "mobile"]],
+                ["Product Count", [[], "product_count"]],
               ],
               render_list_element: (props: {
                 selected: number;
@@ -474,6 +476,14 @@ function CreateComponent(props: {
                             <Label {...it} path={"knows_english"} />
                             <Field {...it} path={"knows_english"} />
                           </View>
+                          <View style={{ backgroundColor: "#111827" }}>
+                            <Label {...it} path={"mobile"} />
+                            <Field {...it} path={"mobile"} />
+                          </View>
+                          <View style={{ backgroundColor: "#111827" }}>
+                            <Label {...it} path={"product_count"} />
+                            <Field {...it} path={"product_count"} />
+                          </View>
                           <Pressable
                             onPress={() =>
                               props.disptach_values(props.variable)
@@ -516,6 +526,14 @@ function CreateComponent(props: {
                           <View>
                             <Label {...it} path={"knows_english"} />
                             <Field {...it} path={"knows_english"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"mobile"} />
+                            <Field {...it} path={"mobile"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"product_count"} />
+                            <Field {...it} path={"product_count"} />
                           </View>
                           <Pressable
                             onPress={() =>

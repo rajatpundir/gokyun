@@ -3338,6 +3338,10 @@ async function load_test_data() {
               [],
               ["knows_english", { type: "bool", value: true }],
             ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(5) }],
+            ]),
           ])
         ),
         new Variable(
@@ -3358,6 +3362,10 @@ async function load_test_data() {
             new Path("KNOWS ENGLISH", [
               [],
               ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
             ]),
           ])
         ),

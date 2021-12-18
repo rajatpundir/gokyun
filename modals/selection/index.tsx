@@ -240,8 +240,8 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         />
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          snapPoints={["25%", "50%", "100%"]}
-          index={1}
+          snapPoints={["60%", "100%"]}
+          index={0}
           backgroundStyle={{
             backgroundColor: "black",
             borderColor: "white",
@@ -380,6 +380,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   />
                 );
               }}
+              keyExtractor={(list_item) => list_item.index.toString()}
             />
           </View>
         </BottomSheetModal>
