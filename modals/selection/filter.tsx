@@ -382,90 +382,132 @@ export function FilterComponent(props: {
             return null;
           })}
         </View>
-        {apply(undefined, () => {
-          const [active, value] = props.filter.created_at;
-          const [showPicker1, setPicker1] = useState(false);
-          const [mode1, setMode1] = useState("date");
-          let [date1, setDate1] = useState(
-            apply(new Date(), (it) => {
-              if (value !== undefined) {
-                const op = value[0];
-                switch (op) {
-                  case "==":
-                  case "!=":
-                  case ">=":
-                  case "<=":
-                  case ">":
-                  case "<": {
-                    return new Date(value[1].getTime());
-                  }
-                  case "between":
-                  case "not_between": {
-                    return new Date(value[1][0].getTime());
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = op;
-                    return _exhaustiveCheck;
-                  }
-                }
-              }
-              return it;
-            })
-          );
-          const [showPicker2, setPicker2] = useState(false);
-          const [mode2, setMode2] = useState("date");
-          let [date2, setDate2] = useState(
-            apply(new Date(), (it) => {
-              if (value !== undefined) {
-                const op = value[0];
-                switch (op) {
-                  case "==":
-                  case "!=":
-                  case ">=":
-                  case "<=":
-                  case ">":
-                  case "<": {
-                    return it;
-                  }
-                  case "between":
-                  case "not_between": {
-                    return new Date(value[1][1].getTime());
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = op;
-                    return _exhaustiveCheck;
-                  }
-                }
-              }
-              return it;
-            })
-          );
-          if (value !== undefined) {
-            return (
-              <View
-                style={{
-                  justifyContent: "flex-start",
-                }}
-              >
-                <View>
-                  <Checkbox
-                    value={active}
-                    onValueChange={(x) => {
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "created_at",
-                        [x, value],
-                      ]);
-                    }}
-                    color={active ? "#ff0000" : undefined}
-                  />
-                  <Text>Created</Text>
-                </View>
+
+        <View
+          style={{
+            flexDirection: "column",
+          }}
+        >
+          {apply(undefined, () => {
+            const [active, value] = props.filter.created_at;
+            if (value !== undefined) {
+              return (
                 <View
                   style={{
-                    flexDirection: "row-reverse",
-                    flexGrow: 999,
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View>
+                    <Checkbox
+                      value={active}
+                      onValueChange={(x) =>
+                        props.dispatch([
+                          "filter",
+                          "replace",
+                          apply(props.filter, (it) => {
+                            it.created_at[0] = x;
+                            return it;
+                          }),
+                        ])
+                      }
+                      color={active ? "#ff0000" : undefined}
+                      style={{
+                        alignSelf: "center",
+                        marginRight: 6,
+                      }}
+                    />
+                    <Text>Created</Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row-reverse",
+                      flexGrow: 1,
+                      alignSelf: "center",
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        props.dispatch([
+                          "filter",
+                          "replace",
+                          apply(props.filter, (it) => {
+                            it.created_at[1] = undefined;
+                            return it;
+                          }),
+                        ])
+                      }
+                    >
+                      <Entypo name="cross" size={24} color="white" />
+                    </Pressable>
+                  </View>
+                </View>
+              );
+            }
+            return null;
+          })}
+          {apply(undefined, () => {
+            const [active, value] = props.filter.created_at;
+            const [showPicker1, setPicker1] = useState(false);
+            const [mode1, setMode1] = useState("date");
+            let [date1, setDate1] = useState(
+              apply(new Date(), (it) => {
+                if (value !== undefined) {
+                  const op = value[0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return new Date(value[1].getTime());
+                    }
+                    case "between":
+                    case "not_between": {
+                      return new Date(value[1][0].getTime());
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = op;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                return it;
+              })
+            );
+            const [showPicker2, setPicker2] = useState(false);
+            const [mode2, setMode2] = useState("date");
+            let [date2, setDate2] = useState(
+              apply(new Date(), (it) => {
+                if (value !== undefined) {
+                  const op = value[0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return it;
+                    }
+                    case "between":
+                    case "not_between": {
+                      return new Date(value[1][1].getTime());
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = op;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                return it;
+              })
+            );
+            if (value !== undefined) {
+              return (
+                <View
+                  style={{
+                    justifyContent: "space-between",
                   }}
                 >
                   {apply(undefined, () => {
@@ -607,7 +649,7 @@ export function FilterComponent(props: {
                                           props.filter,
                                           "created_at",
                                           [
-                                            true,
+                                            active,
                                             [
                                               op,
                                               [
@@ -683,7 +725,7 @@ export function FilterComponent(props: {
                                           props.filter,
                                           "created_at",
                                           [
-                                            true,
+                                            active,
                                             [
                                               op,
                                               [
@@ -713,115 +755,136 @@ export function FilterComponent(props: {
                     }
                   })}
                 </View>
+              );
+            }
+            return null;
+          })}
+        </View>
+        <View
+          style={{
+            flexDirection: "column",
+          }}
+        >
+          {apply(undefined, () => {
+            const [active, value] = props.filter.updated_at;
+            if (value !== undefined) {
+              return (
                 <View
                   style={{
-                    flexDirection: "row-reverse",
-                    flexGrow: 1,
-                    alignSelf: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <Pressable
-                    onPress={() =>
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "created_at",
-                        [active, undefined],
-                      ])
-                    }
-                  >
-                    <Entypo name="cross" size={24} color="white" />
-                  </Pressable>
-                </View>
-              </View>
-            );
-          }
-          return null;
-        })}
-        {apply(undefined, () => {
-          const [active, value] = props.filter.updated_at;
-          const [showPicker1, setPicker1] = useState(false);
-          const [mode1, setMode1] = useState("date");
-          let [date1, setDate1] = useState(
-            apply(new Date(), (it) => {
-              if (value !== undefined) {
-                const op = value[0];
-                switch (op) {
-                  case "==":
-                  case "!=":
-                  case ">=":
-                  case "<=":
-                  case ">":
-                  case "<": {
-                    return new Date(value[1].getTime());
-                  }
-                  case "between":
-                  case "not_between": {
-                    return new Date(value[1][0].getTime());
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = op;
-                    return _exhaustiveCheck;
-                  }
-                }
-              }
-              return it;
-            })
-          );
-          const [showPicker2, setPicker2] = useState(false);
-          const [mode2, setMode2] = useState("date");
-          let [date2, setDate2] = useState(
-            apply(new Date(), (it) => {
-              if (value !== undefined) {
-                const op = value[0];
-                switch (op) {
-                  case "==":
-                  case "!=":
-                  case ">=":
-                  case "<=":
-                  case ">":
-                  case "<": {
-                    return it;
-                  }
-                  case "between":
-                  case "not_between": {
-                    return new Date(value[1][1].getTime());
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = op;
-                    return _exhaustiveCheck;
-                  }
-                }
-              }
-              return it;
-            })
-          );
-          if (value !== undefined) {
-            return (
-              <View
-                style={{
-                  justifyContent: "flex-start",
-                }}
-              >
-                <View>
-                  <Checkbox
-                    value={active}
-                    onValueChange={(x) => {
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "updated_at",
-                        [x, value],
-                      ]);
+                  <View>
+                    <Checkbox
+                      value={active}
+                      onValueChange={(x) =>
+                        props.dispatch([
+                          "filter",
+                          "replace",
+                          apply(props.filter, (it) => {
+                            it.updated_at[0] = x;
+                            return it;
+                          }),
+                        ])
+                      }
+                      color={active ? "#ff0000" : undefined}
+                      style={{
+                        alignSelf: "center",
+                        marginRight: 6,
+                      }}
+                    />
+                    <Text>Updated</Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row-reverse",
+                      flexGrow: 1,
+                      alignSelf: "center",
                     }}
-                    color={active ? "#ff0000" : undefined}
-                  />
-                  <Text>Updated</Text>
+                  >
+                    <Pressable
+                      onPress={() =>
+                        props.dispatch([
+                          "filter",
+                          "replace",
+                          apply(props.filter, (it) => {
+                            it.updated_at[1] = undefined;
+                            return it;
+                          }),
+                        ])
+                      }
+                    >
+                      <Entypo name="cross" size={24} color="white" />
+                    </Pressable>
+                  </View>
                 </View>
+              );
+            }
+            return null;
+          })}
+          {apply(undefined, () => {
+            const [active, value] = props.filter.updated_at;
+            const [showPicker1, setPicker1] = useState(false);
+            const [mode1, setMode1] = useState("date");
+            let [date1, setDate1] = useState(
+              apply(new Date(), (it) => {
+                if (value !== undefined) {
+                  const op = value[0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return new Date(value[1].getTime());
+                    }
+                    case "between":
+                    case "not_between": {
+                      return new Date(value[1][0].getTime());
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = op;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                return it;
+              })
+            );
+            const [showPicker2, setPicker2] = useState(false);
+            const [mode2, setMode2] = useState("date");
+            let [date2, setDate2] = useState(
+              apply(new Date(), (it) => {
+                if (value !== undefined) {
+                  const op = value[0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return it;
+                    }
+                    case "between":
+                    case "not_between": {
+                      return new Date(value[1][1].getTime());
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = op;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                return it;
+              })
+            );
+            if (value !== undefined) {
+              return (
                 <View
                   style={{
-                    flexDirection: "row-reverse",
-                    flexGrow: 999,
+                    justifyContent: "space-between",
                   }}
                 >
                   {apply(undefined, () => {
@@ -963,7 +1026,7 @@ export function FilterComponent(props: {
                                           props.filter,
                                           "updated_at",
                                           [
-                                            true,
+                                            active,
                                             [
                                               op,
                                               [
@@ -1039,7 +1102,7 @@ export function FilterComponent(props: {
                                           props.filter,
                                           "updated_at",
                                           [
-                                            true,
+                                            active,
                                             [
                                               op,
                                               [
@@ -1069,31 +1132,11 @@ export function FilterComponent(props: {
                     }
                   })}
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row-reverse",
-                    flexGrow: 1,
-                    alignSelf: "center",
-                  }}
-                >
-                  <Pressable
-                    onPress={() =>
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "updated_at",
-                        [active, undefined],
-                      ])
-                    }
-                  >
-                    <Entypo name="cross" size={24} color="white" />
-                  </Pressable>
-                </View>
-              </View>
-            );
-          }
-          return null;
-        })}
+              );
+            }
+            return null;
+          })}
+        </View>
         {props.filter.filter_paths.toArray().map((x, index) => {
           return (
             <FilterPathComponent
