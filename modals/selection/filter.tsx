@@ -15,6 +15,8 @@ import { Entypo } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { Picker } from "@react-native-picker/picker";
+import { flexbox } from "native-base/lib/typescript/theme/styled-system";
 
 function View(props: ViewProps) {
   const { style, ...otherProps } = props;
@@ -267,6 +269,7 @@ export function FilterComponent(props: {
           }}
         >
           {apply(undefined, () => {
+            const [selectedLanguage, setSelectedLanguage] = useState("java");
             const [active, value] = props.filter.id;
             if (value !== undefined) {
               return (
@@ -275,7 +278,7 @@ export function FilterComponent(props: {
                     justifyContent: "space-between",
                   }}
                 >
-                  <View>
+                  <View style={{ justifyContent: "flex-start" }}>
                     <Checkbox
                       value={active}
                       onValueChange={(x) =>
@@ -295,6 +298,108 @@ export function FilterComponent(props: {
                       }}
                     />
                     <Text>ID</Text>
+                    {apply(undefined, () => {
+                      const value = props.filter.id[1];
+                      if (value !== undefined) {
+                        const v1 = apply(value[0], () => {
+                          switch (value[0]) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return value[1];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1][0];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = value[0];
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        const v2 = apply(value[0], () => {
+                          switch (value[0]) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return value[1];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1][1];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = value[0];
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        return (
+                          <Picker
+                            selectedValue={selectedLanguage}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=":
+                                case ">=":
+                                case "<=":
+                                case ">":
+                                case "<": {
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.id[1] = [op, v1];
+                                      return it;
+                                    }),
+                                  ]);
+                                  setSelectedLanguage(op);
+                                  break;
+                                }
+                                case "between":
+                                case "not_between": {
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.id[1] = [op, [v1, v2]];
+                                      return it;
+                                    }),
+                                  ]);
+                                  setSelectedLanguage(op);
+                                  break;
+                                }
+                              }
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                            <Picker.Item label="greater or equals" value=">=" />
+                            <Picker.Item label="less or equals" value="<=" />
+                            <Picker.Item label="greater than" value=">" />
+                            <Picker.Item label="less than" value="<" />
+                            <Picker.Item label="between" value="between" />
+                            <Picker.Item
+                              label="not between"
+                              value="not_between"
+                            />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
+                    })}
                   </View>
                   <View
                     style={{

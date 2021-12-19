@@ -23,6 +23,7 @@ import { FilterComponent } from "./filter";
 // Fix layout of field path filters
 // Select field operations
 // Select field paths as values
+// id, created_at and updated_at in having clause
 // Ordering
 // Limit Offset
 // Custom outer filter fields
@@ -130,12 +131,6 @@ export function reducer(state: Draft<State>, action: Action) {
     }
   }
 }
-
-// First, display what is there on top of component
-// Render filter component on top instead of using bottom sheet from the start
-// Whats passed from above for filtering is absolute
-// Modification to filters should only be able to search in a subset
-// Apart from original filters, store modified filters separately for SQLLite and for backend
 
 export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
