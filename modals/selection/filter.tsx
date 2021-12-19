@@ -1845,18 +1845,262 @@ function FilterPathComponent(props: {
                     case "udouble":
                     case "idecimal":
                     case "udecimal": {
-                      break;
+                      if (props.filter_path.value[1] !== undefined) {
+                        const value = props.filter_path.value[1];
+                        const [v1, v2] = apply(undefined, () => {
+                          const op = value[0];
+                          switch (op) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return [value[1], value[1]];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = op;
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=":
+                                case ">=":
+                                case "<=":
+                                case ">":
+                                case "<": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [field_struct_name, [op, v1]];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                                case "between":
+                                case "not_between": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [v1, v2]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                            <Picker.Item label="greater or equals" value=">=" />
+                            <Picker.Item label="less or equals" value="<=" />
+                            <Picker.Item label="greater than" value=">" />
+                            <Picker.Item label="less than" value="<" />
+                            <Picker.Item label="between" value="between" />
+                            <Picker.Item
+                              label="not between"
+                              value="not_between"
+                            />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
                     }
                     case "bool": {
-                      break;
+                      if (props.filter_path.value[1] !== undefined) {
+                        const value = props.filter_path.value[1];
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, value[1]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
                     }
                     case "date":
                     case "time":
                     case "timestamp": {
-                      break;
+                      if (props.filter_path.value[1] !== undefined) {
+                        const value = props.filter_path.value[1];
+                        const [v1, v2] = apply(undefined, () => {
+                          const op = value[0];
+                          switch (op) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return [value[1], value[1]];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = op;
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=":
+                                case ">=":
+                                case "<=":
+                                case ">":
+                                case "<": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [field_struct_name, [op, v1]];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                                case "between":
+                                case "not_between": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [v1, v2]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                            <Picker.Item label="greater or equals" value=">=" />
+                            <Picker.Item label="less or equals" value="<=" />
+                            <Picker.Item label="greater than" value=">" />
+                            <Picker.Item label="less than" value="<" />
+                            <Picker.Item label="between" value="between" />
+                            <Picker.Item
+                              label="not between"
+                              value="not_between"
+                            />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
                     }
                     case "other": {
-                      break;
+                      if (props.filter_path.value[1] !== undefined) {
+                        const value = props.filter_path.value[1];
+                        const other_struct = props.filter_path.value[2];
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, value[1]],
+                                        other_struct,
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
                     }
                     default: {
                       const _exhaustiveCheck: never = field_struct_name;
