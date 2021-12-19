@@ -174,7 +174,7 @@ export function FilterComponent(props: {
                         new FilterPath(
                           filter_path.label,
                           filter_path.path,
-                          [field_struct_type, ["==", ""]],
+                          [field_struct_type, ["like", ""]],
                           undefined
                         ),
                       ]);
@@ -1710,7 +1710,9 @@ function FilterPathComponent(props: {
   return (
     <View style={{ flexDirection: "column" }}>
       {apply(undefined, () => {
-        const [selectedOp, setSelectedOp] = useState("==");
+        const [selectedOp, setSelectedOp] = useState(
+          props.filter_path.value[0] === "str" ? "like" : "=="
+        );
         if (props.filter_path.value[1] !== undefined) {
           return (
             <View
