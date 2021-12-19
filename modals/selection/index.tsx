@@ -20,13 +20,11 @@ import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 
-// Fix layout of field path filters
-// Select field operations
 // Select field paths as values
 // id, created_at and updated_at in having clause
 // Ordering
 // Limit Offset
-// Custom outer filter fields
+// Custom outer search fields
 // Create / Update Test component
 // List Test component
 
@@ -205,8 +203,8 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         />
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          snapPoints={["60%", "100%"]}
-          index={0}
+          snapPoints={["20%", "100%"]}
+          index={1}
           backgroundStyle={{
             backgroundColor: "#111827",
             borderColor: "white",

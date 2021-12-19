@@ -224,7 +224,10 @@ export function FilterComponent(props: {
                         new FilterPath(
                           filter_path.label,
                           filter_path.path,
-                          [field_struct_type, ["==", new Date()]],
+                          [
+                            field_struct_type,
+                            ["between", [new Date(), new Date()]],
+                          ],
                           undefined
                         ),
                       ]);
@@ -1712,7 +1715,21 @@ function FilterPathComponent(props: {
     <View style={{ flexDirection: "column" }}>
       {apply(undefined, () => {
         const [selectedOp, setSelectedOp] = useState(
-          props.filter_path.value[0] === "str" ? "like" : "=="
+          apply("==", (it) => {
+            switch (props.filter_path.value[0]) {
+              case "str":
+              case "lstr":
+              case "clob": {
+                return "like";
+              }
+              case "date":
+              case "time":
+              case "timestamp": {
+                return "between";
+              }
+            }
+            return it;
+          })
         );
         if (props.filter_path.value[1] !== undefined) {
           return (
@@ -1822,8 +1839,11 @@ function FilterPathComponent(props: {
                               color: "white",
                             }}
                           >
-                            <Picker.Item label="like" value="like" />
-                            <Picker.Item label="glob" value="glob" />
+                            <Picker.Item label="regex" value="like" />
+                            <Picker.Item
+                              label="regex(case sensitive)"
+                              value="glob"
+                            />
                             <Picker.Item label="equals" value="==" />
                             <Picker.Item label="not equals" value="!=" />
                             <Picker.Item label="greater or equals" value=">=" />
@@ -2139,8 +2159,8 @@ function FilterPathComponent(props: {
       })}
       <View
         style={{
-          paddingLeft: 32,
           justifyContent: "space-between",
+          paddingLeft: 32,
         }}
       >
         {apply(undefined, () => {

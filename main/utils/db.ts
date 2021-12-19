@@ -843,7 +843,15 @@ export function query(
                   if (typeof value === "object") {
                     return `"${path_ref}" ${op} "${value.join(".")}"`;
                   } else {
-                    return `"${path_ref}" ${op} '${value}'`;
+                    return `"${path_ref}" ${op} ${apply(`"${value}"`, (it) => {
+                      if (op === "like") {
+                        return `"%${value}%"`;
+                      }
+                      if (op === "glob") {
+                        return `"*${value}*"`;
+                      }
+                      return it;
+                    })}`;
                   }
                 });
                 break;
@@ -1203,7 +1211,15 @@ export function query(
                   if (typeof value === "object") {
                     return `"${path_ref}" ${op} "${value.join(".")}"`;
                   } else {
-                    return `"${path_ref}" ${op} '${value}'`;
+                    return `"${path_ref}" ${op} ${apply(`"${value}"`, (it) => {
+                      if (op === "like") {
+                        return `"%${value}%"`;
+                      }
+                      if (op === "glob") {
+                        return `"*${value}*"`;
+                      }
+                      return it;
+                    })}`;
                   }
                 });
                 break;
