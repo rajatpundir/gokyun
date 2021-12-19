@@ -554,9 +554,11 @@ export function query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.id BETWEEN ${start_value
+          stmt = `v1.id ${
+            op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+          } ${start_value.truncated().toString()} AND ${end_value
             .truncated()
-            .toString()} AND ${end_value.truncated().toString()}`;
+            .toString()}`;
           break;
         }
         default: {
@@ -594,7 +596,9 @@ export function query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.created_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
+          stmt = `v1.created_at ${
+            op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+          } ${start_value.getTime()} AND ${end_value.getTime()}`;
           break;
         }
         default: {
@@ -632,7 +636,9 @@ export function query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.updated_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
+          stmt = `v1.updated_at ${
+            op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+          } ${start_value.getTime()} AND ${end_value.getTime()}`;
           break;
         }
         default: {
@@ -683,9 +689,11 @@ export function query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.id BETWEEN ${start_value
+          stmt = `v1.id ${
+            op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+          } ${start_value.truncated().toString()} AND ${end_value
             .truncated()
-            .toString()} AND ${end_value.truncated().toString()}`;
+            .toString()}`;
           break;
         }
         default: {
@@ -724,7 +732,9 @@ export function query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.created_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
+          stmt = `v1.created_at ${
+            op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+          } ${start_value.getTime()} AND ${end_value.getTime()}`;
           break;
         }
         default: {
@@ -762,7 +772,9 @@ export function query(
         case "not_between": {
           const start_value = filter[1][0];
           const end_value = filter[1][1];
-          stmt = `v1.updated_at BETWEEN ${start_value.getTime()} AND ${end_value.getTime()}`;
+          stmt = `v1.updated_at ${
+            op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+          } ${start_value.getTime()} AND ${end_value.getTime()}`;
           break;
         }
         default: {

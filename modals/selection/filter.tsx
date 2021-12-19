@@ -269,7 +269,7 @@ export function FilterComponent(props: {
           }}
         >
           {apply(undefined, () => {
-            const [selectedLanguage, setSelectedLanguage] = useState("java");
+            const [selectedOp, setSelectedOp] = useState("==");
             const [active, value] = props.filter.id;
             if (value !== undefined) {
               return (
@@ -343,7 +343,7 @@ export function FilterComponent(props: {
                         });
                         return (
                           <Picker
-                            selectedValue={selectedLanguage}
+                            selectedValue={selectedOp}
                             onValueChange={(op, _) => {
                               switch (op) {
                                 case "==":
@@ -360,7 +360,6 @@ export function FilterComponent(props: {
                                       return it;
                                     }),
                                   ]);
-                                  setSelectedLanguage(op);
                                   break;
                                 }
                                 case "between":
@@ -373,10 +372,10 @@ export function FilterComponent(props: {
                                       return it;
                                     }),
                                   ]);
-                                  setSelectedLanguage(op);
                                   break;
                                 }
                               }
+                              setSelectedOp(op);
                             }}
                             dropdownIconColor={"white"}
                             style={{
@@ -409,7 +408,7 @@ export function FilterComponent(props: {
                     }}
                   >
                     <Pressable
-                      onPress={() =>
+                      onPress={() => {
                         props.dispatch([
                           "filter",
                           "replace",
@@ -417,8 +416,9 @@ export function FilterComponent(props: {
                             it.id[1] = undefined;
                             return it;
                           }),
-                        ])
-                      }
+                        ]);
+                        setSelectedOp("==");
+                      }}
                     >
                       <Entypo name="cross" size={24} color="white" />
                     </Pressable>
