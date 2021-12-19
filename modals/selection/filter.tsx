@@ -98,7 +98,7 @@ export function FilterComponent(props: {
                 apply(props.filter, (it) => {
                   it.created_at = [
                     false,
-                    ["between", [new Date(0), new Date(0)]],
+                    ["between", [new Date(), new Date()]],
                   ];
                   return it;
                 }),
@@ -125,7 +125,7 @@ export function FilterComponent(props: {
                 apply(props.filter, (it) => {
                   it.updated_at = [
                     false,
-                    ["between", [new Date(0), new Date(0)]],
+                    ["between", [new Date(), new Date()]],
                   ];
                   return it;
                 }),
@@ -278,7 +278,7 @@ export function FilterComponent(props: {
                     justifyContent: "space-between",
                   }}
                 >
-                  <View style={{ justifyContent: "flex-start" }}>
+                  <View>
                     <Checkbox
                       value={active}
                       onValueChange={(x) =>
@@ -533,6 +533,7 @@ export function FilterComponent(props: {
           }}
         >
           {apply(undefined, () => {
+            const [selectedOp, setSelectedOp] = useState("between");
             const [active, value] = props.filter.created_at;
             if (value !== undefined) {
               return (
@@ -561,6 +562,107 @@ export function FilterComponent(props: {
                       }}
                     />
                     <Text>Created</Text>
+                    {apply(undefined, () => {
+                      const value = props.filter.created_at[1];
+                      if (value !== undefined) {
+                        const v1 = apply(value[0], () => {
+                          switch (value[0]) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return value[1];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1][0];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = value[0];
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        const v2 = apply(value[0], () => {
+                          switch (value[0]) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return value[1];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1][1];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = value[0];
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=":
+                                case ">=":
+                                case "<=":
+                                case ">":
+                                case "<": {
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.created_at[1] = [op, v1];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                                case "between":
+                                case "not_between": {
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.created_at[1] = [op, [v1, v2]];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                            <Picker.Item label="greater or equals" value=">=" />
+                            <Picker.Item label="less or equals" value="<=" />
+                            <Picker.Item label="greater than" value=">" />
+                            <Picker.Item label="less than" value="<" />
+                            <Picker.Item label="between" value="between" />
+                            <Picker.Item
+                              label="not between"
+                              value="not_between"
+                            />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
+                    })}
                   </View>
                   <View
                     style={{
@@ -570,7 +672,7 @@ export function FilterComponent(props: {
                     }}
                   >
                     <Pressable
-                      onPress={() =>
+                      onPress={() => {
                         props.dispatch([
                           "filter",
                           "replace",
@@ -578,8 +680,9 @@ export function FilterComponent(props: {
                             it.created_at[1] = undefined;
                             return it;
                           }),
-                        ])
-                      }
+                        ]);
+                        setSelectedOp("between");
+                      }}
                     >
                       <Entypo name="cross" size={24} color="white" />
                     </Pressable>
@@ -908,12 +1011,14 @@ export function FilterComponent(props: {
             return null;
           })}
         </View>
+
         <View
           style={{
             flexDirection: "column",
           }}
         >
           {apply(undefined, () => {
+            const [selectedOp, setSelectedOp] = useState("between");
             const [active, value] = props.filter.updated_at;
             if (value !== undefined) {
               return (
@@ -942,6 +1047,107 @@ export function FilterComponent(props: {
                       }}
                     />
                     <Text>Updated</Text>
+                    {apply(undefined, () => {
+                      const value = props.filter.updated_at[1];
+                      if (value !== undefined) {
+                        const v1 = apply(value[0], () => {
+                          switch (value[0]) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return value[1];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1][0];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = value[0];
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        const v2 = apply(value[0], () => {
+                          switch (value[0]) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<": {
+                              return value[1];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1][1];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = value[0];
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=":
+                                case ">=":
+                                case "<=":
+                                case ">":
+                                case "<": {
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.updated_at[1] = [op, v1];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                                case "between":
+                                case "not_between": {
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.updated_at[1] = [op, [v1, v2]];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                            <Picker.Item label="greater or equals" value=">=" />
+                            <Picker.Item label="less or equals" value="<=" />
+                            <Picker.Item label="greater than" value=">" />
+                            <Picker.Item label="less than" value="<" />
+                            <Picker.Item label="between" value="between" />
+                            <Picker.Item
+                              label="not between"
+                              value="not_between"
+                            />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
+                    })}
                   </View>
                   <View
                     style={{
@@ -951,7 +1157,7 @@ export function FilterComponent(props: {
                     }}
                   >
                     <Pressable
-                      onPress={() =>
+                      onPress={() => {
                         props.dispatch([
                           "filter",
                           "replace",
@@ -959,8 +1165,9 @@ export function FilterComponent(props: {
                             it.updated_at[1] = undefined;
                             return it;
                           }),
-                        ])
-                      }
+                        ]);
+                        setSelectedOp("between");
+                      }}
                     >
                       <Entypo name="cross" size={24} color="white" />
                     </Pressable>
