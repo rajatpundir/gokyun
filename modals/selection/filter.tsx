@@ -225,7 +225,7 @@ export function FilterComponent(props: {
                         new FilterPath(
                           filter_path.label,
                           filter_path.path,
-                          [field_struct_type, ["==", new Date(0)]],
+                          [field_struct_type, ["==", new Date()]],
                           undefined
                         ),
                       ]);
@@ -1708,43 +1708,191 @@ function FilterPathComponent(props: {
     })
   );
   return (
-    <View
-      style={{
-        justifyContent: "flex-start",
-      }}
-    >
-      <View>
-        {props.filter_path.value[1] !== undefined ? (
-          <>
-            <Checkbox
-              value={props.filter_path.active}
-              onValueChange={(x) => {
-                props.dispatch([
-                  "filters",
-                  props.filter,
-                  "replace",
-                  apply(props.filter_path, (it) => {
-                    it.active = x;
-                    return it;
-                  }),
-                ]);
-              }}
-              color={props.filter_path.active ? "#ff0000" : undefined}
+    <View style={{ flexDirection: "column" }}>
+      {apply(undefined, () => {
+        const [selectedOp, setSelectedOp] = useState("==");
+        if (props.filter_path.value[1] !== undefined) {
+          return (
+            <View
               style={{
-                alignSelf: "center",
-                marginRight: 6,
+                justifyContent: "space-between",
               }}
-            />
-            <Text>{props.filter_path.label}</Text>
-          </>
-        ) : (
-          <></>
-        )}
-      </View>
+            >
+              <View>
+                <Checkbox
+                  value={props.filter_path.active}
+                  onValueChange={(x) => {
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "replace",
+                      apply(props.filter_path, (it) => {
+                        it.active = x;
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  color={props.filter_path.active ? "#ff0000" : undefined}
+                  style={{
+                    alignSelf: "center",
+                    marginRight: 6,
+                  }}
+                />
+                <Text>{props.filter_path.label}</Text>
+                {apply(undefined, () => {
+                  const field_struct_name = props.filter_path.value[0];
+                  switch (field_struct_name) {
+                    case "str":
+                    case "lstr":
+                    case "clob": {
+                      if (props.filter_path.value[1] !== undefined) {
+                        const value = props.filter_path.value[1];
+                        const [v1, v2] = apply(undefined, () => {
+                          const op = value[0];
+                          switch (op) {
+                            case "==":
+                            case "!=":
+                            case ">=":
+                            case "<=":
+                            case ">":
+                            case "<":
+                            case "like":
+                            case "glob": {
+                              return [value[1], value[1]];
+                            }
+                            case "between":
+                            case "not_between": {
+                              return value[1];
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = op;
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                        return (
+                          <Picker
+                            selectedValue={selectedOp}
+                            onValueChange={(op, _) => {
+                              switch (op) {
+                                case "==":
+                                case "!=":
+                                case ">=":
+                                case "<=":
+                                case ">":
+                                case "<":
+                                case "like":
+                                case "glob": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [field_struct_name, [op, v1]];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                                case "between":
+                                case "not_between": {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, [v1, v2]],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  break;
+                                }
+                              }
+                              setSelectedOp(op);
+                            }}
+                            dropdownIconColor={"white"}
+                            style={{
+                              width: 185,
+                              color: "white",
+                            }}
+                          >
+                            <Picker.Item label="like" value="like" />
+                            <Picker.Item label="glob" value="glob" />
+                            <Picker.Item label="equals" value="==" />
+                            <Picker.Item label="not equals" value="!=" />
+                            <Picker.Item label="greater or equals" value=">=" />
+                            <Picker.Item label="less or equals" value="<=" />
+                            <Picker.Item label="greater than" value=">" />
+                            <Picker.Item label="less than" value="<" />
+                            <Picker.Item label="between" value="between" />
+                            <Picker.Item
+                              label="not between"
+                              value="not_between"
+                            />
+                          </Picker>
+                        );
+                      }
+                      return <></>;
+                    }
+                    case "i32":
+                    case "u32":
+                    case "i64":
+                    case "u64":
+                    case "idouble":
+                    case "udouble":
+                    case "idecimal":
+                    case "udecimal": {
+                      break;
+                    }
+                    case "bool": {
+                      break;
+                    }
+                    case "date":
+                    case "time":
+                    case "timestamp": {
+                      break;
+                    }
+                    case "other": {
+                      break;
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = field_struct_name;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                })}
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  flexGrow: 1,
+                  alignSelf: "center",
+                }}
+              >
+                <Pressable
+                  onPress={() =>
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "remove",
+                      props.filter_path,
+                    ])
+                  }
+                >
+                  <Entypo name="cross" size={24} color="white" />
+                </Pressable>
+              </View>
+            </View>
+          );
+        }
+        return null;
+      })}
       <View
         style={{
-          flexDirection: "row-reverse",
-          flexGrow: 999,
+          justifyContent: "space-between",
         }}
       >
         {apply(undefined, () => {
@@ -3464,33 +3612,6 @@ function FilterPathComponent(props: {
             }
           }
           return null;
-        })}
-      </View>
-      <View
-        style={{
-          flexDirection: "row-reverse",
-          flexGrow: 1,
-          alignSelf: "center",
-        }}
-      >
-        {apply(undefined, () => {
-          if (props.filter_path.value[1] !== undefined) {
-            return (
-              <Pressable
-                onPress={() =>
-                  props.dispatch([
-                    "filters",
-                    props.filter,
-                    "remove",
-                    props.filter_path,
-                  ])
-                }
-              >
-                <Entypo name="cross" size={24} color="white" />
-              </Pressable>
-            );
-          }
-          return <></>;
         })}
       </View>
     </View>
