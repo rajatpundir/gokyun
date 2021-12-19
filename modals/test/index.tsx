@@ -23,11 +23,10 @@ import { log_permissions } from "../../main/utils/permissions";
 import { get_variable } from "../../main/utils/db";
 import { Path, PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
-import { apply, unwrap } from "../../main/utils/prelude";
+import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
 
-// Design filters for modifying path filters, fields with passed filters cannot be overriden
-// TODO 444
+// TODO 444 (Running trigger, checks, etc inside fetched other field paths)
 // Fix react navigation error related to serializability of props passed
 
 // Complete testing Test
@@ -368,7 +367,7 @@ function CreateComponent(props: {
             "other",
             {
               title: "Select User",
-              element: apply(undefined, () => {
+              element: arrow(() => {
                 const result = get_path(props.state, [[], "user"]);
                 if (unwrap(result)) {
                   const path = result.value;

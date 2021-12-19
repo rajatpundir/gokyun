@@ -2,7 +2,7 @@ import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { ErrMsg } from "./errors";
-import { apply } from "./prelude";
+import { apply, arrow } from "./prelude";
 import { Immutable } from "immer";
 
 export type PathString = [ReadonlyArray<string>, string];
@@ -383,7 +383,7 @@ export class Variable {
 }
 
 export function get_strong_enum(field: WeakEnum): StrongEnum {
-  return apply(undefined, () => {
+  return arrow(() => {
     switch (field.type) {
       case "str":
       case "lstr":

@@ -8,7 +8,7 @@ import {
 } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Platform, Pressable } from "react-native";
-import { apply, is_decimal } from "../../main/utils/prelude";
+import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Entypo } from "@expo/vector-icons";
@@ -270,7 +270,7 @@ export function FilterComponent(props: {
             flexDirection: "column",
           }}
         >
-          {apply(undefined, () => {
+          {arrow(() => {
             const [selectedOp, setSelectedOp] = useState("==");
             const [active, value] = props.filter.id;
             if (value !== undefined) {
@@ -300,7 +300,7 @@ export function FilterComponent(props: {
                       }}
                     />
                     <Text>ID</Text>
-                    {apply(undefined, () => {
+                    {arrow(() => {
                       const value = props.filter.id[1];
                       if (value !== undefined) {
                         const v1 = apply(value[0], () => {
@@ -430,7 +430,7 @@ export function FilterComponent(props: {
             }
             return null;
           })}
-          {apply(undefined, () => {
+          {arrow(() => {
             const value = props.filter.id[1];
             if (value !== undefined) {
               return (
@@ -440,7 +440,7 @@ export function FilterComponent(props: {
                     paddingLeft: 33,
                   }}
                 >
-                  {apply(undefined, () => {
+                  {arrow(() => {
                     const op = value[0];
                     switch (op) {
                       case "==":
@@ -534,7 +534,7 @@ export function FilterComponent(props: {
             flexDirection: "column",
           }}
         >
-          {apply(undefined, () => {
+          {arrow(() => {
             const [selectedOp, setSelectedOp] = useState("between");
             const [active, value] = props.filter.created_at;
             if (value !== undefined) {
@@ -564,7 +564,7 @@ export function FilterComponent(props: {
                       }}
                     />
                     <Text>Created</Text>
-                    {apply(undefined, () => {
+                    {arrow(() => {
                       const value = props.filter.created_at[1];
                       if (value !== undefined) {
                         const v1 = apply(value[0], () => {
@@ -694,7 +694,7 @@ export function FilterComponent(props: {
             }
             return null;
           })}
-          {apply(undefined, () => {
+          {arrow(() => {
             const value = props.filter.created_at[1];
             const [showPicker1, setPicker1] = useState(false);
             const [mode1, setMode1] = useState("date");
@@ -760,7 +760,7 @@ export function FilterComponent(props: {
                     paddingLeft: 33,
                   }}
                 >
-                  {apply(undefined, () => {
+                  {arrow(() => {
                     const op = value[0];
                     switch (op) {
                       case "==":
@@ -1020,7 +1020,7 @@ export function FilterComponent(props: {
             flexDirection: "column",
           }}
         >
-          {apply(undefined, () => {
+          {arrow(() => {
             const [selectedOp, setSelectedOp] = useState("between");
             const [active, value] = props.filter.updated_at;
             if (value !== undefined) {
@@ -1050,7 +1050,7 @@ export function FilterComponent(props: {
                       }}
                     />
                     <Text>Updated</Text>
-                    {apply(undefined, () => {
+                    {arrow(() => {
                       const value = props.filter.updated_at[1];
                       if (value !== undefined) {
                         const v1 = apply(value[0], () => {
@@ -1180,7 +1180,7 @@ export function FilterComponent(props: {
             }
             return null;
           })}
-          {apply(undefined, () => {
+          {arrow(() => {
             const value = props.filter.updated_at[1];
             const [showPicker1, setPicker1] = useState(false);
             const [mode1, setMode1] = useState("date");
@@ -1246,7 +1246,7 @@ export function FilterComponent(props: {
                     paddingLeft: 33,
                   }}
                 >
-                  {apply(undefined, () => {
+                  {arrow(() => {
                     const op = value[0];
                     switch (op) {
                       case "==":
@@ -1713,7 +1713,7 @@ function FilterPathComponent(props: {
   );
   return (
     <View style={{ flexDirection: "column" }}>
-      {apply(undefined, () => {
+      {arrow(() => {
         const [selectedOp, setSelectedOp] = useState(
           apply("==", (it) => {
             switch (props.filter_path.value[0]) {
@@ -1759,7 +1759,7 @@ function FilterPathComponent(props: {
                   }}
                 />
                 <Text>{props.filter_path.label}</Text>
-                {apply(undefined, () => {
+                {arrow(() => {
                   const field_struct_name = props.filter_path.value[0];
                   switch (field_struct_name) {
                     case "str":
@@ -1767,7 +1767,7 @@ function FilterPathComponent(props: {
                     case "clob": {
                       if (props.filter_path.value[1] !== undefined) {
                         const value = props.filter_path.value[1];
-                        const [v1, v2] = apply(undefined, () => {
+                        const [v1, v2] = arrow(() => {
                           const op = value[0];
                           switch (op) {
                             case "==":
@@ -1870,7 +1870,7 @@ function FilterPathComponent(props: {
                     case "udecimal": {
                       if (props.filter_path.value[1] !== undefined) {
                         const value = props.filter_path.value[1];
-                        const [v1, v2] = apply(undefined, () => {
+                        const [v1, v2] = arrow(() => {
                           const op = value[0];
                           switch (op) {
                             case "==":
@@ -1999,7 +1999,7 @@ function FilterPathComponent(props: {
                     case "timestamp": {
                       if (props.filter_path.value[1] !== undefined) {
                         const value = props.filter_path.value[1];
-                        const [v1, v2] = apply(undefined, () => {
+                        const [v1, v2] = arrow(() => {
                           const op = value[0];
                           switch (op) {
                             case "==":
@@ -2163,7 +2163,7 @@ function FilterPathComponent(props: {
           paddingLeft: 32,
         }}
       >
-        {apply(undefined, () => {
+        {arrow(() => {
           if (props.filter_path.value[1] !== undefined) {
             const field_struct_name = props.filter_path.value[0];
             switch (field_struct_name) {
@@ -2212,7 +2212,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (typeof value === "string") {
                               return (
@@ -2242,7 +2242,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (typeof value === "string") {
                               return (
@@ -2335,7 +2335,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (is_decimal(value)) {
                               return (
@@ -2378,7 +2378,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (is_decimal(value)) {
                               return (
@@ -2484,7 +2484,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (is_decimal(value)) {
                               return (
@@ -2527,7 +2527,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (is_decimal(value)) {
                               return (
@@ -2633,7 +2633,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (is_decimal(value)) {
                               return (
@@ -2680,7 +2680,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (is_decimal(value)) {
                               return (
@@ -2790,7 +2790,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (is_decimal(value)) {
                               return (
@@ -2835,7 +2835,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (is_decimal(value)) {
                               return (
@@ -2937,7 +2937,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (is_decimal(value)) {
                               return (
@@ -2968,7 +2968,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (is_decimal(value)) {
                               return (
@@ -3056,7 +3056,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (is_decimal(value)) {
                               return (
@@ -3093,7 +3093,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (is_decimal(value)) {
                               return (
@@ -3240,7 +3240,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             if (value1 instanceof Date) {
                               return (
                                 <>
@@ -3288,7 +3288,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             if (value2 instanceof Date) {
                               return (
                                 <>
@@ -3405,7 +3405,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (value instanceof Date) {
                               return (
@@ -3454,7 +3454,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (value instanceof Date) {
                               return (
@@ -3614,7 +3614,7 @@ function FilterPathComponent(props: {
                       const [value1, value2] = props.filter_path.value[1][1];
                       return (
                         <>
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value1;
                             if (value instanceof Date) {
                               return (
@@ -3715,7 +3715,7 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {apply(undefined, () => {
+                          {arrow(() => {
                             const value = value2;
                             if (value instanceof Date) {
                               return (

@@ -3,6 +3,7 @@ import { getState, subscribe } from "./store";
 import * as SQLite from "expo-sqlite";
 import {
   apply,
+  arrow,
   CustomError,
   Err,
   fold,
@@ -262,7 +263,7 @@ export function query(
 
   let select_stmt: string = "SELECT \n";
   const append_to_select_stmt = (stmt: string) => {
-    select_stmt += apply(undefined, () => {
+    select_stmt += arrow(() => {
       if (select_stmt === "SELECT \n") {
         return ` ${stmt}`;
       } else {
@@ -270,7 +271,7 @@ export function query(
       }
     });
   };
-  apply(undefined, () => {
+  arrow(() => {
     append_to_select_stmt("v1.level AS _level");
     append_to_select_stmt("v1.struct_name AS _struct_name");
     append_to_select_stmt("v1.id AS _id");
@@ -287,7 +288,7 @@ export function query(
       })
       .join(` || '.' || `);
   };
-  apply(undefined, () => {
+  arrow(() => {
     let intermediate_paths = HashSet.of<Vector<string>>();
     path_filters[0].map((path_filter) => {
       const path: ReadonlyArray<string> = path_filter[0];
@@ -300,7 +301,7 @@ export function query(
       }
       const val_ref: number = path.length * 2;
       const field_struct_name = path_filter[1];
-      const stmt = apply(undefined, () => {
+      const stmt = arrow(() => {
         switch (field_struct_name) {
           case "str":
           case "lstr":
@@ -466,7 +467,7 @@ export function query(
 
   let where_stmt: string = "WHERE ";
   const append_to_where_stmt = (stmt: string) => {
-    where_stmt += apply(undefined, () => {
+    where_stmt += arrow(() => {
       if (where_stmt === "WHERE ") {
         return `(${stmt})`;
       } else {
@@ -807,7 +808,7 @@ export function query(
 
   let having_stmt: string = "HAVING ";
   const append_to_having_stmt = (stmt: string) => {
-    having_stmt += apply(undefined, () => {
+    having_stmt += arrow(() => {
       if (having_stmt === "HAVING ") {
         return `(${stmt})`;
       } else {
@@ -839,7 +840,7 @@ export function query(
               case "like":
               case "glob": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (typeof value === "object") {
                     return `"${path_ref}" ${op} "${value.join(".")}"`;
                   } else {
@@ -860,7 +861,7 @@ export function query(
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (typeof start_value === "object") {
                     if (typeof end_value === "object") {
                       return `"${path_ref}" ${
@@ -926,9 +927,9 @@ export function query(
               case ">":
               case "<": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (is_decimal(value)) {
-                    return `"${path_ref}" ${op} ${apply(undefined, () => {
+                    return `"${path_ref}" ${op} ${arrow(() => {
                       if (integer_fields.includes(field_struct_name)) {
                         return value.truncated().toString();
                       } else {
@@ -945,18 +946,18 @@ export function query(
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
                       return `"${path_ref}" ${
                         op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
-                      } ${apply(undefined, () => {
+                      } ${arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           return start_value.truncated().toString();
                         } else {
                           return start_value.toString();
                         }
-                      })} AND ${apply(undefined, () => {
+                      })} AND ${arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           return end_value.truncated().toString();
                         } else {
@@ -966,7 +967,7 @@ export function query(
                     } else {
                       return `"${path_ref}" ${
                         op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
-                      } ${apply(undefined, () => {
+                      } ${arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           return start_value.truncated().toString();
                         } else {
@@ -1026,7 +1027,7 @@ export function query(
               case "==":
               case "!=": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (typeof value === "object") {
                     return `"${path_ref}" ${op} "${value.join(".")}"`;
                   } else {
@@ -1068,7 +1069,7 @@ export function query(
               case ">":
               case "<": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (value instanceof Date) {
                     return `"${path_ref}" ${op} ${value.getTime()}`;
                   } else {
@@ -1081,7 +1082,7 @@ export function query(
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (start_value instanceof Date) {
                     if (end_value instanceof Date) {
                       return `"${path_ref}" ${
@@ -1137,7 +1138,7 @@ export function query(
               case "==":
               case "!=": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (is_decimal(value)) {
                     return `"${path_ref}" ${op} ${value
                       .truncated()
@@ -1207,7 +1208,7 @@ export function query(
               case "like":
               case "glob": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (typeof value === "object") {
                     return `"${path_ref}" ${op} "${value.join(".")}"`;
                   } else {
@@ -1228,7 +1229,7 @@ export function query(
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (typeof start_value === "object") {
                     if (typeof end_value === "object") {
                       return `"${path_ref}" ${
@@ -1294,9 +1295,9 @@ export function query(
               case ">":
               case "<": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (is_decimal(value)) {
-                    return `"${path_ref}" ${op} ${apply(undefined, () => {
+                    return `"${path_ref}" ${op} ${arrow(() => {
                       if (integer_fields.includes(field_struct_name)) {
                         return value.truncated().toString();
                       } else {
@@ -1313,18 +1314,18 @@ export function query(
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
                       return `"${path_ref}" ${
                         op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
-                      } ${apply(undefined, () => {
+                      } ${arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           return start_value.truncated().toString();
                         } else {
                           return start_value.toString();
                         }
-                      })} AND ${apply(undefined, () => {
+                      })} AND ${arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           return end_value.truncated().toString();
                         } else {
@@ -1334,7 +1335,7 @@ export function query(
                     } else {
                       return `"${path_ref}" ${
                         op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
-                      } ${apply(undefined, () => {
+                      } ${arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           return start_value.truncated().toString();
                         } else {
@@ -1394,7 +1395,7 @@ export function query(
               case "==":
               case "!=": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (typeof value === "object") {
                     return `"${path_ref}" ${op} "${value.join(".")}"`;
                   } else {
@@ -1436,7 +1437,7 @@ export function query(
               case ">":
               case "<": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (value instanceof Date) {
                     return `"${path_ref}" ${op} ${value.getTime()}`;
                   } else {
@@ -1449,7 +1450,7 @@ export function query(
               case "not_between": {
                 const start_value = filter[1][0];
                 const end_value = filter[1][1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (start_value instanceof Date) {
                     if (end_value instanceof Date) {
                       return `"${path_ref}" ${
@@ -1505,7 +1506,7 @@ export function query(
               case "==":
               case "!=": {
                 const value = filter[1];
-                stmt = apply(undefined, () => {
+                stmt = arrow(() => {
                   if (is_decimal(value)) {
                     return `"${path_ref}" ${op} ${value
                       .truncated()
@@ -1556,7 +1557,7 @@ export function query(
 
   let order_by_stmt: string = "ORDER BY ";
   const append_to_order_by_stmt = (stmt: string) => {
-    order_by_stmt += apply(undefined, () => {
+    order_by_stmt += arrow(() => {
       if (order_by_stmt === "ORDER BY ") {
         return stmt;
       } else {
@@ -1604,7 +1605,7 @@ export function query(
   );
   append_to_order_by_stmt("v1.requested_at DESC, v1.updated_at DESC");
 
-  const limit_offset_stmt: string = apply(undefined, () => {
+  const limit_offset_stmt: string = arrow(() => {
     if (limit_offset !== undefined) {
       return `LIMIT ${limit_offset[0]
         .truncated()
@@ -2217,7 +2218,7 @@ export async function get_variables(
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           }
-          const leaf: [string, StrongEnum] = apply(undefined, () => {
+          const leaf: [string, StrongEnum] = arrow(() => {
             const ref: string = init.join(".");
             const field_struct_name = path_filter[1];
             switch (field_struct_name) {
@@ -2228,7 +2229,7 @@ export async function get_variables(
                   last,
                   {
                     type: field_struct_name,
-                    value: apply(undefined, () => {
+                    value: arrow(() => {
                       if (ref === "") {
                         return new String(result[`${last}`]).valueOf();
                       } else {
@@ -2250,9 +2251,9 @@ export async function get_variables(
                   last,
                   {
                     type: field_struct_name,
-                    value: apply(undefined, () => {
+                    value: arrow(() => {
                       const integer_fields = ["i32", "u32", "i64", "u64"];
-                      return apply(undefined, () => {
+                      return arrow(() => {
                         if (integer_fields.includes(field_struct_name)) {
                           if (ref === "") {
                             return new Decimal(result[`${last}`]).truncated();
@@ -2278,7 +2279,7 @@ export async function get_variables(
                   last,
                   {
                     type: field_struct_name,
-                    value: apply(undefined, () => {
+                    value: arrow(() => {
                       if (ref === "") {
                         return new Decimal(result[`${last}`]).equals(1);
                       } else {
@@ -2295,7 +2296,7 @@ export async function get_variables(
                   last,
                   {
                     type: field_struct_name,
-                    value: apply(undefined, () => {
+                    value: arrow(() => {
                       if (ref === "") {
                         return new Date(result[`${last}`]);
                       } else {
@@ -2312,7 +2313,7 @@ export async function get_variables(
                   {
                     type: "other",
                     other: field_struct_name,
-                    value: apply(undefined, () => {
+                    value: arrow(() => {
                       if (ref === "") {
                         return new Decimal(result[`${last}`]).truncated();
                       } else {

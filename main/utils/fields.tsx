@@ -10,7 +10,7 @@ import Decimal from "decimal.js";
 import moment from "moment";
 
 import { View, Text, TextInput } from "../../main/themed";
-import { apply, unwrap, Result } from "./prelude";
+import { apply, unwrap, Result, arrow } from "./prelude";
 import { Action, get_labeled_permissions, State, get_path } from "./commons";
 import { useState } from "react";
 import {
@@ -974,7 +974,7 @@ export function Label(props: {
   state: State;
   path: PathString | string;
 }): JSX.Element | null {
-  const path_string: PathString = apply(undefined, () => {
+  const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
       return [[], props.path];
     } else {
@@ -1021,7 +1021,7 @@ export function Field(props: {
         }
       ];
 }): JSX.Element | null {
-  const path_string: PathString = apply(undefined, () => {
+  const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
       return [[], props.path];
     } else {

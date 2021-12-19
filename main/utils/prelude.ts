@@ -51,6 +51,10 @@ export function apply<T, U>(v: T, fx: (it: T) => U): U {
   return fx(v);
 }
 
+export function arrow<T>(fx: () => T): T {
+  return fx();
+}
+
 export function fold<T, U>(
   init: T,
   values: ReadonlyArray<U>,
@@ -90,7 +94,7 @@ export function get_array_item<T>(
   index: number | Decimal
 ): Option<T> {
   return apply(
-    apply(undefined, () => {
+    arrow(() => {
       if (is_decimal(index)) {
         return index.abs().truncated().toNumber();
       } else {

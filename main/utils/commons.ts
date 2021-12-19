@@ -14,7 +14,16 @@ import {
   LispResult,
 } from "./lisp";
 import { get_permissions, PathPermission } from "./permissions";
-import { apply, CustomError, Err, Ok, Result, unwrap, Option } from "./prelude";
+import {
+  apply,
+  CustomError,
+  Err,
+  Ok,
+  Result,
+  unwrap,
+  Option,
+  arrow,
+} from "./prelude";
 import { get_struct } from "./schema";
 import {
   Path,
@@ -493,7 +502,7 @@ function add_symbol(
 ): Record<string, Symbol> {
   if (path[0].length === 0) {
     const symbol_name = path[1];
-    symbols[symbol_name] = apply(undefined, () => {
+    symbols[symbol_name] = arrow(() => {
       switch (field.type) {
         case "str":
         case "lstr":
