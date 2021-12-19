@@ -16,7 +16,6 @@ import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
-import { flexbox } from "native-base/lib/typescript/theme/styled-system";
 
 function View(props: ViewProps) {
   const { style, ...otherProps } = props;
@@ -435,7 +434,7 @@ export function FilterComponent(props: {
                 <View
                   style={{
                     justifyContent: "flex-start",
-                    paddingLeft: 5,
+                    paddingLeft: 33,
                   }}
                 >
                   {apply(undefined, () => {
@@ -755,6 +754,7 @@ export function FilterComponent(props: {
                 <View
                   style={{
                     justifyContent: "space-between",
+                    paddingLeft: 33,
                   }}
                 >
                   {apply(undefined, () => {
@@ -1240,6 +1240,7 @@ export function FilterComponent(props: {
                 <View
                   style={{
                     justifyContent: "space-between",
+                    paddingLeft: 33,
                   }}
                 >
                   {apply(undefined, () => {
@@ -2138,6 +2139,7 @@ function FilterPathComponent(props: {
       })}
       <View
         style={{
+          paddingLeft: 32,
           justifyContent: "space-between",
         }}
       >
