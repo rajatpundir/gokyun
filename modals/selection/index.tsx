@@ -20,7 +20,7 @@ import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 
-// Select field paths as values
+// Bottom sheet, instead of sroll view, for field selection
 // Ordering
 // Limit Offset
 

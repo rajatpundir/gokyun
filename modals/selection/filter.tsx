@@ -32,6 +32,7 @@ function View(props: ViewProps) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
+          flexShrink: 1,
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,

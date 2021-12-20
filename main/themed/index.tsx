@@ -47,6 +47,7 @@ export function View(props: ViewProps) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
+          flexShrink: 1,
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
@@ -73,7 +74,7 @@ export function Text(props: TextProps) {
           textAlignVertical: "center",
           borderColor: "white",
           paddingRight: 5,
-          // borderWidth: 1,
+          flexShrink: 1,
         },
         style,
       ]}
