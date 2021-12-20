@@ -3226,9 +3226,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -3460,9 +3465,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -3942,9 +3952,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -4176,9 +4191,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -4664,9 +4684,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -4902,9 +4927,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -5386,9 +5416,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -5622,9 +5657,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -6092,9 +6132,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -6320,9 +6365,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -6790,9 +6840,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -7018,9 +7073,14 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "i32":
+                                          case "u32":
+                                          case "i64":
+                                          case "u64":
+                                          case "idouble":
+                                          case "udouble":
+                                          case "idecimal":
+                                          case "udecimal": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -7251,9 +7311,7 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "bool": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -7494,9 +7552,7 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "date": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -7739,9 +7795,7 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "date": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -7899,7 +7953,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value2[0]}</Text>
@@ -7909,7 +7963,7 @@ function FilterPathComponent(props: {
                                 })}
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                    bottomSheetModalRef2.current?.present()
                                   }
                                   style={{
                                     alignSelf: "center",
@@ -7923,7 +7977,7 @@ function FilterPathComponent(props: {
                                   />
                                 </Pressable>
                                 <BottomSheetModal
-                                  ref={bottomSheetModalRef1}
+                                  ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
@@ -7964,7 +8018,7 @@ function FilterPathComponent(props: {
                                             return it;
                                           }),
                                         ]);
-                                        bottomSheetModalRef1.current?.close();
+                                        bottomSheetModalRef2.current?.close();
                                       }}
                                       style={{ paddingRight: 8 }}
                                     >
@@ -7988,9 +8042,7 @@ function FilterPathComponent(props: {
                                       .toArray()
                                       .filter((filter_path) => {
                                         switch (filter_path.value[0]) {
-                                          case "str":
-                                          case "lstr":
-                                          case "clob": {
+                                          case "date": {
                                             if (
                                               !filter_path.equals(
                                                 props.filter_path
@@ -8030,7 +8082,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef1.current?.close();
+                                            bottomSheetModalRef2.current?.close();
                                           }}
                                         >
                                           <View
@@ -8106,55 +8158,14 @@ function FilterPathComponent(props: {
                     case ">":
                     case "<": {
                       const value = props.filter_path.value[1][1];
-                      if (value instanceof Date) {
-                        return (
-                          <>
-                            <Pressable onPress={() => setPicker1(true)}>
-                              <Text>{moment(value).format("h:mm A")}</Text>
-                            </Pressable>
-                            <>
-                              {showPicker1 && (
-                                <DateTimePicker
-                                  mode={"time"}
-                                  value={value}
-                                  onChange={(
-                                    _temp: any,
-                                    date: Date | undefined
-                                  ) => {
-                                    setPicker1(Platform.OS === "ios");
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, date || new Date()],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                  }}
-                                />
-                              )}
-                            </>
-                          </>
-                        );
-                      } else {
-                        return (
-                          <Pressable onPress={() => {}}>
-                            <Text>{value[0]}</Text>
-                          </Pressable>
-                        );
-                      }
-                    }
-                    case "between":
-                    case "not_between": {
-                      const [value1, value2] = props.filter_path.value[1][1];
                       return (
-                        <>
+                        <View
+                          style={{
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
                           {arrow(() => {
-                            const value = value1;
                             if (value instanceof Date) {
                               return (
                                 <>
@@ -8180,10 +8191,7 @@ function FilterPathComponent(props: {
                                             apply(props.filter_path, (it) => {
                                               it.value = [
                                                 field_struct_name,
-                                                [
-                                                  op,
-                                                  [date || new Date(), value2],
-                                                ],
+                                                [op, date || new Date()],
                                               ];
                                               return it;
                                             }),
@@ -8206,58 +8214,668 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {arrow(() => {
-                            const value = value2;
-                            if (value instanceof Date) {
-                              return (
-                                <>
-                                  <Pressable onPress={() => setPicker2(true)}>
-                                    <Text>
-                                      {moment(value).format("h:mm A")}
-                                    </Text>
+                          <Pressable
+                            onPress={() =>
+                              bottomSheetModalRef1.current?.present()
+                            }
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          >
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
+                          </Pressable>
+                          <BottomSheetModal
+                            ref={bottomSheetModalRef1}
+                            snapPoints={["50%", "100%"]}
+                            index={1}
+                            backgroundStyle={{
+                              backgroundColor: "#111827",
+                              borderColor: "white",
+                              borderWidth: 1,
+                            }}
+                          >
+                            <View
+                              style={{
+                                paddingBottom: 10,
+                                marginHorizontal: 1,
+                                paddingHorizontal: 8,
+                                borderBottomWidth: 1,
+                                backgroundColor: "#111827",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontWeight: "bold",
+                                  textAlign: "center",
+                                }}
+                              >
+                                FIELDS
+                              </Text>
+                              <Pressable
+                                onPress={() => {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, new Date()],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  bottomSheetModalRef1.current?.close();
+                                }}
+                                style={{ paddingRight: 8 }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: "500",
+                                    textAlign: "center",
+                                    paddingHorizontal: 4,
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                  }}
+                                >
+                                  Clear
+                                </Text>
+                              </Pressable>
+                            </View>
+                            <BottomSheetFlatList
+                              data={props.init_filter.filter_paths
+                                .toArray()
+                                .filter((filter_path) => {
+                                  switch (filter_path.value[0]) {
+                                    case "time": {
+                                      if (
+                                        !filter_path.equals(props.filter_path)
+                                      ) {
+                                        return true;
+                                      }
+                                    }
+                                  }
+                                  return false;
+                                })}
+                              keyExtractor={(_, index) => index.toString()}
+                              renderItem={(list_item) => {
+                                return (
+                                  <Pressable
+                                    onPress={() => {
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [
+                                              op,
+                                              [
+                                                list_item.item.label,
+                                                list_item.item.path,
+                                              ],
+                                            ],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                      bottomSheetModalRef1.current?.close();
+                                    }}
+                                  >
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-start",
+                                        margin: 10,
+                                      }}
+                                    >
+                                      {arrow(() => {
+                                        if (value instanceof Date) {
+                                          return (
+                                            <Checkbox
+                                              value={false}
+                                              color={
+                                                false ? "#ff0000" : undefined
+                                              }
+                                            />
+                                          );
+                                        } else {
+                                          return apply(
+                                            compare_paths(
+                                              value[1],
+                                              list_item.item.path
+                                            ),
+                                            (active) => {
+                                              return (
+                                                <Checkbox
+                                                  value={active}
+                                                  color={
+                                                    active
+                                                      ? "#ff0000"
+                                                      : undefined
+                                                  }
+                                                />
+                                              );
+                                            }
+                                          );
+                                        }
+                                      })}
+                                      <Text style={{ paddingLeft: 10 }}>
+                                        {list_item.item.label}
+                                      </Text>
+                                    </View>
                                   </Pressable>
-                                  <>
-                                    {showPicker2 && (
-                                      <DateTimePicker
-                                        mode={"time"}
-                                        value={value}
-                                        onChange={(
-                                          _temp: any,
-                                          date: Date | undefined
-                                        ) => {
-                                          setPicker2(Platform.OS === "ios");
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [
-                                                  op,
-                                                  [value1, date || new Date()],
-                                                ],
-                                              ];
-                                              return it;
-                                            }),
-                                          ]);
-                                        }}
-                                      />
-                                    )}
-                                  </>
-                                </>
-                              );
-                            } else {
-                              return (
+                                );
+                              }}
+                            />
+                          </BottomSheetModal>
+                        </View>
+                      );
+                    }
+                    case "between":
+                    case "not_between": {
+                      const [value1, value2] = props.filter_path.value[1][1];
+                      return (
+                        <>
+                          {arrow(() => {
+                            const value = value1;
+                            return (
+                              <View
+                                style={{
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                {arrow(() => {
+                                  if (value instanceof Date) {
+                                    return (
+                                      <>
+                                        <Pressable
+                                          onPress={() => setPicker1(true)}
+                                        >
+                                          <Text>
+                                            {moment(value).format("h:mm A")}
+                                          </Text>
+                                        </Pressable>
+                                        <>
+                                          {showPicker1 && (
+                                            <DateTimePicker
+                                              mode={"time"}
+                                              value={value}
+                                              onChange={(
+                                                _temp: any,
+                                                date: Date | undefined
+                                              ) => {
+                                                setPicker1(
+                                                  Platform.OS === "ios"
+                                                );
+                                                props.dispatch([
+                                                  "filters",
+                                                  props.filter,
+                                                  "replace",
+                                                  apply(
+                                                    props.filter_path,
+                                                    (it) => {
+                                                      it.value = [
+                                                        field_struct_name,
+                                                        [
+                                                          op,
+                                                          [
+                                                            date || new Date(),
+                                                            value2,
+                                                          ],
+                                                        ],
+                                                      ];
+                                                      return it;
+                                                    }
+                                                  ),
+                                                ]);
+                                              }}
+                                            />
+                                          )}
+                                        </>
+                                      </>
+                                    );
+                                  } else {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  }
+                                })}
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
+                                    style={{ paddingHorizontal: 4 }}
+                                  />
                                 </Pressable>
-                              );
-                            }
+                                <BottomSheetModal
+                                  ref={bottomSheetModalRef1}
+                                  snapPoints={["50%", "100%"]}
+                                  index={1}
+                                  backgroundStyle={{
+                                    backgroundColor: "#111827",
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      paddingBottom: 10,
+                                      marginHorizontal: 1,
+                                      paddingHorizontal: 8,
+                                      borderBottomWidth: 1,
+                                      backgroundColor: "#111827",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      FIELDS
+                                    </Text>
+                                    <Pressable
+                                      onPress={() => {
+                                        props.dispatch([
+                                          "filters",
+                                          props.filter,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [op, [new Date(), value2]],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
+                                        bottomSheetModalRef1.current?.close();
+                                      }}
+                                      style={{ paddingRight: 8 }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: "500",
+                                          textAlign: "center",
+                                          paddingHorizontal: 4,
+                                          borderColor: "white",
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                        }}
+                                      >
+                                        Clear
+                                      </Text>
+                                    </Pressable>
+                                  </View>
+                                  <BottomSheetFlatList
+                                    data={props.init_filter.filter_paths
+                                      .toArray()
+                                      .filter((filter_path) => {
+                                        switch (filter_path.value[0]) {
+                                          case "time": {
+                                            if (
+                                              !filter_path.equals(
+                                                props.filter_path
+                                              )
+                                            ) {
+                                              return true;
+                                            }
+                                          }
+                                        }
+                                        return false;
+                                      })}
+                                    keyExtractor={(_, index) =>
+                                      index.toString()
+                                    }
+                                    renderItem={(list_item) => {
+                                      return (
+                                        <Pressable
+                                          onPress={() => {
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      [
+                                                        list_item.item.label,
+                                                        list_item.item.path,
+                                                      ],
+                                                      value2,
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                            bottomSheetModalRef1.current?.close();
+                                          }}
+                                        >
+                                          <View
+                                            style={{
+                                              justifyContent: "flex-start",
+                                              margin: 10,
+                                            }}
+                                          >
+                                            {arrow(() => {
+                                              if (value instanceof Date) {
+                                                return (
+                                                  <Checkbox
+                                                    value={false}
+                                                    color={
+                                                      false
+                                                        ? "#ff0000"
+                                                        : undefined
+                                                    }
+                                                  />
+                                                );
+                                              } else {
+                                                return apply(
+                                                  compare_paths(
+                                                    value[1],
+                                                    list_item.item.path
+                                                  ),
+                                                  (active) => {
+                                                    return (
+                                                      <Checkbox
+                                                        value={active}
+                                                        color={
+                                                          active
+                                                            ? "#ff0000"
+                                                            : undefined
+                                                        }
+                                                      />
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            })}
+                                            <Text style={{ paddingLeft: 10 }}>
+                                              {list_item.item.label}
+                                            </Text>
+                                          </View>
+                                        </Pressable>
+                                      );
+                                    }}
+                                  />
+                                </BottomSheetModal>
+                              </View>
+                            );
+                          })}
+                          {arrow(() => {
+                            const value = value2;
+                            return (
+                              <View
+                                style={{
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                {arrow(() => {
+                                  if (value instanceof Date) {
+                                    return (
+                                      <>
+                                        <Pressable
+                                          onPress={() => setPicker2(true)}
+                                        >
+                                          <Text>
+                                            {moment(value).format("h:mm A")}
+                                          </Text>
+                                        </Pressable>
+                                        <>
+                                          {showPicker2 && (
+                                            <DateTimePicker
+                                              mode={"time"}
+                                              value={value}
+                                              onChange={(
+                                                _temp: any,
+                                                date: Date | undefined
+                                              ) => {
+                                                setPicker2(
+                                                  Platform.OS === "ios"
+                                                );
+                                                props.dispatch([
+                                                  "filters",
+                                                  props.filter,
+                                                  "replace",
+                                                  apply(
+                                                    props.filter_path,
+                                                    (it) => {
+                                                      it.value = [
+                                                        field_struct_name,
+                                                        [
+                                                          op,
+                                                          [
+                                                            value1,
+                                                            date || new Date(),
+                                                          ],
+                                                        ],
+                                                      ];
+                                                      return it;
+                                                    }
+                                                  ),
+                                                ]);
+                                              }}
+                                            />
+                                          )}
+                                        </>
+                                      </>
+                                    );
+                                  } else {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  }
+                                })}
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef2.current?.present()
+                                  }
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
+                                    style={{ paddingHorizontal: 4 }}
+                                  />
+                                </Pressable>
+                                <BottomSheetModal
+                                  ref={bottomSheetModalRef2}
+                                  snapPoints={["50%", "100%"]}
+                                  index={1}
+                                  backgroundStyle={{
+                                    backgroundColor: "#111827",
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      paddingBottom: 10,
+                                      marginHorizontal: 1,
+                                      paddingHorizontal: 8,
+                                      borderBottomWidth: 1,
+                                      backgroundColor: "#111827",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      FIELDS
+                                    </Text>
+                                    <Pressable
+                                      onPress={() => {
+                                        props.dispatch([
+                                          "filters",
+                                          props.filter,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [op, [value1, new Date()]],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
+                                        bottomSheetModalRef2.current?.close();
+                                      }}
+                                      style={{ paddingRight: 8 }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: "500",
+                                          textAlign: "center",
+                                          paddingHorizontal: 4,
+                                          borderColor: "white",
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                        }}
+                                      >
+                                        Clear
+                                      </Text>
+                                    </Pressable>
+                                  </View>
+                                  <BottomSheetFlatList
+                                    data={props.init_filter.filter_paths
+                                      .toArray()
+                                      .filter((filter_path) => {
+                                        switch (filter_path.value[0]) {
+                                          case "time": {
+                                            if (
+                                              !filter_path.equals(
+                                                props.filter_path
+                                              )
+                                            ) {
+                                              return true;
+                                            }
+                                          }
+                                        }
+                                        return false;
+                                      })}
+                                    keyExtractor={(_, index) =>
+                                      index.toString()
+                                    }
+                                    renderItem={(list_item) => {
+                                      return (
+                                        <Pressable
+                                          onPress={() => {
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      value1,
+                                                      [
+                                                        list_item.item.label,
+                                                        list_item.item.path,
+                                                      ],
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                            bottomSheetModalRef2.current?.close();
+                                          }}
+                                        >
+                                          <View
+                                            style={{
+                                              justifyContent: "flex-start",
+                                              margin: 10,
+                                            }}
+                                          >
+                                            {arrow(() => {
+                                              if (value instanceof Date) {
+                                                return (
+                                                  <Checkbox
+                                                    value={false}
+                                                    color={
+                                                      false
+                                                        ? "#ff0000"
+                                                        : undefined
+                                                    }
+                                                  />
+                                                );
+                                              } else {
+                                                return apply(
+                                                  compare_paths(
+                                                    value[1],
+                                                    list_item.item.path
+                                                  ),
+                                                  (active) => {
+                                                    return (
+                                                      <Checkbox
+                                                        value={active}
+                                                        color={
+                                                          active
+                                                            ? "#ff0000"
+                                                            : undefined
+                                                        }
+                                                      />
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            })}
+                                            <Text style={{ paddingLeft: 10 }}>
+                                              {list_item.item.label}
+                                            </Text>
+                                          </View>
+                                        </Pressable>
+                                      );
+                                    }}
+                                  />
+                                </BottomSheetModal>
+                              </View>
+                            );
                           })}
                         </>
                       );
@@ -8281,97 +8899,14 @@ function FilterPathComponent(props: {
                     case ">":
                     case "<": {
                       const value = props.filter_path.value[1][1];
-                      if (value instanceof Date) {
-                        return (
-                          <>
-                            <Pressable onPress={() => setPicker1(true)}>
-                              <Text>
-                                {moment(value).format("Do MMM YYYY, h:mm A")}
-                              </Text>
-                            </Pressable>
-                            <>
-                              {showPicker1 && (
-                                <DateTimePicker
-                                  mode={mode1 as "date" | "time"}
-                                  value={value}
-                                  onChange={(
-                                    _temp: any,
-                                    selectedValue: Date | undefined
-                                  ) => {
-                                    setPicker1(Platform.OS === "ios");
-                                    if (selectedValue !== undefined) {
-                                      if (mode1 === "date") {
-                                        setDate1(
-                                          apply(date1, (it) => {
-                                            it.setFullYear(
-                                              selectedValue.getFullYear()
-                                            );
-                                            it.setMonth(
-                                              selectedValue.getMonth()
-                                            );
-                                            it.setDate(selectedValue.getDate());
-                                            return it;
-                                          })
-                                        );
-                                        setMode1("time");
-                                        setPicker1(Platform.OS !== "ios");
-                                      } else {
-                                        setDate1(
-                                          apply(date1, (it) => {
-                                            it.setHours(
-                                              selectedValue.getHours()
-                                            );
-                                            it.setMinutes(
-                                              selectedValue.getMinutes()
-                                            );
-                                            it.setSeconds(
-                                              selectedValue.getSeconds()
-                                            );
-                                            it.setMilliseconds(
-                                              selectedValue.getMilliseconds()
-                                            );
-                                            return it;
-                                          })
-                                        );
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, new Date(date1.getTime())],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        setMode1("date");
-                                      }
-                                    } else {
-                                      setDate1(new Date(value.getTime()));
-                                      setMode1("date");
-                                    }
-                                  }}
-                                />
-                              )}
-                            </>
-                          </>
-                        );
-                      } else {
-                        return (
-                          <Pressable onPress={() => {}}>
-                            <Text>{value[0]}</Text>
-                          </Pressable>
-                        );
-                      }
-                    }
-                    case "between":
-                    case "not_between": {
-                      const [value1, value2] = props.filter_path.value[1][1];
                       return (
-                        <>
+                        <View
+                          style={{
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
                           {arrow(() => {
-                            const value = value1;
                             if (value instanceof Date) {
                               return (
                                 <>
@@ -8439,12 +8974,9 @@ function FilterPathComponent(props: {
                                                       field_struct_name,
                                                       [
                                                         op,
-                                                        [
-                                                          new Date(
-                                                            date1.getTime()
-                                                          ),
-                                                          value2,
-                                                        ],
+                                                        new Date(
+                                                          date1.getTime()
+                                                        ),
                                                       ],
                                                     ];
                                                     return it;
@@ -8475,110 +9007,772 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          {arrow(() => {
-                            const value = value2;
-                            if (value instanceof Date) {
-                              return (
-                                <>
-                                  <Pressable onPress={() => setPicker2(true)}>
-                                    <Text>
-                                      {moment(value).format(
-                                        "Do MMM YYYY, h:mm A"
-                                      )}
-                                    </Text>
-                                  </Pressable>
-                                  <>
-                                    {showPicker2 && (
-                                      <DateTimePicker
-                                        mode={mode2 as "date" | "time"}
-                                        value={value}
-                                        onChange={(
-                                          _temp: any,
-                                          selectedValue: Date | undefined
-                                        ) => {
-                                          setPicker2(Platform.OS === "ios");
-                                          if (selectedValue !== undefined) {
-                                            if (mode2 === "date") {
-                                              setDate2(
-                                                apply(date2, (it) => {
-                                                  it.setFullYear(
-                                                    selectedValue.getFullYear()
-                                                  );
-                                                  it.setMonth(
-                                                    selectedValue.getMonth()
-                                                  );
-                                                  it.setDate(
-                                                    selectedValue.getDate()
-                                                  );
-                                                  return it;
-                                                })
-                                              );
-                                              setMode2("time");
-                                              setPicker2(Platform.OS !== "ios");
-                                            } else {
-                                              setDate2(
-                                                apply(date2, (it) => {
-                                                  it.setHours(
-                                                    selectedValue.getHours()
-                                                  );
-                                                  it.setMinutes(
-                                                    selectedValue.getMinutes()
-                                                  );
-                                                  it.setSeconds(
-                                                    selectedValue.getSeconds()
-                                                  );
-                                                  it.setMilliseconds(
-                                                    selectedValue.getMilliseconds()
-                                                  );
-                                                  return it;
-                                                })
-                                              );
-                                              props.dispatch([
-                                                "filters",
-                                                props.filter,
-                                                "replace",
-                                                apply(
-                                                  props.filter_path,
-                                                  (it) => {
-                                                    it.value = [
-                                                      field_struct_name,
-                                                      [
-                                                        op,
-                                                        [
-                                                          value1,
-                                                          new Date(
-                                                            date2.getTime()
-                                                          ),
-                                                        ],
-                                                      ],
-                                                    ];
-                                                    return it;
+                          <Pressable
+                            onPress={() =>
+                              bottomSheetModalRef1.current?.present()
+                            }
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          >
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
+                          </Pressable>
+                          <BottomSheetModal
+                            ref={bottomSheetModalRef1}
+                            snapPoints={["50%", "100%"]}
+                            index={1}
+                            backgroundStyle={{
+                              backgroundColor: "#111827",
+                              borderColor: "white",
+                              borderWidth: 1,
+                            }}
+                          >
+                            <View
+                              style={{
+                                paddingBottom: 10,
+                                marginHorizontal: 1,
+                                paddingHorizontal: 8,
+                                borderBottomWidth: 1,
+                                backgroundColor: "#111827",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontWeight: "bold",
+                                  textAlign: "center",
+                                }}
+                              >
+                                FIELDS
+                              </Text>
+                              <Pressable
+                                onPress={() => {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, new Date()],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  bottomSheetModalRef1.current?.close();
+                                }}
+                                style={{ paddingRight: 8 }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: "500",
+                                    textAlign: "center",
+                                    paddingHorizontal: 4,
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                  }}
+                                >
+                                  Clear
+                                </Text>
+                              </Pressable>
+                            </View>
+                            <BottomSheetFlatList
+                              data={props.init_filter.filter_paths
+                                .toArray()
+                                .filter((filter_path) => {
+                                  switch (filter_path.value[0]) {
+                                    case "timestamp": {
+                                      if (
+                                        !filter_path.equals(props.filter_path)
+                                      ) {
+                                        return true;
+                                      }
+                                    }
+                                  }
+                                  return false;
+                                })}
+                              keyExtractor={(_, index) => index.toString()}
+                              renderItem={(list_item) => {
+                                return (
+                                  <Pressable
+                                    onPress={() => {
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [
+                                              op,
+                                              [
+                                                list_item.item.label,
+                                                list_item.item.path,
+                                              ],
+                                            ],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                      bottomSheetModalRef1.current?.close();
+                                    }}
+                                  >
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-start",
+                                        margin: 10,
+                                      }}
+                                    >
+                                      {arrow(() => {
+                                        if (value instanceof Date) {
+                                          return (
+                                            <Checkbox
+                                              value={false}
+                                              color={
+                                                false ? "#ff0000" : undefined
+                                              }
+                                            />
+                                          );
+                                        } else {
+                                          return apply(
+                                            compare_paths(
+                                              value[1],
+                                              list_item.item.path
+                                            ),
+                                            (active) => {
+                                              return (
+                                                <Checkbox
+                                                  value={active}
+                                                  color={
+                                                    active
+                                                      ? "#ff0000"
+                                                      : undefined
                                                   }
-                                                ),
-                                              ]);
-                                              setMode2("date");
+                                                />
+                                              );
                                             }
-                                          } else {
-                                            setDate2(new Date(value.getTime()));
-                                            setMode2("date");
-                                          }
-                                        }}
-                                      />
-                                    )}
-                                  </>
-                                </>
-                              );
-                            } else {
-                              return (
+                                          );
+                                        }
+                                      })}
+                                      <Text style={{ paddingLeft: 10 }}>
+                                        {list_item.item.label}
+                                      </Text>
+                                    </View>
+                                  </Pressable>
+                                );
+                              }}
+                            />
+                          </BottomSheetModal>
+                        </View>
+                      );
+                    }
+                    case "between":
+                    case "not_between": {
+                      const [value1, value2] = props.filter_path.value[1][1];
+                      return (
+                        <>
+                          {arrow(() => {
+                            const value = value1;
+                            return (
+                              <View
+                                style={{
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                {arrow(() => {
+                                  if (value instanceof Date) {
+                                    return (
+                                      <>
+                                        <Pressable
+                                          onPress={() => setPicker1(true)}
+                                        >
+                                          <Text>
+                                            {moment(value).format(
+                                              "Do MMM YYYY, h:mm A"
+                                            )}
+                                          </Text>
+                                        </Pressable>
+                                        <>
+                                          {showPicker1 && (
+                                            <DateTimePicker
+                                              mode={mode1 as "date" | "time"}
+                                              value={value}
+                                              onChange={(
+                                                _temp: any,
+                                                selectedValue: Date | undefined
+                                              ) => {
+                                                setPicker1(
+                                                  Platform.OS === "ios"
+                                                );
+                                                if (
+                                                  selectedValue !== undefined
+                                                ) {
+                                                  if (mode1 === "date") {
+                                                    setDate1(
+                                                      apply(date1, (it) => {
+                                                        it.setFullYear(
+                                                          selectedValue.getFullYear()
+                                                        );
+                                                        it.setMonth(
+                                                          selectedValue.getMonth()
+                                                        );
+                                                        it.setDate(
+                                                          selectedValue.getDate()
+                                                        );
+                                                        return it;
+                                                      })
+                                                    );
+                                                    setMode1("time");
+                                                    setPicker1(
+                                                      Platform.OS !== "ios"
+                                                    );
+                                                  } else {
+                                                    setDate1(
+                                                      apply(date1, (it) => {
+                                                        it.setHours(
+                                                          selectedValue.getHours()
+                                                        );
+                                                        it.setMinutes(
+                                                          selectedValue.getMinutes()
+                                                        );
+                                                        it.setSeconds(
+                                                          selectedValue.getSeconds()
+                                                        );
+                                                        it.setMilliseconds(
+                                                          selectedValue.getMilliseconds()
+                                                        );
+                                                        return it;
+                                                      })
+                                                    );
+                                                    props.dispatch([
+                                                      "filters",
+                                                      props.filter,
+                                                      "replace",
+                                                      apply(
+                                                        props.filter_path,
+                                                        (it) => {
+                                                          it.value = [
+                                                            field_struct_name,
+                                                            [
+                                                              op,
+                                                              [
+                                                                new Date(
+                                                                  date1.getTime()
+                                                                ),
+                                                                value2,
+                                                              ],
+                                                            ],
+                                                          ];
+                                                          return it;
+                                                        }
+                                                      ),
+                                                    ]);
+                                                    setMode1("date");
+                                                  }
+                                                } else {
+                                                  setDate1(
+                                                    new Date(value.getTime())
+                                                  );
+                                                  setMode1("date");
+                                                }
+                                              }}
+                                            />
+                                          )}
+                                        </>
+                                      </>
+                                    );
+                                  } else {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  }
+                                })}
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
+                                    style={{ paddingHorizontal: 4 }}
+                                  />
                                 </Pressable>
-                              );
-                            }
+                                <BottomSheetModal
+                                  ref={bottomSheetModalRef1}
+                                  snapPoints={["50%", "100%"]}
+                                  index={1}
+                                  backgroundStyle={{
+                                    backgroundColor: "#111827",
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      paddingBottom: 10,
+                                      marginHorizontal: 1,
+                                      paddingHorizontal: 8,
+                                      borderBottomWidth: 1,
+                                      backgroundColor: "#111827",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      FIELDS
+                                    </Text>
+                                    <Pressable
+                                      onPress={() => {
+                                        props.dispatch([
+                                          "filters",
+                                          props.filter,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [op, [new Date(), value2]],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
+                                        bottomSheetModalRef1.current?.close();
+                                      }}
+                                      style={{ paddingRight: 8 }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: "500",
+                                          textAlign: "center",
+                                          paddingHorizontal: 4,
+                                          borderColor: "white",
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                        }}
+                                      >
+                                        Clear
+                                      </Text>
+                                    </Pressable>
+                                  </View>
+                                  <BottomSheetFlatList
+                                    data={props.init_filter.filter_paths
+                                      .toArray()
+                                      .filter((filter_path) => {
+                                        switch (filter_path.value[0]) {
+                                          case "timestamp": {
+                                            if (
+                                              !filter_path.equals(
+                                                props.filter_path
+                                              )
+                                            ) {
+                                              return true;
+                                            }
+                                          }
+                                        }
+                                        return false;
+                                      })}
+                                    keyExtractor={(_, index) =>
+                                      index.toString()
+                                    }
+                                    renderItem={(list_item) => {
+                                      return (
+                                        <Pressable
+                                          onPress={() => {
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      [
+                                                        list_item.item.label,
+                                                        list_item.item.path,
+                                                      ],
+                                                      value2,
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                            bottomSheetModalRef1.current?.close();
+                                          }}
+                                        >
+                                          <View
+                                            style={{
+                                              justifyContent: "flex-start",
+                                              margin: 10,
+                                            }}
+                                          >
+                                            {arrow(() => {
+                                              if (value instanceof Date) {
+                                                return (
+                                                  <Checkbox
+                                                    value={false}
+                                                    color={
+                                                      false
+                                                        ? "#ff0000"
+                                                        : undefined
+                                                    }
+                                                  />
+                                                );
+                                              } else {
+                                                return apply(
+                                                  compare_paths(
+                                                    value[1],
+                                                    list_item.item.path
+                                                  ),
+                                                  (active) => {
+                                                    return (
+                                                      <Checkbox
+                                                        value={active}
+                                                        color={
+                                                          active
+                                                            ? "#ff0000"
+                                                            : undefined
+                                                        }
+                                                      />
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            })}
+                                            <Text style={{ paddingLeft: 10 }}>
+                                              {list_item.item.label}
+                                            </Text>
+                                          </View>
+                                        </Pressable>
+                                      );
+                                    }}
+                                  />
+                                </BottomSheetModal>
+                              </View>
+                            );
+                          })}
+                          {arrow(() => {
+                            const value = value2;
+                            return (
+                              <View
+                                style={{
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                {arrow(() => {
+                                  if (value instanceof Date) {
+                                    return (
+                                      <>
+                                        <Pressable
+                                          onPress={() => setPicker2(true)}
+                                        >
+                                          <Text>
+                                            {moment(value).format(
+                                              "Do MMM YYYY, h:mm A"
+                                            )}
+                                          </Text>
+                                        </Pressable>
+                                        <>
+                                          {showPicker2 && (
+                                            <DateTimePicker
+                                              mode={mode2 as "date" | "time"}
+                                              value={value}
+                                              onChange={(
+                                                _temp: any,
+                                                selectedValue: Date | undefined
+                                              ) => {
+                                                setPicker2(
+                                                  Platform.OS === "ios"
+                                                );
+                                                if (
+                                                  selectedValue !== undefined
+                                                ) {
+                                                  if (mode2 === "date") {
+                                                    setDate2(
+                                                      apply(date2, (it) => {
+                                                        it.setFullYear(
+                                                          selectedValue.getFullYear()
+                                                        );
+                                                        it.setMonth(
+                                                          selectedValue.getMonth()
+                                                        );
+                                                        it.setDate(
+                                                          selectedValue.getDate()
+                                                        );
+                                                        return it;
+                                                      })
+                                                    );
+                                                    setMode2("time");
+                                                    setPicker2(
+                                                      Platform.OS !== "ios"
+                                                    );
+                                                  } else {
+                                                    setDate2(
+                                                      apply(date2, (it) => {
+                                                        it.setHours(
+                                                          selectedValue.getHours()
+                                                        );
+                                                        it.setMinutes(
+                                                          selectedValue.getMinutes()
+                                                        );
+                                                        it.setSeconds(
+                                                          selectedValue.getSeconds()
+                                                        );
+                                                        it.setMilliseconds(
+                                                          selectedValue.getMilliseconds()
+                                                        );
+                                                        return it;
+                                                      })
+                                                    );
+                                                    props.dispatch([
+                                                      "filters",
+                                                      props.filter,
+                                                      "replace",
+                                                      apply(
+                                                        props.filter_path,
+                                                        (it) => {
+                                                          it.value = [
+                                                            field_struct_name,
+                                                            [
+                                                              op,
+                                                              [
+                                                                value1,
+                                                                new Date(
+                                                                  date2.getTime()
+                                                                ),
+                                                              ],
+                                                            ],
+                                                          ];
+                                                          return it;
+                                                        }
+                                                      ),
+                                                    ]);
+                                                    setMode2("date");
+                                                  }
+                                                } else {
+                                                  setDate2(
+                                                    new Date(value.getTime())
+                                                  );
+                                                  setMode2("date");
+                                                }
+                                              }}
+                                            />
+                                          )}
+                                        </>
+                                      </>
+                                    );
+                                  } else {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  }
+                                })}
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef2.current?.present()
+                                  }
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
+                                    style={{ paddingHorizontal: 4 }}
+                                  />
+                                </Pressable>
+                                <BottomSheetModal
+                                  ref={bottomSheetModalRef2}
+                                  snapPoints={["50%", "100%"]}
+                                  index={1}
+                                  backgroundStyle={{
+                                    backgroundColor: "#111827",
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      paddingBottom: 10,
+                                      marginHorizontal: 1,
+                                      paddingHorizontal: 8,
+                                      borderBottomWidth: 1,
+                                      backgroundColor: "#111827",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      FIELDS
+                                    </Text>
+                                    <Pressable
+                                      onPress={() => {
+                                        props.dispatch([
+                                          "filters",
+                                          props.filter,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [op, [value1, new Date()]],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
+                                        bottomSheetModalRef2.current?.close();
+                                      }}
+                                      style={{ paddingRight: 8 }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: "500",
+                                          textAlign: "center",
+                                          paddingHorizontal: 4,
+                                          borderColor: "white",
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                        }}
+                                      >
+                                        Clear
+                                      </Text>
+                                    </Pressable>
+                                  </View>
+                                  <BottomSheetFlatList
+                                    data={props.init_filter.filter_paths
+                                      .toArray()
+                                      .filter((filter_path) => {
+                                        switch (filter_path.value[0]) {
+                                          case "timestamp": {
+                                            if (
+                                              !filter_path.equals(
+                                                props.filter_path
+                                              )
+                                            ) {
+                                              return true;
+                                            }
+                                          }
+                                        }
+                                        return false;
+                                      })}
+                                    keyExtractor={(_, index) =>
+                                      index.toString()
+                                    }
+                                    renderItem={(list_item) => {
+                                      return (
+                                        <Pressable
+                                          onPress={() => {
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      value1,
+                                                      [
+                                                        list_item.item.label,
+                                                        list_item.item.path,
+                                                      ],
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                            bottomSheetModalRef2.current?.close();
+                                          }}
+                                        >
+                                          <View
+                                            style={{
+                                              justifyContent: "flex-start",
+                                              margin: 10,
+                                            }}
+                                          >
+                                            {arrow(() => {
+                                              if (value instanceof Date) {
+                                                return (
+                                                  <Checkbox
+                                                    value={false}
+                                                    color={
+                                                      false
+                                                        ? "#ff0000"
+                                                        : undefined
+                                                    }
+                                                  />
+                                                );
+                                              } else {
+                                                return apply(
+                                                  compare_paths(
+                                                    value[1],
+                                                    list_item.item.path
+                                                  ),
+                                                  (active) => {
+                                                    return (
+                                                      <Checkbox
+                                                        value={active}
+                                                        color={
+                                                          active
+                                                            ? "#ff0000"
+                                                            : undefined
+                                                        }
+                                                      />
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            })}
+                                            <Text style={{ paddingLeft: 10 }}>
+                                              {list_item.item.label}
+                                            </Text>
+                                          </View>
+                                        </Pressable>
+                                      );
+                                    }}
+                                  />
+                                </BottomSheetModal>
+                              </View>
+                            );
                           })}
                         </>
                       );
