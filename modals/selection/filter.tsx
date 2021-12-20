@@ -2991,9 +2991,14 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64":
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -3702,9 +3707,14 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64":
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -4415,9 +4425,14 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64":
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -5134,9 +5149,14 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64":
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -5843,9 +5863,14 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64":
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
@@ -6536,9 +6561,14 @@ function FilterPathComponent(props: {
                                 .toArray()
                                 .filter((filter_path) => {
                                   switch (filter_path.value[0]) {
-                                    case "str":
-                                    case "lstr":
-                                    case "clob": {
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64":
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
                                       if (
                                         !filter_path.equals(props.filter_path)
                                       ) {
