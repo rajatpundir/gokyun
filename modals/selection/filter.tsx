@@ -11,7 +11,7 @@ import { Platform, Pressable } from "react-native";
 import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Fontisto } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import {
@@ -2309,13 +2309,19 @@ function FilterPathComponent(props: {
                                     fontSize: 15,
                                     fontWeight: "500",
                                     textAlign: "center",
-                                    paddingHorizontal: 4,
+                                    paddingHorizontal: 5,
+                                    paddingVertical: 2,
                                     borderColor: "white",
                                     borderWidth: 1,
                                     borderRadius: 8,
                                   }}
                                 >
                                   Clear
+                                  <Fontisto
+                                    name="eraser"
+                                    size={16}
+                                    color="white"
+                                  />
                                 </Text>
                               </Pressable>
                             </View>
@@ -2543,13 +2549,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -2781,13 +2793,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -3307,13 +3325,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -3568,13 +3592,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -4099,13 +4129,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -4360,13 +4396,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -4897,13 +4939,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -5162,13 +5210,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -5695,13 +5749,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -5958,13 +6018,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -6477,13 +6543,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -6732,13 +6804,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -7251,13 +7329,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -7506,13 +7590,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -8275,13 +8365,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -8539,13 +8635,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -9066,13 +9168,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -9329,13 +9437,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -9960,13 +10074,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -10275,13 +10395,19 @@ function FilterPathComponent(props: {
                                           fontSize: 15,
                                           fontWeight: "500",
                                           textAlign: "center",
-                                          paddingHorizontal: 4,
+                                          paddingHorizontal: 5,
+                                          paddingVertical: 2,
                                           borderColor: "white",
                                           borderWidth: 1,
                                           borderRadius: 8,
                                         }}
                                       >
                                         Clear
+                                        <Fontisto
+                                          name="eraser"
+                                          size={16}
+                                          color="white"
+                                        />
                                       </Text>
                                     </Pressable>
                                   </View>
