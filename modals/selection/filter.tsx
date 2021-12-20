@@ -2220,7 +2220,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -2297,7 +2297,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -2432,7 +2432,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.close()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -2514,7 +2514,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -2653,7 +2653,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.close()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -2735,7 +2735,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -2902,7 +2902,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -2982,7 +2982,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -3130,7 +3130,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.collapse()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -3212,7 +3212,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -3364,7 +3364,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.collapse()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -3446,7 +3446,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -3613,7 +3613,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -3693,7 +3693,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -3841,7 +3841,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.collapse()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -3923,7 +3923,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -4075,7 +4075,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.collapse()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -4157,7 +4157,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -4326,7 +4326,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -4406,7 +4406,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -4558,7 +4558,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.collapse()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -4640,7 +4640,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -4796,7 +4796,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.collapse()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -4878,7 +4878,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -5045,7 +5045,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -5125,7 +5125,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -5275,7 +5275,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.collapse()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -5357,7 +5357,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -5511,7 +5511,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.collapse()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -5593,7 +5593,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -5754,7 +5754,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -5834,7 +5834,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -5976,7 +5976,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.collapse()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -6058,7 +6058,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -6204,7 +6204,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.collapse()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -6286,7 +6286,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -6447,7 +6447,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -6527,7 +6527,7 @@ function FilterPathComponent(props: {
                                     borderRadius: 8,
                                   }}
                                 >
-                                  Reset
+                                  Clear
                                 </Text>
                               </Pressable>
                             </View>
@@ -6669,7 +6669,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.collapse()
+                                          bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -6751,7 +6751,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -6897,7 +6897,7 @@ function FilterPathComponent(props: {
                                     return (
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.collapse()
+                                          bottomSheetModalRef2.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
@@ -6979,7 +6979,7 @@ function FilterPathComponent(props: {
                                           borderRadius: 8,
                                         }}
                                       >
-                                        Reset
+                                        Clear
                                       </Text>
                                     </Pressable>
                                   </View>
@@ -7404,7 +7404,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -7457,7 +7457,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -7673,7 +7673,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
@@ -7778,7 +7778,7 @@ function FilterPathComponent(props: {
                               return (
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.present()
                                   }
                                 >
                                   <Text>{value[0]}</Text>
