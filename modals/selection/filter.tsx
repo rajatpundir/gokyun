@@ -2236,16 +2236,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -2452,20 +2448,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -2679,20 +2669,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
@@ -2934,16 +2918,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -3166,20 +3146,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -3406,20 +3380,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
@@ -3661,16 +3629,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -3893,20 +3857,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -4133,20 +4091,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
@@ -4390,16 +4342,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -4626,20 +4574,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -4870,20 +4812,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
@@ -5125,16 +5061,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -5359,20 +5291,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -5601,20 +5527,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
@@ -5850,16 +5770,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -6076,20 +5992,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -6310,20 +6220,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
@@ -6559,16 +6463,12 @@ function FilterPathComponent(props: {
                               alignSelf: "center",
                             }}
                           >
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                fontWeight: "500",
-                                textAlign: "center",
-                                paddingHorizontal: 4,
-                              }}
-                            >
-                              <Entypo name="edit" size={16} color="white" />
-                            </Text>
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
@@ -6785,20 +6685,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
@@ -7019,20 +6913,14 @@ function FilterPathComponent(props: {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <Text
+                                  <Entypo
+                                    name="edit"
+                                    size={16}
+                                    color="white"
                                     style={{
-                                      fontSize: 15,
-                                      fontWeight: "500",
-                                      textAlign: "center",
                                       paddingHorizontal: 4,
                                     }}
-                                  >
-                                    <Entypo
-                                      name="edit"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Text>
+                                  />
                                 </Pressable>
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
