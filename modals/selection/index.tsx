@@ -287,11 +287,11 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   style={{
                     backgroundColor: "#ff0000",
                     alignSelf: "flex-end",
-                    paddingHorizontal: 8,
+                    paddingHorizontal: 6,
                     paddingVertical: 2,
-                    fontWeight: "600",
-                    marginRight: 1,
-                    color: "black",
+                    fontWeight: "bold",
+                    marginRight: 4,
+                    color: "white",
                   }}
                 >
                   Add Filter

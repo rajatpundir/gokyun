@@ -7132,31 +7132,211 @@ function FilterPathComponent(props: {
                     case "==":
                     case "!=": {
                       const value = props.filter_path.value[1][1];
-                      if (typeof value === "boolean") {
-                        return (
-                          <Checkbox
-                            value={value}
-                            onValueChange={(x) =>
-                              props.dispatch([
-                                "filters",
-                                props.filter,
-                                "replace",
-                                apply(props.filter_path, (it) => {
-                                  it.value = [field_struct_name, [op, x]];
-                                  return it;
-                                }),
-                              ])
+                      return (
+                        <View
+                          style={{
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
+                          {arrow(() => {
+                            if (typeof value === "boolean") {
+                              return (
+                                <Checkbox
+                                  value={value}
+                                  onValueChange={(x) =>
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [field_struct_name, [op, x]];
+                                        return it;
+                                      }),
+                                    ])
+                                  }
+                                  color={value ? "#ff0000" : undefined}
+                                />
+                              );
+                            } else {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
                             }
-                            color={value ? "#ff0000" : undefined}
-                          />
-                        );
-                      } else {
-                        return (
-                          <Pressable onPress={() => {}}>
-                            <Text>{value[0]}</Text>
+                          })}
+                          <Pressable
+                            onPress={() =>
+                              bottomSheetModalRef1.current?.present()
+                            }
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          >
+                            <Entypo
+                              name="edit"
+                              size={16}
+                              color="white"
+                              style={{ paddingHorizontal: 4 }}
+                            />
                           </Pressable>
-                        );
-                      }
+                          <BottomSheetModal
+                            ref={bottomSheetModalRef1}
+                            snapPoints={["50%", "100%"]}
+                            index={1}
+                            backgroundStyle={{
+                              backgroundColor: "#111827",
+                              borderColor: "white",
+                              borderWidth: 1,
+                            }}
+                          >
+                            <View
+                              style={{
+                                paddingBottom: 10,
+                                marginHorizontal: 1,
+                                paddingHorizontal: 8,
+                                borderBottomWidth: 1,
+                                backgroundColor: "#111827",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontWeight: "bold",
+                                  textAlign: "center",
+                                }}
+                              >
+                                FIELDS
+                              </Text>
+                              <Pressable
+                                onPress={() => {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, true],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  bottomSheetModalRef1.current?.close();
+                                }}
+                                style={{ paddingRight: 8 }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: "500",
+                                    textAlign: "center",
+                                    paddingHorizontal: 4,
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                  }}
+                                >
+                                  Clear
+                                </Text>
+                              </Pressable>
+                            </View>
+                            <BottomSheetFlatList
+                              data={props.init_filter.filter_paths
+                                .toArray()
+                                .filter((filter_path) => {
+                                  switch (filter_path.value[0]) {
+                                    case "str":
+                                    case "lstr":
+                                    case "clob": {
+                                      if (
+                                        !filter_path.equals(props.filter_path)
+                                      ) {
+                                        return true;
+                                      }
+                                    }
+                                  }
+                                  return false;
+                                })}
+                              keyExtractor={(_, index) => index.toString()}
+                              renderItem={(list_item) => {
+                                return (
+                                  <Pressable
+                                    onPress={() => {
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [
+                                              op,
+                                              [
+                                                list_item.item.label,
+                                                list_item.item.path,
+                                              ],
+                                            ],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                      bottomSheetModalRef1.current?.close();
+                                    }}
+                                  >
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-start",
+                                        margin: 10,
+                                      }}
+                                    >
+                                      {arrow(() => {
+                                        if (typeof value === "boolean") {
+                                          return (
+                                            <Checkbox
+                                              value={false}
+                                              color={
+                                                false ? "#ff0000" : undefined
+                                              }
+                                            />
+                                          );
+                                        } else {
+                                          return apply(
+                                            compare_paths(
+                                              value[1],
+                                              list_item.item.path
+                                            ),
+                                            (active) => {
+                                              return (
+                                                <Checkbox
+                                                  value={active}
+                                                  color={
+                                                    active
+                                                      ? "#ff0000"
+                                                      : undefined
+                                                  }
+                                                />
+                                              );
+                                            }
+                                          );
+                                        }
+                                      })}
+                                      <Text style={{ paddingLeft: 10 }}>
+                                        {list_item.item.label}
+                                      </Text>
+                                    </View>
+                                  </Pressable>
+                                );
+                              }}
+                            />
+                          </BottomSheetModal>
+                        </View>
+                      );
                     }
                     default: {
                       const _exhaustiveCheck: never = op;
