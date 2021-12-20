@@ -2218,7 +2218,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -2430,7 +2434,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -2653,7 +2661,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -2904,7 +2916,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -3132,7 +3148,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -3368,7 +3388,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -3619,7 +3643,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -3847,7 +3875,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -4083,7 +4115,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -4336,7 +4372,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -4568,7 +4608,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -4808,7 +4852,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -5059,7 +5107,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -5289,7 +5341,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -5527,7 +5583,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -5772,7 +5832,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -5994,7 +6058,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -6224,7 +6292,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -6469,7 +6541,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -6691,7 +6767,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -6921,7 +7001,11 @@ function FilterPathComponent(props: {
                                     );
                                   } else {
                                     return (
-                                      <Pressable onPress={() => {}}>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.collapse()
+                                        }
+                                      >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
                                     );
@@ -7430,7 +7514,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -7479,7 +7567,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -7691,7 +7783,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
@@ -7792,7 +7888,11 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <Pressable onPress={() => {}}>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
                               );
