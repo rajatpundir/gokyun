@@ -762,7 +762,7 @@ export function FilterComponent(props: {
                 <View
                   style={{
                     justifyContent: "space-between",
-                    paddingLeft: 33,
+                    flexShrink: 1,
                   }}
                 >
                   {arrow(() => {
@@ -853,7 +853,10 @@ export function FilterComponent(props: {
                       case "not_between": {
                         return (
                           <>
-                            <Pressable onPress={() => setPicker1(true)}>
+                            <Pressable
+                              onPress={() => setPicker1(true)}
+                              style={{ flexShrink: 1 }}
+                            >
                               <Text>
                                 {moment(value[1][0]).format(
                                   "Do MMM YYYY, h:mm A"
@@ -929,7 +932,10 @@ export function FilterComponent(props: {
                                 />
                               )}
                             </>
-                            <Pressable onPress={() => setPicker2(true)}>
+                            <Pressable
+                              onPress={() => setPicker2(true)}
+                              style={{ flexShrink: 1 }}
+                            >
                               <Text>
                                 {moment(value[1][1]).format(
                                   "Do MMM YYYY, h:mm A"
@@ -1248,7 +1254,7 @@ export function FilterComponent(props: {
                 <View
                   style={{
                     justifyContent: "space-between",
-                    paddingLeft: 33,
+                    flexShrink: 1,
                   }}
                 >
                   {arrow(() => {
@@ -1339,7 +1345,10 @@ export function FilterComponent(props: {
                       case "not_between": {
                         return (
                           <>
-                            <Pressable onPress={() => setPicker1(true)}>
+                            <Pressable
+                              onPress={() => setPicker1(true)}
+                              style={{ flexShrink: 1 }}
+                            >
                               <Text>
                                 {moment(value[1][0]).format(
                                   "Do MMM YYYY, h:mm A"
@@ -1414,7 +1423,10 @@ export function FilterComponent(props: {
                                 />
                               )}
                             </>
-                            <Pressable onPress={() => setPicker2(true)}>
+                            <Pressable
+                              onPress={() => setPicker2(true)}
+                              style={{ flexShrink: 1 }}
+                            >
                               <Text>
                                 {moment(value[1][1]).format(
                                   "Do MMM YYYY, h:mm A"
