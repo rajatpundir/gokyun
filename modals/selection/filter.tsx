@@ -2362,17 +2362,23 @@ function FilterPathComponent(props: {
                                             />
                                           );
                                         } else {
-                                          const active = compare_paths(
-                                            value[1],
-                                            list_item.item.path
-                                          );
-                                          return (
-                                            <Checkbox
-                                              value={active}
-                                              color={
-                                                active ? "#ff0000" : undefined
-                                              }
-                                            />
+                                          return apply(
+                                            compare_paths(
+                                              value[1],
+                                              list_item.item.path
+                                            ),
+                                            (active) => {
+                                              return (
+                                                <Checkbox
+                                                  value={active}
+                                                  color={
+                                                    active
+                                                      ? "#ff0000"
+                                                      : undefined
+                                                  }
+                                                />
+                                              );
+                                            }
                                           );
                                         }
                                       })}
