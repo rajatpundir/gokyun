@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { Draft } from "immer";
 import { useEffect } from "react";
 import { FlatList } from "react-native-gesture-handler";
@@ -21,9 +21,12 @@ import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 
 // Select field paths as values
-// id, created_at and updated_at in having clause
 // Ordering
 // Limit Offset
+
+// id, created_at and updated_at in having clause
+// Prevent SQL injection
+
 // Custom outer search fields
 // Create / Update Test component
 // List Test component

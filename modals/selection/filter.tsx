@@ -11,7 +11,7 @@ import { Platform, Pressable } from "react-native";
 import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import {
@@ -2866,49 +2866,14 @@ function FilterPathComponent(props: {
                     case ">":
                     case "<": {
                       const value = props.filter_path.value[1][1];
-                      if (is_decimal(value)) {
-                        return (
-                          <TextInput
-                            value={value.toString()}
-                            keyboardType={"number-pad"}
-                            onChangeText={(x) =>
-                              props.dispatch([
-                                "filters",
-                                props.filter,
-                                "replace",
-                                apply(props.filter_path, (it) => {
-                                  it.value = [
-                                    field_struct_name,
-                                    [
-                                      op,
-                                      Decimal.clamp(
-                                        new Decimal(x || "0").truncated(),
-                                        -2147483648,
-                                        2147483648
-                                      ),
-                                    ],
-                                  ];
-                                  return it;
-                                }),
-                              ])
-                            }
-                          />
-                        );
-                      } else {
-                        return (
-                          <Pressable onPress={() => {}}>
-                            <Text>{value[0]}</Text>
-                          </Pressable>
-                        );
-                      }
-                    }
-                    case "between":
-                    case "not_between": {
-                      const [value1, value2] = props.filter_path.value[1][1];
                       return (
-                        <>
+                        <View
+                          style={{
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
                           {arrow(() => {
-                            const value = value1;
                             if (is_decimal(value)) {
                               return (
                                 <TextInput
@@ -2924,16 +2889,11 @@ function FilterPathComponent(props: {
                                           field_struct_name,
                                           [
                                             op,
-                                            [
-                                              Decimal.clamp(
-                                                new Decimal(
-                                                  x || "0"
-                                                ).truncated(),
-                                                -2147483648,
-                                                2147483648
-                                              ),
-                                              value2,
-                                            ],
+                                            Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              -2147483648,
+                                              2147483648
+                                            ),
                                           ],
                                         ];
                                         return it;
@@ -2950,48 +2910,654 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
+                          <Pressable
+                            onPress={() =>
+                              bottomSheetModalRef1.current?.present()
+                            }
+                            style={{
+                              alignSelf: "center",
+                            }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: "500",
+                                textAlign: "center",
+                                paddingHorizontal: 4,
+                              }}
+                            >
+                              <Entypo name="edit" size={16} color="white" />
+                            </Text>
+                          </Pressable>
+                          <BottomSheetModal
+                            ref={bottomSheetModalRef1}
+                            snapPoints={["50%", "100%"]}
+                            index={1}
+                            backgroundStyle={{
+                              backgroundColor: "#111827",
+                              borderColor: "white",
+                              borderWidth: 1,
+                            }}
+                          >
+                            <View
+                              style={{
+                                paddingBottom: 10,
+                                marginHorizontal: 1,
+                                paddingHorizontal: 8,
+                                borderBottomWidth: 1,
+                                backgroundColor: "#111827",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  fontWeight: "bold",
+                                  textAlign: "center",
+                                }}
+                              >
+                                FIELDS
+                              </Text>
+                              <Pressable
+                                onPress={() => {
+                                  props.dispatch([
+                                    "filters",
+                                    props.filter,
+                                    "replace",
+                                    apply(props.filter_path, (it) => {
+                                      it.value = [
+                                        field_struct_name,
+                                        [op, new Decimal(0)],
+                                      ];
+                                      return it;
+                                    }),
+                                  ]);
+                                  bottomSheetModalRef1.current?.close();
+                                }}
+                                style={{ paddingRight: 8 }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    fontWeight: "500",
+                                    textAlign: "center",
+                                    paddingHorizontal: 4,
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                  }}
+                                >
+                                  Reset
+                                </Text>
+                              </Pressable>
+                            </View>
+                            <BottomSheetFlatList
+                              data={props.init_filter.filter_paths
+                                .toArray()
+                                .filter((filter_path) => {
+                                  switch (filter_path.value[0]) {
+                                    case "str":
+                                    case "lstr":
+                                    case "clob": {
+                                      if (
+                                        !filter_path.equals(props.filter_path)
+                                      ) {
+                                        return true;
+                                      }
+                                    }
+                                  }
+                                  return false;
+                                })}
+                              keyExtractor={(_, index) => index.toString()}
+                              renderItem={(list_item) => {
+                                return (
+                                  <Pressable
+                                    onPress={() => {
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [
+                                              op,
+                                              [
+                                                list_item.item.label,
+                                                list_item.item.path,
+                                              ],
+                                            ],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                      bottomSheetModalRef1.current?.close();
+                                    }}
+                                  >
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-start",
+                                        margin: 10,
+                                      }}
+                                    >
+                                      {arrow(() => {
+                                        if (is_decimal(value)) {
+                                          return (
+                                            <Checkbox
+                                              value={false}
+                                              color={
+                                                false ? "#ff0000" : undefined
+                                              }
+                                            />
+                                          );
+                                        } else {
+                                          return apply(
+                                            compare_paths(
+                                              value[1],
+                                              list_item.item.path
+                                            ),
+                                            (active) => {
+                                              return (
+                                                <Checkbox
+                                                  value={active}
+                                                  color={
+                                                    active
+                                                      ? "#ff0000"
+                                                      : undefined
+                                                  }
+                                                />
+                                              );
+                                            }
+                                          );
+                                        }
+                                      })}
+                                      <Text style={{ paddingLeft: 10 }}>
+                                        {list_item.item.label}
+                                      </Text>
+                                    </View>
+                                  </Pressable>
+                                );
+                              }}
+                            />
+                          </BottomSheetModal>
+                        </View>
+                      );
+                    }
+                    case "between":
+                    case "not_between": {
+                      const [value1, value2] = props.filter_path.value[1][1];
+                      return (
+                        <>
+                          {arrow(() => {
+                            const value = value1;
+                            return (
+                              <View
+                                style={{
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                {arrow(() => {
+                                  if (is_decimal(value)) {
+                                    return (
+                                      <TextInput
+                                        value={value.toString()}
+                                        keyboardType={"number-pad"}
+                                        onChangeText={(x) =>
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [
+                                                  op,
+                                                  [
+                                                    Decimal.clamp(
+                                                      new Decimal(
+                                                        x || "0"
+                                                      ).truncated(),
+                                                      -2147483648,
+                                                      2147483648
+                                                    ),
+                                                    value2,
+                                                  ],
+                                                ],
+                                              ];
+                                              return it;
+                                            }),
+                                          ])
+                                        }
+                                      />
+                                    );
+                                  } else {
+                                    return (
+                                      <Pressable onPress={() => {}}>
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  }
+                                })}
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "500",
+                                      textAlign: "center",
+                                      paddingHorizontal: 4,
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                    />
+                                  </Text>
+                                </Pressable>
+                                <BottomSheetModal
+                                  ref={bottomSheetModalRef1}
+                                  snapPoints={["50%", "100%"]}
+                                  index={1}
+                                  backgroundStyle={{
+                                    backgroundColor: "#111827",
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      paddingBottom: 10,
+                                      marginHorizontal: 1,
+                                      paddingHorizontal: 8,
+                                      borderBottomWidth: 1,
+                                      backgroundColor: "#111827",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      FIELDS
+                                    </Text>
+                                    <Pressable
+                                      onPress={() => {
+                                        props.dispatch([
+                                          "filters",
+                                          props.filter,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [op, [new Decimal(0), value2]],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
+                                        bottomSheetModalRef1.current?.close();
+                                      }}
+                                      style={{ paddingRight: 8 }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: "500",
+                                          textAlign: "center",
+                                          paddingHorizontal: 4,
+                                          borderColor: "white",
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                        }}
+                                      >
+                                        Reset
+                                      </Text>
+                                    </Pressable>
+                                  </View>
+                                  <BottomSheetFlatList
+                                    data={props.init_filter.filter_paths
+                                      .toArray()
+                                      .filter((filter_path) => {
+                                        switch (filter_path.value[0]) {
+                                          case "str":
+                                          case "lstr":
+                                          case "clob": {
+                                            if (
+                                              !filter_path.equals(
+                                                props.filter_path
+                                              )
+                                            ) {
+                                              return true;
+                                            }
+                                          }
+                                        }
+                                        return false;
+                                      })}
+                                    keyExtractor={(_, index) =>
+                                      index.toString()
+                                    }
+                                    renderItem={(list_item) => {
+                                      return (
+                                        <Pressable
+                                          onPress={() => {
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      [
+                                                        list_item.item.label,
+                                                        list_item.item.path,
+                                                      ],
+                                                      value2,
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                            bottomSheetModalRef1.current?.close();
+                                          }}
+                                        >
+                                          <View
+                                            style={{
+                                              justifyContent: "flex-start",
+                                              margin: 10,
+                                            }}
+                                          >
+                                            {arrow(() => {
+                                              if (is_decimal(value)) {
+                                                return (
+                                                  <Checkbox
+                                                    value={false}
+                                                    color={
+                                                      false
+                                                        ? "#ff0000"
+                                                        : undefined
+                                                    }
+                                                  />
+                                                );
+                                              } else {
+                                                return apply(
+                                                  compare_paths(
+                                                    value[1],
+                                                    list_item.item.path
+                                                  ),
+                                                  (active) => {
+                                                    return (
+                                                      <Checkbox
+                                                        value={active}
+                                                        color={
+                                                          active
+                                                            ? "#ff0000"
+                                                            : undefined
+                                                        }
+                                                      />
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            })}
+                                            <Text style={{ paddingLeft: 10 }}>
+                                              {list_item.item.label}
+                                            </Text>
+                                          </View>
+                                        </Pressable>
+                                      );
+                                    }}
+                                  />
+                                </BottomSheetModal>
+                              </View>
+                            );
+                          })}
                           {arrow(() => {
                             const value = value2;
-                            if (is_decimal(value)) {
-                              return (
-                                <TextInput
-                                  value={value.toString()}
-                                  keyboardType={"number-pad"}
-                                  onChangeText={(x) =>
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [
-                                            op,
-                                            [
-                                              value1,
-                                              Decimal.clamp(
-                                                new Decimal(
-                                                  x || "0"
-                                                ).truncated(),
-                                                -2147483648,
-                                                2147483648
-                                              ),
-                                            ],
-                                          ],
-                                        ];
-                                        return it;
-                                      }),
-                                    ])
+                            return (
+                              <View
+                                style={{
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                {arrow(() => {
+                                  if (is_decimal(value)) {
+                                    return (
+                                      <TextInput
+                                        value={value.toString()}
+                                        keyboardType={"number-pad"}
+                                        onChangeText={(x) =>
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [
+                                                  op,
+                                                  [
+                                                    value1,
+                                                    Decimal.clamp(
+                                                      new Decimal(
+                                                        x || "0"
+                                                      ).truncated(),
+                                                      -2147483648,
+                                                      2147483648
+                                                    ),
+                                                  ],
+                                                ],
+                                              ];
+                                              return it;
+                                            }),
+                                          ])
+                                        }
+                                      />
+                                    );
+                                  } else {
+                                    return (
+                                      <Pressable onPress={() => {}}>
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
                                   }
-                                />
-                              );
-                            } else {
-                              return (
-                                <Pressable onPress={() => {}}>
-                                  <Text>{value[0]}</Text>
+                                })}
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef2.current?.present()
+                                  }
+                                  style={{
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "500",
+                                      textAlign: "center",
+                                      paddingHorizontal: 4,
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                    />
+                                  </Text>
                                 </Pressable>
-                              );
-                            }
+                                <BottomSheetModal
+                                  ref={bottomSheetModalRef2}
+                                  snapPoints={["50%", "100%"]}
+                                  index={1}
+                                  backgroundStyle={{
+                                    backgroundColor: "#111827",
+                                    borderColor: "white",
+                                    borderWidth: 1,
+                                  }}
+                                >
+                                  <View
+                                    style={{
+                                      paddingBottom: 10,
+                                      marginHorizontal: 1,
+                                      paddingHorizontal: 8,
+                                      borderBottomWidth: 1,
+                                      backgroundColor: "#111827",
+                                    }}
+                                  >
+                                    <Text
+                                      style={{
+                                        fontSize: 15,
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      FIELDS
+                                    </Text>
+                                    <Pressable
+                                      onPress={() => {
+                                        props.dispatch([
+                                          "filters",
+                                          props.filter,
+                                          "replace",
+                                          apply(props.filter_path, (it) => {
+                                            it.value = [
+                                              field_struct_name,
+                                              [op, [value1, new Decimal(0)]],
+                                            ];
+                                            return it;
+                                          }),
+                                        ]);
+                                        bottomSheetModalRef2.current?.close();
+                                      }}
+                                      style={{ paddingRight: 8 }}
+                                    >
+                                      <Text
+                                        style={{
+                                          fontSize: 15,
+                                          fontWeight: "500",
+                                          textAlign: "center",
+                                          paddingHorizontal: 4,
+                                          borderColor: "white",
+                                          borderWidth: 1,
+                                          borderRadius: 8,
+                                        }}
+                                      >
+                                        Reset
+                                      </Text>
+                                    </Pressable>
+                                  </View>
+                                  <BottomSheetFlatList
+                                    data={props.init_filter.filter_paths
+                                      .toArray()
+                                      .filter((filter_path) => {
+                                        switch (filter_path.value[0]) {
+                                          case "str":
+                                          case "lstr":
+                                          case "clob": {
+                                            if (
+                                              !filter_path.equals(
+                                                props.filter_path
+                                              )
+                                            ) {
+                                              return true;
+                                            }
+                                          }
+                                        }
+                                        return false;
+                                      })}
+                                    keyExtractor={(_, index) =>
+                                      index.toString()
+                                    }
+                                    renderItem={(list_item) => {
+                                      return (
+                                        <Pressable
+                                          onPress={() => {
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [
+                                                    op,
+                                                    [
+                                                      value1,
+                                                      [
+                                                        list_item.item.label,
+                                                        list_item.item.path,
+                                                      ],
+                                                    ],
+                                                  ],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                            bottomSheetModalRef2.current?.close();
+                                          }}
+                                        >
+                                          <View
+                                            style={{
+                                              justifyContent: "flex-start",
+                                              margin: 10,
+                                            }}
+                                          >
+                                            {arrow(() => {
+                                              if (is_decimal(value)) {
+                                                return (
+                                                  <Checkbox
+                                                    value={false}
+                                                    color={
+                                                      false
+                                                        ? "#ff0000"
+                                                        : undefined
+                                                    }
+                                                  />
+                                                );
+                                              } else {
+                                                return apply(
+                                                  compare_paths(
+                                                    value[1],
+                                                    list_item.item.path
+                                                  ),
+                                                  (active) => {
+                                                    return (
+                                                      <Checkbox
+                                                        value={active}
+                                                        color={
+                                                          active
+                                                            ? "#ff0000"
+                                                            : undefined
+                                                        }
+                                                      />
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            })}
+                                            <Text style={{ paddingLeft: 10 }}>
+                                              {list_item.item.label}
+                                            </Text>
+                                          </View>
+                                        </Pressable>
+                                      );
+                                    }}
+                                  />
+                                </BottomSheetModal>
+                              </View>
+                            );
                           })}
                         </>
                       );
