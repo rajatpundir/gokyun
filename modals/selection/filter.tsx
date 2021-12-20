@@ -2228,21 +2228,38 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "str":
+                                case "lstr":
+                                case "clob": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -2440,23 +2457,40 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "str":
+                                      case "lstr":
+                                      case "clob": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -2661,23 +2695,40 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "str":
+                                      case "lstr":
+                                      case "clob": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -2910,21 +2961,43 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64":
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -3143,23 +3216,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -3382,23 +3477,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -3636,21 +3753,43 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64":
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -3869,23 +4008,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -4108,23 +4269,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -4364,21 +4547,43 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64":
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -4601,23 +4806,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -4844,23 +5071,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -5098,21 +5347,43 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64":
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -5333,23 +5604,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -5574,23 +5867,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -5822,21 +6137,43 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64":
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -6049,23 +6386,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -6282,23 +6641,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -6530,21 +6911,43 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64":
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -6757,23 +7160,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -6990,23 +7415,45 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "i32":
+                                      case "u32":
+                                      case "i64":
+                                      case "u64":
+                                      case "idouble":
+                                      case "udouble":
+                                      case "idecimal":
+                                      case "udecimal": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
                                     style={{
-                                      paddingHorizontal: 4,
+                                      alignSelf: "center",
                                     }}
-                                  />
-                                </Pressable>
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -7230,21 +7677,36 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "bool": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -7471,21 +7933,36 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "date": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -7714,21 +8191,38 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "date": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
-                                    style={{ paddingHorizontal: 4 }}
-                                  />
-                                </Pressable>
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
+                                    style={{
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -7961,21 +8455,38 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "date": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
-                                    style={{ paddingHorizontal: 4 }}
-                                  />
-                                </Pressable>
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
+                                    style={{
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -8214,21 +8725,36 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "time": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -8456,21 +8982,38 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "time": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
-                                    style={{ paddingHorizontal: 4 }}
-                                  />
-                                </Pressable>
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
+                                    style={{
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -8702,21 +9245,38 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "time": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
-                                    style={{ paddingHorizontal: 4 }}
-                                  />
-                                </Pressable>
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
+                                    style={{
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -9007,21 +9567,36 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "timestamp": {
+                                  if (!filter_path.equals(props.filter_path)) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
@@ -9301,21 +9876,38 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "timestamp": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
-                                    style={{ paddingHorizontal: 4 }}
-                                  />
-                                </Pressable>
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef1.current?.present()
+                                    }
+                                    style={{
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "100%"]}
@@ -9599,21 +10191,38 @@ function FilterPathComponent(props: {
                                     );
                                   }
                                 })}
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef2.current?.present()
+                                {props.init_filter.filter_paths.anyMatch(
+                                  (filter_path) => {
+                                    switch (filter_path.value[0]) {
+                                      case "timestamp": {
+                                        if (
+                                          !filter_path.equals(props.filter_path)
+                                        ) {
+                                          return true;
+                                        }
+                                      }
+                                    }
+                                    return false;
                                   }
-                                  style={{
-                                    alignSelf: "center",
-                                  }}
-                                >
-                                  <Entypo
-                                    name="edit"
-                                    size={16}
-                                    color="white"
-                                    style={{ paddingHorizontal: 4 }}
-                                  />
-                                </Pressable>
+                                ) ? (
+                                  <Pressable
+                                    onPress={() =>
+                                      bottomSheetModalRef2.current?.present()
+                                    }
+                                    style={{
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    <Entypo
+                                      name="edit"
+                                      size={16}
+                                      color="white"
+                                      style={{ paddingHorizontal: 4 }}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "100%"]}
@@ -9835,21 +10444,39 @@ function FilterPathComponent(props: {
                               );
                             }
                           })}
-                          <Pressable
-                            onPress={() =>
-                              bottomSheetModalRef1.current?.present()
+                          {props.init_filter.filter_paths.anyMatch(
+                            (filter_path) => {
+                              switch (filter_path.value[0]) {
+                                case "other": {
+                                  if (
+                                    !filter_path.equals(props.filter_path) &&
+                                    filter_path.value[2].equals(other_struct)
+                                  ) {
+                                    return true;
+                                  }
+                                }
+                              }
+                              return false;
                             }
-                            style={{
-                              alignSelf: "center",
-                            }}
-                          >
-                            <Entypo
-                              name="edit"
-                              size={16}
-                              color="white"
-                              style={{ paddingHorizontal: 4 }}
-                            />
-                          </Pressable>
+                          ) ? (
+                            <Pressable
+                              onPress={() =>
+                                bottomSheetModalRef1.current?.present()
+                              }
+                              style={{
+                                alignSelf: "center",
+                              }}
+                            >
+                              <Entypo
+                                name="edit"
+                                size={16}
+                                color="white"
+                                style={{ paddingHorizontal: 4 }}
+                              />
+                            </Pressable>
+                          ) : (
+                            <></>
+                          )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "100%"]}
