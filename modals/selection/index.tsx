@@ -164,14 +164,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   ]);
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const showBottomSheetModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
-        <Pressable onPress={showBottomSheetModal}>
+        <Pressable onPress={() => bottomSheetModalRef.current?.present()}>
           <Text
             style={{
               alignSelf: "flex-end",
@@ -203,7 +199,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         />
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          snapPoints={["20%", "100%"]}
+          snapPoints={["50%", "100%"]}
           index={1}
           backgroundStyle={{
             backgroundColor: "#111827",
@@ -265,7 +261,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   backgroundColor: "#111827",
                 }}
               >
-                <Text>Unsaved</Text>
+                <Text>Unsynced</Text>
                 <Checkbox
                   value={!state.level ? true : false}
                   onValueChange={(x) =>
@@ -305,6 +301,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 index: index,
                 data: [x],
               }))}
+              keyExtractor={(list_item) => list_item.index.toString()}
               renderSectionHeader={(list_item) => {
                 return (
                   <View
@@ -352,7 +349,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   />
                 );
               }}
-              keyExtractor={(list_item) => list_item.index.toString()}
             />
           </View>
         </BottomSheetModal>
