@@ -32,7 +32,6 @@ function View(props: ViewProps) {
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          flexShrink: 1,
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
@@ -1748,7 +1747,7 @@ function FilterPathComponent(props: {
                 justifyContent: "space-between",
               }}
             >
-              <View>
+              <View style={{ flexShrink: 1 }}>
                 <Checkbox
                   value={props.filter_path.active}
                   onValueChange={(x) => {

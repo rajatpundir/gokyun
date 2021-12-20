@@ -345,10 +345,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               renderItem={(list_item) => {
                 return (
                   <FilterComponent
-                    key={list_item.section.index}
+                    key={list_item.item.index}
                     init_filter={state.filters[0]}
                     filter={list_item.item}
-                    index={list_item.section.index}
+                    index={list_item.item.index}
                     dispatch={dispatch}
                   />
                 );
