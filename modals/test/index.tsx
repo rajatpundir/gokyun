@@ -515,7 +515,8 @@ function CreateComponent(props: {
                                 backgroundColor: colors.custom.red[900],
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
-                                fontWeight: "400",
+                                fontWeight: "bold",
+                                borderRadius: 2,
                               }}
                             >
                               OK
@@ -566,7 +567,8 @@ function CreateComponent(props: {
                                 backgroundColor: colors.custom.red[900],
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
-                                fontWeight: "400",
+                                fontWeight: "bold",
+                                borderRadius: 2,
                               }}
                             >
                               OK

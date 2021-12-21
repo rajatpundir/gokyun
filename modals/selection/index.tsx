@@ -292,6 +292,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                     fontWeight: "bold",
                     marginRight: 4,
                     color: "white",
+                    borderRadius: 2,
                   }}
                 >
                   Add Filter
@@ -308,48 +309,12 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               keyExtractor={(list_item) => list_item.index.toString()}
               renderItem={(list_item) => {
                 return (
-                  <View
-                    style={{ flexDirection: "column", paddingHorizontal: 0 }}
-                  >
-                    <View
-                      style={{
-                        backgroundColor: colors.custom.black[900],
-                      }}
-                    >
-                      <View
-                        style={{
-                          justifyContent: "flex-start",
-                          paddingHorizontal: 5,
-                          backgroundColor: colors.custom.black[900],
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: "200",
-                          }}
-                        >
-                          Filter {list_item.item.index + 1}
-                        </Text>
-                      </View>
-                      <Pressable
-                        onPress={() =>
-                          dispatch(["filter", "remove", list_item.item])
-                        }
-                        style={{
-                          padding: 3,
-                        }}
-                      >
-                        <Entypo name="cross" size={24} color="white" />
-                      </Pressable>
-                    </View>
-                    <FilterComponent
-                      key={list_item.item.index}
-                      init_filter={state.filters[0]}
-                      filter={list_item.item}
-                      dispatch={dispatch}
-                    />
-                  </View>
+                  <FilterComponent
+                    key={list_item.item.index}
+                    init_filter={state.filters[0]}
+                    filter={list_item.item}
+                    dispatch={dispatch}
+                  />
                 );
               }}
             />
