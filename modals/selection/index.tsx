@@ -19,6 +19,7 @@ import {
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
+import { color_palette } from "../../main/themed/colors";
 
 // Bottom sheet, instead of sroll view, for field selection
 
@@ -249,7 +250,9 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 <Checkbox
                   value={state.active}
                   onValueChange={(x) => dispatch(["active", x])}
-                  color={state.active ? "#ff0000" : undefined}
+                  color={
+                    state.active ? color_palette.custom.red[900] : undefined
+                  }
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -271,7 +274,9 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={!state.level ? "#ff0000" : undefined}
+                  color={
+                    !state.level ? color_palette.custom.red[900] : undefined
+                  }
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -286,7 +291,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               >
                 <Text
                   style={{
-                    backgroundColor: "#ff0000",
+                    backgroundColor: color_palette.custom.red[900],
                     alignSelf: "flex-end",
                     paddingHorizontal: 6,
                     paddingVertical: 2,

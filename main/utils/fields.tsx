@@ -29,6 +29,7 @@ import { PathPermission, get_permissions } from "./permissions";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
 import Checkbox, { CheckboxProps } from "expo-checkbox";
+import { color_palette } from "../themed/colors";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -646,7 +647,7 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
               }),
             ])
           }
-          color={value.value ? "#ff0000" : undefined}
+          color={value.value ? color_palette.custom.red[900] : undefined}
         />
       );
     } else {
@@ -654,7 +655,7 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
         <Checkbox
           style={[{}, style]}
           {...otherProps}
-          color={value.value ? "#ff0000" : undefined}
+          color={value.value ? color_palette.custom.red[900] : undefined}
           value={value.value}
         />
       );

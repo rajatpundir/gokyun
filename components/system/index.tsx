@@ -20,6 +20,7 @@ import Tags from "./tags";
 import Categories from "./categories";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { color_palette } from "../../main/themed/colors";
 
 export type NavigatorParams = {
   Countries: undefined;
@@ -46,7 +47,7 @@ export function Navigator({ navigation }: ParentNavigatorProps<"System">) {
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,
-        tabBarActiveTintColor: "#ff0000",
+        tabBarActiveTintColor: color_palette.custom.red[900],
         tabBarInactiveTintColor: "#9b9baf",
         tabBarScrollEnabled: true,
         tabBarLabelStyle: {
@@ -55,7 +56,9 @@ export function Navigator({ navigation }: ParentNavigatorProps<"System">) {
         },
         tabBarItemStyle: { width: 100 },
         tabBarStyle: { backgroundColor: "#000" },
-        tabBarIndicatorStyle: { backgroundColor: "#ff0000" },
+        tabBarIndicatorStyle: {
+          backgroundColor: color_palette.custom.red[900],
+        },
       }}
     >
       <TopTab.Screen

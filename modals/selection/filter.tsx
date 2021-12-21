@@ -21,6 +21,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "../../main/utils/variable";
+import { color_palette } from "../../main/themed/colors";
 
 function View(props: ViewProps) {
   const { style, ...otherProps } = props;
@@ -298,7 +299,7 @@ export function FilterComponent(props: {
                           }),
                         ])
                       }
-                      color={active ? "#ff0000" : undefined}
+                      color={active ? color_palette.custom.red[900] : undefined}
                       style={{
                         alignSelf: "center",
                         marginRight: 6,
@@ -562,7 +563,7 @@ export function FilterComponent(props: {
                           }),
                         ])
                       }
-                      color={active ? "#ff0000" : undefined}
+                      color={active ? color_palette.custom.red[900] : undefined}
                       style={{
                         alignSelf: "center",
                         marginRight: 6,
@@ -1054,7 +1055,7 @@ export function FilterComponent(props: {
                           }),
                         ])
                       }
-                      color={active ? "#ff0000" : undefined}
+                      color={active ? color_palette.custom.red[900] : undefined}
                       style={{
                         alignSelf: "center",
                         marginRight: 6,
@@ -1773,7 +1774,11 @@ function FilterPathComponent(props: {
                       }),
                     ]);
                   }}
-                  color={props.filter_path.active ? "#ff0000" : undefined}
+                  color={
+                    props.filter_path.active
+                      ? color_palette.custom.red[900]
+                      : undefined
+                  }
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -2391,7 +2396,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -2407,7 +2415,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -2639,7 +2648,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -2656,7 +2666,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -2883,7 +2894,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -2900,7 +2912,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -3149,7 +3162,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -3165,7 +3181,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -3420,7 +3437,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -3437,7 +3455,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -3687,7 +3706,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -3704,7 +3724,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -3953,7 +3974,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -3969,7 +3993,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -4224,7 +4249,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -4241,7 +4267,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -4491,7 +4518,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -4508,7 +4536,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -4759,7 +4788,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -4775,7 +4807,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -5034,7 +5067,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -5051,7 +5085,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -5305,7 +5340,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -5322,7 +5358,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -5571,7 +5608,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -5587,7 +5627,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -5844,7 +5885,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -5861,7 +5903,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -6113,7 +6156,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -6130,7 +6174,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -6373,7 +6418,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -6389,7 +6437,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -6638,7 +6687,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -6655,7 +6705,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -6899,7 +6950,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -6916,7 +6968,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -7159,7 +7212,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -7175,7 +7231,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -7424,7 +7481,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -7441,7 +7499,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -7685,7 +7744,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -7702,7 +7762,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -7764,7 +7825,11 @@ function FilterPathComponent(props: {
                                       }),
                                     ])
                                   }
-                                  color={value ? "#ff0000" : undefined}
+                                  color={
+                                    value
+                                      ? color_palette.custom.red[900]
+                                      : undefined
+                                  }
                                 />
                               );
                             } else {
@@ -7923,7 +7988,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -7939,7 +8007,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -8179,7 +8248,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -8195,7 +8267,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -8453,7 +8526,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -8470,7 +8544,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -8723,7 +8798,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -8740,7 +8816,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -8983,7 +9060,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -8999,7 +9079,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -9256,7 +9337,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -9273,7 +9355,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -9525,7 +9608,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -9542,7 +9626,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -9837,7 +9922,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -9853,7 +9941,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -10162,7 +10251,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -10179,7 +10269,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -10483,7 +10574,8 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? "#ff0000"
+                                                        ? color_palette.custom
+                                                            .red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -10500,7 +10592,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? "#ff0000"
+                                                            ? color_palette
+                                                                .custom.red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -10736,7 +10829,10 @@ function FilterPathComponent(props: {
                                             <Checkbox
                                               value={false}
                                               color={
-                                                false ? "#ff0000" : undefined
+                                                false
+                                                  ? color_palette.custom
+                                                      .red[900]
+                                                  : undefined
                                               }
                                             />
                                           );
@@ -10752,7 +10848,8 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? "#ff0000"
+                                                      ? color_palette.custom
+                                                          .red[900]
                                                       : undefined
                                                   }
                                                 />

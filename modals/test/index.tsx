@@ -25,6 +25,7 @@ import { Path, PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
+import { color_palette } from "../../main/themed/colors";
 
 // TODO 444 (Running trigger, checks, etc inside fetched other field paths)
 // Fix react navigation error related to serializability of props passed
@@ -495,7 +496,7 @@ function CreateComponent(props: {
                           >
                             <Text
                               style={{
-                                backgroundColor: "#ff0000",
+                                backgroundColor: color_palette.custom.red[900],
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                                 fontWeight: "400",
@@ -546,7 +547,7 @@ function CreateComponent(props: {
                           >
                             <Text
                               style={{
-                                backgroundColor: "#ff0000",
+                                backgroundColor: color_palette.custom.red[900],
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                                 fontWeight: "400",

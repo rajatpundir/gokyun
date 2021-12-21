@@ -12,6 +12,7 @@ import {
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
+import { color_palette } from "./colors";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
@@ -89,10 +90,10 @@ export function TextInput(props: TextInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
   return (
     <DefaultTextInput
-      selectionColor={"#ff0000"}
-      underlineColorAndroid={"#ff0000"}
+      selectionColor={color_palette.custom.red[900]}
+      underlineColorAndroid={color_palette.custom.red[900]}
       placeholder="Enter text"
-      placeholderTextColor={"#64748b"}
+      placeholderTextColor={color_palette.tailwind.slate[500]}
       style={[
         {
           color,
