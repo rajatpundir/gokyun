@@ -207,7 +207,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           snapPoints={["50%", "100%"]}
           index={1}
           backgroundStyle={{
-            backgroundColor: "#111827",
+            backgroundColor: color_palette.tailwind.gray[900],
             borderColor: "white",
             borderWidth: 1,
           }}
@@ -216,7 +216,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             style={{
               flex: 1,
               flexDirection: "column",
-              backgroundColor: "#111827",
+              backgroundColor: color_palette.tailwind.gray[900],
               borderColor: "white",
               borderLeftWidth: 1,
               borderRightWidth: 1,
@@ -226,7 +226,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             <View
               style={{
                 borderBottomWidth: 1,
-                backgroundColor: "#111827",
+                backgroundColor: color_palette.tailwind.gray[900],
               }}
             >
               <Text
@@ -243,7 +243,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 style={{
                   paddingHorizontal: 4,
                   paddingVertical: 4,
-                  backgroundColor: "#111827",
+                  backgroundColor: color_palette.tailwind.gray[900],
                 }}
               >
                 <Text>Active</Text>
@@ -265,7 +265,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   paddingHorizontal: 4,
                   paddingVertical: 4,
                   marginBottom: 2,
-                  backgroundColor: "#111827",
+                  backgroundColor: color_palette.tailwind.gray[900],
                 }}
               >
                 <Text>Unsynced</Text>
@@ -315,14 +315,14 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 return (
                   <View
                     style={{
-                      backgroundColor: "#111827",
+                      backgroundColor: color_palette.tailwind.gray[900],
                     }}
                   >
                     <View
                       style={{
                         justifyContent: "flex-start",
                         paddingHorizontal: 0,
-                        backgroundColor: "#111827",
+                        backgroundColor: color_palette.tailwind.gray[900],
                       }}
                     >
                       <Text

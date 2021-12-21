@@ -55,7 +55,7 @@ export function Navigator({ navigation }: ParentNavigatorProps<"System">) {
           textTransform: "none",
         },
         tabBarItemStyle: { width: 100 },
-        tabBarStyle: { backgroundColor: "#000" },
+        tabBarStyle: { backgroundColor: color_palette.custom.black[900] },
         tabBarIndicatorStyle: {
           backgroundColor: color_palette.custom.red[900],
         },

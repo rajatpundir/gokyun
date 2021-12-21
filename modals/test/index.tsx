@@ -465,22 +465,38 @@ function CreateComponent(props: {
                             borderRadius: 5,
                             paddingVertical: 5,
                             marginVertical: 5,
-                            backgroundColor: "#111827",
+                            backgroundColor: color_palette.tailwind.gray[900],
                           }}
                         >
-                          <View style={{ backgroundColor: "#111827" }}>
+                          <View
+                            style={{
+                              backgroundColor: color_palette.tailwind.gray[900],
+                            }}
+                          >
                             <Label {...it} path={"nickname"} />
                             <Field {...it} path={"nickname"} />
                           </View>
-                          <View style={{ backgroundColor: "#111827" }}>
+                          <View
+                            style={{
+                              backgroundColor: color_palette.tailwind.gray[900],
+                            }}
+                          >
                             <Label {...it} path={"knows_english"} />
                             <Field {...it} path={"knows_english"} />
                           </View>
-                          <View style={{ backgroundColor: "#111827" }}>
+                          <View
+                            style={{
+                              backgroundColor: color_palette.tailwind.gray[900],
+                            }}
+                          >
                             <Label {...it} path={"mobile"} />
                             <Field {...it} path={"mobile"} />
                           </View>
-                          <View style={{ backgroundColor: "#111827" }}>
+                          <View
+                            style={{
+                              backgroundColor: color_palette.tailwind.gray[900],
+                            }}
+                          >
                             <Label {...it} path={"product_count"} />
                             <Field {...it} path={"product_count"} />
                           </View>

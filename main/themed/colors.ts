@@ -1,6 +1,8 @@
 export const color_palette = {
   custom: {
-    red: { 900: "FF0000" },
+    red: { 900: "#FF0000" },
+    black: { 900: "#000000" },
+    white: { 900: "#FFFFFF" },
   },
   tailwind: {
     slate: {
