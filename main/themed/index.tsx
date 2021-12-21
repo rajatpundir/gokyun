@@ -72,9 +72,9 @@ export function Text(props: TextProps) {
         {
           color,
           textAlignVertical: "center",
-          borderColor: "white",
           paddingRight: 5,
           flexShrink: 1,
+          borderWidth: 1,
         },
         style,
       ]}

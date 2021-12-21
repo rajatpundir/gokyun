@@ -21,11 +21,10 @@ import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 import { colors } from "../../main/themed/colors";
 
-// Bottom sheet, instead of sroll view, for field selection
-
 // Ordering
 // Limit Offset
 
+// Fix OR filters
 // id, created_at and updated_at in having clause
 // Prevent SQL injection
 
@@ -169,24 +168,47 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
-        <Pressable onPress={() => bottomSheetModalRef.current?.present()}>
-          <Text
+        <View style={{ justifyContent: "flex-end" }}>
+          <Pressable
+            onPress={() => {}}
             style={{
-              alignSelf: "flex-end",
-              fontSize: 15,
-              fontWeight: "500",
-              textAlign: "center",
-              paddingHorizontal: 10,
-              paddingVertical: 2,
-              borderColor: "white",
-              borderWidth: 1,
-              borderRadius: 8,
+              alignSelf: "center",
             }}
           >
-            Filter
-            <FontAwesome name="filter" size={16} color="white" />
-          </Text>
-        </Pressable>
+            <Text
+              style={{
+                alignSelf: "flex-end",
+                fontSize: 15,
+                fontWeight: "500",
+                textAlign: "center",
+                paddingHorizontal: 4,
+                paddingVertical: 2,
+                color: "white",
+              }}
+            >
+              Sort <FontAwesome name="unsorted" size={16} color="white" />
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() => bottomSheetModalRef.current?.present()}
+            style={{
+              paddingLeft: 4,
+            }}
+          >
+            <Text
+              style={{
+                alignSelf: "flex-end",
+                fontSize: 15,
+                fontWeight: "500",
+                textAlign: "center",
+                paddingHorizontal: 4,
+                paddingVertical: 2,
+              }}
+            >
+              Filter <FontAwesome name="filter" size={16} color="white" />
+            </Text>
+          </Pressable>
+        </View>
 
         <FlatList
           data={state.variables}
@@ -276,10 +298,12 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   }}
                 />
               </View>
-
               <Pressable
                 onPress={() => {
                   dispatch(["filter", "add"]);
+                }}
+                style={{
+                  alignSelf: "center",
                 }}
               >
                 <Text
