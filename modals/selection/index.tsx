@@ -12,6 +12,7 @@ import { Pressable } from "react-native";
 import { apply, unwrap } from "../../main/utils/prelude";
 import { HashSet } from "prelude-ts";
 import {
+  BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetSectionList,
@@ -48,7 +49,7 @@ export type Action =
   | ["level", Decimal | undefined]
   | ["limit_offset", [Decimal, Decimal] | undefined]
   | ["filter", "add"]
-  | ["filter", "remove", number]
+  | ["filter", "remove", Filter]
   | ["filter", "replace", Filter]
   | ["filters", Filter, "remove", FilterPath]
   | ["filters", Filter, "replace", FilterPath];
@@ -87,10 +88,7 @@ export function reducer(state: Draft<State>, action: Action) {
           break;
         }
         case "remove": {
-          const result = state.filters[1].findAny((x) => x.index === action[2]);
-          if (result.isSome()) {
-            state.filters[1] = state.filters[1].remove(result.get());
-          }
+          state.filters[1] = state.filters[1].remove(action[2]);
           break;
         }
         case "replace": {
@@ -220,7 +218,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               borderColor: "white",
               borderLeftWidth: 1,
               borderRightWidth: 1,
-              padding: 5,
+              paddingHorizontal: 0,
             }}
           >
             <View
@@ -301,57 +299,57 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               </Pressable>
             </View>
 
-            <BottomSheetSectionList
-              sections={state.filters[1].toArray().map((x, index) => ({
-                index: index,
-                data: [x],
-              }))}
+            <BottomSheetFlatList
+              data={state.filters[1]
+                .toArray()
+                .sort((a, b) =>
+                  a.index > b.index ? 1 : a.index < b.index ? -1 : 0
+                )}
               keyExtractor={(list_item) => list_item.index.toString()}
-              renderSectionHeader={(list_item) => {
+              renderItem={(list_item) => {
                 return (
                   <View
-                    style={{
-                      backgroundColor: colors.custom.black[900],
-                    }}
+                    style={{ flexDirection: "column", paddingHorizontal: 0 }}
                   >
                     <View
                       style={{
-                        justifyContent: "flex-start",
-                        paddingHorizontal: 0,
                         backgroundColor: colors.custom.black[900],
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: 15,
-                          fontWeight: "200",
+                          justifyContent: "flex-start",
+                          paddingHorizontal: 5,
+                          backgroundColor: colors.custom.black[900],
                         }}
                       >
-                        Filter {list_item.section.index + 1}
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "200",
+                          }}
+                        >
+                          Filter {list_item.item.index + 1}
+                        </Text>
+                      </View>
+                      <Pressable
+                        onPress={() =>
+                          dispatch(["filter", "remove", list_item.item])
+                        }
+                        style={{
+                          padding: 3,
+                        }}
+                      >
+                        <Entypo name="cross" size={24} color="white" />
+                      </Pressable>
                     </View>
-                    <Pressable
-                      onPress={() =>
-                        dispatch(["filter", "remove", list_item.section.index])
-                      }
-                      style={{
-                        padding: 3,
-                      }}
-                    >
-                      <Entypo name="cross" size={24} color="white" />
-                    </Pressable>
+                    <FilterComponent
+                      key={list_item.item.index}
+                      init_filter={state.filters[0]}
+                      filter={list_item.item}
+                      dispatch={dispatch}
+                    />
                   </View>
-                );
-              }}
-              renderItem={(list_item) => {
-                return (
-                  <FilterComponent
-                    key={list_item.item.index}
-                    init_filter={state.filters[0]}
-                    filter={list_item.item}
-                    index={list_item.item.index}
-                    dispatch={dispatch}
-                  />
                 );
               }}
             />

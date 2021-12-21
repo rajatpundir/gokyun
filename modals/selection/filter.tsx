@@ -49,7 +49,6 @@ function View(props: ViewProps) {
 export function FilterComponent(props: {
   init_filter: Filter;
   filter: Filter;
-  index: number;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
   return (
@@ -59,6 +58,7 @@ export function FilterComponent(props: {
         flexDirection: "column",
         borderColor: "white",
         borderBottomWidth: 1,
+        paddingHorizontal: 4,
       }}
     >
       <BottomSheetScrollView
@@ -269,6 +269,7 @@ export function FilterComponent(props: {
       <View
         style={{
           flexDirection: "column",
+          paddingHorizontal: 0,
         }}
       >
         <View
@@ -1734,7 +1735,7 @@ function FilterPathComponent(props: {
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
   return (
-    <View style={{ flexDirection: "column" }}>
+    <View style={{ flexDirection: "column", paddingHorizontal: 0 }}>
       {arrow(() => {
         const [selectedOp, setSelectedOp] = useState(
           apply("==", (it) => {
