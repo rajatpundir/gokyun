@@ -130,21 +130,20 @@ export function FilterComponent(props: {
               <Text
                 style={{
                   fontSize: 15,
-                  fontWeight: "500",
+                  fontWeight: "700",
                   textAlign: "center",
                   paddingHorizontal: 5,
                   paddingVertical: 2,
-                  borderColor: "white",
-                  borderWidth: 1,
-                  borderRadius: 8,
+                  borderRadius: 2,
+                  backgroundColor: colors.custom.red[900],
                 }}
               >
                 Close
               </Text>
             </Pressable>
           </View>
-          <View
-            style={{
+          <BottomSheetScrollView
+            contentContainerStyle={{
               flexDirection: "column",
               justifyContent: "flex-start",
               margin: 5,
@@ -156,7 +155,8 @@ export function FilterComponent(props: {
                 <View
                   style={{
                     justifyContent: "flex-start",
-                    margin: 5,
+                    marginHorizontal: 5,
+                    marginVertical: 10,
                   }}
                 >
                   <Checkbox
@@ -180,7 +180,204 @@ export function FilterComponent(props: {
                 </View>
               );
             })}
-          </View>
+            {arrow(() => {
+              const active = props.filter.created_at[1] !== undefined;
+              return (
+                <View
+                  style={{
+                    justifyContent: "flex-start",
+                    marginHorizontal: 5,
+                    marginVertical: 10,
+                  }}
+                >
+                  <Checkbox
+                    value={active}
+                    onValueChange={(x) => {
+                      props.dispatch([
+                        "filter",
+                        "replace",
+                        apply(props.filter, (it) => {
+                          it.created_at = [
+                            false,
+                            x
+                              ? ["between", [new Date(), new Date()]]
+                              : undefined,
+                          ];
+                          return it;
+                        }),
+                      ]);
+                    }}
+                    color={active ? colors.custom.red[900] : undefined}
+                  />
+                  <Text style={{ paddingLeft: 10 }}>Created</Text>
+                </View>
+              );
+            })}
+            {arrow(() => {
+              const active = props.filter.updated_at[1] !== undefined;
+              return (
+                <View
+                  style={{
+                    justifyContent: "flex-start",
+                    marginHorizontal: 5,
+                    marginVertical: 10,
+                  }}
+                >
+                  <Checkbox
+                    value={active}
+                    onValueChange={(x) => {
+                      props.dispatch([
+                        "filter",
+                        "replace",
+                        apply(props.filter, (it) => {
+                          it.updated_at = [
+                            false,
+                            x
+                              ? ["between", [new Date(), new Date()]]
+                              : undefined,
+                          ];
+                          return it;
+                        }),
+                      ]);
+                    }}
+                    color={active ? colors.custom.red[900] : undefined}
+                  />
+                  <Text style={{ paddingLeft: 10 }}>Updated</Text>
+                </View>
+              );
+            })}
+            {props.init_filter.filter_paths
+              .toArray()
+              .sort((a, b) =>
+                a.label > b.label ? 1 : a.label < b.label ? -1 : 0
+              )
+              .map((filter_path, index) => {
+                const field_struct_type = filter_path.value[0];
+                const active = props.filter.filter_paths.anyMatch(
+                  (x) => x.equals(filter_path) && x.value[1] !== undefined
+                );
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      justifyContent: "flex-start",
+                      marginHorizontal: 5,
+                      marginVertical: 10,
+                    }}
+                  >
+                    <Checkbox
+                      value={active}
+                      onValueChange={(x) => {
+                        switch (field_struct_type) {
+                          case "str":
+                          case "lstr":
+                          case "clob": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              new FilterPath(
+                                filter_path.label,
+                                filter_path.path,
+                                [
+                                  field_struct_type,
+                                  x ? ["like", ""] : undefined,
+                                ],
+                                undefined
+                              ),
+                            ]);
+                            break;
+                          }
+                          case "i32":
+                          case "u32":
+                          case "i64":
+                          case "u64":
+                          case "idouble":
+                          case "udouble":
+                          case "idecimal":
+                          case "udecimal": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              new FilterPath(
+                                filter_path.label,
+                                filter_path.path,
+                                [
+                                  field_struct_type,
+                                  x ? ["==", new Decimal(0)] : undefined,
+                                ],
+                                undefined
+                              ),
+                            ]);
+                            break;
+                          }
+                          case "bool": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              new FilterPath(
+                                filter_path.label,
+                                filter_path.path,
+                                [
+                                  field_struct_type,
+                                  x ? ["==", true] : undefined,
+                                ],
+                                undefined
+                              ),
+                            ]);
+                            break;
+                          }
+                          case "date":
+                          case "time":
+                          case "timestamp": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              new FilterPath(
+                                filter_path.label,
+                                filter_path.path,
+                                [
+                                  field_struct_type,
+                                  x
+                                    ? ["between", [new Date(), new Date()]]
+                                    : undefined,
+                                ],
+                                undefined
+                              ),
+                            ]);
+                            break;
+                          }
+                          case "other": {
+                            const other_struct = filter_path.value[2];
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              new FilterPath(
+                                filter_path.label,
+                                filter_path.path,
+                                [
+                                  field_struct_type,
+                                  x ? ["==", new Decimal(-1)] : undefined,
+                                  other_struct,
+                                ],
+                                undefined
+                              ),
+                            ]);
+                            break;
+                          }
+                        }
+                      }}
+                      color={active ? colors.custom.red[900] : undefined}
+                    />
+                    <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                  </View>
+                );
+              })}
+          </BottomSheetScrollView>
         </BottomSheetModal>
       </View>
       <View
@@ -192,211 +389,6 @@ export function FilterComponent(props: {
           paddingHorizontal: 4,
         }}
       >
-        <BottomSheetScrollView
-          horizontal={true}
-          style={{
-            borderColor: "white",
-            borderTopWidth: 1,
-            borderBottomWidth: 1,
-            marginBottom: 10,
-          }}
-        >
-          {props.filter.id[1] === undefined ? (
-            <Pressable
-              onPress={() =>
-                props.dispatch([
-                  "filter",
-                  "replace",
-                  apply(props.filter, (it) => {
-                    it.id = [false, ["==", new Decimal(0)]];
-                    return it;
-                  }),
-                ])
-              }
-              style={{
-                borderColor: "white",
-                borderLeftWidth: 1,
-                borderRightWidth: 1,
-                padding: 3,
-              }}
-            >
-              <Text>Unique ID</Text>
-            </Pressable>
-          ) : (
-            <></>
-          )}
-          {props.filter.created_at[1] === undefined ? (
-            <Pressable
-              onPress={() =>
-                props.dispatch([
-                  "filter",
-                  "replace",
-                  apply(props.filter, (it) => {
-                    it.created_at = [
-                      false,
-                      ["between", [new Date(), new Date()]],
-                    ];
-                    return it;
-                  }),
-                ])
-              }
-              style={{
-                borderColor: "white",
-                borderLeftWidth: 1,
-                borderRightWidth: 1,
-                padding: 3,
-              }}
-            >
-              <Text>Created</Text>
-            </Pressable>
-          ) : (
-            <></>
-          )}
-          {props.filter.updated_at[1] === undefined ? (
-            <Pressable
-              onPress={() =>
-                props.dispatch([
-                  "filter",
-                  "replace",
-                  apply(props.filter, (it) => {
-                    it.updated_at = [
-                      false,
-                      ["between", [new Date(), new Date()]],
-                    ];
-                    return it;
-                  }),
-                ])
-              }
-              style={{
-                borderColor: "white",
-                borderLeftWidth: 1,
-                borderRightWidth: 1,
-                padding: 3,
-              }}
-            >
-              <Text>Updated</Text>
-            </Pressable>
-          ) : (
-            <></>
-          )}
-          {props.init_filter.filter_paths
-            .toArray()
-            .filter(
-              (filter_path) =>
-                !props.filter.filter_paths.anyMatch(
-                  (x) => x.equals(filter_path) && x.value[1] !== undefined
-                )
-            )
-            .map((filter_path, index) => {
-              return (
-                <Pressable
-                  key={index}
-                  style={{
-                    borderColor: "white",
-                    borderLeftWidth: 1,
-                    borderRightWidth: 1,
-                    padding: 3,
-                  }}
-                  onPress={() => {
-                    const field_struct_type = filter_path.value[0];
-                    switch (field_struct_type) {
-                      case "str":
-                      case "lstr":
-                      case "clob": {
-                        props.dispatch([
-                          "filters",
-                          props.filter,
-                          "replace",
-                          new FilterPath(
-                            filter_path.label,
-                            filter_path.path,
-                            [field_struct_type, ["like", ""]],
-                            undefined
-                          ),
-                        ]);
-                        break;
-                      }
-                      case "i32":
-                      case "u32":
-                      case "i64":
-                      case "u64":
-                      case "idouble":
-                      case "udouble":
-                      case "idecimal":
-                      case "udecimal": {
-                        props.dispatch([
-                          "filters",
-                          props.filter,
-                          "replace",
-                          new FilterPath(
-                            filter_path.label,
-                            filter_path.path,
-                            [field_struct_type, ["==", new Decimal(0)]],
-                            undefined
-                          ),
-                        ]);
-                        break;
-                      }
-                      case "bool": {
-                        props.dispatch([
-                          "filters",
-                          props.filter,
-                          "replace",
-                          new FilterPath(
-                            filter_path.label,
-                            filter_path.path,
-                            [field_struct_type, ["==", true]],
-                            undefined
-                          ),
-                        ]);
-                        break;
-                      }
-                      case "date":
-                      case "time":
-                      case "timestamp": {
-                        props.dispatch([
-                          "filters",
-                          props.filter,
-                          "replace",
-                          new FilterPath(
-                            filter_path.label,
-                            filter_path.path,
-                            [
-                              field_struct_type,
-                              ["between", [new Date(), new Date()]],
-                            ],
-                            undefined
-                          ),
-                        ]);
-                        break;
-                      }
-                      case "other": {
-                        const other_struct = filter_path.value[2];
-                        props.dispatch([
-                          "filters",
-                          props.filter,
-                          "replace",
-                          new FilterPath(
-                            filter_path.label,
-                            filter_path.path,
-                            [
-                              field_struct_type,
-                              ["==", new Decimal(-1)],
-                              other_struct,
-                            ],
-                            undefined
-                          ),
-                        ]);
-                        break;
-                      }
-                    }
-                  }}
-                >
-                  <Text>{filter_path.label}</Text>
-                </Pressable>
-              );
-            })}
-        </BottomSheetScrollView>
         <View
           style={{
             flexDirection: "column",
@@ -438,6 +430,14 @@ export function FilterComponent(props: {
                         }}
                       />
                       <Text>ID</Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row-reverse",
+                        flexGrow: 1,
+                        alignSelf: "center",
+                      }}
+                    >
                       {arrow(() => {
                         const value = props.filter.id[1];
                         if (value !== undefined) {
@@ -542,29 +542,6 @@ export function FilterComponent(props: {
                         }
                         return <></>;
                       })}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row-reverse",
-                        flexGrow: 1,
-                        alignSelf: "center",
-                      }}
-                    >
-                      <Pressable
-                        onPress={() => {
-                          props.dispatch([
-                            "filter",
-                            "replace",
-                            apply(props.filter, (it) => {
-                              it.id[1] = undefined;
-                              return it;
-                            }),
-                          ]);
-                          setSelectedOp("==");
-                        }}
-                      >
-                        <Entypo name="cross" size={24} color="white" />
-                      </Pressable>
                     </View>
                   </View>
                 );
@@ -709,6 +686,14 @@ export function FilterComponent(props: {
                         }}
                       />
                       <Text>Created</Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row-reverse",
+                        flexGrow: 1,
+                        alignSelf: "center",
+                      }}
+                    >
                       {arrow(() => {
                         const value = props.filter.created_at[1];
                         if (value !== undefined) {
@@ -813,29 +798,6 @@ export function FilterComponent(props: {
                         }
                         return <></>;
                       })}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row-reverse",
-                        flexGrow: 1,
-                        alignSelf: "center",
-                      }}
-                    >
-                      <Pressable
-                        onPress={() => {
-                          props.dispatch([
-                            "filter",
-                            "replace",
-                            apply(props.filter, (it) => {
-                              it.created_at[1] = undefined;
-                              return it;
-                            }),
-                          ]);
-                          setSelectedOp("between");
-                        }}
-                      >
-                        <Entypo name="cross" size={24} color="white" />
-                      </Pressable>
                     </View>
                   </View>
                 );
@@ -1216,6 +1178,14 @@ export function FilterComponent(props: {
                         }}
                       />
                       <Text>Updated</Text>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row-reverse",
+                        flexGrow: 1,
+                        alignSelf: "center",
+                      }}
+                    >
                       {arrow(() => {
                         const value = props.filter.updated_at[1];
                         if (value !== undefined) {
@@ -1320,29 +1290,6 @@ export function FilterComponent(props: {
                         }
                         return <></>;
                       })}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row-reverse",
-                        flexGrow: 1,
-                        alignSelf: "center",
-                      }}
-                    >
-                      <Pressable
-                        onPress={() => {
-                          props.dispatch([
-                            "filter",
-                            "replace",
-                            apply(props.filter, (it) => {
-                              it.updated_at[1] = undefined;
-                              return it;
-                            }),
-                          ]);
-                          setSelectedOp("between");
-                        }}
-                      >
-                        <Entypo name="cross" size={24} color="white" />
-                      </Pressable>
                     </View>
                   </View>
                 );
@@ -1686,17 +1633,22 @@ export function FilterComponent(props: {
               return null;
             })}
           </View>
-          {props.filter.filter_paths.toArray().map((x, index) => {
-            return (
-              <FilterPathComponent
-                key={index}
-                init_filter={props.init_filter}
-                filter_path={x}
-                filter={props.filter}
-                dispatch={props.dispatch}
-              />
-            );
-          })}
+          {props.filter.filter_paths
+            .toArray()
+            .sort((a, b) =>
+              a.label > b.label ? 1 : a.label < b.label ? -1 : 0
+            )
+            .map((x, index) => {
+              return (
+                <FilterPathComponent
+                  key={index}
+                  init_filter={props.init_filter}
+                  filter_path={x}
+                  filter={props.filter}
+                  dispatch={props.dispatch}
+                />
+              );
+            })}
         </View>
       </View>
     </View>
@@ -1955,6 +1907,14 @@ function FilterPathComponent(props: {
                   }}
                 />
                 <Text>{props.filter_path.label}</Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  flexGrow: 1,
+                  alignSelf: "center",
+                }}
+              >
                 {arrow(() => {
                   const field_struct_name = props.filter_path.value[0];
                   switch (field_struct_name) {
@@ -2327,26 +2287,6 @@ function FilterPathComponent(props: {
                     }
                   }
                 })}
-              </View>
-              <View
-                style={{
-                  flexDirection: "row-reverse",
-                  flexGrow: 1,
-                  alignSelf: "center",
-                }}
-              >
-                <Pressable
-                  onPress={() =>
-                    props.dispatch([
-                      "filters",
-                      props.filter,
-                      "remove",
-                      props.filter_path,
-                    ])
-                  }
-                >
-                  <Entypo name="cross" size={24} color="white" />
-                </Pressable>
               </View>
             </View>
           );
