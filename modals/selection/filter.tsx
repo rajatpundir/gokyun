@@ -11,7 +11,7 @@ import { Platform, Pressable } from "react-native";
 import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Entypo, Fontisto } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome, Fontisto } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import {
@@ -51,6 +51,7 @@ export function FilterComponent(props: {
   filter: Filter;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
+  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   return (
     <View style={{ flexDirection: "column", paddingHorizontal: 0 }}>
       <View
@@ -73,15 +74,114 @@ export function FilterComponent(props: {
           >
             Filter {props.filter.index + 1}
           </Text>
+          <Pressable
+            onPress={() => props.dispatch(["filter", "remove", props.filter])}
+            style={{
+              padding: 3,
+            }}
+          >
+            <Entypo name="cross" size={24} color="white" />
+          </Pressable>
         </View>
         <Pressable
-          onPress={() => props.dispatch(["filter", "remove", props.filter])}
+          onPress={() => bottomSheetModalRef.current?.present()}
           style={{
             padding: 3,
           }}
         >
-          <Entypo name="cross" size={24} color="white" />
+          <AntDesign
+            name="plussquareo"
+            size={24}
+            color={colors.custom.red[900]}
+          />
         </Pressable>
+        <BottomSheetModal
+          ref={bottomSheetModalRef}
+          snapPoints={["50%", "100%"]}
+          index={1}
+          backgroundStyle={{
+            backgroundColor: colors.custom.black[900],
+            borderColor: "white",
+            borderWidth: 1,
+          }}
+        >
+          <View
+            style={{
+              paddingBottom: 10,
+              marginHorizontal: 1,
+              paddingHorizontal: 8,
+              borderBottomWidth: 1,
+              backgroundColor: colors.custom.black[900],
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              FIELDS
+            </Text>
+            <Pressable
+              onPress={() => bottomSheetModalRef.current?.close()}
+              style={{ paddingRight: 8 }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "500",
+                  textAlign: "center",
+                  paddingHorizontal: 5,
+                  paddingVertical: 2,
+                  borderColor: "white",
+                  borderWidth: 1,
+                  borderRadius: 8,
+                }}
+              >
+                Close
+              </Text>
+            </Pressable>
+          </View>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              margin: 5,
+            }}
+          >
+            {arrow(() => {
+              const active = props.filter.id[1] !== undefined;
+              return (
+                <View
+                  style={{
+                    justifyContent: "flex-start",
+                    margin: 5,
+                  }}
+                >
+                  <Checkbox
+                    value={active}
+                    onValueChange={(x) => {
+                      props.dispatch([
+                        "filter",
+                        "replace",
+                        apply(props.filter, (it) => {
+                          it.id = [
+                            false,
+                            x ? ["==", new Decimal(0)] : undefined,
+                          ];
+                          return it;
+                        }),
+                      ]);
+                    }}
+                    color={active ? colors.custom.red[900] : undefined}
+                  />
+                  <Text style={{ paddingLeft: 10 }}>Unique ID</Text>
+                </View>
+              );
+            })}
+          </View>
+        </BottomSheetModal>
       </View>
       <View
         style={{
