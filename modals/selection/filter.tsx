@@ -11,7 +11,7 @@ import { Platform, Pressable } from "react-native";
 import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AntDesign, Entypo, FontAwesome, Fontisto } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import {
@@ -53,17 +53,17 @@ export function FilterComponent(props: {
 }): JSX.Element {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   return (
-    <View style={{ flexDirection: "column", paddingHorizontal: 0 }}>
-      <View
-        style={{
-          backgroundColor: colors.custom.black[900],
-        }}
-      >
+    <View
+      style={{
+        flexDirection: "column",
+        paddingHorizontal: 0,
+      }}
+    >
+      <View>
         <View
           style={{
             justifyContent: "flex-start",
             paddingHorizontal: 5,
-            backgroundColor: colors.custom.black[900],
           }}
         >
           <Text
@@ -384,9 +384,9 @@ export function FilterComponent(props: {
         style={{
           flex: 1,
           flexDirection: "column",
-          borderColor: "white",
           borderBottomWidth: 1,
           paddingHorizontal: 4,
+          paddingBottom: 10,
         }}
       >
         <View
@@ -429,7 +429,7 @@ export function FilterComponent(props: {
                           marginRight: 6,
                         }}
                       />
-                      <Text>ID</Text>
+                      <Text style={{ color: colors.custom.blue[900] }}>ID</Text>
                     </View>
                     <View
                       style={{
@@ -685,7 +685,9 @@ export function FilterComponent(props: {
                           marginRight: 6,
                         }}
                       />
-                      <Text>Created</Text>
+                      <Text style={{ color: colors.custom.blue[900] }}>
+                        Created
+                      </Text>
                     </View>
                     <View
                       style={{
@@ -1177,7 +1179,9 @@ export function FilterComponent(props: {
                           marginRight: 6,
                         }}
                       />
-                      <Text>Updated</Text>
+                      <Text style={{ color: colors.custom.blue[900] }}>
+                        Updated
+                      </Text>
                     </View>
                     <View
                       style={{
@@ -1906,7 +1910,9 @@ function FilterPathComponent(props: {
                     marginRight: 6,
                   }}
                 />
-                <Text>{props.filter_path.label}</Text>
+                <Text style={{ color: colors.custom.blue[900] }}>
+                  {props.filter_path.label}
+                </Text>
               </View>
               <View
                 style={{
@@ -2415,41 +2421,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [field_struct_name, [op, ""]];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 5,
-                                    paddingVertical: 2,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, ""],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                  <Fontisto
-                                    name="eraser"
-                                    size={16}
-                                    color="white"
-                                  />
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -2654,44 +2684,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, ["", value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, ["", value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -2899,44 +2952,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, ""]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, ""]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -3175,38 +3251,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -3434,44 +3537,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Decimal(0), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Decimal(0), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -3702,44 +3828,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Decimal(0)]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Decimal(0)]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -3983,38 +4132,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -4242,44 +4418,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Decimal(0), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Decimal(0), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -4510,44 +4709,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Decimal(0)]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Decimal(0)]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -4793,38 +5015,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -5056,44 +5305,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Decimal(0), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Decimal(0), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -5328,44 +5600,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Decimal(0)]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Decimal(0)]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -5609,38 +5904,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -5870,44 +6192,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Decimal(0), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Decimal(0), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -6140,44 +6485,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Decimal(0)]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Decimal(0)]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -6415,38 +6783,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -6668,44 +7063,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Decimal(0), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Decimal(0), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -6930,44 +7348,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Decimal(0)]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Decimal(0)]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -7205,38 +7646,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -7458,44 +7926,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Decimal(0), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Decimal(0), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -7720,44 +8211,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Decimal(0)]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Decimal(0)]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -7982,38 +8496,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, true],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, true],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -8240,38 +8781,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Date()],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Date()],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -8502,44 +9070,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Date(), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Date(), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -8773,44 +9364,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Date()]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Date()]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -9048,38 +9662,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Date()],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Date()],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -9309,44 +9950,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Date(), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Date(), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -9579,44 +10243,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Date()]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Date()]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -9906,38 +10593,65 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Date()],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Date()],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths
@@ -10219,44 +10933,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [new Date(), value2]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef1.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [new Date(), value2]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef1.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -10541,44 +11278,67 @@ function FilterPathComponent(props: {
                                     >
                                       FIELDS
                                     </Text>
-                                    <Pressable
-                                      onPress={() => {
-                                        props.dispatch([
-                                          "filters",
-                                          props.filter,
-                                          "replace",
-                                          apply(props.filter_path, (it) => {
-                                            it.value = [
-                                              field_struct_name,
-                                              [op, [value1, new Date()]],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
-                                        bottomSheetModalRef2.current?.close();
+                                    <View
+                                      style={{
+                                        justifyContent: "flex-end",
+                                        paddingHorizontal: 0,
                                       }}
-                                      style={{ paddingRight: 8 }}
                                     >
-                                      <Text
-                                        style={{
-                                          fontSize: 15,
-                                          fontWeight: "500",
-                                          textAlign: "center",
-                                          paddingHorizontal: 5,
-                                          paddingVertical: 2,
-                                          borderColor: "white",
-                                          borderWidth: 1,
-                                          borderRadius: 8,
+                                      <Pressable
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, [value1, new Date()]],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          bottomSheetModalRef2.current?.close();
                                         }}
+                                        style={{ paddingRight: 8 }}
                                       >
-                                        Clear
-                                        <Fontisto
-                                          name="eraser"
-                                          size={16}
-                                          color="white"
-                                        />
-                                      </Text>
-                                    </Pressable>
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                            borderRadius: 2,
+                                          }}
+                                        >
+                                          Clear
+                                        </Text>
+                                      </Pressable>
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.close()
+                                        }
+                                        style={{ paddingRight: 8 }}
+                                      >
+                                        <Text
+                                          style={{
+                                            fontSize: 15,
+                                            fontWeight: "700",
+                                            textAlign: "center",
+                                            paddingHorizontal: 5,
+                                            paddingVertical: 2,
+                                            borderRadius: 2,
+                                            backgroundColor:
+                                              colors.custom.red[900],
+                                          }}
+                                        >
+                                          Close
+                                        </Text>
+                                      </Pressable>
+                                    </View>
                                   </View>
                                   <BottomSheetFlatList
                                     data={props.init_filter.filter_paths
@@ -10802,39 +11562,66 @@ function FilterPathComponent(props: {
                               >
                                 FIELDS
                               </Text>
-                              <Pressable
-                                onPress={() => {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, new Decimal(0)],
-                                        other_struct,
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  bottomSheetModalRef1.current?.close();
+                              <View
+                                style={{
+                                  justifyContent: "flex-end",
+                                  paddingHorizontal: 0,
                                 }}
-                                style={{ paddingRight: 8 }}
                               >
-                                <Text
-                                  style={{
-                                    fontSize: 15,
-                                    fontWeight: "500",
-                                    textAlign: "center",
-                                    paddingHorizontal: 4,
-                                    borderColor: "white",
-                                    borderWidth: 1,
-                                    borderRadius: 8,
+                                <Pressable
+                                  onPress={() => {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, new Decimal(0)],
+                                          other_struct,
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    bottomSheetModalRef1.current?.close();
                                   }}
+                                  style={{ paddingRight: 8 }}
                                 >
-                                  Clear
-                                </Text>
-                              </Pressable>
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "bold",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                      borderRadius: 2,
+                                    }}
+                                  >
+                                    Clear
+                                  </Text>
+                                </Pressable>
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.close()
+                                  }
+                                  style={{ paddingRight: 8 }}
+                                >
+                                  <Text
+                                    style={{
+                                      fontSize: 15,
+                                      fontWeight: "700",
+                                      textAlign: "center",
+                                      paddingHorizontal: 5,
+                                      paddingVertical: 2,
+                                      borderRadius: 2,
+                                      backgroundColor: colors.custom.red[900],
+                                    }}
+                                  >
+                                    Close
+                                  </Text>
+                                </Pressable>
+                              </View>
                             </View>
                             <BottomSheetFlatList
                               data={props.init_filter.filter_paths

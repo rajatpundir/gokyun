@@ -15,9 +15,8 @@ import {
   BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetSectionList,
 } from "@gorhom/bottom-sheet";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 import { colors } from "../../main/themed/colors";
