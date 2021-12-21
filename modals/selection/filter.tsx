@@ -29,7 +29,7 @@ function View(props: ViewProps) {
     <DefaultView
       style={[
         {
-          backgroundColor: colors.tailwind.gray[900],
+          backgroundColor: colors.custom.black[900],
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -2282,7 +2282,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -2293,8 +2293,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -2398,8 +2397,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -2416,8 +2414,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -2524,8 +2521,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -2536,8 +2532,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -2651,8 +2646,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -2669,8 +2663,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -2772,8 +2766,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -2784,8 +2777,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -2899,8 +2891,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -2917,8 +2908,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -3051,7 +3042,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -3062,8 +3053,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -3169,8 +3159,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -3187,8 +3176,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -3313,8 +3301,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -3325,8 +3312,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -3445,8 +3431,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -3463,8 +3448,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -3584,8 +3569,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -3596,8 +3580,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -3716,8 +3699,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -3734,8 +3716,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -3868,7 +3850,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -3879,8 +3861,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -3986,8 +3967,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -4004,8 +3984,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -4130,8 +4109,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -4142,8 +4120,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -4262,8 +4239,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -4280,8 +4256,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -4401,8 +4377,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -4413,8 +4388,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -4533,8 +4507,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -4551,8 +4524,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -4687,7 +4660,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -4698,8 +4671,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -4805,8 +4777,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -4823,8 +4794,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -4953,8 +4923,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -4965,8 +4934,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -5085,8 +5053,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -5103,8 +5070,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -5228,8 +5195,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -5240,8 +5206,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -5360,8 +5325,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -5378,8 +5342,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -5512,7 +5476,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -5523,8 +5487,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -5630,8 +5593,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -5648,8 +5610,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -5776,8 +5737,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -5788,8 +5748,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -5908,8 +5867,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -5926,8 +5884,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -6049,8 +6007,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -6061,8 +6018,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -6181,8 +6137,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -6199,8 +6154,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -6327,7 +6282,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -6338,8 +6293,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -6445,8 +6399,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -6463,8 +6416,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -6583,8 +6535,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -6595,8 +6546,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -6715,8 +6665,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -6733,8 +6682,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -6848,8 +6797,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -6860,8 +6808,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -6980,8 +6927,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -6998,8 +6944,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -7126,7 +7072,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -7137,8 +7083,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -7244,8 +7189,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -7262,8 +7206,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -7382,8 +7325,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -7394,8 +7336,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -7514,8 +7455,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -7532,8 +7472,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -7647,8 +7587,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -7659,8 +7598,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -7779,8 +7717,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -7797,8 +7734,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -7861,9 +7798,7 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                   color={
-                                    value
-                                      ? colors.custom.red[900]
-                                      : undefined
+                                    value ? colors.custom.red[900] : undefined
                                   }
                                 />
                               );
@@ -7914,7 +7849,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -7925,8 +7860,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -8025,8 +7959,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -8043,8 +7976,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -8175,7 +8107,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -8186,8 +8118,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -8286,8 +8217,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -8304,8 +8234,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -8440,8 +8369,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -8452,8 +8380,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -8565,8 +8492,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -8583,8 +8509,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -8714,8 +8640,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -8726,8 +8651,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -8839,8 +8763,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -8857,8 +8780,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -8992,7 +8915,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -9003,8 +8926,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -9103,8 +9025,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -9121,8 +9042,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -9256,8 +9176,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -9268,8 +9187,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -9381,8 +9299,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -9399,8 +9316,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -9529,8 +9446,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -9541,8 +9457,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -9654,8 +9569,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -9672,8 +9586,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -9859,7 +9773,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -9870,8 +9784,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -9970,8 +9883,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -9988,8 +9900,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />
@@ -10175,8 +10086,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -10187,8 +10097,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -10300,8 +10209,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -10318,8 +10226,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -10500,8 +10408,7 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "100%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor:
-                                      colors.tailwind.gray[900],
+                                    backgroundColor: colors.custom.black[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -10512,8 +10419,7 @@ function FilterPathComponent(props: {
                                       marginHorizontal: 1,
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
-                                      backgroundColor:
-                                        colors.tailwind.gray[900],
+                                      backgroundColor: colors.custom.black[900],
                                     }}
                                   >
                                     <Text
@@ -10625,8 +10531,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? colors.custom
-                                                            .red[900]
+                                                        ? colors.custom.red[900]
                                                         : undefined
                                                     }
                                                   />
@@ -10643,8 +10548,8 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? colors
-                                                                .custom.red[900]
+                                                            ? colors.custom
+                                                                .red[900]
                                                             : undefined
                                                         }
                                                       />
@@ -10764,7 +10669,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.custom.black[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -10775,8 +10680,7 @@ function FilterPathComponent(props: {
                                 marginHorizontal: 1,
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
-                                backgroundColor:
-                                  colors.tailwind.gray[900],
+                                backgroundColor: colors.custom.black[900],
                               }}
                             >
                               <Text
@@ -10882,8 +10786,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? colors.custom
-                                                      .red[900]
+                                                  ? colors.custom.red[900]
                                                   : undefined
                                               }
                                             />
@@ -10900,8 +10803,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? colors.custom
-                                                          .red[900]
+                                                      ? colors.custom.red[900]
                                                       : undefined
                                                   }
                                                 />

@@ -33,6 +33,7 @@ import { Filter } from "./main/utils/db";
 
 import { NativeBaseProvider, Box } from "native-base";
 import { HashSet } from "prelude-ts";
+import { colors } from "./main/themed/colors";
 
 declare global {
   namespace ReactNavigation {
@@ -124,7 +125,7 @@ export default function App() {
                 component={SelectionModal}
                 options={{
                   title: "Select variable",
-                  headerStyle: { backgroundColor: "black" },
+                  headerStyle: { backgroundColor: colors.custom.black[900] },
                   headerTintColor: "white",
                 }}
               />
@@ -133,7 +134,7 @@ export default function App() {
                 component={Test}
                 options={{
                   title: "Test",
-                  headerStyle: { backgroundColor: "black" },
+                  headerStyle: { backgroundColor: colors.custom.black[900] },
                   headerTintColor: "white",
                 }}
               />
