@@ -25,7 +25,7 @@ import { Path, PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
-import { color_palette } from "../../main/themed/colors";
+import { colors } from "../../main/themed/colors";
 
 // TODO 444 (Running trigger, checks, etc inside fetched other field paths)
 // Fix react navigation error related to serializability of props passed
@@ -465,12 +465,12 @@ function CreateComponent(props: {
                             borderRadius: 5,
                             paddingVertical: 5,
                             marginVertical: 5,
-                            backgroundColor: color_palette.tailwind.gray[900],
+                            backgroundColor: colors.tailwind.gray[900],
                           }}
                         >
                           <View
                             style={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                             }}
                           >
                             <Label {...it} path={"nickname"} />
@@ -478,7 +478,7 @@ function CreateComponent(props: {
                           </View>
                           <View
                             style={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                             }}
                           >
                             <Label {...it} path={"knows_english"} />
@@ -486,7 +486,7 @@ function CreateComponent(props: {
                           </View>
                           <View
                             style={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                             }}
                           >
                             <Label {...it} path={"mobile"} />
@@ -494,7 +494,7 @@ function CreateComponent(props: {
                           </View>
                           <View
                             style={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                             }}
                           >
                             <Label {...it} path={"product_count"} />
@@ -512,7 +512,7 @@ function CreateComponent(props: {
                           >
                             <Text
                               style={{
-                                backgroundColor: color_palette.custom.red[900],
+                                backgroundColor: colors.custom.red[900],
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                                 fontWeight: "400",
@@ -563,7 +563,7 @@ function CreateComponent(props: {
                           >
                             <Text
                               style={{
-                                backgroundColor: color_palette.custom.red[900],
+                                backgroundColor: colors.custom.red[900],
                                 paddingHorizontal: 6,
                                 paddingVertical: 2,
                                 fontWeight: "400",

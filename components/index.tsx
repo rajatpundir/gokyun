@@ -19,7 +19,7 @@ import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
-import { color_palette } from "../main/themed/colors";
+import { colors } from "../main/themed/colors";
 
 export type NavigatorParams = {
   Clans: undefined;
@@ -43,12 +43,12 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
       initialRouteName="System"
       screenOptions={{
         lazy: true,
-        tabBarActiveTintColor: color_palette.custom.white[900],
+        tabBarActiveTintColor: colors.custom.white[900],
         tabBarInactiveTintColor: "#9b9baf",
         tabBarLabelStyle: { fontSize: 11 },
-        tabBarStyle: { backgroundColor: color_palette.custom.black[900] },
+        tabBarStyle: { backgroundColor: colors.custom.black[900] },
         headerStyle: {
-          backgroundColor: color_palette.custom.black[900],
+          backgroundColor: colors.custom.black[900],
           height: 55,
         },
       }}

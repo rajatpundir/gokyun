@@ -19,7 +19,7 @@ import {
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
-import { color_palette } from "../../main/themed/colors";
+import { colors } from "../../main/themed/colors";
 
 // Bottom sheet, instead of sroll view, for field selection
 
@@ -207,7 +207,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           snapPoints={["50%", "100%"]}
           index={1}
           backgroundStyle={{
-            backgroundColor: color_palette.tailwind.gray[900],
+            backgroundColor: colors.tailwind.gray[900],
             borderColor: "white",
             borderWidth: 1,
           }}
@@ -216,7 +216,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             style={{
               flex: 1,
               flexDirection: "column",
-              backgroundColor: color_palette.tailwind.gray[900],
+              backgroundColor: colors.tailwind.gray[900],
               borderColor: "white",
               borderLeftWidth: 1,
               borderRightWidth: 1,
@@ -226,7 +226,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             <View
               style={{
                 borderBottomWidth: 1,
-                backgroundColor: color_palette.tailwind.gray[900],
+                backgroundColor: colors.tailwind.gray[900],
               }}
             >
               <Text
@@ -243,16 +243,14 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 style={{
                   paddingHorizontal: 4,
                   paddingVertical: 4,
-                  backgroundColor: color_palette.tailwind.gray[900],
+                  backgroundColor: colors.tailwind.gray[900],
                 }}
               >
                 <Text>Active</Text>
                 <Checkbox
                   value={state.active}
                   onValueChange={(x) => dispatch(["active", x])}
-                  color={
-                    state.active ? color_palette.custom.red[900] : undefined
-                  }
+                  color={state.active ? colors.custom.red[900] : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -265,7 +263,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   paddingHorizontal: 4,
                   paddingVertical: 4,
                   marginBottom: 2,
-                  backgroundColor: color_palette.tailwind.gray[900],
+                  backgroundColor: colors.tailwind.gray[900],
                 }}
               >
                 <Text>Unsynced</Text>
@@ -274,9 +272,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={
-                    !state.level ? color_palette.custom.red[900] : undefined
-                  }
+                  color={!state.level ? colors.custom.red[900] : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -291,7 +287,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               >
                 <Text
                   style={{
-                    backgroundColor: color_palette.custom.red[900],
+                    backgroundColor: colors.custom.red[900],
                     alignSelf: "flex-end",
                     paddingHorizontal: 6,
                     paddingVertical: 2,
@@ -315,14 +311,14 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 return (
                   <View
                     style={{
-                      backgroundColor: color_palette.tailwind.gray[900],
+                      backgroundColor: colors.tailwind.gray[900],
                     }}
                   >
                     <View
                       style={{
                         justifyContent: "flex-start",
                         paddingHorizontal: 0,
-                        backgroundColor: color_palette.tailwind.gray[900],
+                        backgroundColor: colors.tailwind.gray[900],
                       }}
                     >
                       <Text

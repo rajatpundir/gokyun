@@ -2,7 +2,7 @@ import * as React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { NavigatorProps as ParentNavigatorProps } from "../App";
-import { color_palette } from "./themed/colors";
+import { colors } from "./themed/colors";
 
 export default function NotFoundScreen(
   props: ParentNavigatorProps<"NotFound">
@@ -23,7 +23,7 @@ export default function NotFoundScreen(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color_palette.custom.white[900],
+    backgroundColor: colors.custom.white[900],
     alignItems: "center",
     justifyContent: "center",
     padding: 20,

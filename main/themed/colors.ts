@@ -1,4 +1,4 @@
-export const color_palette = {
+export const colors = {
   custom: {
     red: { 900: "#FF0000" },
     black: { 900: "#000000" },

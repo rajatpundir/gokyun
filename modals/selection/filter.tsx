@@ -21,7 +21,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "../../main/utils/variable";
-import { color_palette } from "../../main/themed/colors";
+import { colors } from "../../main/themed/colors";
 
 function View(props: ViewProps) {
   const { style, ...otherProps } = props;
@@ -29,7 +29,7 @@ function View(props: ViewProps) {
     <DefaultView
       style={[
         {
-          backgroundColor: color_palette.tailwind.gray[900],
+          backgroundColor: colors.tailwind.gray[900],
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
@@ -299,7 +299,7 @@ export function FilterComponent(props: {
                           }),
                         ])
                       }
-                      color={active ? color_palette.custom.red[900] : undefined}
+                      color={active ? colors.custom.red[900] : undefined}
                       style={{
                         alignSelf: "center",
                         marginRight: 6,
@@ -563,7 +563,7 @@ export function FilterComponent(props: {
                           }),
                         ])
                       }
-                      color={active ? color_palette.custom.red[900] : undefined}
+                      color={active ? colors.custom.red[900] : undefined}
                       style={{
                         alignSelf: "center",
                         marginRight: 6,
@@ -1055,7 +1055,7 @@ export function FilterComponent(props: {
                           }),
                         ])
                       }
-                      color={active ? color_palette.custom.red[900] : undefined}
+                      color={active ? colors.custom.red[900] : undefined}
                       style={{
                         alignSelf: "center",
                         marginRight: 6,
@@ -1776,7 +1776,7 @@ function FilterPathComponent(props: {
                   }}
                   color={
                     props.filter_path.active
-                      ? color_palette.custom.red[900]
+                      ? colors.custom.red[900]
                       : undefined
                   }
                   style={{
@@ -2282,7 +2282,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -2294,7 +2294,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -2398,7 +2398,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -2416,7 +2416,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -2525,7 +2525,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -2537,7 +2537,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -2651,7 +2651,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -2669,7 +2669,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -2773,7 +2773,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -2785,7 +2785,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -2899,7 +2899,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -2917,7 +2917,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -3051,7 +3051,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -3063,7 +3063,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -3169,7 +3169,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -3187,7 +3187,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -3314,7 +3314,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -3326,7 +3326,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -3445,7 +3445,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -3463,7 +3463,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -3585,7 +3585,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -3597,7 +3597,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -3716,7 +3716,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -3734,7 +3734,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -3868,7 +3868,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -3880,7 +3880,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -3986,7 +3986,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -4004,7 +4004,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -4131,7 +4131,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -4143,7 +4143,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -4262,7 +4262,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -4280,7 +4280,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -4402,7 +4402,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -4414,7 +4414,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -4533,7 +4533,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -4551,7 +4551,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -4687,7 +4687,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -4699,7 +4699,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -4805,7 +4805,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -4823,7 +4823,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -4954,7 +4954,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -4966,7 +4966,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -5085,7 +5085,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -5103,7 +5103,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -5229,7 +5229,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -5241,7 +5241,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -5360,7 +5360,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -5378,7 +5378,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -5512,7 +5512,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -5524,7 +5524,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -5630,7 +5630,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -5648,7 +5648,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -5777,7 +5777,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -5789,7 +5789,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -5908,7 +5908,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -5926,7 +5926,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -6050,7 +6050,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -6062,7 +6062,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -6181,7 +6181,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -6199,7 +6199,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -6327,7 +6327,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -6339,7 +6339,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -6445,7 +6445,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -6463,7 +6463,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -6584,7 +6584,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -6596,7 +6596,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -6715,7 +6715,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -6733,7 +6733,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -6849,7 +6849,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -6861,7 +6861,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -6980,7 +6980,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -6998,7 +6998,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -7126,7 +7126,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -7138,7 +7138,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -7244,7 +7244,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -7262,7 +7262,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -7383,7 +7383,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -7395,7 +7395,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -7514,7 +7514,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -7532,7 +7532,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -7648,7 +7648,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -7660,7 +7660,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -7779,7 +7779,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -7797,7 +7797,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -7862,7 +7862,7 @@ function FilterPathComponent(props: {
                                   }
                                   color={
                                     value
-                                      ? color_palette.custom.red[900]
+                                      ? colors.custom.red[900]
                                       : undefined
                                   }
                                 />
@@ -7914,7 +7914,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -7926,7 +7926,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -8025,7 +8025,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -8043,7 +8043,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -8175,7 +8175,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -8187,7 +8187,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -8286,7 +8286,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -8304,7 +8304,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -8441,7 +8441,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -8453,7 +8453,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -8565,7 +8565,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -8583,7 +8583,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -8715,7 +8715,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -8727,7 +8727,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -8839,7 +8839,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -8857,7 +8857,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -8992,7 +8992,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -9004,7 +9004,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -9103,7 +9103,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -9121,7 +9121,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -9257,7 +9257,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -9269,7 +9269,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -9381,7 +9381,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -9399,7 +9399,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -9530,7 +9530,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -9542,7 +9542,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -9654,7 +9654,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -9672,7 +9672,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -9859,7 +9859,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -9871,7 +9871,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -9970,7 +9970,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -9988,7 +9988,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
@@ -10176,7 +10176,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -10188,7 +10188,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -10300,7 +10300,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -10318,7 +10318,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -10501,7 +10501,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor:
-                                      color_palette.tailwind.gray[900],
+                                      colors.tailwind.gray[900],
                                     borderColor: "white",
                                     borderWidth: 1,
                                   }}
@@ -10513,7 +10513,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 8,
                                       borderBottomWidth: 1,
                                       backgroundColor:
-                                        color_palette.tailwind.gray[900],
+                                        colors.tailwind.gray[900],
                                     }}
                                   >
                                     <Text
@@ -10625,7 +10625,7 @@ function FilterPathComponent(props: {
                                                     value={false}
                                                     color={
                                                       false
-                                                        ? color_palette.custom
+                                                        ? colors.custom
                                                             .red[900]
                                                         : undefined
                                                     }
@@ -10643,7 +10643,7 @@ function FilterPathComponent(props: {
                                                         value={active}
                                                         color={
                                                           active
-                                                            ? color_palette
+                                                            ? colors
                                                                 .custom.red[900]
                                                             : undefined
                                                         }
@@ -10764,7 +10764,7 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "100%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: color_palette.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.gray[900],
                               borderColor: "white",
                               borderWidth: 1,
                             }}
@@ -10776,7 +10776,7 @@ function FilterPathComponent(props: {
                                 paddingHorizontal: 8,
                                 borderBottomWidth: 1,
                                 backgroundColor:
-                                  color_palette.tailwind.gray[900],
+                                  colors.tailwind.gray[900],
                               }}
                             >
                               <Text
@@ -10882,7 +10882,7 @@ function FilterPathComponent(props: {
                                               value={false}
                                               color={
                                                 false
-                                                  ? color_palette.custom
+                                                  ? colors.custom
                                                       .red[900]
                                                   : undefined
                                               }
@@ -10900,7 +10900,7 @@ function FilterPathComponent(props: {
                                                   value={active}
                                                   color={
                                                     active
-                                                      ? color_palette.custom
+                                                      ? colors.custom
                                                           .red[900]
                                                       : undefined
                                                   }
