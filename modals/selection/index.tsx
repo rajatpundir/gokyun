@@ -9,14 +9,15 @@ import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
-import { apply, unwrap } from "../../main/utils/prelude";
+import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { HashSet } from "prelude-ts";
 import {
   BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 import { colors } from "../../main/themed/colors";
@@ -24,6 +25,7 @@ import { colors } from "../../main/themed/colors";
 // Ordering
 // Limit Offset
 
+// Rewrite SQL generation using Filter
 // Fix OR filters
 // id, created_at and updated_at in having clause
 // Prevent SQL injection
@@ -46,6 +48,9 @@ export type Action =
   | ["active", boolean]
   | ["level", Decimal | undefined]
   | ["limit_offset", [Decimal, Decimal] | undefined]
+  | ["sort", "add", FilterPath, boolean]
+  | ["sort", "remove", FilterPath]
+  | ["sort", "up" | "down" | "toggle", FilterPath]
   | ["filter", "add"]
   | ["filter", "remove", Filter]
   | ["filter", "replace", Filter]
@@ -68,6 +73,51 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "limit_offset": {
       state.limit_offset = action[1];
+      break;
+    }
+    case "sort": {
+      const result = state.filters[0].filter_paths.findAny((x) =>
+        x.equals(action[2])
+      );
+      if (result.isSome()) {
+        switch (action[1]) {
+          case "add": {
+            state.filters[0].filter_paths;
+            break;
+          }
+          case "remove": {
+            state.filters[0].filter_paths = state.filters[0].filter_paths.add(
+              apply(result.get(), (it) => {
+                it.ordering = undefined;
+                return it;
+              })
+            );
+            break;
+          }
+          case "up": {
+            break;
+          }
+          case "down": {
+            break;
+          }
+          case "toggle": {
+            state.filters[0].filter_paths = state.filters[0].filter_paths.add(
+              apply(result.get(), (it) => {
+                const ordering = result.get().ordering;
+                if (ordering !== undefined) {
+                  it.ordering = [ordering[0], !ordering[1]];
+                }
+                return it;
+              })
+            );
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = action[2];
+            return _exhaustiveCheck;
+          }
+        }
+      }
       break;
     }
     case "filter": {
@@ -164,13 +214,15 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     state.limit_offset,
   ]);
 
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRef3 = useRef<BottomSheetModal>(null);
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
         <View style={{ justifyContent: "flex-end" }}>
           <Pressable
-            onPress={() => {}}
+            onPress={() => bottomSheetModalRef2.current?.present()}
             style={{
               alignSelf: "center",
             }}
@@ -189,8 +241,89 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               Sort <FontAwesome name="unsorted" size={16} color="white" />
             </Text>
           </Pressable>
+          <BottomSheetModal
+            ref={bottomSheetModalRef2}
+            snapPoints={["50%", "100%"]}
+            index={1}
+            backgroundStyle={{
+              backgroundColor: colors.custom.black[900],
+              borderColor: "white",
+              borderWidth: 1,
+            }}
+          >
+            <View
+              style={{
+                paddingBottom: 10,
+                marginHorizontal: 1,
+                paddingHorizontal: 8,
+                borderBottomWidth: 1,
+                backgroundColor: colors.custom.black[900],
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                SORT BY
+              </Text>
+              <View>
+                <Pressable
+                  onPress={() => bottomSheetModalRef3.current?.present()}
+                  style={{ paddingRight: 8 }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "700",
+                      textAlign: "center",
+                      paddingHorizontal: 5,
+                      paddingVertical: 2,
+                      borderRadius: 2,
+                      backgroundColor: colors.custom.red[900],
+                    }}
+                  >
+                    Add Field
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => bottomSheetModalRef2.current?.close()}
+                  style={{ paddingRight: 8 }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "700",
+                      textAlign: "center",
+                      paddingHorizontal: 5,
+                      paddingVertical: 2,
+                      borderRadius: 2,
+                      backgroundColor: colors.custom.red[900],
+                    }}
+                  >
+                    Close
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+            <SortComponent init_filter={state.filters[0]} dispatch={dispatch} />
+            <BottomSheetModal
+              ref={bottomSheetModalRef3}
+              snapPoints={["50%", "100%"]}
+              index={1}
+              backgroundStyle={{
+                backgroundColor: colors.custom.black[900],
+                borderColor: "white",
+                borderWidth: 1,
+              }}
+            >
+              <Text>ss</Text>
+            </BottomSheetModal>
+          </BottomSheetModal>
           <Pressable
-            onPress={() => bottomSheetModalRef.current?.present()}
+            onPress={() => bottomSheetModalRef1.current?.present()}
             style={{
               paddingLeft: 4,
             }}
@@ -222,7 +355,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
         />
         <BottomSheetModal
-          ref={bottomSheetModalRef}
+          ref={bottomSheetModalRef1}
           snapPoints={["50%", "100%"]}
           index={1}
           backgroundStyle={{
@@ -345,5 +478,85 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         </BottomSheetModal>
       </View>
     </BottomSheetModalProvider>
+  );
+}
+
+function SortComponent(props: {
+  init_filter: Filter;
+  dispatch: React.Dispatch<Action>;
+}) {
+  const move_up = () => {};
+  const move_down = () => {};
+  return (
+    <BottomSheetScrollView
+      contentContainerStyle={{
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        margin: 5,
+      }}
+    >
+      {props.init_filter.filter_paths
+        .toArray()
+        .filter((x) => x.ordering !== undefined)
+        .map((filter_path, index) => {
+          const ordering = filter_path.ordering;
+          if (ordering !== undefined) {
+            return (
+              <View
+                key={index}
+                style={{
+                  justifyContent: "flex-start",
+                  marginHorizontal: 5,
+                  marginVertical: 10,
+                }}
+              >
+                <View style={{ flexDirection: "column" }}>
+                  <Pressable
+                    onPress={() => props.dispatch(["sort", "up", filter_path])}
+                  >
+                    <FontAwesome name="sort-up" size={16} color="white" />
+                  </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch(["sort", "down", filter_path])
+                    }
+                  >
+                    <FontAwesome name="sort-down" size={16} color="white" />
+                  </Pressable>
+                </View>
+                <View>
+                  <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch(["sort", "toggle", filter_path])
+                    }
+                  >
+                    {arrow(() => {
+                      if (ordering[1]) {
+                        return (
+                          <FontAwesome
+                            name="sort-numeric-desc"
+                            size={24}
+                            color="white"
+                          />
+                        );
+                      } else {
+                        return (
+                          <FontAwesome
+                            name="sort-numeric-asc"
+                            size={24}
+                            color="white"
+                          />
+                        );
+                      }
+                    })}
+                  </Pressable>
+                </View>
+              </View>
+            );
+          }
+          return null;
+        })}
+    </BottomSheetScrollView>
   );
 }
