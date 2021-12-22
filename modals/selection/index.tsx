@@ -9,7 +9,7 @@ import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
-import { apply, arrow, unwrap } from "../../main/utils/prelude";
+import { apply, arrow, fold, unwrap } from "../../main/utils/prelude";
 import { HashSet } from "prelude-ts";
 import {
   BottomSheetFlatList,
@@ -21,6 +21,7 @@ import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 import { colors } from "../../main/themed/colors";
+import { utc } from "moment";
 
 // Ordering
 // Limit Offset
@@ -82,22 +83,99 @@ export function reducer(state: Draft<State>, action: Action) {
       if (result.isSome()) {
         switch (action[1]) {
           case "add": {
-            state.filters[0].filter_paths;
-            break;
-          }
-          case "remove": {
             state.filters[0].filter_paths = state.filters[0].filter_paths.add(
               apply(result.get(), (it) => {
-                it.ordering = undefined;
+                it.ordering = [
+                  Decimal.add(
+                    fold(
+                      new Decimal(0),
+                      state.filters[0].filter_paths.toArray().map((x) => {
+                        if (x.ordering !== undefined) {
+                          return x.ordering[0];
+                        }
+                        return new Decimal(0);
+                      }),
+                      (acc, val) => {
+                        return Decimal.max(acc, val);
+                      }
+                    ),
+                    1
+                  ),
+                  action[3],
+                ];
                 return it;
               })
             );
             break;
           }
-          case "up": {
+          case "remove": {
+            let order_count = new Decimal(1);
+            let updated_filter_paths: HashSet<FilterPath> = HashSet.of();
+            for (let filter_path of state.filters[0].filter_paths
+              .add(
+                apply(result.get(), (it) => {
+                  it.ordering = undefined;
+                  return it;
+                })
+              )
+              .toArray()
+              .sort((a, b) => {
+                if (a.ordering === undefined) {
+                  return -1;
+                } else {
+                  if (b.ordering === undefined) {
+                    return 1;
+                  } else {
+                    if (a.ordering[0] > b.ordering[0]) return 1;
+                    else if (b.ordering[0] > a.ordering[0]) return -1;
+                    else return 0;
+                  }
+                }
+              })) {
+              updated_filter_paths = updated_filter_paths.add(
+                apply(filter_path, (it) => {
+                  const ordering = filter_path.ordering;
+                  if (ordering !== undefined) {
+                    it.ordering = [ordering[0], ordering[1]];
+                    order_count = Decimal.add(ordering[0], 1);
+                  }
+                  return it;
+                })
+              );
+            }
             break;
           }
+          case "up":
           case "down": {
+            const ordering = result.get().ordering;
+            if (ordering !== undefined) {
+              const result2 = state.filters[0].filter_paths.findAny((x) => {
+                if (x.ordering !== undefined) {
+                  if (action[1] === "up") {
+                    return Decimal.add(x.ordering[0], 1).equals(ordering[0]);
+                  }
+                  if (action[1] === "down") {
+                    return Decimal.add(ordering[0], 1).equals(x.ordering[0]);
+                  }
+                }
+                return false;
+              });
+              if (result2.isSome()) {
+                const ordering2 = result2.get().ordering;
+                if (ordering2 !== undefined) {
+                  state.filters[0].filter_paths.addAll([
+                    apply(result.get(), (it) => {
+                      it.ordering = [ordering2[0], ordering[1]];
+                      return it;
+                    }),
+                    apply(result2.get(), (it) => {
+                      it.ordering = [ordering[0], ordering2[1]];
+                      return it;
+                    }),
+                  ]);
+                }
+              }
+            }
             break;
           }
           case "toggle": {
