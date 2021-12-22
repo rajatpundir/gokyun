@@ -17,11 +17,10 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 import { colors } from "../../main/themed/colors";
-import { utc } from "moment";
 
 // Ordering
 // Limit Offset
@@ -421,6 +420,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           </Pressable>
         </View>
 
+        {/* Should be replcaed with a generic component thats passed down as props and that takes state.variabels as input */}
         <FlatList
           data={state.variables}
           renderItem={(list_item) => (
@@ -432,6 +432,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           )}
           keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
         />
+
         <BottomSheetModal
           ref={bottomSheetModalRef1}
           snapPoints={["50%", "100%"]}
@@ -468,7 +469,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               >
                 FILTERS
               </Text>
-
               <View
                 style={{
                   paddingHorizontal: 4,
@@ -563,8 +563,6 @@ function SortComponent(props: {
   init_filter: Filter;
   dispatch: React.Dispatch<Action>;
 }) {
-  const move_up = () => {};
-  const move_down = () => {};
   return (
     <BottomSheetScrollView
       contentContainerStyle={{
@@ -633,7 +631,7 @@ function SortComponent(props: {
               </View>
             );
           }
-          return null;
+          return <></>;
         })}
     </BottomSheetScrollView>
   );
