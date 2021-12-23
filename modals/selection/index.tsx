@@ -9,15 +9,14 @@ import { Struct, Variable } from "../../main/utils/variable";
 import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
-import { apply, arrow, fold, unwrap } from "../../main/utils/prelude";
+import { apply, fold, unwrap } from "../../main/utils/prelude";
 import { HashSet } from "prelude-ts";
 import {
   BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
@@ -303,7 +302,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           </Pressable>
           <BottomSheetModal
             ref={bottomSheetModalRef2}
-            snapPoints={["50%", "100%"]}
+            snapPoints={["50%", "95%"]}
             index={1}
             backgroundStyle={{
               backgroundColor: colors.custom.black[900],
@@ -374,7 +373,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             />
             <BottomSheetModal
               ref={bottomSheetModalRef3}
-              snapPoints={["50%", "100%"]}
+              snapPoints={["50%", "95%"]}
               index={1}
               backgroundStyle={{
                 backgroundColor: colors.custom.black[900],
@@ -463,7 +462,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
 
         <BottomSheetModal
           ref={bottomSheetModalRef1}
-          snapPoints={["50%", "100%"]}
+          snapPoints={["50%", "95%"]}
           index={1}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],

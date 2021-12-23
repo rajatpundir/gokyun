@@ -245,7 +245,7 @@ export function FilterComponent(props: {
         </Pressable>
         <BottomSheetModal
           ref={bottomSheetModalRef}
-          snapPoints={["50%", "100%"]}
+          snapPoints={["50%", "95%"]}
           index={1}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],
@@ -2543,7 +2543,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -2806,7 +2806,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -3074,7 +3074,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -3373,7 +3373,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -3659,7 +3659,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -3950,7 +3950,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -4254,7 +4254,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -4540,7 +4540,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -4831,7 +4831,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -5137,7 +5137,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -5427,7 +5427,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -5722,7 +5722,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -6026,7 +6026,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -6314,7 +6314,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -6607,7 +6607,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -6905,7 +6905,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -7185,7 +7185,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -7470,7 +7470,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -7768,7 +7768,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -8048,7 +8048,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -8333,7 +8333,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -8618,7 +8618,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -8903,7 +8903,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -9192,7 +9192,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -9486,7 +9486,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -9784,7 +9784,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -10072,7 +10072,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -10365,7 +10365,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -10715,7 +10715,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
@@ -11055,7 +11055,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -11400,7 +11400,7 @@ function FilterPathComponent(props: {
                                 )}
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
-                                  snapPoints={["50%", "100%"]}
+                                  snapPoints={["50%", "95%"]}
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
@@ -11684,7 +11684,7 @@ function FilterPathComponent(props: {
                           )}
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
-                            snapPoints={["50%", "100%"]}
+                            snapPoints={["50%", "95%"]}
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
