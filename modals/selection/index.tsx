@@ -148,7 +148,10 @@ export function reducer(state: Draft<State>, action: Action) {
                 })
               );
             }
-            state.init_filter.filter_paths = updated_filter_paths;
+            state.init_filter = apply(state.init_filter.clone(), (it) => {
+              it.filter_paths = updated_filter_paths;
+              return it;
+            });
             break;
           }
           case "up":
