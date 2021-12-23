@@ -660,7 +660,14 @@ function SortComponent(props: {
                   </Pressable>
                 </View>
                 <View style={{ flexGrow: 1 }}>
-                  <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                  <Text style={{ paddingLeft: 10 }}>
+                    {filter_path.label}{" "}
+                    {apply(filter_path.ordering, (it) => {
+                      if (it !== undefined) {
+                        return it[0].valueOf();
+                      }
+                    })}
+                  </Text>
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "toggle", filter_path])
@@ -705,8 +712,7 @@ function SortComponentFields(props: {
         .toArray()
         .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
         .map((filter_path, index) => {
-          const ordering = filter_path.ordering;
-          const active = ordering !== undefined;
+          const active = filter_path.ordering !== undefined;
           return (
             <View
               key={index}
@@ -743,7 +749,14 @@ function SortComponentFields(props: {
                 }}
                 color={active ? colors.custom.red[900] : undefined}
               />
-              <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+              <Text style={{ paddingLeft: 10 }}>
+                {filter_path.label}{" "}
+                {apply(filter_path.ordering, (it) => {
+                  if (it !== undefined) {
+                    return it[0].valueOf();
+                  }
+                })}
+              </Text>
             </View>
           );
         })}
