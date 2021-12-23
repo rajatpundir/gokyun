@@ -121,7 +121,7 @@ export function FilterComponent(props: {
                 textAlign: "center",
               }}
             >
-              FIELDS
+              Fields
             </Text>
             <Pressable
               onPress={() => bottomSheetModalRef.current?.close()}
@@ -2419,7 +2419,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -2682,7 +2682,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -2950,7 +2950,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -3249,7 +3249,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -3535,7 +3535,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -3826,7 +3826,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -4130,7 +4130,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -4416,7 +4416,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -4707,7 +4707,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -5013,7 +5013,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -5303,7 +5303,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -5598,7 +5598,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -5902,7 +5902,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -6190,7 +6190,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -6483,7 +6483,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -6781,7 +6781,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -7061,7 +7061,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -7346,7 +7346,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -7644,7 +7644,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -7924,7 +7924,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -8209,7 +8209,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -8494,7 +8494,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -8779,7 +8779,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -9068,7 +9068,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -9362,7 +9362,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -9660,7 +9660,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -9948,7 +9948,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -10241,7 +10241,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -10591,7 +10591,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{
@@ -10931,7 +10931,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -11276,7 +11276,7 @@ function FilterPathComponent(props: {
                                         textAlign: "center",
                                       }}
                                     >
-                                      FIELDS
+                                      Fields
                                     </Text>
                                     <View
                                       style={{
@@ -11560,7 +11560,7 @@ function FilterPathComponent(props: {
                                   textAlign: "center",
                                 }}
                               >
-                                FIELDS
+                                Fields
                               </Text>
                               <View
                                 style={{

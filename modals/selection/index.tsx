@@ -17,7 +17,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { FilterComponent } from "./filter";
 import { colors } from "../../main/themed/colors";
@@ -34,7 +34,7 @@ import { colors } from "../../main/themed/colors";
 
 // Custom outer search fields
 // Create / Update Test component
-// List Test component
+// List Tests component
 
 type State = {
   struct: Struct;
@@ -398,7 +398,49 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 borderWidth: 1,
               }}
             >
-              <Text>ss</Text>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginHorizontal: 1,
+                  paddingHorizontal: 8,
+                  borderBottomWidth: 1,
+                  backgroundColor: colors.custom.black[900],
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  Fields
+                </Text>
+                <View>
+                  <Pressable
+                    onPress={() => bottomSheetModalRef3.current?.close()}
+                    style={{ paddingRight: 8 }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "700",
+                        textAlign: "center",
+                        paddingHorizontal: 5,
+                        paddingVertical: 2,
+                        borderRadius: 2,
+                        backgroundColor: colors.custom.red[900],
+                      }}
+                    >
+                      Close
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+              <SortComponentFields
+                init_filter={state.filters[0]}
+                dispatch={dispatch}
+              />
             </BottomSheetModal>
           </BottomSheetModal>
           <Pressable
@@ -588,43 +630,42 @@ function SortComponent(props: {
                   marginVertical: 10,
                 }}
               >
-                <View style={{ flexDirection: "column" }}>
+                <View
+                  style={{
+                    flexDirection: "column",
+                  }}
+                >
                   <Pressable
                     onPress={() => props.dispatch(["sort", "up", filter_path])}
+                    style={{ marginBottom: -4 }}
                   >
-                    <FontAwesome name="sort-up" size={16} color="white" />
+                    <FontAwesome name="sort-up" size={20} color="white" />
                   </Pressable>
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "down", filter_path])
                     }
+                    style={{ marginTop: -4 }}
                   >
-                    <FontAwesome name="sort-down" size={16} color="white" />
+                    <FontAwesome name="sort-down" size={20} color="white" />
                   </Pressable>
                 </View>
-                <View>
+                <View style={{ flexGrow: 1 }}>
                   <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "toggle", filter_path])
                     }
+                    style={{ alignSelf: "center" }}
                   >
                     {arrow(() => {
                       if (ordering[1]) {
                         return (
-                          <FontAwesome
-                            name="sort-numeric-desc"
-                            size={24}
-                            color="white"
-                          />
+                          <AntDesign name="arrowdown" size={24} color="white" />
                         );
                       } else {
                         return (
-                          <FontAwesome
-                            name="sort-numeric-asc"
-                            size={24}
-                            color="white"
-                          />
+                          <AntDesign name="arrowup" size={24} color="white" />
                         );
                       }
                     })}
@@ -635,6 +676,65 @@ function SortComponent(props: {
           }
           return <></>;
         })}
+    </BottomSheetScrollView>
+  );
+}
+
+function SortComponentFields(props: {
+  init_filter: Filter;
+  dispatch: React.Dispatch<Action>;
+}) {
+  return (
+    <BottomSheetScrollView
+      contentContainerStyle={{
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        margin: 5,
+      }}
+    >
+      {props.init_filter.filter_paths.toArray().map((filter_path, index) => {
+        const ordering = filter_path.ordering;
+        const active = ordering !== undefined;
+        return (
+          <View
+            key={index}
+            style={{
+              justifyContent: "flex-start",
+              marginHorizontal: 5,
+              marginVertical: 10,
+            }}
+          >
+            <Checkbox
+              value={active}
+              onValueChange={(x) => {
+                console.log(x);
+                if (x) {
+                  const field_struct_name = filter_path.value[0];
+                  props.dispatch([
+                    "sort",
+                    "add",
+                    filter_path,
+                    apply(true, (it) => {
+                      switch (field_struct_name) {
+                        case "str":
+                        case "lstr":
+                        case "clob": {
+                          return false;
+                        }
+                      }
+                      return it;
+                    }),
+                  ]);
+                } else {
+                  props.dispatch(["sort", "remove", filter_path]);
+                }
+              }}
+              color={active ? colors.custom.red[900] : undefined}
+            />
+            <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+          </View>
+        );
+      })}
     </BottomSheetScrollView>
   );
 }
