@@ -11,7 +11,7 @@ import { Platform, Pressable } from "react-native";
 import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AntDesign, Entypo } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { Action } from ".";
 import {
@@ -43,6 +43,154 @@ function View(props: ViewProps) {
       ]}
       {...otherProps}
     />
+  );
+}
+
+export function SortComponent(props: {
+  init_filter: Filter;
+  dispatch: React.Dispatch<Action>;
+}) {
+  return (
+    <BottomSheetScrollView
+      contentContainerStyle={{
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        margin: 5,
+      }}
+    >
+      {props.init_filter.filter_paths
+        .toArray()
+        .filter((x) => x.ordering !== undefined)
+        .sort((a, b) => {
+          if (a.ordering !== undefined && b.ordering !== undefined) {
+            if (a.ordering[0] > b.ordering[0]) {
+              return 1;
+            } else if (a.ordering[0] < b.ordering[0]) {
+              return -1;
+            }
+          }
+          return 0;
+        })
+        .map((filter_path, index) => {
+          const ordering = filter_path.ordering;
+          if (ordering !== undefined) {
+            return (
+              <View
+                key={index}
+                style={{
+                  justifyContent: "flex-start",
+                  marginHorizontal: 5,
+                  marginVertical: 10,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "column",
+                  }}
+                >
+                  <Pressable
+                    onPress={() => props.dispatch(["sort", "up", filter_path])}
+                    style={{ marginBottom: -4 }}
+                  >
+                    <FontAwesome name="sort-up" size={24} color="white" />
+                  </Pressable>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch(["sort", "down", filter_path])
+                    }
+                    style={{ marginTop: -4 }}
+                  >
+                    <FontAwesome name="sort-down" size={24} color="white" />
+                  </Pressable>
+                </View>
+                <View style={{ flexGrow: 1 }}>
+                  <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch(["sort", "toggle", filter_path])
+                    }
+                    style={{ alignSelf: "center" }}
+                  >
+                    {arrow(() => {
+                      if (ordering[1]) {
+                        return (
+                          <AntDesign name="arrowdown" size={24} color="white" />
+                        );
+                      } else {
+                        return (
+                          <AntDesign name="arrowup" size={24} color="white" />
+                        );
+                      }
+                    })}
+                  </Pressable>
+                </View>
+              </View>
+            );
+          }
+          return <></>;
+        })}
+    </BottomSheetScrollView>
+  );
+}
+
+export function SortComponentFields(props: {
+  init_filter: Filter;
+  dispatch: React.Dispatch<Action>;
+}) {
+  return (
+    <BottomSheetScrollView
+      contentContainerStyle={{
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        margin: 5,
+      }}
+    >
+      {props.init_filter.filter_paths
+        .toArray()
+        .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
+        .map((filter_path, index) => {
+          const active = filter_path.ordering !== undefined;
+          return (
+            <View
+              key={index}
+              style={{
+                justifyContent: "flex-start",
+                marginHorizontal: 5,
+                marginVertical: 10,
+              }}
+            >
+              <Checkbox
+                value={active}
+                onValueChange={(x) => {
+                  console.log(x);
+                  if (x) {
+                    const field_struct_name = filter_path.value[0];
+                    props.dispatch([
+                      "sort",
+                      "add",
+                      filter_path,
+                      apply(true, (it) => {
+                        switch (field_struct_name) {
+                          case "str":
+                          case "lstr":
+                          case "clob": {
+                            return false;
+                          }
+                        }
+                        return it;
+                      }),
+                    ]);
+                  } else {
+                    props.dispatch(["sort", "remove", filter_path]);
+                  }
+                }}
+                color={active ? colors.custom.red[900] : undefined}
+              />
+              <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+            </View>
+          );
+        })}
+    </BottomSheetScrollView>
   );
 }
 
