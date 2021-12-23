@@ -85,44 +85,8 @@ export function reducer(state: Draft<State>, action: Action) {
       if (result.isSome()) {
         switch (action[1]) {
           case "add": {
-            state.init_filter = new Filter(
-              state.init_filter.index,
-              apply(state.init_filter.id, (it) => {
-                if (it[1] !== undefined) {
-                  const op = it[1][0];
-                  switch (op) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                    case ">":
-                    case "<": {
-                      return [it[0], [op, new Decimal(it[1][1].valueOf())]];
-                    }
-                    case "between":
-                    case "not_between": {
-                      return [
-                        it[0],
-                        [
-                          op,
-                          [
-                            new Decimal(it[1][1][0].valueOf()),
-                            new Decimal(it[1][1][1].valueOf()),
-                          ],
-                        ],
-                      ];
-                    }
-                    default: {
-                      const _exhaustiveCheck: never = op;
-                      return _exhaustiveCheck;
-                    }
-                  }
-                }
-                return [it[0], undefined];
-              }),
-              state.init_filter.created_at,
-              state.init_filter.updated_at,
-              state.init_filter.filter_paths.add(
+            state.init_filter = apply(state.init_filter.clone(), (it) => {
+              it.filter_paths = state.init_filter.filter_paths.add(
                 apply(result.get(), (it) => {
                   it.ordering = [
                     Decimal.add(
@@ -144,8 +108,9 @@ export function reducer(state: Draft<State>, action: Action) {
                   ];
                   return it;
                 })
-              )
-            );
+              );
+              return it;
+            });
             break;
           }
           case "remove": {
