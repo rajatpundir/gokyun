@@ -40,7 +40,8 @@ type State = {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
-  filters: [Filter, HashSet<Filter>];
+  init_filter: Filter;
+  filters: HashSet<Filter>;
   limit_offset: [Decimal, Decimal] | undefined;
   variables: Array<Variable>;
 };
@@ -78,41 +79,47 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "sort": {
-      const result = state.filters[0].filter_paths.findAny((x) =>
+      const result = state.init_filter.filter_paths.findAny((x) =>
         x.equals(action[2])
       );
       if (result.isSome()) {
         switch (action[1]) {
           case "add": {
-            state.filters[0].filter_paths = state.filters[0].filter_paths.add(
-              apply(result.get(), (it) => {
-                it.ordering = [
-                  Decimal.add(
-                    fold(
-                      new Decimal(0),
-                      state.filters[0].filter_paths.toArray().map((x) => {
-                        if (x.ordering !== undefined) {
-                          return x.ordering[0];
+            state.init_filter = new Filter(
+              state.init_filter.index,
+              state.init_filter.id as any,
+              state.init_filter.created_at,
+              state.init_filter.updated_at,
+              state.init_filter.filter_paths.add(
+                apply(result.get(), (it) => {
+                  it.ordering = [
+                    Decimal.add(
+                      fold(
+                        new Decimal(0),
+                        state.init_filter.filter_paths.toArray().map((x) => {
+                          if (x.ordering !== undefined) {
+                            return x.ordering[0];
+                          }
+                          return new Decimal(0);
+                        }),
+                        (acc, val) => {
+                          return Decimal.max(acc, val);
                         }
-                        return new Decimal(0);
-                      }),
-                      (acc, val) => {
-                        return Decimal.max(acc, val);
-                      }
+                      ),
+                      1
                     ),
-                    1
-                  ),
-                  action[3],
-                ];
-                return it;
-              })
+                    action[3],
+                  ];
+                  return it;
+                })
+              )
             );
             break;
           }
           case "remove": {
             let order_count = new Decimal(1);
             let updated_filter_paths: HashSet<FilterPath> = HashSet.of();
-            for (let filter_path of state.filters[0].filter_paths
+            for (let filter_path of state.init_filter.filter_paths
               .add(
                 apply(result.get(), (it) => {
                   it.ordering = undefined;
@@ -144,13 +151,14 @@ export function reducer(state: Draft<State>, action: Action) {
                 })
               );
             }
+            state.init_filter.filter_paths = updated_filter_paths;
             break;
           }
           case "up":
           case "down": {
             const ordering = result.get().ordering;
             if (ordering !== undefined) {
-              const result2 = state.filters[0].filter_paths.findAny((x) => {
+              const result2 = state.init_filter.filter_paths.findAny((x) => {
                 if (x.ordering !== undefined) {
                   if (action[1] === "up") {
                     return Decimal.add(x.ordering[0], 1).equals(ordering[0]);
@@ -164,7 +172,7 @@ export function reducer(state: Draft<State>, action: Action) {
               if (result2.isSome()) {
                 const ordering2 = result2.get().ordering;
                 if (ordering2 !== undefined) {
-                  state.filters[0].filter_paths.addAll([
+                  state.init_filter.filter_paths.addAll([
                     apply(result.get(), (it) => {
                       it.ordering = [ordering2[0], ordering[1]];
                       return it;
@@ -180,7 +188,7 @@ export function reducer(state: Draft<State>, action: Action) {
             break;
           }
           case "toggle": {
-            state.filters[0].filter_paths = state.filters[0].filter_paths.add(
+            state.init_filter.filter_paths = state.init_filter.filter_paths.add(
               apply(result.get(), (it) => {
                 const ordering = result.get().ordering;
                 if (ordering !== undefined) {
@@ -202,10 +210,9 @@ export function reducer(state: Draft<State>, action: Action) {
     case "filter": {
       switch (action[1]) {
         case "add": {
-          state.filters[1] = state.filters[1].add(
+          state.filters = state.filters.add(
             new Filter(
-              1 +
-                Math.max(-1, ...state.filters[1].map((x) => x.index).toArray()),
+              1 + Math.max(-1, ...state.filters.map((x) => x.index).toArray()),
               [false, undefined],
               [false, undefined],
               [false, undefined],
@@ -215,12 +222,12 @@ export function reducer(state: Draft<State>, action: Action) {
           break;
         }
         case "remove": {
-          state.filters[1] = state.filters[1].remove(action[2]);
+          state.filters = state.filters.remove(action[2]);
           break;
         }
         case "replace": {
-          state.filters[1] = state.filters[1].remove(action[2]);
-          state.filters[1] = state.filters[1].add(action[2]);
+          state.filters = state.filters.remove(action[2]);
+          state.filters = state.filters.add(action[2]);
           break;
         }
         default: {
@@ -231,9 +238,9 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "filters": {
-      const result = state.filters[1].findAny((x) => x === action[1]);
+      const result = state.filters.findAny((x) => x === action[1]);
       if (result.isSome()) {
-        state.filters[1] = apply(result.get(), (filter) => {
+        state.filters = apply(result.get(), (filter) => {
           switch (action[2]) {
             case "replace": {
               filter.filter_paths = filter.filter_paths.add(action[3]);
@@ -248,7 +255,7 @@ export function reducer(state: Draft<State>, action: Action) {
               return _exhaustiveCheck;
             }
           }
-          return state.filters[1].add(filter);
+          return state.filters.add(filter);
         });
       }
       break;
@@ -265,7 +272,8 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     struct: props.route.params.struct,
     active: props.route.params.active,
     level: props.route.params.level,
-    filters: props.route.params.filters,
+    init_filter: props.route.params.filters[0],
+    filters: props.route.params.filters[1],
     limit_offset: props.route.params.limit_offset,
     variables: [],
   });
@@ -277,7 +285,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         state.struct,
         state.active,
         state.level,
-        state.filters,
+        [state.init_filter, state.filters],
         state.limit_offset
       );
       if (unwrap(variables)) {
@@ -387,7 +395,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 </Pressable>
               </View>
             </View>
-            <SortComponent init_filter={state.filters[0]} dispatch={dispatch} />
+            <SortComponent
+              init_filter={state.init_filter}
+              dispatch={dispatch}
+            />
             <BottomSheetModal
               ref={bottomSheetModalRef3}
               snapPoints={["50%", "100%"]}
@@ -438,7 +449,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 </View>
               </View>
               <SortComponentFields
-                init_filter={state.filters[0]}
+                init_filter={state.init_filter}
                 dispatch={dispatch}
               />
             </BottomSheetModal>
@@ -579,7 +590,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             </View>
 
             <BottomSheetFlatList
-              data={state.filters[1]
+              data={state.filters
                 .toArray()
                 .sort((a, b) =>
                   a.index > b.index ? 1 : a.index < b.index ? -1 : 0
@@ -589,7 +600,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
                 return (
                   <FilterComponent
                     key={list_item.item.index}
-                    init_filter={state.filters[0]}
+                    init_filter={state.init_filter}
                     filter={list_item.item}
                     dispatch={dispatch}
                   />
@@ -618,6 +629,7 @@ function SortComponent(props: {
       {props.init_filter.filter_paths
         .toArray()
         .filter((x) => x.ordering !== undefined)
+        .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
         .map((filter_path, index) => {
           const ordering = filter_path.ordering;
           if (ordering !== undefined) {
@@ -639,7 +651,7 @@ function SortComponent(props: {
                     onPress={() => props.dispatch(["sort", "up", filter_path])}
                     style={{ marginBottom: -4 }}
                   >
-                    <FontAwesome name="sort-up" size={20} color="white" />
+                    <FontAwesome name="sort-up" size={24} color="white" />
                   </Pressable>
                   <Pressable
                     onPress={() =>
@@ -647,7 +659,7 @@ function SortComponent(props: {
                     }
                     style={{ marginTop: -4 }}
                   >
-                    <FontAwesome name="sort-down" size={20} color="white" />
+                    <FontAwesome name="sort-down" size={24} color="white" />
                   </Pressable>
                 </View>
                 <View style={{ flexGrow: 1 }}>
@@ -692,49 +704,52 @@ function SortComponentFields(props: {
         margin: 5,
       }}
     >
-      {props.init_filter.filter_paths.toArray().map((filter_path, index) => {
-        const ordering = filter_path.ordering;
-        const active = ordering !== undefined;
-        return (
-          <View
-            key={index}
-            style={{
-              justifyContent: "flex-start",
-              marginHorizontal: 5,
-              marginVertical: 10,
-            }}
-          >
-            <Checkbox
-              value={active}
-              onValueChange={(x) => {
-                console.log(x);
-                if (x) {
-                  const field_struct_name = filter_path.value[0];
-                  props.dispatch([
-                    "sort",
-                    "add",
-                    filter_path,
-                    apply(true, (it) => {
-                      switch (field_struct_name) {
-                        case "str":
-                        case "lstr":
-                        case "clob": {
-                          return false;
-                        }
-                      }
-                      return it;
-                    }),
-                  ]);
-                } else {
-                  props.dispatch(["sort", "remove", filter_path]);
-                }
+      {props.init_filter.filter_paths
+        .toArray()
+        .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
+        .map((filter_path, index) => {
+          const ordering = filter_path.ordering;
+          const active = ordering !== undefined;
+          return (
+            <View
+              key={index}
+              style={{
+                justifyContent: "flex-start",
+                marginHorizontal: 5,
+                marginVertical: 10,
               }}
-              color={active ? colors.custom.red[900] : undefined}
-            />
-            <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
-          </View>
-        );
-      })}
+            >
+              <Checkbox
+                value={active}
+                onValueChange={(x) => {
+                  console.log(x);
+                  if (x) {
+                    const field_struct_name = filter_path.value[0];
+                    props.dispatch([
+                      "sort",
+                      "add",
+                      filter_path,
+                      apply(true, (it) => {
+                        switch (field_struct_name) {
+                          case "str":
+                          case "lstr":
+                          case "clob": {
+                            return false;
+                          }
+                        }
+                        return it;
+                      }),
+                    ]);
+                  } else {
+                    props.dispatch(["sort", "remove", filter_path]);
+                  }
+                }}
+                color={active ? colors.custom.red[900] : undefined}
+              />
+              <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+            </View>
+          );
+        })}
     </BottomSheetScrollView>
   );
 }
