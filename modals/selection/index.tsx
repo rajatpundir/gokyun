@@ -79,130 +79,98 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "sort": {
-      const result = state.init_filter.filter_paths.findAny((x) =>
-        x.equals(action[2])
-      );
-      if (result.isSome()) {
-        switch (action[1]) {
-          case "add": {
-            state.init_filter = apply(state.init_filter.clone(), (it) => {
-              it.filter_paths = state.init_filter.filter_paths.add(
-                apply(result.get(), (it) => {
-                  it.ordering = [
-                    Decimal.add(
-                      fold(
-                        new Decimal(0),
-                        state.init_filter.filter_paths.toArray().map((x) => {
-                          if (x.ordering !== undefined) {
-                            return x.ordering[0];
-                          }
-                          return new Decimal(0);
-                        }),
-                        (acc, val) => {
-                          return Decimal.max(acc, val);
+      switch (action[1]) {
+        case "add": {
+          state.init_filter = apply(state.init_filter.clone(), (it) => {
+            it.filter_paths = state.init_filter.filter_paths.add(
+              apply(action[2], (it) => {
+                it.ordering = [
+                  Decimal.add(
+                    fold(
+                      new Decimal(0),
+                      state.init_filter.filter_paths.toArray().map((x) => {
+                        if (x.ordering !== undefined) {
+                          return x.ordering[0];
                         }
-                      ),
-                      1
+                        return new Decimal(0);
+                      }),
+                      (acc, val) => {
+                        return Decimal.max(acc, val);
+                      }
                     ),
-                    action[3],
-                  ];
-                  return it;
-                })
-              );
-              return it;
-            });
-            break;
-          }
-          case "remove": {
-            let order_count = new Decimal(1);
-            let updated_filter_paths: HashSet<FilterPath> = HashSet.of();
-            for (let filter_path of state.init_filter.filter_paths
-              .add(
-                apply(result.get(), (it) => {
-                  it.ordering = undefined;
-                  return it;
-                })
-              )
-              .toArray()
-              .sort((a, b) => {
-                if (a.ordering === undefined) {
-                  return -1;
-                } else {
-                  if (b.ordering === undefined) {
-                    return 1;
-                  } else {
-                    if (a.ordering[0] > b.ordering[0]) return 1;
-                    else if (b.ordering[0] > a.ordering[0]) return -1;
-                    else return 0;
-                  }
-                }
-              })) {
-              updated_filter_paths = updated_filter_paths.add(
-                apply(filter_path, (it) => {
-                  const ordering = filter_path.ordering;
-                  if (ordering !== undefined) {
-                    it.ordering = [ordering[0], ordering[1]];
-                    order_count = Decimal.add(ordering[0], 1);
-                  }
-                  return it;
-                })
-              );
-            }
-            state.init_filter = apply(state.init_filter.clone(), (it) => {
-              it.filter_paths = updated_filter_paths;
-              return it;
-            });
-            break;
-          }
-          case "up":
-          case "down": {
-            const ordering = result.get().ordering;
-            if (ordering !== undefined) {
-              const result2 = state.init_filter.filter_paths.findAny((x) => {
-                if (x.ordering !== undefined) {
-                  if (action[1] === "up") {
-                    return Decimal.add(x.ordering[0], 1).equals(ordering[0]);
-                  }
-                  if (action[1] === "down") {
-                    return Decimal.add(ordering[0], 1).equals(x.ordering[0]);
-                  }
-                }
-                return false;
-              });
-              if (result2.isSome()) {
-                const ordering2 = result2.get().ordering;
-                if (ordering2 !== undefined) {
-                  state.init_filter.filter_paths.addAll([
-                    apply(result.get(), (it) => {
-                      it.ordering = [ordering2[0], ordering[1]];
-                      return it;
-                    }),
-                    apply(result2.get(), (it) => {
-                      it.ordering = [ordering[0], ordering2[1]];
-                      return it;
-                    }),
-                  ]);
-                }
-              }
-            }
-            break;
-          }
-          case "toggle": {
-            state.init_filter.filter_paths = state.init_filter.filter_paths.add(
-              apply(result.get(), (it) => {
-                const ordering = result.get().ordering;
-                if (ordering !== undefined) {
-                  it.ordering = [ordering[0], !ordering[1]];
-                }
+                    1
+                  ),
+                  action[3],
+                ];
                 return it;
               })
             );
-            break;
+            return it;
+          });
+          break;
+        }
+        case "remove": {
+          state.init_filter = apply(state.init_filter.clone(), (it) => {
+            it.filter_paths.add(
+              apply(action[2], (x) => {
+                x.ordering = undefined;
+                return x;
+              })
+            );
+            return it;
+          });
+          break;
+        }
+        case "up":
+        case "down": {
+          const ordering = action[2].ordering;
+          if (ordering !== undefined) {
+            const result2 = state.init_filter.filter_paths.findAny((x) => {
+              if (x.ordering !== undefined) {
+                if (action[1] === "up") {
+                  return Decimal.add(x.ordering[0], 1).equals(ordering[0]);
+                }
+                if (action[1] === "down") {
+                  return Decimal.add(ordering[0], 1).equals(x.ordering[0]);
+                }
+              }
+              return false;
+            });
+            if (result2.isSome()) {
+              const ordering2 = result2.get().ordering;
+              if (ordering2 !== undefined) {
+                state.init_filter.filter_paths.addAll([
+                  apply(action[2], (it) => {
+                    it.ordering = [ordering2[0], ordering[1]];
+                    return it;
+                  }),
+                  apply(result2.get(), (it) => {
+                    it.ordering = [ordering[0], ordering2[1]];
+                    return it;
+                  }),
+                ]);
+              }
+            }
           }
-          default: {
-            const _exhaustiveCheck: never = action[2];
-            return _exhaustiveCheck;
-          }
+          break;
+        }
+        case "toggle": {
+          state.init_filter = apply(state.init_filter.clone(), (it) => {
+            it.filter_paths.add(
+              apply(action[2], (x) => {
+                if (x.ordering !== undefined) {
+                  x.ordering = [x.ordering[0], !x.ordering[1]];
+                }
+                return x;
+              })
+            );
+            return it;
+          });
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = action[2];
+          return _exhaustiveCheck;
         }
       }
       break;
@@ -297,6 +265,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     state.struct,
     state.active,
     state.level,
+    state.init_filter,
     state.filters,
     state.limit_offset,
   ]);
