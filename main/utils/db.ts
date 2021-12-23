@@ -2658,6 +2658,16 @@ export class Filter {
   toString(): string {
     return "";
   }
+
+  clone() {
+    return new Filter(
+      this.index,
+      this.id,
+      this.created_at,
+      this.updated_at,
+      this.filter_paths
+    );
+  }
 }
 
 function get_variable_filters(

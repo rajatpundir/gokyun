@@ -87,7 +87,39 @@ export function reducer(state: Draft<State>, action: Action) {
           case "add": {
             state.init_filter = new Filter(
               state.init_filter.index,
-              state.init_filter.id as any,
+              apply(state.init_filter.id, (it) => {
+                if (it[1] !== undefined) {
+                  const op = it[1][0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return [it[0], [op, new Decimal(it[1][1].valueOf())]];
+                    }
+                    case "between":
+                    case "not_between": {
+                      return [
+                        it[0],
+                        [
+                          op,
+                          [
+                            new Decimal(it[1][1][0].valueOf()),
+                            new Decimal(it[1][1][1].valueOf()),
+                          ],
+                        ],
+                      ];
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = op;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                return [it[0], undefined];
+              }),
               state.init_filter.created_at,
               state.init_filter.updated_at,
               state.init_filter.filter_paths.add(
