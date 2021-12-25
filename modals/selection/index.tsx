@@ -6,10 +6,10 @@ import { useImmerReducer } from "use-immer";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
-import { View, Text } from "../../main/themed";
+import { View, Text, TextInput } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
-import { apply, fold, unwrap } from "../../main/utils/prelude";
+import { apply, arrow, fold, unwrap } from "../../main/utils/prelude";
 import { HashSet } from "prelude-ts";
 import {
   BottomSheetFlatList,
@@ -17,9 +17,9 @@ import {
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { FontAwesome } from "@expo/vector-icons";
-import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
+import Checkbox from "expo-checkbox";
 
 // Limit Offset
 
@@ -245,7 +245,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     level: props.route.params.level,
     init_filter: props.route.params.filters[0],
     filters: props.route.params.filters[1],
-    limit_offset: props.route.params.limit_offset,
+    limit_offset: [new Decimal(10), new Decimal(0)],
     variables: [],
   });
 
@@ -280,6 +280,70 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
         <View style={{ justifyContent: "flex-end" }}>
+          {arrow(() => {
+            if (state.limit_offset !== undefined) {
+              const [limit, offset] = state.limit_offset;
+              return (
+                <View style={{ alignSelf: "center" }}>
+                  <View
+                    style={{
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Pressable
+                      onPress={() =>
+                        dispatch([
+                          "limit_offset",
+                          [Decimal.add(limit, 5), offset],
+                        ])
+                      }
+                      style={{ marginBottom: -6 }}
+                    >
+                      <FontAwesome name="sort-up" size={24} color="white" />
+                    </Pressable>
+                    <Pressable
+                      onPress={() =>
+                        dispatch([
+                          "limit_offset",
+                          [Decimal.sub(limit, 5), offset],
+                        ])
+                      }
+                      style={{ marginTop: -6 }}
+                    >
+                      <FontAwesome name="sort-down" size={24} color="white" />
+                    </Pressable>
+                  </View>
+                  <Text
+                    style={{
+                      alignSelf: "flex-end",
+                      fontSize: 15,
+                      fontWeight: "500",
+                      textAlign: "center",
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      color: "white",
+                    }}
+                  >
+                    Rows: {state.limit_offset[0].toString()}
+                  </Text>
+                  <Text
+                    style={{
+                      alignSelf: "flex-end",
+                      fontSize: 15,
+                      fontWeight: "500",
+                      textAlign: "center",
+                      paddingHorizontal: 4,
+                      paddingVertical: 2,
+                      color: "white",
+                    }}
+                  >
+                    Page: {Decimal.add(1, state.limit_offset[1]).toString()}
+                  </Text>
+                </View>
+              );
+            }
+            return null;
+          })}
           <Pressable
             onPress={() => bottomSheetModalRef2.current?.present()}
             style={{

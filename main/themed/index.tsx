@@ -10,49 +10,23 @@ import {
   TextInput as DefaultTextInput,
 } from "react-native";
 
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
 import { colors } from "./colors";
 
-export function useThemeColor(
-  props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
-) {
-  const theme = useColorScheme();
-  const colorFromProps = props[theme];
-  if (colorFromProps) {
-    return colorFromProps;
-  } else {
-    return Colors[theme][colorName];
-  }
-}
-
-type ThemeProps = {
-  lightColor?: string;
-  darkColor?: string;
-};
-
-export type ViewProps = ThemeProps & DefaultView["props"];
+export type ViewProps = DefaultView["props"];
 
 export function View(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const backgroundColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "background"
-  );
+  const { style, ...otherProps } = props;
   return (
     <DefaultView
       style={[
         {
-          backgroundColor,
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
-          borderColor: "white",
-          // borderWidth: 1,
+          borderColor: colors.tailwind.gray[600],
         },
         style,
       ]}
@@ -61,20 +35,19 @@ export function View(props: ViewProps) {
   );
 }
 
-export type TextProps = ThemeProps & DefaultText["props"];
+export type TextProps = DefaultText["props"];
 
 export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  const { style, ...otherProps } = props;
   return (
     <DefaultText
       style={[
         {
-          color,
+          color: colors.custom.white[900],
           textAlignVertical: "center",
           paddingRight: 5,
           flexShrink: 1,
-          borderWidth: 1,
+          borderColor: colors.tailwind.gray[900],
         },
         style,
       ]}
@@ -83,11 +56,10 @@ export function Text(props: TextProps) {
   );
 }
 
-export type TextInputProps = ThemeProps & DefaultTextInput["props"];
+export type TextInputProps = DefaultTextInput["props"];
 
 export function TextInput(props: TextInputProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  const { style, ...otherProps } = props;
   return (
     <DefaultTextInput
       selectionColor={colors.custom.red[900]}
@@ -96,7 +68,6 @@ export function TextInput(props: TextInputProps) {
       placeholderTextColor={colors.tailwind.slate[500]}
       style={[
         {
-          color,
           height: 40,
           textAlign: "auto",
           paddingRight: 5,

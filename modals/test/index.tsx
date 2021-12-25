@@ -461,42 +461,26 @@ function CreateComponent(props: {
                           style={{
                             display: "flex",
                             flexDirection: "column",
-                            borderWidth: 1,
                             borderRadius: 5,
                             paddingVertical: 5,
                             marginVertical: 5,
-                            backgroundColor: colors.tailwind.gray[900],
+                            backgroundColor: colors.tailwind.gray[800],
+                            borderWidth: 2,
                           }}
                         >
-                          <View
-                            style={{
-                              backgroundColor: colors.tailwind.gray[900],
-                            }}
-                          >
+                          <View>
                             <Label {...it} path={"nickname"} />
                             <Field {...it} path={"nickname"} />
                           </View>
-                          <View
-                            style={{
-                              backgroundColor: colors.tailwind.gray[900],
-                            }}
-                          >
+                          <View>
                             <Label {...it} path={"knows_english"} />
                             <Field {...it} path={"knows_english"} />
                           </View>
-                          <View
-                            style={{
-                              backgroundColor: colors.tailwind.gray[900],
-                            }}
-                          >
+                          <View>
                             <Label {...it} path={"mobile"} />
                             <Field {...it} path={"mobile"} />
                           </View>
-                          <View
-                            style={{
-                              backgroundColor: colors.tailwind.gray[900],
-                            }}
-                          >
+                          <View>
                             <Label {...it} path={"product_count"} />
                             <Field {...it} path={"product_count"} />
                           </View>
@@ -530,10 +514,10 @@ function CreateComponent(props: {
                           style={{
                             display: "flex",
                             flexDirection: "column",
-                            borderWidth: 1,
                             borderRadius: 5,
                             paddingVertical: 5,
                             marginVertical: 5,
+                            backgroundColor: colors.tailwind.gray[900],
                           }}
                         >
                           <View>
