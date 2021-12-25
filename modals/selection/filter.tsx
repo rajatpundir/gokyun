@@ -36,7 +36,7 @@ function View(props: ViewProps) {
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
-          borderColor: "white",
+          borderColor: colors.tailwind.gray[500],
           // borderWidth: 1,
         },
         style,
@@ -249,7 +249,7 @@ export function FilterComponent(props: {
           index={1}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],
-            borderColor: "white",
+            borderColor: colors.tailwind.gray[500],
             borderWidth: 1,
           }}
         >
@@ -2547,7 +2547,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -2810,7 +2810,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -3078,7 +3078,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -3377,7 +3377,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -3663,7 +3663,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -3954,7 +3954,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -4258,7 +4258,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -4544,7 +4544,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -4835,7 +4835,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -5141,7 +5141,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -5431,7 +5431,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -5726,7 +5726,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -6030,7 +6030,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -6318,7 +6318,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -6611,7 +6611,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -6909,7 +6909,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -7189,7 +7189,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -7474,7 +7474,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -7772,7 +7772,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -8052,7 +8052,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -8337,7 +8337,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -8622,7 +8622,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -8907,7 +8907,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -9196,7 +9196,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -9490,7 +9490,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -9788,7 +9788,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -10076,7 +10076,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -10369,7 +10369,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -10719,7 +10719,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >
@@ -11059,7 +11059,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -11404,7 +11404,7 @@ function FilterPathComponent(props: {
                                   index={1}
                                   backgroundStyle={{
                                     backgroundColor: colors.custom.black[900],
-                                    borderColor: "white",
+                                    borderColor: colors.tailwind.gray[500],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -11688,7 +11688,7 @@ function FilterPathComponent(props: {
                             index={1}
                             backgroundStyle={{
                               backgroundColor: colors.custom.black[900],
-                              borderColor: "white",
+                              borderColor: colors.tailwind.gray[500],
                               borderWidth: 1,
                             }}
                           >

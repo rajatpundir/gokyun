@@ -370,7 +370,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             index={1}
             backgroundStyle={{
               backgroundColor: colors.custom.black[900],
-              borderColor: "white",
+              borderColor: colors.tailwind.gray[500],
               borderWidth: 1,
             }}
           >
@@ -441,7 +441,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               index={1}
               backgroundStyle={{
                 backgroundColor: colors.custom.black[900],
-                borderColor: "white",
+                borderColor: colors.tailwind.gray[500],
                 borderWidth: 1,
               }}
             >
@@ -530,7 +530,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           index={1}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],
-            borderColor: "white",
+            borderColor: colors.tailwind.gray[500],
             borderWidth: 1,
           }}
         >
@@ -539,7 +539,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               flex: 1,
               flexDirection: "column",
               backgroundColor: colors.custom.black[900],
-              borderColor: "white",
+              borderColor: colors.tailwind.gray[500],
               borderLeftWidth: 1,
               borderRightWidth: 1,
               paddingHorizontal: 0,
