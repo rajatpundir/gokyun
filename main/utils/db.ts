@@ -2057,7 +2057,7 @@ function get_filter_path_stmt(
 ): [string, ReadonlyArray<string>] {
   const args: Array<string> = [];
   let filter_path_stmt: string = "";
-  const append_to_filter_stmt = (stmt: string) => {
+  const append_to_filter_path_stmt = (stmt: string) => {
     filter_path_stmt += arrow(() => {
       if (filter_path_stmt === "") {
         return `(${stmt})`;
@@ -2141,18 +2141,150 @@ function get_filter_path_stmt(
           case "udouble":
           case "idecimal":
           case "udecimal": {
-            return "";
+            const op = value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
+                  if (is_decimal(it)) {
+                    args.push(it.toString());
+                    return "?";
+                  } else {
+                    return get_path_ref(it[1]);
+                  }
+                })}`;
+              }
+              case "between":
+              case "not_between": {
+                const start_value = value[1][1][0];
+                const end_value = value[1][1][1];
+                return `"${path_ref}" ${
+                  op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                } ${arrow(() => {
+                  if (is_decimal(start_value)) {
+                    if (is_decimal(end_value)) {
+                      args.push(start_value.toString());
+                      args.push(end_value.toString());
+                      return `? AND ?`;
+                    } else {
+                      args.push(start_value.toString());
+                      return `? AND ${get_path_ref(end_value[1])}`;
+                    }
+                  } else {
+                    if (is_decimal(end_value)) {
+                      args.push(end_value.toString());
+                      return `${get_path_ref(start_value[1])} AND ?`;
+                    } else {
+                      return `${get_path_ref(
+                        start_value[1]
+                      )} AND ${get_path_ref(end_value[1])}`;
+                    }
+                  }
+                })}`;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
           }
           case "bool": {
-            return "";
+            const op = value[1][0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
+                  if (typeof it === "boolean") {
+                    args.push(it.toString());
+                    return "?";
+                  } else {
+                    return get_path_ref(it[1]);
+                  }
+                })}`;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
           }
           case "date":
           case "time":
           case "timestamp": {
-            return "";
+            const op = value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<": {
+                return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
+                  if (it instanceof Date) {
+                    args.push(it.getTime().toString());
+                    return "?";
+                  } else {
+                    return get_path_ref(it[1]);
+                  }
+                })}`;
+              }
+              case "between":
+              case "not_between": {
+                const start_value = value[1][1][0];
+                const end_value = value[1][1][1];
+                return `"${path_ref}" ${
+                  op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                } ${arrow(() => {
+                  if (start_value instanceof Date) {
+                    if (end_value instanceof Date) {
+                      args.push(start_value.getTime().toString());
+                      args.push(end_value.getTime().toString());
+                      return `? AND ?`;
+                    } else {
+                      args.push(start_value.getTime().toString());
+                      return `? AND ${get_path_ref(end_value[1])}`;
+                    }
+                  } else {
+                    if (end_value instanceof Date) {
+                      args.push(end_value.getTime().toString());
+                      return `${get_path_ref(start_value[1])} AND ?`;
+                    } else {
+                      return `${get_path_ref(
+                        start_value[1]
+                      )} AND ${get_path_ref(end_value[1])}`;
+                    }
+                  }
+                })}`;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
           }
           case "other": {
-            return "";
+            const op = value[1][0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
+                  if (is_decimal(it)) {
+                    args.push(it.truncated().toString());
+                    return "?";
+                  } else {
+                    return get_path_ref(it[1]);
+                  }
+                })}`;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
           }
           default: {
             const _exhaustiveCheck: never = field_struct_name;
@@ -2161,6 +2293,9 @@ function get_filter_path_stmt(
         }
       }
     });
+    if (stmt !== undefined) {
+      append_to_filter_path_stmt(stmt);
+    }
   }
   return [filter_path_stmt, args];
 }
