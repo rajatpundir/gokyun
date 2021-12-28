@@ -1569,7 +1569,6 @@ export function query(
     [...path_filters[0], ...path_filters[1]]
       .map((path_filter) => ({
         path: path_filter[0],
-        type: path_filter[1],
         sort_option: path_filter[2],
       }))
       .filter((path_filter) => path_filter.sort_option !== undefined)
@@ -1930,6 +1929,105 @@ function query2(
       }
     }
   );
+
+  const group_by_stmt: string = "GROUP BY v1.level, v1.struct_name, v1.id";
+
+  const args: Array<string> = [];
+  const having_stmt: string = apply([] as Array<string>, (it) => {
+    const init_filters_stmt = apply(get_filter_stmt(init_filter), (it) => {
+      const [stmt, filter_args] = it;
+      if (stmt !== "") {
+        for (let arg of filter_args) {
+          args.push(arg);
+        }
+      }
+      return stmt;
+    });
+    const filters_stmt = filters
+      .toArray()
+      .map((x) => {
+        const [stmt, filter_args] = get_filter_stmt(x);
+        if (stmt !== "") {
+          for (let arg of filter_args) {
+            args.push(arg);
+          }
+        }
+        return stmt;
+      })
+      .filter((x) => x !== "")
+      .join("OR");
+    if (init_filters_stmt !== "") {
+      it.push(`(${init_filters_stmt})`);
+    }
+    if (filters_stmt !== "") {
+      it.push(`(${filters_stmt})`);
+    }
+    const combined_filter_stmt = it.join(" AND ");
+    if (combined_filter_stmt !== "") {
+      return `HAVING ${combined_filter_stmt}`;
+    }
+    return "";
+  });
+
+  let order_by_stmt: string = "ORDER BY ";
+  const append_to_order_by_stmt = (stmt: string) => {
+    order_by_stmt += arrow(() => {
+      if (order_by_stmt === "ORDER BY ") {
+        return stmt;
+      } else {
+        return `, ${stmt}`;
+      }
+    });
+  };
+  apply(
+    init_filter.filter_paths
+      .toArray()
+      .map((x) => ({
+        path: [...x.path[0], x.path[1]],
+        sort_option: x.ordering,
+      }))
+      .filter((path_filter) => path_filter.sort_option !== undefined)
+      .sort((a, b) => {
+        if (a.sort_option !== undefined && b.sort_option !== undefined) {
+          if (a.sort_option[0] < b.sort_option[0]) {
+            return -1;
+          } else if (a.sort_option[0] > b.sort_option[0]) {
+            return 1;
+          } else {
+            const path_a: string = a.path.join(".");
+            const path_b: string = a.path.join(".");
+            if (path_a < path_b) {
+              return -1;
+            } else if (path_a > path_b) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        }
+        return 0;
+      }),
+    (path_filters) => {
+      for (let path_filter of path_filters) {
+        if (path_filter.sort_option !== undefined) {
+          const path: ReadonlyArray<string> = path_filter.path;
+          const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
+          append_to_order_by_stmt(`"${path.join(".")}" ${sort_order}`);
+        }
+      }
+    }
+  );
+  append_to_order_by_stmt(
+    "v1.requested_at DESC, v1.updated_at DESC, v1.id DESC"
+  );
+
+  const limit_offset_stmt: string = `LIMIT ${limit
+    .truncated()
+    .toString()} OFFSET ${offset.truncated().toString()}`;
+
+  const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${having_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
+  console.log("FINAL STMT = ", final_stmt);
+  return execute_transaction(final_stmt, []);
 }
 
 function get_filter_stmt(filter: Filter): [string, ReadonlyArray<string>] {
@@ -2043,9 +2141,11 @@ function get_filter_stmt(filter: Filter): [string, ReadonlyArray<string>] {
   for (let filter_path of filter.filter_paths) {
     if (filter_path.active) {
       const [stmt, filter_path_args] = get_filter_path_stmt(filter_path);
-      append_to_filter_stmt(stmt);
-      for (let arg of filter_path_args) {
-        args.push(arg);
+      if (stmt !== "") {
+        append_to_filter_stmt(stmt);
+        for (let arg of filter_path_args) {
+          args.push(arg);
+        }
       }
     }
   }
