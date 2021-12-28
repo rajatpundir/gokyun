@@ -471,3 +471,7 @@ export function concat_path_strings(
     other_path_string[1],
   ];
 }
+
+export function get_flattened_path(x: PathString) {
+  return [...x[0], x[1]];
+}

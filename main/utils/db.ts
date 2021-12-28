@@ -15,6 +15,7 @@ import {
 import Decimal from "decimal.js";
 import {
   compare_paths,
+  get_flattened_path,
   Path,
   PathString,
   StrongEnum,
@@ -1676,7 +1677,7 @@ function query2(
     let intermediate_paths = HashSet.of<Vector<string>>();
     for (let filter_path of init_filter.filter_paths) {
       const path: PathString = filter_path.path;
-      const flattened_path: ReadonlyArray<string> = [...path[0], path[1]];
+      const flattened_path: ReadonlyArray<string> = get_flattened_path(path);
       const path_name_expression = get_path_name_expression(path[0].length + 1);
       if (path[0].length != 0) {
         intermediate_paths = intermediate_paths.add(Vector.ofIterable(path[0]));
@@ -1805,7 +1806,7 @@ function query2(
             !intermediate_paths.contains(temp_path) &&
             !HashSet.ofIterable(
               init_filter.filter_paths.map((filter_path) =>
-                Vector.ofIterable([...filter_path.path[0], filter_path.path[1]])
+                Vector.ofIterable(get_flattened_path(filter_path.path))
               )
             ).contains(temp_path)
           ) {
@@ -1904,7 +1905,7 @@ function query2(
       .toArray()
       .map((filter_path) => {
         const path: PathString = filter_path.path;
-        const flattened_path: ReadonlyArray<string> = [...path[0], path[1]];
+        const flattened_path: ReadonlyArray<string> = get_flattened_path(path);
         let stmt = path[0]
           .map((field_name, i) => `v${i * 2 + 2}.field_name = '${path[0][i]}'`)
           .join(" AND ");
@@ -1982,9 +1983,9 @@ function query2(
   apply(
     init_filter.filter_paths
       .toArray()
-      .map((x) => ({
-        path: [...x.path[0], x.path[1]],
-        sort_option: x.ordering,
+      .map((filter_path) => ({
+        path: get_flattened_path(filter_path.path),
+        sort_option: filter_path.ordering,
       }))
       .filter((path_filter) => path_filter.sort_option !== undefined)
       .sort((a, b) => {
@@ -2167,9 +2168,7 @@ function get_filter_path_stmt(
     });
   };
   if (filter_path.active) {
-    const path_ref: string = [...filter_path.path[0], filter_path.path[1]].join(
-      "."
-    );
+    const path_ref: string = get_flattened_path(filter_path.path).join(".");
     const stmt = arrow(() => {
       const value = filter_path.value;
       if (value[1] !== undefined) {
@@ -3544,7 +3543,6 @@ function get_variable_filters(
 function transform_filters(
   filters: HashSet<Filter>
 ): Array<[string, PathFilter]> {
-  const get_flattened_path = (x: PathString) => [...x[0], x[1]];
   const used_filter_paths: HashSet<FilterPath> = apply(
     HashSet.of<FilterPath>(),
     (it) => {
