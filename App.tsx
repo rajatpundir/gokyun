@@ -51,7 +51,7 @@ export type NavigatorParams = {
     active: boolean;
     level: Decimal | undefined;
     filters: [Filter, HashSet<Filter>];
-    limit_offset: [Decimal, Decimal] | undefined;
+    limit: Decimal;
     render_list_element: (props: {
       selected: number;
       variable: Variable;

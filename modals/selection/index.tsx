@@ -6,7 +6,7 @@ import { useImmerReducer } from "use-immer";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { Filter, FilterPath, get_variables } from "../../main/utils/db";
 import { Struct, Variable } from "../../main/utils/variable";
-import { View, Text, TextInput } from "../../main/themed";
+import { View, Text } from "../../main/themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "../../main/utils/prelude";
@@ -21,9 +21,6 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
 
-// Tinker around and things will fall into place.
-// Limit Offset
-
 // Rewrite SQL generation using Filter
 // Fix OR filters
 // id, created_at and updated_at in having clause
@@ -36,7 +33,8 @@ import Checkbox from "expo-checkbox";
 // List Tests component
 
 type State = {
-  loading: boolean;
+  reached_end: boolean;
+  refreshing: boolean;
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
@@ -71,10 +69,9 @@ export function reducer(state: Draft<State>, action: Action) {
           state.variables.push(v as any);
         }
       }
+      state.refreshing = false;
       if (!state.limit.equals(action[1].length)) {
-        state.loading = true;
-      } else {
-        state.loading = false;
+        state.reached_end = true;
       }
       break;
     }
@@ -89,12 +86,12 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "offset": {
-      if (!state.loading) {
+      if (!state.refreshing && !state.reached_end) {
         state.offset = Decimal.add(
           state.offset.toNumber(),
           state.limit.toNumber()
         );
-        state.loading = true;
+        state.refreshing = true;
       }
       break;
     }
@@ -265,13 +262,14 @@ export function reducer(state: Draft<State>, action: Action) {
 
 export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
-    loading: false,
+    reached_end: false,
+    refreshing: true,
     struct: props.route.params.struct,
     active: props.route.params.active,
     level: props.route.params.level,
     init_filter: props.route.params.filters[0],
     filters: props.route.params.filters[1],
-    limit: new Decimal(10),
+    limit: props.route.params.limit,
     offset: new Decimal(0),
     variables: [],
   });
@@ -285,10 +283,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
       [state.limit, state.offset]
     );
     if (unwrap(variables)) {
-      console.log("##########");
-      for (let v of variables.value) {
-        console.log(v.id);
-      }
       dispatch(["variables", variables.value]);
     }
   };
@@ -479,7 +473,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           </Pressable>
         </View>
 
-        {/* Should be replcaed with a generic component thats passed down as props and that takes state.variabels as input */}
         <FlatList
           data={state.variables}
           renderItem={(list_item) => (
@@ -489,14 +482,17 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               disptach_values={props.route.params.disptach_values}
             />
           )}
-          keyExtractor={(list_item: Variable) => {
-            if (list_item.id === undefined) {
-              console.log(JSON.stringify(list_item));
-            }
-            return list_item.id.valueOf();
-          }}
-          onEndReachedThreshold={0.1}
+          keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+          refreshing={state.refreshing}
+          onRefresh={() => {}}
+          onEndReachedThreshold={0.5}
           onEndReached={() => dispatch(["offset"])}
+          ListFooterComponent={arrow(() => {
+            if (!state.reached_end) {
+              return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+            }
+            return <></>;
+          })}
         />
 
         <BottomSheetModal

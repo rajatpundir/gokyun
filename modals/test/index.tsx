@@ -367,6 +367,7 @@ function CreateComponent(props: {
           options={[
             "other",
             {
+              limit: new Decimal(10),
               title: "Select User",
               element: arrow(() => {
                 const result = get_path(props.state, [[], "user"]);

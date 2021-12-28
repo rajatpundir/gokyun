@@ -910,6 +910,7 @@ function Other_Field(
       variable: Variable;
       disptach_values: (variable: Variable) => void;
     }) => JSX.Element;
+    limit: Decimal;
   }
 ): JSX.Element | null {
   const { state, dispatch } = props;
@@ -943,7 +944,7 @@ function Other_Field(
                   ),
                   HashSet.of(),
                 ],
-                limit_offset: undefined,
+                limit: props.limit,
                 render_list_element: props.render_list_element,
                 disptach_values: (variable: Variable) => {
                   dispatch([
@@ -1019,6 +1020,7 @@ export function Field(props: {
             variable: Variable;
             disptach_values: (variable: Variable) => void;
           }) => JSX.Element;
+          limit: Decimal;
         }
       ];
 }): JSX.Element | null {
@@ -1579,6 +1581,7 @@ export function Field(props: {
                 labels={props.options[1].labels}
                 element={props.options[1].element}
                 render_list_element={props.options[1].render_list_element}
+                limit={props.options[1].limit}
               />
             );
           }
