@@ -68,6 +68,7 @@ export function TextInput(props: TextInputProps) {
       placeholderTextColor={colors.tailwind.slate[500]}
       style={[
         {
+          color: colors.custom.white[900],
           height: 40,
           textAlign: "auto",
           paddingRight: 5,

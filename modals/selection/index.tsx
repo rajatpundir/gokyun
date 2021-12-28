@@ -21,6 +21,7 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
 
+// Tinker around and things will fall into place.
 // Limit Offset
 
 // Rewrite SQL generation using Filter
@@ -35,12 +36,14 @@ import Checkbox from "expo-checkbox";
 // List Tests component
 
 type State = {
+  loading: boolean;
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
   init_filter: Filter;
   filters: HashSet<Filter>;
-  limit_offset: [Decimal, Decimal] | undefined;
+  limit: Decimal;
+  offset: Decimal;
   variables: Array<Variable>;
 };
 
@@ -48,7 +51,7 @@ export type Action =
   | ["variables", Array<Variable>]
   | ["active", boolean]
   | ["level", Decimal | undefined]
-  | ["limit_offset", [Decimal, Decimal] | undefined]
+  | ["offset"]
   | ["sort", "add", FilterPath, boolean]
   | ["sort", "remove", FilterPath]
   | ["sort", "up" | "down" | "toggle", FilterPath]
@@ -61,19 +64,38 @@ export type Action =
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
     case "variables": {
-      state.variables = action[1] as any;
+      if (state.offset.equals(0)) {
+        state.variables = action[1] as any;
+      } else {
+        for (let v of action[1]) {
+          state.variables.push(v as any);
+        }
+      }
+      if (!state.limit.equals(action[1].length)) {
+        state.loading = true;
+      } else {
+        state.loading = false;
+      }
       break;
     }
     case "active": {
       state.active = action[1];
+      state.offset = new Decimal(0);
       break;
     }
     case "level": {
       state.level = action[1];
+      state.offset = new Decimal(0);
       break;
     }
-    case "limit_offset": {
-      state.limit_offset = action[1];
+    case "offset": {
+      if (!state.loading) {
+        state.offset = Decimal.add(
+          state.offset.toNumber(),
+          state.limit.toNumber()
+        );
+        state.loading = true;
+      }
       break;
     }
     case "sort": {
@@ -176,6 +198,7 @@ export function reducer(state: Draft<State>, action: Action) {
           return _exhaustiveCheck;
         }
       }
+      state.offset = new Decimal(0);
       break;
     }
     case "filter": {
@@ -206,6 +229,7 @@ export function reducer(state: Draft<State>, action: Action) {
           return _exhaustiveCheck;
         }
       }
+      state.offset = new Decimal(0);
       break;
     }
     case "filters": {
@@ -229,6 +253,7 @@ export function reducer(state: Draft<State>, action: Action) {
           return state.filters.add(filter);
         });
       }
+      state.offset = new Decimal(0);
       break;
     }
     default: {
@@ -240,29 +265,36 @@ export function reducer(state: Draft<State>, action: Action) {
 
 export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
+    loading: false,
     struct: props.route.params.struct,
     active: props.route.params.active,
     level: props.route.params.level,
     init_filter: props.route.params.filters[0],
     filters: props.route.params.filters[1],
-    limit_offset: [new Decimal(10), new Decimal(0)],
+    limit: new Decimal(10),
+    offset: new Decimal(0),
     variables: [],
   });
 
+  const get_vars = async () => {
+    const variables = await get_variables(
+      state.struct,
+      state.active,
+      state.level,
+      [state.init_filter, state.filters],
+      [state.limit, state.offset]
+    );
+    if (unwrap(variables)) {
+      console.log("##########");
+      for (let v of variables.value) {
+        console.log(v.id);
+      }
+      dispatch(["variables", variables.value]);
+    }
+  };
+
   useEffect(() => {
     props.navigation.setOptions({ headerTitle: props.route.params.title });
-    const get_vars = async () => {
-      const variables = await get_variables(
-        state.struct,
-        state.active,
-        state.level,
-        [state.init_filter, state.filters],
-        state.limit_offset
-      );
-      if (unwrap(variables)) {
-        dispatch(["variables", variables.value]);
-      }
-    };
     get_vars();
   }, [
     state.struct,
@@ -270,7 +302,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     state.level,
     state.init_filter,
     state.filters,
-    state.limit_offset,
+    state.offset,
   ]);
 
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
@@ -280,70 +312,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
         <View style={{ justifyContent: "flex-end" }}>
-          {arrow(() => {
-            if (state.limit_offset !== undefined) {
-              const [limit, offset] = state.limit_offset;
-              return (
-                <View style={{ alignSelf: "center" }}>
-                  <View
-                    style={{
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Pressable
-                      onPress={() =>
-                        dispatch([
-                          "limit_offset",
-                          [Decimal.add(limit, 5), offset],
-                        ])
-                      }
-                      style={{ marginBottom: -6 }}
-                    >
-                      <FontAwesome name="sort-up" size={24} color="white" />
-                    </Pressable>
-                    <Pressable
-                      onPress={() =>
-                        dispatch([
-                          "limit_offset",
-                          [Decimal.sub(limit, 5), offset],
-                        ])
-                      }
-                      style={{ marginTop: -6 }}
-                    >
-                      <FontAwesome name="sort-down" size={24} color="white" />
-                    </Pressable>
-                  </View>
-                  <Text
-                    style={{
-                      alignSelf: "flex-end",
-                      fontSize: 15,
-                      fontWeight: "500",
-                      textAlign: "center",
-                      paddingHorizontal: 4,
-                      paddingVertical: 2,
-                      color: "white",
-                    }}
-                  >
-                    Rows: {state.limit_offset[0].toString()}
-                  </Text>
-                  <Text
-                    style={{
-                      alignSelf: "flex-end",
-                      fontSize: 15,
-                      fontWeight: "500",
-                      textAlign: "center",
-                      paddingHorizontal: 4,
-                      paddingVertical: 2,
-                      color: "white",
-                    }}
-                  >
-                    Page: {Decimal.add(1, state.limit_offset[1]).toString()}
-                  </Text>
-                </View>
-              );
-            }
-            return null;
-          })}
           <Pressable
             onPress={() => bottomSheetModalRef2.current?.present()}
             style={{
@@ -521,7 +489,14 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
               disptach_values={props.route.params.disptach_values}
             />
           )}
-          keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+          keyExtractor={(list_item: Variable) => {
+            if (list_item.id === undefined) {
+              console.log(JSON.stringify(list_item));
+            }
+            return list_item.id.valueOf();
+          }}
+          onEndReachedThreshold={0.1}
+          onEndReached={() => dispatch(["offset"])}
         />
 
         <BottomSheetModal

@@ -1603,7 +1603,9 @@ export function query(
       }
     }
   );
-  append_to_order_by_stmt("v1.requested_at DESC, v1.updated_at DESC");
+  append_to_order_by_stmt(
+    "v1.requested_at DESC, v1.updated_at DESC, v1.id DESC"
+  );
 
   const limit_offset_stmt: string = arrow(() => {
     if (limit_offset !== undefined) {
@@ -3393,6 +3395,281 @@ async function load_test_data() {
             new Path("NICKNAME", [
               [],
               ["nickname", { type: "str", value: "NUMBER FOUR" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(3),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 3" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(4),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 42" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(5),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 5" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(6),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 6" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(7),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 7" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(8),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 8" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(9),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 9" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(10),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 10" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(11),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 11" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(12),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 12" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(3) }],
+            ]),
+          ])
+        ),
+        new Variable(
+          struct.value,
+          new Decimal(13),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER 13" }],
             ]),
             new Path("MOBILE", [
               [],
