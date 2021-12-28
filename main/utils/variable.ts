@@ -472,6 +472,6 @@ export function concat_path_strings(
   ];
 }
 
-export function get_flattened_path(x: PathString) {
-  return [...x[0], x[1]];
+export function get_flattened_path(path_string: PathString) {
+  return [...path_string[0], path_string[1]];
 }
