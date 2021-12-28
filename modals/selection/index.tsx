@@ -78,11 +78,13 @@ export function reducer(state: Draft<State>, action: Action) {
     case "active": {
       state.active = action[1];
       state.offset = new Decimal(0);
+      state.reached_end = false;
       break;
     }
     case "level": {
       state.level = action[1];
       state.offset = new Decimal(0);
+      state.reached_end = false;
       break;
     }
     case "offset": {
@@ -196,6 +198,7 @@ export function reducer(state: Draft<State>, action: Action) {
         }
       }
       state.offset = new Decimal(0);
+      state.reached_end = false;
       break;
     }
     case "filter": {
@@ -227,6 +230,7 @@ export function reducer(state: Draft<State>, action: Action) {
         }
       }
       state.offset = new Decimal(0);
+      state.reached_end = false;
       break;
     }
     case "filters": {
@@ -251,6 +255,7 @@ export function reducer(state: Draft<State>, action: Action) {
         });
       }
       state.offset = new Decimal(0);
+      state.reached_end = false;
       break;
     }
     default: {
