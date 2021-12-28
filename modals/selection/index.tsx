@@ -33,8 +33,6 @@ import Checkbox from "expo-checkbox";
 // List Tests component
 
 type State = {
-  reached_end: boolean;
-  refreshing: boolean;
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
@@ -43,6 +41,8 @@ type State = {
   limit: Decimal;
   offset: Decimal;
   variables: Array<Variable>;
+  reached_end: boolean;
+  refreshing: boolean;
 };
 
 export type Action =
@@ -267,8 +267,6 @@ export function reducer(state: Draft<State>, action: Action) {
 
 export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
-    reached_end: false,
-    refreshing: true,
     struct: props.route.params.struct,
     active: props.route.params.active,
     level: props.route.params.level,
@@ -277,6 +275,8 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     limit: props.route.params.limit,
     offset: new Decimal(0),
     variables: [],
+    reached_end: false,
+    refreshing: true,
   });
 
   const get_vars = async () => {

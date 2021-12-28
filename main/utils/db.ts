@@ -1623,6 +1623,548 @@ export function query(
   return execute_transaction(final_stmt, []);
 }
 
+function query2(
+  struct: Struct,
+  active: boolean,
+  level: Decimal | undefined,
+  init_filter: Filter,
+  filters: HashSet<Filter>,
+  limit: Decimal,
+  offset: Decimal
+) {
+  const join_count: number = Math.max(
+    0,
+    ...init_filter.filter_paths
+      .toArray()
+      .map((filter_path) => filter_path.path[0].length + 1),
+    ...filters
+      .toArray()
+      .flatMap((filter) =>
+        filter.filter_paths
+          .toArray()
+          .map((filter_path) => filter_path.path[0].length + 1)
+      )
+  );
+
+  let select_stmt: string = "SELECT \n";
+  const append_to_select_stmt = (stmt: string) => {
+    select_stmt += arrow(() => {
+      if (select_stmt === "SELECT \n") {
+        return ` ${stmt}`;
+      } else {
+        return `,\n ${stmt}`;
+      }
+    });
+  };
+  arrow(() => {
+    append_to_select_stmt("v1.level AS _level");
+    append_to_select_stmt("v1.struct_name AS _struct_name");
+    append_to_select_stmt("v1.id AS _id");
+    append_to_select_stmt("v1.active AS _active");
+    append_to_select_stmt("v1.created_at AS _created_at");
+    append_to_select_stmt("v1.updated_at AS _updated_at");
+    append_to_select_stmt("v1.requested_at AS _requested_at");
+  });
+  const get_path_name_expression = (n: number) => {
+    return Array.from(Array(n).keys())
+      .map((x) => {
+        const val_ref = x * 2 + 2;
+        return `IFNULL(v${val_ref}.field_name, '')`;
+      })
+      .join(` || '.' || `);
+  };
+  arrow(() => {
+    let intermediate_paths = HashSet.of<Vector<string>>();
+    for (let filter_path of init_filter.filter_paths) {
+      const path: PathString = filter_path.path;
+      const flattened_path: ReadonlyArray<string> = [...path[0], path[1]];
+      const path_name_expression = get_path_name_expression(path[0].length + 1);
+      if (path[0].length != 0) {
+        intermediate_paths = intermediate_paths.add(Vector.ofIterable(path[0]));
+      }
+      const val_ref: number = flattened_path.length * 2;
+      const field_struct_name = filter_path.value[0];
+      const stmt = arrow(() => {
+        switch (field_struct_name) {
+          case "str":
+          case "lstr":
+          case "clob": {
+            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
+              "."
+            )}') THEN (v${val_ref}.text_value) END) AS '${flattened_path.join(
+              "."
+            )}'`;
+          }
+          case "i32":
+          case "u32":
+          case "i64":
+          case "u64": {
+            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
+              "."
+            )}'`;
+          }
+          case "idouble":
+          case "udouble":
+          case "idecimal":
+          case "udecimal": {
+            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
+              "."
+            )}') THEN (v${val_ref}.real_value) END) AS '${flattened_path.join(
+              "."
+            )}'`;
+          }
+          case "bool": {
+            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
+              "."
+            )}'`;
+          }
+          case "date":
+          case "time":
+          case "timestamp": {
+            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
+              "."
+            )}'`;
+          }
+          case "other": {
+            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
+              "."
+            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
+              "."
+            )}'`;
+          }
+          default: {
+            const _exhaustiveCheck: never = field_struct_name;
+            return _exhaustiveCheck;
+          }
+        }
+      });
+      append_to_select_stmt(stmt);
+    }
+    for (let intermediate_path of intermediate_paths) {
+      const var_ref: number = (intermediate_path.length() - 1) * 2 + 1;
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(".")}') THEN (v${var_ref}.id) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path.toArray().join(".")}') THEN (v${
+          var_ref + 1
+        }.field_struct_name) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._struct_name'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(".")}') THEN (v${var_ref}.active) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._active'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(
+            "."
+          )}') THEN (v${var_ref}.created_at) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._created_at'`
+      );
+      append_to_select_stmt(
+        `MAX(CASE WHEN(${get_path_name_expression(
+          intermediate_path.length()
+        )} = '${intermediate_path
+          .toArray()
+          .join(
+            "."
+          )}') THEN (v${var_ref}.updated_at) END) AS '${intermediate_path
+          .toArray()
+          .join(".")}._updated_at'`
+      );
+      if (intermediate_path.length() > 1) {
+        for (let i = intermediate_path.length(); i > 0; i--) {
+          const temp_path = Vector.ofIterable(
+            intermediate_path.toArray().slice(0, i)
+          );
+          if (
+            !intermediate_paths.contains(temp_path) &&
+            !HashSet.ofIterable(
+              init_filter.filter_paths.map((filter_path) =>
+                Vector.ofIterable([...filter_path.path[0], filter_path.path[1]])
+              )
+            ).contains(temp_path)
+          ) {
+            const temp_var_ref: number =
+              (intermediate_path.length() - 1) * 2 + 1;
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.id) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}'`
+            );
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.active) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}._active'`
+            );
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.created_at) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}._created_at'`
+            );
+            append_to_select_stmt(
+              `MAX(CASE WHEN(${get_path_name_expression(
+                intermediate_path.length()
+              )} = '${intermediate_path
+                .toArray()
+                .join(
+                  "."
+                )}') THEN (v${temp_var_ref}.updated_at) END) AS '${intermediate_path
+                .toArray()
+                .join(".")}._updated_at'`
+            );
+          }
+        }
+      }
+    }
+  });
+
+  let where_stmt: string = "WHERE ";
+  const append_to_where_stmt = (stmt: string) => {
+    where_stmt += arrow(() => {
+      if (where_stmt === "WHERE ") {
+        return `(${stmt})`;
+      } else {
+        return `\n AND (${stmt})`;
+      }
+    });
+  };
+
+  if (level !== undefined) {
+    const value: Decimal = level;
+    let stmt = `v1.level = '${value.truncated().toString()}'`;
+    append_to_where_stmt(stmt);
+  }
+  append_to_where_stmt(`v1.struct_name = '${struct.name}'`);
+  append_to_where_stmt(`v1.active = ${active ? "1" : "0"}`);
+
+  let from_stmt: string =
+    "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
+  append_to_where_stmt(
+    `NOT EXISTS(SELECT 1 FROM removed_vars AS rv1 INNER JOIN levels AS rvl1 ON (rv1.level = rvl1.id) WHERE (rvl1.active = 1 AND v1.level > rv1.level AND rv1.struct_name = v1.struct_name AND rv1.id = v1.id))`
+  );
+  for (let i = 1; i < join_count; i++) {
+    let var_ref = i * 2 + 1;
+    const prev_val_ref = var_ref - 1;
+    const next_val_ref = var_ref + 1;
+    from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
+    from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
+    append_to_where_stmt(
+      `IFNULL(v${prev_val_ref}.level, 0) >= IFNULL(v${var_ref}.level, 0)`
+    );
+    append_to_where_stmt(
+      `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level > rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
+    );
+  }
+
+  apply(
+    init_filter.filter_paths
+      .toArray()
+      .map((filter_path) => {
+        const path: PathString = filter_path.path;
+        const flattened_path: ReadonlyArray<string> = [...path[0], path[1]];
+        let stmt = path[0]
+          .map((field_name, i) => `v${i * 2 + 2}.field_name = '${path[0][i]}'`)
+          .join(" AND ");
+        const field_struct_name = apply(filter_path.value[0], (it) => {
+          if (filter_path.value[0] === "other") {
+            return filter_path.value[2].name;
+          }
+          return it;
+        });
+        if (stmt !== "") {
+          stmt += " AND ";
+        }
+        stmt += `v${path[0].length * 2 + 2}.field_name = '${path[1]}' AND v${
+          path[0].length * 2 + 2
+        }.field_struct_name = '${field_struct_name}'`;
+        return `(${stmt})`;
+      })
+      .join(" OR "),
+    (it) => {
+      if (it !== "") {
+        append_to_where_stmt(it);
+      }
+    }
+  );
+}
+
+function get_filter_stmt(filter: Filter): [string, ReadonlyArray<string>] {
+  const args: Array<string> = [];
+  let filter_stmt: string = "";
+  const append_to_filter_stmt = (stmt: string) => {
+    filter_stmt += arrow(() => {
+      if (filter_stmt === "") {
+        return `(${stmt})`;
+      } else {
+        return `\n AND (${stmt})`;
+      }
+    });
+  };
+  if (filter.id[0]) {
+    const value = filter.id[1];
+    if (value !== undefined) {
+      const stmt = arrow(() => {
+        const op = value[0];
+        switch (op) {
+          case "==":
+          case "!=":
+          case ">=":
+          case "<=":
+          case ">":
+          case "<": {
+            args.push(value[1].truncated().toString());
+            return `v1.id ${op} ?`;
+          }
+          case "between":
+          case "not_between": {
+            args.push(value[1][0].truncated().toString());
+            args.push(value[1][1].truncated().toString());
+            return `v1.id ${
+              op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+            } ? AND ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      });
+      append_to_filter_stmt(stmt);
+    }
+  }
+  if (filter.created_at[0]) {
+    const value = filter.created_at[1];
+    if (value !== undefined) {
+      const stmt = arrow(() => {
+        const op = value[0];
+        switch (op) {
+          case "==":
+          case "!=":
+          case ">=":
+          case "<=":
+          case ">":
+          case "<": {
+            args.push(value[1].getTime().toString());
+            return `v1.created_at ${op} ?`;
+          }
+          case "between":
+          case "not_between": {
+            args.push(value[1][0].getTime().toString());
+            args.push(value[1][1].getTime().toString());
+            return `v1.created_at ${
+              op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+            } ? AND ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      });
+      append_to_filter_stmt(stmt);
+    }
+  }
+  if (filter.updated_at[0]) {
+    const value = filter.updated_at[1];
+    if (value !== undefined) {
+      const stmt = arrow(() => {
+        const op = value[0];
+        switch (op) {
+          case "==":
+          case "!=":
+          case ">=":
+          case "<=":
+          case ">":
+          case "<": {
+            args.push(value[1].getTime().toString());
+            return `v1.updated_at ${op} ?`;
+          }
+          case "between":
+          case "not_between": {
+            args.push(value[1][0].getTime().toString());
+            args.push(value[1][1].getTime().toString());
+            return `v1.updated_at ${
+              op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+            } ? AND ?`;
+          }
+          default: {
+            const _exhaustiveCheck: never = op;
+            return _exhaustiveCheck;
+          }
+        }
+      });
+      append_to_filter_stmt(stmt);
+    }
+  }
+  for (let filter_path of filter.filter_paths) {
+    if (filter_path.active) {
+      const [stmt, filter_path_args] = get_filter_path_stmt(filter_path);
+      append_to_filter_stmt(stmt);
+      for (let arg of filter_path_args) {
+        args.push(arg);
+      }
+    }
+  }
+  return [filter_stmt, args];
+}
+
+function get_filter_path_stmt(
+  filter_path: FilterPath
+): [string, ReadonlyArray<string>] {
+  const args: Array<string> = [];
+  let filter_path_stmt: string = "";
+  const append_to_filter_stmt = (stmt: string) => {
+    filter_path_stmt += arrow(() => {
+      if (filter_path_stmt === "") {
+        return `(${stmt})`;
+      } else {
+        return `\n AND (${stmt})`;
+      }
+    });
+  };
+  if (filter_path.active) {
+    const path_ref: string = [...filter_path.path[0], filter_path.path[1]].join(
+      "."
+    );
+    const stmt = arrow(() => {
+      const value = filter_path.value;
+      if (value[1] !== undefined) {
+        const field_struct_name = value[0];
+        const get_path_ref = (x: PathString) =>
+          `"${[...x[1][0], x[1][1]].join(".")}"`;
+        switch (field_struct_name) {
+          case "str":
+          case "lstr":
+          case "clob": {
+            const op = value[1][0];
+            switch (op) {
+              case "==":
+              case "!=":
+              case ">=":
+              case "<=":
+              case ">":
+              case "<":
+              case "like":
+              case "glob": {
+                return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
+                  if (typeof it === "string") {
+                    args.push(it);
+                    return "?";
+                  } else {
+                    return get_path_ref(it[1]);
+                  }
+                })}`;
+              }
+              case "between":
+              case "not_between": {
+                const start_value = value[1][1][0];
+                const end_value = value[1][1][1];
+                return `"${path_ref}" ${
+                  op === "not_between" ? "NOT BETWEEN" : "BETWEEN"
+                } ${arrow(() => {
+                  if (typeof start_value === "string") {
+                    if (typeof end_value === "string") {
+                      args.push(start_value);
+                      args.push(end_value);
+                      return `? AND ?`;
+                    } else {
+                      args.push(start_value);
+                      return `? AND ${get_path_ref(end_value[1])}`;
+                    }
+                  } else {
+                    if (typeof end_value === "string") {
+                      args.push(end_value);
+                      return `${get_path_ref(start_value[1])} AND ?`;
+                    } else {
+                      return `${get_path_ref(
+                        start_value[1]
+                      )} AND ${get_path_ref(end_value[1])}`;
+                    }
+                  }
+                })}`;
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
+          case "i32":
+          case "u32":
+          case "i64":
+          case "u64":
+          case "idouble":
+          case "udouble":
+          case "idecimal":
+          case "udecimal": {
+            return "";
+          }
+          case "bool": {
+            return "";
+          }
+          case "date":
+          case "time":
+          case "timestamp": {
+            return "";
+          }
+          case "other": {
+            return "";
+          }
+          default: {
+            const _exhaustiveCheck: never = field_struct_name;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+    });
+  }
+  return [filter_path_stmt, args];
+}
+
 export async function get_max_level(): Promise<Result<Decimal>> {
   try {
     const result_set = await execute_transaction(
