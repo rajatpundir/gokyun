@@ -211,7 +211,7 @@ export type PathFilter =
       string
     ];
 
-export function query(
+export function query_deprecated(
   struct_name: string,
   variable_filters: {
     active: boolean;
@@ -1623,7 +1623,7 @@ export function query(
   return execute_transaction(final_stmt, []);
 }
 
-function query2(
+function query(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
@@ -2938,26 +2938,29 @@ export async function get_variables(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
-  filters: [Filter, HashSet<Filter>],
-  limit_offset: [Decimal, Decimal] | undefined
+  init_filter: Filter,
+  filters: HashSet<Filter>,
+  limit: Decimal,
+  offset: Decimal
 ): Promise<Result<Array<Variable>>> {
-  const variable_filters = get_variable_filters(active, level, filters);
-  const path_filters = get_path_filters(filters);
   try {
     const variables: Array<Variable> = [];
     const result_set = await query(
-      struct.name,
-      variable_filters,
-      [path_filters[0].map((x) => x[1]), path_filters[1].map((x) => x[1])],
-      limit_offset
+      struct,
+      active,
+      level,
+      init_filter,
+      filters,
+      limit,
+      offset
     );
     for (let result of result_set.rows._array) {
       const paths: Array<Path> = [];
-      for (let [label, path_filter] of [
-        ...path_filters[0],
-        ...path_filters[1],
-      ]) {
-        const path: ReadonlyArray<string> = path_filter[0];
+      for (let filter_path of init_filter.filter_paths) {
+        const label = filter_path.label;
+        const path: ReadonlyArray<string> = get_flattened_path(
+          filter_path.path
+        );
         if (path.length !== 0) {
           const init: ReadonlyArray<string> = path.slice(0, path.length - 1);
           const last: string = path[path.length - 1];
@@ -2998,7 +3001,7 @@ export async function get_variables(
           }
           const leaf: [string, StrongEnum] = arrow(() => {
             const ref: string = init.join(".");
-            const field_struct_name = path_filter[1];
+            const field_struct_name = filter_path.value[0];
             switch (field_struct_name) {
               case "str":
               case "lstr":
@@ -3085,7 +3088,7 @@ export async function get_variables(
                 ] as [string, StrongEnum];
               }
               case "other": {
-                const field_struct_name = path_filter[4];
+                const field_struct_name = filter_path.value[2].name;
                 return [
                   last,
                   {
@@ -3144,17 +3147,16 @@ export async function get_variable(
       struct,
       active,
       level,
-      [
-        new Filter(
-          0,
-          [true, ["==", id]],
-          [false, undefined],
-          [false, undefined],
-          filter_paths
-        ),
-        HashSet.of(),
-      ],
-      [new Decimal(1), new Decimal(0)]
+      new Filter(
+        0,
+        [true, ["==", id]],
+        [false, undefined],
+        [false, undefined],
+        filter_paths
+      ),
+      HashSet.of(),
+      new Decimal(1),
+      new Decimal(0)
     );
     if (unwrap(result)) {
       if (result.value.length === 1) {

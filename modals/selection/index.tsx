@@ -284,8 +284,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
       state.struct,
       state.active,
       state.level,
-      [state.init_filter, state.filters],
-      [state.limit, state.offset]
+      state.init_filter,
+      state.filters,
+      state.limit,
+      state.offset
     );
     if (unwrap(variables)) {
       dispatch(["variables", variables.value]);
