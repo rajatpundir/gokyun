@@ -549,7 +549,9 @@ export function FilterComponent(props: {
             }}
           >
             {arrow(() => {
-              const [selectedOp, setSelectedOp] = useState("==");
+              const [selectedOp, setSelectedOp] = useState(
+                props.filter.id[1] ? props.filter.id[1][0] : "=="
+              );
               const [active, value] = props.filter.id;
               if (value !== undefined) {
                 return (
@@ -805,7 +807,11 @@ export function FilterComponent(props: {
             }}
           >
             {arrow(() => {
-              const [selectedOp, setSelectedOp] = useState("between");
+              const [selectedOp, setSelectedOp] = useState(
+                props.filter.created_at[1]
+                  ? props.filter.created_at[1][0]
+                  : "between"
+              );
               const [active, value] = props.filter.created_at;
               if (value !== undefined) {
                 return (
@@ -1299,7 +1305,11 @@ export function FilterComponent(props: {
             }}
           >
             {arrow(() => {
-              const [selectedOp, setSelectedOp] = useState("between");
+              const [selectedOp, setSelectedOp] = useState(
+                props.filter.updated_at[1]
+                  ? props.filter.updated_at[1][0]
+                  : "between"
+              );
               const [active, value] = props.filter.updated_at;
               if (value !== undefined) {
                 return (
@@ -2012,6 +2022,9 @@ function FilterPathComponent(props: {
       {arrow(() => {
         const [selectedOp, setSelectedOp] = useState(
           apply("==", (it) => {
+            if (props.filter_path.value[1]) {
+              return props.filter_path.value[1][0];
+            }
             switch (props.filter_path.value[0]) {
               case "str":
               case "lstr":
