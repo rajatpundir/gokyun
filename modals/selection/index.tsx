@@ -219,7 +219,8 @@ export function reducer(state: Draft<State>, action: Action) {
           if (
             action[2].id[0] ||
             action[2].created_at[0] ||
-            action[2].updated_at[0]
+            action[2].updated_at[0] ||
+            action[2].filter_paths.anyMatch((x) => x.active)
           ) {
             state.offset = new Decimal(0);
             state.reached_end = false;
@@ -249,7 +250,7 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "filters": {
-      const result = state.filters.findAny((x) => x === action[1]);
+      const result = state.filters.findAny((x) => x.equals(action[1]));
       if (result.isSome()) {
         state.filters = apply(result.get(), (filter) => {
           switch (action[2]) {

@@ -142,7 +142,7 @@ function query(
     });
   };
   arrow(() => {
-    append_to_select_stmt("v1.level AS _level");
+    append_to_select_stmt("MAX(v1.level) AS _level");
     append_to_select_stmt("v1.struct_name AS _struct_name");
     append_to_select_stmt("v1.id AS _id");
     append_to_select_stmt("v1.active AS _active");
@@ -416,7 +416,7 @@ function query(
     }
   );
 
-  const group_by_stmt: string = "GROUP BY v1.level, v1.struct_name, v1.id";
+  const group_by_stmt: string = "GROUP BY v1.struct_name, v1.id";
 
   const args: Array<string | number> = [];
   const having_stmt: string = apply([] as Array<string>, (it) => {
