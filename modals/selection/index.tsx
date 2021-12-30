@@ -21,14 +21,10 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
 
-// Rewrite SQL generation using Filter
-// Fix OR filters
-// id, created_at and updated_at in having clause
-// Prevent SQL injection
-
 // Test levels
-
+// Custom Views
 // Custom outer search fields
+
 // Create / Update Test component
 // List Tests component
 
@@ -79,12 +75,14 @@ export function reducer(state: Draft<State>, action: Action) {
       state.active = action[1];
       state.offset = new Decimal(0);
       state.reached_end = false;
+      state.variables = [];
       break;
     }
     case "level": {
       state.level = action[1];
       state.offset = new Decimal(0);
       state.reached_end = false;
+      state.variables = [];
       break;
     }
     case "offset": {
@@ -199,6 +197,7 @@ export function reducer(state: Draft<State>, action: Action) {
       }
       state.offset = new Decimal(0);
       state.reached_end = false;
+      state.variables = [];
       break;
     }
     case "filter": {
@@ -217,11 +216,29 @@ export function reducer(state: Draft<State>, action: Action) {
         }
         case "remove": {
           state.filters = state.filters.remove(action[2]);
+          if (
+            action[2].id[0] ||
+            action[2].created_at[0] ||
+            action[2].updated_at[0]
+          ) {
+            state.offset = new Decimal(0);
+            state.reached_end = false;
+            state.variables = [];
+          }
           break;
         }
         case "replace": {
           state.filters = state.filters.remove(action[2]);
           state.filters = state.filters.add(action[2]);
+          if (
+            action[2].id[0] ||
+            action[2].created_at[0] ||
+            action[2].updated_at[0]
+          ) {
+            state.offset = new Decimal(0);
+            state.reached_end = false;
+            state.variables = [];
+          }
           break;
         }
         default: {
@@ -229,8 +246,6 @@ export function reducer(state: Draft<State>, action: Action) {
           return _exhaustiveCheck;
         }
       }
-      state.offset = new Decimal(0);
-      state.reached_end = false;
       break;
     }
     case "filters": {
@@ -253,9 +268,12 @@ export function reducer(state: Draft<State>, action: Action) {
           }
           return state.filters.add(filter);
         });
+        if (action[3].active) {
+          state.offset = new Decimal(0);
+          state.reached_end = false;
+          state.variables = [];
+        }
       }
-      state.offset = new Decimal(0);
-      state.reached_end = false;
       break;
     }
     default: {

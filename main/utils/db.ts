@@ -93,7 +93,7 @@ export function useDB() {
 
 export function execute_transaction(
   sql: string,
-  args: Array<string>
+  args: Array<string | number>
 ): Promise<SQLite.SQLResultSet> {
   return new Promise((resolve, reject) => {
     db.transaction(
@@ -116,7 +116,7 @@ function query(
   filters: HashSet<Filter>,
   limit: Decimal,
   offset: Decimal
-) {
+): Promise<SQLite.SQLResultSet> {
   const join_count: number = Math.max(
     0,
     ...init_filter.filter_paths
@@ -418,7 +418,7 @@ function query(
 
   const group_by_stmt: string = "GROUP BY v1.level, v1.struct_name, v1.id";
 
-  const args: Array<string> = [];
+  const args: Array<string | number> = [];
   const having_stmt: string = apply([] as Array<string>, (it) => {
     const init_filters_stmt = apply(get_filter_stmt(init_filter), (it) => {
       const [stmt, filter_args] = it;
@@ -441,7 +441,8 @@ function query(
         return stmt;
       })
       .filter((x) => x !== "")
-      .join("OR");
+      .map((x) => `(${x})`)
+      .join(" \nOR ");
     if (init_filters_stmt !== "") {
       it.push(`(${init_filters_stmt})`);
     }
@@ -513,18 +514,21 @@ function query(
 
   const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${having_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
   console.log("FINAL STMT = ", final_stmt);
-  return execute_transaction(final_stmt, []);
+  console.log("ARGS:", args);
+  return execute_transaction(final_stmt, args);
 }
 
-function get_filter_stmt(filter: Filter): [string, ReadonlyArray<string>] {
-  const args: Array<string> = [];
+function get_filter_stmt(
+  filter: Filter
+): [string, ReadonlyArray<string | number>] {
+  const args: Array<string | number> = [];
   let filter_stmt: string = "";
   const append_to_filter_stmt = (stmt: string) => {
     filter_stmt += arrow(() => {
       if (filter_stmt === "") {
-        return `(${stmt})`;
+        return `${stmt}`;
       } else {
-        return `\n AND (${stmt})`;
+        return ` AND ${stmt}`;
       }
     });
   };
@@ -640,15 +644,15 @@ function get_filter_stmt(filter: Filter): [string, ReadonlyArray<string>] {
 
 function get_filter_path_stmt(
   filter_path: FilterPath
-): [string, ReadonlyArray<string>] {
-  const args: Array<string> = [];
+): [string, ReadonlyArray<string | number>] {
+  const args: Array<string | number> = [];
   let filter_path_stmt: string = "";
   const append_to_filter_path_stmt = (stmt: string) => {
     filter_path_stmt += arrow(() => {
       if (filter_path_stmt === "") {
-        return `(${stmt})`;
+        return `${stmt}`;
       } else {
-        return `\n AND (${stmt})`;
+        return ` AND ${stmt}`;
       }
     });
   };
@@ -676,7 +680,13 @@ function get_filter_path_stmt(
               case "glob": {
                 return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
                   if (typeof it === "string") {
-                    args.push(it);
+                    if (op === "like") {
+                      args.push(`%${it}%`);
+                    } else if (op === "glob") {
+                      args.push(`*${it}*`);
+                    } else {
+                      args.push(it);
+                    }
                     return "?";
                   } else {
                     return get_path_ref(it[1]);
@@ -735,8 +745,7 @@ function get_filter_path_stmt(
               case "<": {
                 return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
                   if (is_decimal(it)) {
-                    args.push(it.toString());
-                    return "?";
+                    return `${it.toString()}`;
                   } else {
                     return get_path_ref(it[1]);
                   }
@@ -751,17 +760,17 @@ function get_filter_path_stmt(
                 } ${arrow(() => {
                   if (is_decimal(start_value)) {
                     if (is_decimal(end_value)) {
-                      args.push(start_value.toString());
-                      args.push(end_value.toString());
-                      return `? AND ?`;
+                      return `${start_value.toString()} AND ${end_value.toString()}`;
                     } else {
-                      args.push(start_value.toString());
-                      return `? AND ${get_path_ref(end_value[1])}`;
+                      return `${start_value.toString()} AND ${get_path_ref(
+                        end_value[1]
+                      )}`;
                     }
                   } else {
                     if (is_decimal(end_value)) {
-                      args.push(end_value.toString());
-                      return `${get_path_ref(start_value[1])} AND ?`;
+                      return `${get_path_ref(
+                        start_value[1]
+                      )} AND ${end_value.toString()}`;
                     } else {
                       return `${get_path_ref(
                         start_value[1]
@@ -783,8 +792,7 @@ function get_filter_path_stmt(
               case "!=": {
                 return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
                   if (typeof it === "boolean") {
-                    args.push(it.toString());
-                    return "?";
+                    return `${it ? "1" : "0"}`;
                   } else {
                     return get_path_ref(it[1]);
                   }
@@ -809,8 +817,7 @@ function get_filter_path_stmt(
               case "<": {
                 return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
                   if (it instanceof Date) {
-                    args.push(it.getTime().toString());
-                    return "?";
+                    return `${it.getTime().toString()}`;
                   } else {
                     return get_path_ref(it[1]);
                   }
@@ -825,17 +832,19 @@ function get_filter_path_stmt(
                 } ${arrow(() => {
                   if (start_value instanceof Date) {
                     if (end_value instanceof Date) {
-                      args.push(start_value.getTime().toString());
-                      args.push(end_value.getTime().toString());
-                      return `? AND ?`;
+                      return `${start_value
+                        .getTime()
+                        .toString()} AND ${end_value.getTime().toString()}`;
                     } else {
-                      args.push(start_value.getTime().toString());
-                      return `? AND ${get_path_ref(end_value[1])}`;
+                      return `${start_value
+                        .getTime()
+                        .toString()} AND ${get_path_ref(end_value[1])}`;
                     }
                   } else {
                     if (end_value instanceof Date) {
-                      args.push(end_value.getTime().toString());
-                      return `${get_path_ref(start_value[1])} AND ?`;
+                      return `${get_path_ref(start_value[1])} AND ${end_value
+                        .getTime()
+                        .toString()}`;
                     } else {
                       return `${get_path_ref(
                         start_value[1]
@@ -857,8 +866,7 @@ function get_filter_path_stmt(
               case "!=": {
                 return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
                   if (is_decimal(it)) {
-                    args.push(it.truncated().toString());
-                    return "?";
+                    return `${it.truncated().toString()}`;
                   } else {
                     return get_path_ref(it[1]);
                   }
@@ -1439,6 +1447,7 @@ export async function get_variables(
       limit,
       offset
     );
+    // console.log(result_set);
     for (let result of result_set.rows._array) {
       const paths: Array<Path> = [];
       for (let filter_path of init_filter.filter_paths) {
