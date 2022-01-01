@@ -367,21 +367,25 @@ function query(
   append_to_where_stmt(`v1.active = ${active ? "1" : "0"}`);
 
   let from_stmt: string =
-    "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level = v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
+    "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level <= v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
   append_to_where_stmt(
-    `NOT EXISTS(SELECT 1 FROM removed_vars AS rv1 INNER JOIN levels AS rvl1 ON (rv1.level = rvl1.id) WHERE (rvl1.active = 1 AND v1.level > rv1.level AND rv1.struct_name = v1.struct_name AND rv1.id = v1.id))`
+    `v1.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v1.struct_name AND vars.id = v1.id AND removed_vars.id IS NULL)`
   );
+  append_to_where_stmt(
+    `v2.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v2.struct_name AND vals.variable_id = v2.variable_id AND vals.field_name = v2.field_name AND removed_vars.id IS NULL)`
+  );
+
   for (let i = 1; i < join_count; i++) {
     let var_ref = i * 2 + 1;
     const prev_val_ref = var_ref - 1;
     const next_val_ref = var_ref + 1;
-    from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
-    from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level = v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
+    from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.level <= v${prev_val_ref}.level AND v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
+    from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level <= v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
     append_to_where_stmt(
-      `IFNULL(v${prev_val_ref}.level, 0) >= IFNULL(v${var_ref}.level, 0)`
+      `v${var_ref}.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v${var_ref}.struct_name AND vars.id = v${var_ref}.id AND removed_vars.id IS NULL)`
     );
     append_to_where_stmt(
-      `NOT EXISTS(SELECT 1 FROM removed_vars AS rv${var_ref} INNER JOIN levels AS rvl${var_ref} ON (rv${var_ref}.level = rvl${var_ref}.id) WHERE (rvl${var_ref}.active = 1  AND v${prev_val_ref}.level > rv${var_ref}.level AND rv${var_ref}.level > v${var_ref}.level AND rv${var_ref}.struct_name = v${var_ref}.struct_name AND rv${var_ref}.id = v${var_ref}.id))`
+      `v${next_val_ref}.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v${next_val_ref}.struct_name AND vals.variable_id = v${next_val_ref}.variable_id AND vals.field_name = v${next_val_ref}.field_name AND removed_vars.id IS NULL)`
     );
   }
 
@@ -1449,178 +1453,186 @@ export async function get_variables(
     );
     // console.log(result_set);
     for (let result of result_set.rows._array) {
-      const paths: Array<Path> = [];
-      for (let filter_path of init_filter.filter_paths) {
-        const label = filter_path.label;
-        const path: ReadonlyArray<string> = get_flattened_path(
-          filter_path.path
-        );
-        if (path.length !== 0) {
-          const init: ReadonlyArray<string> = path.slice(0, path.length - 1);
-          const last: string = path[path.length - 1];
-          const init_path: Array<
-            [
-              string,
-              {
-                struct: Struct;
-                id: Decimal;
-                active: boolean;
-                created_at: Date;
-                updated_at: Date;
-              }
-            ]
-          > = [];
-          for (let [index, field_name] of init.entries()) {
-            const ref: string = init.slice(0, index + 1).join(".");
-            const ref_struct_name = new String(
-              result[`${ref}._struct_name`]
-            ).valueOf();
-            const ref_struct: OptionTS<Struct> = get_structs()
-              .filter((x) => x.name === ref_struct_name)
-              .single();
-            if (ref_struct.isSome()) {
-              init_path.push([
-                field_name,
+      try {
+        const paths: Array<Path> = [];
+        for (let filter_path of init_filter.filter_paths) {
+          const label = filter_path.label;
+          const path: ReadonlyArray<string> = get_flattened_path(
+            filter_path.path
+          );
+          if (path.length !== 0) {
+            const init: ReadonlyArray<string> = path.slice(0, path.length - 1);
+            const last: string = path[path.length - 1];
+            const init_path: Array<
+              [
+                string,
                 {
-                  struct: ref_struct.get(),
-                  id: new Decimal(result[`${ref}`]).truncated(),
-                  active: new Decimal(result[`${ref}._active`]).equals(1),
-                  created_at: new Date(result[`${ref}._created_at`]),
-                  updated_at: new Date(result[`${ref}._updated_at`]),
-                },
-              ]);
-            } else {
-              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-            }
-          }
-          const leaf: [string, StrongEnum] = arrow(() => {
-            const ref: string = init.join(".");
-            const field_struct_name = filter_path.value[0];
-            switch (field_struct_name) {
-              case "str":
-              case "lstr":
-              case "clob": {
-                return [
-                  last,
+                  struct: Struct;
+                  id: Decimal;
+                  active: boolean;
+                  created_at: Date;
+                  updated_at: Date;
+                }
+              ]
+            > = [];
+            for (let [index, field_name] of init.entries()) {
+              const ref: string = init.slice(0, index + 1).join(".");
+              const ref_struct_name = new String(
+                result[`${ref}._struct_name`]
+              ).valueOf();
+              const ref_struct: OptionTS<Struct> = get_structs()
+                .filter((x) => x.name === ref_struct_name)
+                .single();
+              if (ref_struct.isSome()) {
+                init_path.push([
+                  field_name,
                   {
-                    type: field_struct_name,
-                    value: arrow(() => {
-                      if (ref === "") {
-                        return new String(result[`${last}`]).valueOf();
-                      } else {
-                        return new String(result[`${ref}.${last}`]).valueOf();
-                      }
-                    }),
+                    struct: ref_struct.get(),
+                    id: new Decimal(result[`${ref}`]).truncated(),
+                    active: new Decimal(result[`${ref}._active`]).equals(1),
+                    created_at: new Date(result[`${ref}._created_at`]),
+                    updated_at: new Date(result[`${ref}._updated_at`]),
                   },
-                ] as [string, StrongEnum];
+                ]);
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
               }
-              case "i32":
-              case "u32":
-              case "i64":
-              case "u64":
-              case "idouble":
-              case "udouble":
-              case "idecimal":
-              case "udecimal": {
-                return [
-                  last,
-                  {
-                    type: field_struct_name,
-                    value: arrow(() => {
-                      const integer_fields = ["i32", "u32", "i64", "u64"];
-                      return arrow(() => {
-                        if (integer_fields.includes(field_struct_name)) {
-                          if (ref === "") {
-                            return new Decimal(result[`${last}`]).truncated();
-                          } else {
-                            return new Decimal(
-                              result[`${ref}.${last}`]
-                            ).truncated();
-                          }
+            }
+            const leaf: [string, StrongEnum] = arrow(() => {
+              const ref: string = init.join(".");
+              const field_struct_name = filter_path.value[0];
+              switch (field_struct_name) {
+                case "str":
+                case "lstr":
+                case "clob": {
+                  return [
+                    last,
+                    {
+                      type: field_struct_name,
+                      value: arrow(() => {
+                        if (ref === "") {
+                          return new String(result[`${last}`]).valueOf();
                         } else {
-                          if (ref === "") {
-                            return new Decimal(result[`${last}`]);
-                          } else {
-                            return new Decimal(result[`${ref}.${last}`]);
-                          }
+                          return new String(result[`${ref}.${last}`]).valueOf();
                         }
-                      });
-                    }),
-                  },
-                ] as [string, StrongEnum];
+                      }),
+                    },
+                  ] as [string, StrongEnum];
+                }
+                case "i32":
+                case "u32":
+                case "i64":
+                case "u64":
+                case "idouble":
+                case "udouble":
+                case "idecimal":
+                case "udecimal": {
+                  return [
+                    last,
+                    {
+                      type: field_struct_name,
+                      value: arrow(() => {
+                        const integer_fields = ["i32", "u32", "i64", "u64"];
+                        return arrow(() => {
+                          if (integer_fields.includes(field_struct_name)) {
+                            if (ref === "") {
+                              return new Decimal(result[`${last}`]).truncated();
+                            } else {
+                              return new Decimal(
+                                result[`${ref}.${last}`]
+                              ).truncated();
+                            }
+                          } else {
+                            if (ref === "") {
+                              return new Decimal(result[`${last}`]);
+                            } else {
+                              return new Decimal(result[`${ref}.${last}`]);
+                            }
+                          }
+                        });
+                      }),
+                    },
+                  ] as [string, StrongEnum];
+                }
+                case "bool": {
+                  return [
+                    last,
+                    {
+                      type: field_struct_name,
+                      value: arrow(() => {
+                        if (ref === "") {
+                          return new Decimal(result[`${last}`]).equals(1);
+                        } else {
+                          return new Decimal(result[`${ref}.${last}`]).equals(
+                            1
+                          );
+                        }
+                      }),
+                    },
+                  ] as [string, StrongEnum];
+                }
+                case "date":
+                case "time":
+                case "timestamp": {
+                  return [
+                    last,
+                    {
+                      type: field_struct_name,
+                      value: arrow(() => {
+                        if (ref === "") {
+                          return new Date(result[`${last}`]);
+                        } else {
+                          return new Date(result[`${ref}.${last}`]);
+                        }
+                      }),
+                    },
+                  ] as [string, StrongEnum];
+                }
+                case "other": {
+                  const field_struct_name = filter_path.value[2].name;
+                  return [
+                    last,
+                    {
+                      type: "other",
+                      other: field_struct_name,
+                      value: arrow(() => {
+                        if (ref === "") {
+                          return new Decimal(result[`${last}`]).truncated();
+                        } else {
+                          return new Decimal(
+                            result[`${ref}.${last}`]
+                          ).truncated();
+                        }
+                      }),
+                    },
+                  ] as [string, StrongEnum];
+                }
+                default: {
+                  const _exhaustiveCheck: never = field_struct_name;
+                  return _exhaustiveCheck;
+                }
               }
-              case "bool": {
-                return [
-                  last,
-                  {
-                    type: field_struct_name,
-                    value: arrow(() => {
-                      if (ref === "") {
-                        return new Decimal(result[`${last}`]).equals(1);
-                      } else {
-                        return new Decimal(result[`${ref}.${last}`]).equals(1);
-                      }
-                    }),
-                  },
-                ] as [string, StrongEnum];
-              }
-              case "date":
-              case "time":
-              case "timestamp": {
-                return [
-                  last,
-                  {
-                    type: field_struct_name,
-                    value: arrow(() => {
-                      if (ref === "") {
-                        return new Date(result[`${last}`]);
-                      } else {
-                        return new Date(result[`${ref}.${last}`]);
-                      }
-                    }),
-                  },
-                ] as [string, StrongEnum];
-              }
-              case "other": {
-                const field_struct_name = filter_path.value[2].name;
-                return [
-                  last,
-                  {
-                    type: "other",
-                    other: field_struct_name,
-                    value: arrow(() => {
-                      if (ref === "") {
-                        return new Decimal(result[`${last}`]).truncated();
-                      } else {
-                        return new Decimal(
-                          result[`${ref}.${last}`]
-                        ).truncated();
-                      }
-                    }),
-                  },
-                ] as [string, StrongEnum];
-              }
-              default: {
-                const _exhaustiveCheck: never = field_struct_name;
-                return _exhaustiveCheck;
-              }
-            }
-          });
-          paths.push(new Path(label, [init_path, leaf]));
-        } else {
-          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            });
+            paths.push(new Path(label, [init_path, leaf]));
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
         }
+        variables.push(
+          new Variable(
+            struct,
+            new Decimal(result["_id"]).truncated(),
+            new Decimal(result["_active"]).equals(1),
+            new Date(result["_created_at"]),
+            new Date(result["_updated_at"]),
+            HashSet.ofIterable(paths)
+          )
+        );
+      } catch (err) {
+        console.log("SOMOMOMOMOMOEETTHHIINNNGG1111111111111", err);
       }
-      variables.push(
-        new Variable(
-          struct,
-          new Decimal(result["_id"]).truncated(),
-          new Decimal(result["_active"]).equals(1),
-          new Date(result["_created_at"]),
-          new Date(result["_updated_at"]),
-          HashSet.ofIterable(paths)
-        )
-      );
     }
     return new Ok(variables);
   } catch (err) {
