@@ -15,8 +15,9 @@ import {
   BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
@@ -38,6 +39,7 @@ type State = {
   variables: Array<Variable>;
   reached_end: boolean;
   refreshing: boolean;
+  layout: string;
 };
 
 export type Action =
@@ -52,7 +54,8 @@ export type Action =
   | ["filter", "remove", Filter]
   | ["filter", "replace", Filter]
   | ["filters", Filter, "remove", FilterPath]
-  | ["filters", Filter, "replace", FilterPath];
+  | ["filters", Filter, "replace", FilterPath]
+  | ["layout", string];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -276,6 +279,10 @@ export function reducer(state: Draft<State>, action: Action) {
       }
       break;
     }
+    case "layout": {
+      state.layout = action[1];
+      break;
+    }
     default: {
       const _exhaustiveCheck: never = action[0];
       return _exhaustiveCheck;
@@ -295,6 +302,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
     variables: [],
     reached_end: false,
     refreshing: true,
+    layout: "",
   });
 
   const get_vars = async () => {
@@ -327,10 +335,143 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef3 = useRef<BottomSheetModal>(null);
+  const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
         <View style={{ justifyContent: "flex-end" }}>
+          <Pressable
+            onPress={() => bottomSheetModalRef4.current?.present()}
+            style={{
+              alignSelf: "center",
+            }}
+          >
+            <Text
+              style={{
+                alignSelf: "flex-end",
+                fontSize: 15,
+                fontWeight: "500",
+                textAlign: "center",
+                paddingHorizontal: 4,
+                paddingVertical: 2,
+                color: "white",
+              }}
+            >
+              View <Feather name="layout" size={16} color="white" />
+            </Text>
+          </Pressable>
+          <BottomSheetModal
+            ref={bottomSheetModalRef4}
+            snapPoints={["50%", "95%"]}
+            index={0}
+            backgroundStyle={{
+              backgroundColor: colors.custom.black[900],
+              borderColor: colors.tailwind.gray[500],
+              borderWidth: 1,
+            }}
+          >
+            <View
+              style={{
+                paddingBottom: 10,
+                marginHorizontal: 1,
+                paddingHorizontal: 8,
+                borderBottomWidth: 1,
+                backgroundColor: colors.custom.black[900],
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                VIEW
+              </Text>
+              <View>
+                <Pressable
+                  onPress={() => bottomSheetModalRef4.current?.close()}
+                  style={{ paddingRight: 8 }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "700",
+                      textAlign: "center",
+                      paddingHorizontal: 5,
+                      paddingVertical: 2,
+                      borderRadius: 2,
+                      backgroundColor: colors.custom.red[900],
+                    }}
+                  >
+                    Close
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+            <BottomSheetScrollView
+              contentContainerStyle={{
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                margin: 5,
+              }}
+            >
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                  marginHorizontal: 5,
+                  marginVertical: 10,
+                }}
+              >
+                {arrow(() => {
+                  const active = state.layout === "";
+                  return (
+                    <Checkbox
+                      value={active}
+                      onValueChange={(x) => {
+                        if (x) {
+                          dispatch(["layout", ""]);
+                          bottomSheetModalRef4.current?.close();
+                        }
+                      }}
+                      color={active ? colors.custom.red[900] : undefined}
+                    />
+                  );
+                })}
+                <Text style={{ paddingLeft: 10 }}>Default</Text>
+              </View>
+              {Object.keys(props.route.params.render_list_element[1]).map(
+                (layout) => {
+                  return (
+                    <View
+                      style={{
+                        justifyContent: "flex-start",
+                        marginHorizontal: 5,
+                        marginVertical: 10,
+                      }}
+                    >
+                      {arrow(() => {
+                        const active = state.layout === layout;
+                        return (
+                          <Checkbox
+                            value={active}
+                            onValueChange={(x) => {
+                              if (x) {
+                                dispatch(["layout", layout]);
+                                bottomSheetModalRef4.current?.close();
+                              }
+                            }}
+                            color={active ? colors.custom.red[900] : undefined}
+                          />
+                        );
+                      })}
+                      <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                    </View>
+                  );
+                }
+              )}
+            </BottomSheetScrollView>
+          </BottomSheetModal>
           <Pressable
             onPress={() => bottomSheetModalRef2.current?.present()}
             style={{
@@ -354,7 +495,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
           <BottomSheetModal
             ref={bottomSheetModalRef2}
             snapPoints={["50%", "95%"]}
-            index={1}
+            index={0}
             backgroundStyle={{
               backgroundColor: colors.custom.black[900],
               borderColor: colors.tailwind.gray[500],
@@ -425,7 +566,7 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             <BottomSheetModal
               ref={bottomSheetModalRef3}
               snapPoints={["50%", "95%"]}
-              index={1}
+              index={0}
               backgroundStyle={{
                 backgroundColor: colors.custom.black[900],
                 borderColor: colors.tailwind.gray[500],
@@ -501,12 +642,12 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
         <FlatList
           data={state.variables}
           renderItem={(list_item) => {
-            const ElementJSX = props.route.params
-              .render_list_element[0] as any as (props: {
-              selected: number;
-              variable: Variable;
-              disptach_values: (variable: Variable) => void;
-            }) => JSX.Element;
+            const ElementJSX = arrow(() => {
+              if (state.layout in props.route.params.render_list_element[1]) {
+                return props.route.params.render_list_element[1][state.layout];
+              }
+              return props.route.params.render_list_element[0];
+            });
             return (
               <ElementJSX
                 selected={props.route.params.selected}

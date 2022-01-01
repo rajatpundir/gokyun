@@ -162,7 +162,6 @@ export function SortComponentFields(props: {
               <Checkbox
                 value={active}
                 onValueChange={(x) => {
-                  console.log(x);
                   if (x) {
                     const field_struct_name = filter_path.value[0];
                     props.dispatch([
