@@ -408,163 +408,166 @@ function CreateComponent(props: {
                 ["Mobile", [[], "mobile"]],
                 ["Product Count", [[], "product_count"]],
               ],
-              render_list_element: (props: {
-                selected: number;
-                variable: Variable;
-                disptach_values: (variable: Variable) => void;
-              }) => {
-                const [state, dispatch] = useImmerReducer<State, Action>(
-                  reducer,
-                  {
-                    id: props.variable.id,
-                    active: props.variable.active,
-                    created_at: props.variable.created_at,
-                    updated_at: props.variable.updated_at,
-                    values: props.variable.paths,
-                    mode: "read",
-                    event_trigger: 0,
-                    check_trigger: 0,
-                    extensions: {},
-                    higher_structs: [],
-                    checks: {},
-                    labels: [],
-                    // user_paths and borrows fields does not play much role, since parent had already deduced permissions
-                    user_paths: [],
-                    borrows: [],
-                  }
-                );
-                useEffect(() => {
-                  // Mark triggers, checks, etc
-                  // Writeable fields would already have been correctly marked
-                  dispatch([
-                    "values",
-                    mark_trigger_dependencies(
-                      props.variable.struct,
-                      state.values as HashSet<Path>,
-                      state
-                    ),
-                  ]);
-                }, [props.variable.struct, props.variable.paths]);
-                // TODO. Try running trigger, checks, etc here.
-                return apply(
-                  {
-                    struct: props.variable.struct,
-                    state: state,
-                    dispatch: dispatch,
-                  },
-                  (it) => {
-                    if (
-                      !props.variable.id.equals(-1) &&
-                      props.variable.id.equals(props.selected)
-                    ) {
-                      return (
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            borderRadius: 5,
-                            paddingVertical: 5,
-                            marginVertical: 5,
-                            backgroundColor: colors.tailwind.gray[800],
-                            borderWidth: 2,
-                          }}
-                        >
-                          <View>
-                            <Label {...it} path={"nickname"} />
-                            <Field {...it} path={"nickname"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"knows_english"} />
-                            <Field {...it} path={"knows_english"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"mobile"} />
-                            <Field {...it} path={"mobile"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"product_count"} />
-                            <Field {...it} path={"product_count"} />
-                          </View>
-                          <Pressable
-                            onPress={() =>
-                              props.disptach_values(props.variable)
-                            }
-                            style={{
-                              alignSelf: "flex-end",
-                              paddingVertical: 10,
-                              paddingRight: 5,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                backgroundColor: colors.custom.red[900],
-                                paddingHorizontal: 6,
-                                paddingVertical: 2,
-                                fontWeight: "bold",
-                                borderRadius: 2,
-                              }}
-                            >
-                              OK
-                            </Text>
-                          </Pressable>
-                        </View>
-                      );
-                    } else {
-                      return (
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            borderRadius: 5,
-                            paddingVertical: 5,
-                            marginVertical: 5,
-                            backgroundColor: colors.tailwind.gray[900],
-                          }}
-                        >
-                          <View>
-                            <Label {...it} path={"nickname"} />
-                            <Field {...it} path={"nickname"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"knows_english"} />
-                            <Field {...it} path={"knows_english"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"mobile"} />
-                            <Field {...it} path={"mobile"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"product_count"} />
-                            <Field {...it} path={"product_count"} />
-                          </View>
-                          <Pressable
-                            onPress={() =>
-                              props.disptach_values(props.variable)
-                            }
-                            style={{
-                              alignSelf: "flex-end",
-                              paddingVertical: 10,
-                              paddingRight: 5,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                backgroundColor: colors.custom.red[900],
-                                paddingHorizontal: 6,
-                                paddingVertical: 2,
-                                fontWeight: "bold",
-                                borderRadius: 2,
-                              }}
-                            >
-                              OK
-                            </Text>
-                          </Pressable>
-                        </View>
-                      );
+              render_list_element: [
+                (props: {
+                  selected: number;
+                  variable: Variable;
+                  disptach_values: (variable: Variable) => void;
+                }) => {
+                  const [state, dispatch] = useImmerReducer<State, Action>(
+                    reducer,
+                    {
+                      id: props.variable.id,
+                      active: props.variable.active,
+                      created_at: props.variable.created_at,
+                      updated_at: props.variable.updated_at,
+                      values: props.variable.paths,
+                      mode: "read",
+                      event_trigger: 0,
+                      check_trigger: 0,
+                      extensions: {},
+                      higher_structs: [],
+                      checks: {},
+                      labels: [],
+                      // user_paths and borrows fields does not play much role, since parent had already deduced permissions
+                      user_paths: [],
+                      borrows: [],
                     }
-                  }
-                );
-              },
+                  );
+                  useEffect(() => {
+                    // Mark triggers, checks, etc
+                    // Writeable fields would already have been correctly marked
+                    dispatch([
+                      "values",
+                      mark_trigger_dependencies(
+                        props.variable.struct,
+                        state.values as HashSet<Path>,
+                        state
+                      ),
+                    ]);
+                  }, [props.variable.struct, props.variable.paths]);
+                  // TODO. Try running trigger, checks, etc here.
+                  return apply(
+                    {
+                      struct: props.variable.struct,
+                      state: state,
+                      dispatch: dispatch,
+                    },
+                    (it) => {
+                      if (
+                        !props.variable.id.equals(-1) &&
+                        props.variable.id.equals(props.selected)
+                      ) {
+                        return (
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              borderRadius: 5,
+                              paddingVertical: 5,
+                              marginVertical: 5,
+                              backgroundColor: colors.tailwind.gray[800],
+                              borderWidth: 2,
+                            }}
+                          >
+                            <View>
+                              <Label {...it} path={"nickname"} />
+                              <Field {...it} path={"nickname"} />
+                            </View>
+                            <View>
+                              <Label {...it} path={"knows_english"} />
+                              <Field {...it} path={"knows_english"} />
+                            </View>
+                            <View>
+                              <Label {...it} path={"mobile"} />
+                              <Field {...it} path={"mobile"} />
+                            </View>
+                            <View>
+                              <Label {...it} path={"product_count"} />
+                              <Field {...it} path={"product_count"} />
+                            </View>
+                            <Pressable
+                              onPress={() =>
+                                props.disptach_values(props.variable)
+                              }
+                              style={{
+                                alignSelf: "flex-end",
+                                paddingVertical: 10,
+                                paddingRight: 5,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  backgroundColor: colors.custom.red[900],
+                                  paddingHorizontal: 6,
+                                  paddingVertical: 2,
+                                  fontWeight: "bold",
+                                  borderRadius: 2,
+                                }}
+                              >
+                                OK
+                              </Text>
+                            </Pressable>
+                          </View>
+                        );
+                      } else {
+                        return (
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              borderRadius: 5,
+                              paddingVertical: 5,
+                              marginVertical: 5,
+                              backgroundColor: colors.tailwind.gray[900],
+                            }}
+                          >
+                            <View>
+                              <Label {...it} path={"nickname"} />
+                              <Field {...it} path={"nickname"} />
+                            </View>
+                            <View>
+                              <Label {...it} path={"knows_english"} />
+                              <Field {...it} path={"knows_english"} />
+                            </View>
+                            <View>
+                              <Label {...it} path={"mobile"} />
+                              <Field {...it} path={"mobile"} />
+                            </View>
+                            <View>
+                              <Label {...it} path={"product_count"} />
+                              <Field {...it} path={"product_count"} />
+                            </View>
+                            <Pressable
+                              onPress={() =>
+                                props.disptach_values(props.variable)
+                              }
+                              style={{
+                                alignSelf: "flex-end",
+                                paddingVertical: 10,
+                                paddingRight: 5,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  backgroundColor: colors.custom.red[900],
+                                  paddingHorizontal: 6,
+                                  paddingVertical: 2,
+                                  fontWeight: "bold",
+                                  borderRadius: 2,
+                                }}
+                              >
+                                OK
+                              </Text>
+                            </Pressable>
+                          </View>
+                        );
+                      }
+                    }
+                  );
+                },
+                {},
+              ],
             },
           ]}
         />

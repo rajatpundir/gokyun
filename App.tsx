@@ -52,11 +52,21 @@ export type NavigatorParams = {
     level: Decimal | undefined;
     filters: [Filter, HashSet<Filter>];
     limit: Decimal;
-    render_list_element: (props: {
-      selected: number;
-      variable: Variable;
-      disptach_values: (variable: Variable) => void;
-    }) => JSX.Element;
+    render_list_element: [
+      (props: {
+        selected: number;
+        variable: Variable;
+        disptach_values: (variable: Variable) => void;
+      }) => JSX.Element,
+      Record<
+        string,
+        (props: {
+          selected: number;
+          variable: Variable;
+          disptach_values: (variable: Variable) => void;
+        }) => JSX.Element
+      >
+    ];
     disptach_values: (variable: Variable) => void;
   };
   Test: {

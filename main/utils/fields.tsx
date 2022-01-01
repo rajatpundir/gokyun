@@ -624,7 +624,6 @@ function U_Decimal(
   return null;
 }
 
-// TODO. Add a expo-checkbox based implemention as well
 function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
@@ -651,14 +650,7 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
         />
       );
     } else {
-      return (
-        <Checkbox
-          style={[{}, style]}
-          {...otherProps}
-          color={value.value ? colors.custom.red[900] : undefined}
-          value={value.value}
-        />
-      );
+      return <Text>{value.value ? "Yes" : "No"}</Text>;
     }
   }
   console.log("ERROR: Invalid path: ", props.path);
@@ -905,11 +897,21 @@ function Other_Field(
     title: string;
     labels: Immutable<Array<[string, PathString]>>;
     element: JSX.Element;
-    render_list_element: (props: {
-      selected: number;
-      variable: Variable;
-      disptach_values: (variable: Variable) => void;
-    }) => JSX.Element;
+    render_list_element: [
+      (props: {
+        selected: number;
+        variable: Variable;
+        disptach_values: (variable: Variable) => void;
+      }) => JSX.Element,
+      Record<
+        string,
+        (props: {
+          selected: number;
+          variable: Variable;
+          disptach_values: (variable: Variable) => void;
+        }) => JSX.Element
+      >
+    ];
     limit: Decimal;
   }
 ): JSX.Element | null {
@@ -1015,11 +1017,21 @@ export function Field(props: {
           title: string;
           labels: Immutable<Array<[string, PathString]>>;
           element: JSX.Element;
-          render_list_element: (props: {
-            selected: number;
-            variable: Variable;
-            disptach_values: (variable: Variable) => void;
-          }) => JSX.Element;
+          render_list_element: [
+            (props: {
+              selected: number;
+              variable: Variable;
+              disptach_values: (variable: Variable) => void;
+            }) => JSX.Element,
+            Record<
+              string,
+              (props: {
+                selected: number;
+                variable: Variable;
+                disptach_values: (variable: Variable) => void;
+              }) => JSX.Element
+            >
+          ];
           limit: Decimal;
         }
       ];

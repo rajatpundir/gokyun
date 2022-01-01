@@ -21,7 +21,6 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
 
-// Test levels
 // Custom Views
 // Custom outer search fields
 
@@ -501,13 +500,21 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
 
         <FlatList
           data={state.variables}
-          renderItem={(list_item) => (
-            <props.route.params.render_list_element
-              selected={props.route.params.selected}
-              variable={list_item.item}
-              disptach_values={props.route.params.disptach_values}
-            />
-          )}
+          renderItem={(list_item) => {
+            const ElementJSX = props.route.params
+              .render_list_element[0] as any as (props: {
+              selected: number;
+              variable: Variable;
+              disptach_values: (variable: Variable) => void;
+            }) => JSX.Element;
+            return (
+              <ElementJSX
+                selected={props.route.params.selected}
+                variable={list_item.item}
+                disptach_values={props.route.params.disptach_values}
+              />
+            );
+          }}
           keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
           refreshing={state.refreshing}
           onRefresh={() => {}}
