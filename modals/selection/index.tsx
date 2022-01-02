@@ -22,8 +22,11 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
 
-// Custom Views
-// Custom outer search fields
+// Custom search fields
+
+// A function that gets the filters from state to return a view and may update the filter is passed
+
+// (props: { filters: HashSet<Filter>, dispatch: React.Dispatch<Action> }) => JSX.Element
 
 // Create / Update Test component
 // List Tests component
@@ -339,6 +342,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
+        <props.route.params.render_custom_fields
+          filters={state.filters}
+          dispatch={dispatch}
+        />
         <View style={{ justifyContent: "flex-end" }}>
           <Pressable
             onPress={() => bottomSheetModalRef4.current?.present()}

@@ -20,12 +20,13 @@ import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { log_permissions } from "../../main/utils/permissions";
-import { get_variable } from "../../main/utils/db";
+import { Filter, get_variable } from "../../main/utils/db";
 import { Path, PathString, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
+import { Action as FilterListAction } from "../selection";
 
 // TODO 444 (Running trigger, checks, etc inside fetched other field paths)
 // Fix react navigation error related to serializability of props passed
@@ -702,6 +703,10 @@ function CreateComponent(props: {
                   },
                 },
               ],
+              render_custom_fields: (props: {
+                filters: HashSet<Filter>;
+                dispatch: React.Dispatch<FilterListAction>;
+              }) => <Text>ABC</Text>,
             },
           ]}
         />

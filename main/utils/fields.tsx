@@ -30,6 +30,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
 import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
+import { Action as FilterListAction } from "../../modals/selection";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -913,6 +914,10 @@ function Other_Field(
       >
     ];
     limit: Decimal;
+    render_custom_fields: (props: {
+      filters: HashSet<Filter>;
+      dispatch: React.Dispatch<FilterListAction>;
+    }) => JSX.Element;
   }
 ): JSX.Element | null {
   const { state, dispatch } = props;
@@ -959,6 +964,7 @@ function Other_Field(
                   ]);
                   navigation.goBack();
                 },
+                render_custom_fields: props.render_custom_fields,
               });
             }
           }}
@@ -1033,6 +1039,10 @@ export function Field(props: {
             >
           ];
           limit: Decimal;
+          render_custom_fields: (props: {
+            filters: HashSet<Filter>;
+            dispatch: React.Dispatch<FilterListAction>;
+          }) => JSX.Element;
         }
       ];
 }): JSX.Element | null {
@@ -1594,6 +1604,7 @@ export function Field(props: {
                 element={props.options[1].element}
                 render_list_element={props.options[1].render_list_element}
                 limit={props.options[1].limit}
+                render_custom_fields={props.options[1].render_custom_fields}
               />
             );
           }

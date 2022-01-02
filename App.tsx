@@ -23,7 +23,7 @@ import {
 
 import NotFoundScreen from "./main/NotFoundScreen";
 
-import SelectionModal from "./modals/selection";
+import SelectionModal, { Action as FilterListAction } from "./modals/selection";
 import { Struct, Variable } from "./main/utils/variable";
 
 import Test from "./modals/test";
@@ -31,7 +31,7 @@ import Test from "./modals/test";
 import Decimal from "decimal.js";
 import { Filter } from "./main/utils/db";
 
-import { NativeBaseProvider, Box } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
 
@@ -68,6 +68,10 @@ export type NavigatorParams = {
       >
     ];
     disptach_values: (variable: Variable) => void;
+    render_custom_fields: (props: {
+      filters: HashSet<Filter>;
+      dispatch: React.Dispatch<FilterListAction>;
+    }) => JSX.Element;
   };
   Test: {
     id: number;
