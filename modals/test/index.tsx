@@ -34,8 +34,13 @@ import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
 import { Action as FilterListAction } from "../selection";
 
+// Create / Update Test component
+// List Tests component
 // TODO 444 (Running trigger, checks, etc inside fetched other field paths)
+// Test if bulk update of values by trigger speeds up component loading
 // Fix react navigation error related to serializability of props passed
+// Draw border around sort arrow
+// Figure mechanism to hide/embed inside custom seach filter
 
 // Complete testing Test
 export default function Component(

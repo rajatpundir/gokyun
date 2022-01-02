@@ -22,15 +22,6 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
 
-// Custom search fields
-
-// A function that gets the filters from state to return a view and may update the filter is passed
-
-// (props: { filters: HashSet<Filter>, dispatch: React.Dispatch<Action> }) => JSX.Element
-
-// Create / Update Test component
-// List Tests component
-
 type State = {
   struct: Struct;
   active: boolean;
