@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { View, Text } from "../../main/themed";
+import { View, Text, TextInput } from "../../main/themed";
 import { useImmerReducer } from "use-immer";
 import {
   State,
@@ -20,8 +20,14 @@ import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { log_permissions } from "../../main/utils/permissions";
-import { Filter, get_variable } from "../../main/utils/db";
-import { Path, PathString, Struct, Variable } from "../../main/utils/variable";
+import { Filter, FilterPath, get_variable } from "../../main/utils/db";
+import {
+  compare_paths,
+  Path,
+  PathString,
+  Struct,
+  Variable,
+} from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { FontAwesome } from "@expo/vector-icons";
@@ -706,7 +712,72 @@ function CreateComponent(props: {
               render_custom_fields: (props: {
                 filters: HashSet<Filter>;
                 dispatch: React.Dispatch<FilterListAction>;
-              }) => <Text>ABC</Text>,
+              }) => {
+                const filter = props.filters.findAny((x) => x.index === 0);
+                if (filter.isSome()) {
+                  return (
+                    <View>
+                      <Text>Nickname</Text>
+                      <TextInput
+                        value={arrow(() => {
+                          const result = filter
+                            .get()
+                            .filter_paths.findAny((x) =>
+                              compare_paths(x.path, [[], "nickname"])
+                            );
+                          if (result.isSome()) {
+                            const v = result.get().value;
+                            if (
+                              v[0] === "str" &&
+                              v[1] !== undefined &&
+                              v[1][0] === "like"
+                            ) {
+                              if (typeof v[1][1] === "string") {
+                                return v[1][1];
+                              }
+                            }
+                          }
+                          return "";
+                        })}
+                        onChangeText={(x) => {
+                          console.log(x);
+                          props.dispatch([
+                            "filters",
+                            filter.get(),
+                            "replace",
+                            apply(
+                              new FilterPath(
+                                "Nickname",
+                                [[], "nickname"],
+                                ["str", ["like", x]],
+                                undefined
+                              ),
+                              (it) => {
+                                it.active = true;
+                                return it;
+                              }
+                            ),
+                          ]);
+                        }}
+                        style={{ flexGrow: 1 }}
+                      />
+                    </View>
+                  );
+                } else {
+                  props.dispatch([
+                    "filter",
+                    "replace",
+                    new Filter(
+                      0,
+                      [false, undefined],
+                      [false, undefined],
+                      [false, undefined],
+                      HashSet.of()
+                    ),
+                  ]);
+                }
+                return <></>;
+              },
             },
           ]}
         />

@@ -342,10 +342,6 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
-        <props.route.params.render_custom_fields
-          filters={state.filters}
-          dispatch={dispatch}
-        />
         <View style={{ justifyContent: "flex-end" }}>
           <Pressable
             onPress={() => bottomSheetModalRef4.current?.present()}
@@ -645,6 +641,10 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
             </Text>
           </Pressable>
         </View>
+        <props.route.params.render_custom_fields
+          filters={state.filters}
+          dispatch={dispatch}
+        />
 
         <FlatList
           data={state.variables}

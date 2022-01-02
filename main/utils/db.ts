@@ -25,8 +25,6 @@ import { ErrMsg, errors } from "./errors";
 import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
 import { get_struct, get_structs } from "./schema";
 
-// TODO. n per group should be performed, so that we get (struct_name, id) combination with max level
-// We could also have the HAVING clause eliminate possibility of nulls for aggregate column aliases
 // We will also need functions for activating or deactivating variable in a layer
 
 const db_name: string = "test1.db";
