@@ -23,7 +23,7 @@ import {
 
 import NotFoundScreen from "./main/NotFoundScreen";
 
-import SelectionModal from "./modals/selection";
+import { SelectionModal } from "./main/utils/list";
 import { ListAction } from "./main/utils/list";
 
 import { Struct, Variable } from "./main/utils/variable";
