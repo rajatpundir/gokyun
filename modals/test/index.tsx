@@ -30,7 +30,7 @@ import {
 } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, arrow, unwrap } from "../../main/utils/prelude";
-import { FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
 import { Action as FilterListAction } from "../selection";
 
@@ -39,10 +39,11 @@ import { Action as FilterListAction } from "../selection";
 // TODO 444 (Running trigger, checks, etc inside fetched other field paths)
 // Test if bulk update of values by trigger speeds up component loading
 // Fix react navigation error related to serializability of props passed
-// Draw border around sort arrow
-// Figure mechanism to hide/embed inside custom seach filter
 
 // Complete testing Test
+
+// Get working on creating actual app components for real by fifth of Jan!
+
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
@@ -717,13 +718,32 @@ function CreateComponent(props: {
               render_custom_fields: (props: {
                 filters: HashSet<Filter>;
                 dispatch: React.Dispatch<FilterListAction>;
+                show_views: () => void;
+                show_sorting: () => void;
+                show_filters: () => void;
               }) => {
                 const filter = props.filters.findAny((x) => x.index === 0);
                 if (filter.isSome()) {
                   return (
-                    <View>
-                      <Text>Nickname</Text>
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 5,
+                        borderColor: colors.tailwind.slate[500],
+                        paddingVertical: 2,
+                        paddingHorizontal: 10,
+                        marginHorizontal: 20,
+                        marginBottom: 8,
+                      }}
+                    >
+                      <Feather
+                        name="search"
+                        size={24}
+                        color={colors.tailwind.slate[400]}
+                        style={{ alignSelf: "center" }}
+                      />
                       <TextInput
+                        placeholder="Nickname"
                         value={arrow(() => {
                           const result = filter
                             .get()
@@ -764,8 +784,57 @@ function CreateComponent(props: {
                             ),
                           ]);
                         }}
-                        style={{ flexGrow: 1 }}
+                        style={{
+                          flexGrow: 1,
+                        }}
                       />
+                      <>
+                        <Pressable
+                          onPress={props.show_views}
+                          style={{
+                            padding: 2,
+                            marginHorizontal: 1,
+                            alignSelf: "center",
+                          }}
+                        >
+                          <Feather
+                            name="layout"
+                            size={20}
+                            color={colors.tailwind.slate[400]}
+                            style={{ alignSelf: "center" }}
+                          />
+                        </Pressable>
+                        <Pressable
+                          onPress={props.show_sorting}
+                          style={{
+                            padding: 2,
+                            marginHorizontal: 1,
+                            alignSelf: "center",
+                          }}
+                        >
+                          <FontAwesome
+                            name="unsorted"
+                            size={20}
+                            color={colors.tailwind.slate[400]}
+                            style={{ alignSelf: "center" }}
+                          />
+                        </Pressable>
+                        <Pressable
+                          onPress={props.show_filters}
+                          style={{
+                            padding: 2,
+                            marginHorizontal: 1,
+                            alignSelf: "center",
+                          }}
+                        >
+                          <FontAwesome
+                            name="filter"
+                            size={20}
+                            color={colors.tailwind.slate[400]}
+                            style={{ alignSelf: "center" }}
+                          />
+                        </Pressable>
+                      </>
                     </View>
                   );
                 } else {

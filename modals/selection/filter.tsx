@@ -92,7 +92,11 @@ export function SortComponent(props: {
                     onPress={() => props.dispatch(["sort", "up", filter_path])}
                     style={{ marginBottom: -4 }}
                   >
-                    <FontAwesome name="sort-up" size={24} color="white" />
+                    <FontAwesome
+                      name="sort-up"
+                      size={24}
+                      color={colors.tailwind.slate[400]}
+                    />
                   </Pressable>
                   <Pressable
                     onPress={() =>
@@ -100,7 +104,11 @@ export function SortComponent(props: {
                     }
                     style={{ marginTop: -4 }}
                   >
-                    <FontAwesome name="sort-down" size={24} color="white" />
+                    <FontAwesome
+                      name="sort-down"
+                      size={24}
+                      color={colors.tailwind.slate[400]}
+                    />
                   </Pressable>
                 </View>
                 <View style={{ flexGrow: 1 }}>
@@ -109,16 +117,29 @@ export function SortComponent(props: {
                     onPress={() =>
                       props.dispatch(["sort", "toggle", filter_path])
                     }
-                    style={{ alignSelf: "center" }}
+                    style={{
+                      alignSelf: "center",
+                      borderWidth: 1,
+                      borderRadius: 5,
+                      borderColor: colors.tailwind.slate[400],
+                    }}
                   >
                     {arrow(() => {
                       if (ordering[1]) {
                         return (
-                          <AntDesign name="arrowdown" size={24} color="white" />
+                          <AntDesign
+                            name="arrowdown"
+                            size={24}
+                            color={colors.tailwind.slate[400]}
+                          />
                         );
                       } else {
                         return (
-                          <AntDesign name="arrowup" size={24} color="white" />
+                          <AntDesign
+                            name="arrowup"
+                            size={24}
+                            color={colors.tailwind.slate[400]}
+                          />
                         );
                       }
                     })}
@@ -227,7 +248,7 @@ export function FilterComponent(props: {
               padding: 3,
             }}
           >
-            <Entypo name="cross" size={24} color="white" />
+            <Entypo name="cross" size={24} color={colors.tailwind.slate[400]} />
           </Pressable>
         </View>
         <Pressable
@@ -578,7 +599,9 @@ export function FilterComponent(props: {
                           marginRight: 6,
                         }}
                       />
-                      <Text style={{ color: colors.custom.blue[900] }}>ID</Text>
+                      <Text style={{ color: colors.tailwind.slate[400] }}>
+                        ID
+                      </Text>
                     </View>
                     <View
                       style={{
@@ -666,10 +689,10 @@ export function FilterComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={"white"}
+                              dropdownIconColor={colors.tailwind.slate[400]}
                               style={{
                                 width: 185,
-                                color: "white",
+                                color: colors.tailwind.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -838,7 +861,7 @@ export function FilterComponent(props: {
                           marginRight: 6,
                         }}
                       />
-                      <Text style={{ color: colors.custom.blue[900] }}>
+                      <Text style={{ color: colors.tailwind.slate[400] }}>
                         Created
                       </Text>
                     </View>
@@ -928,10 +951,10 @@ export function FilterComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={"white"}
+                              dropdownIconColor={colors.tailwind.slate[400]}
                               style={{
                                 width: 185,
-                                color: "white",
+                                color: colors.tailwind.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -1336,7 +1359,7 @@ export function FilterComponent(props: {
                           marginRight: 6,
                         }}
                       />
-                      <Text style={{ color: colors.custom.blue[900] }}>
+                      <Text style={{ color: colors.tailwind.slate[400] }}>
                         Updated
                       </Text>
                     </View>
@@ -1426,10 +1449,10 @@ export function FilterComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={"white"}
+                              dropdownIconColor={colors.tailwind.slate[400]}
                               style={{
                                 width: 185,
-                                color: "white",
+                                color: colors.tailwind.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -2070,7 +2093,7 @@ function FilterPathComponent(props: {
                     marginRight: 6,
                   }}
                 />
-                <Text style={{ color: colors.custom.blue[900] }}>
+                <Text style={{ color: colors.tailwind.slate[400] }}>
                   {props.filter_path.label}
                 </Text>
               </View>
@@ -2155,10 +2178,10 @@ function FilterPathComponent(props: {
                               }
                               setSelectedOp(op);
                             }}
-                            dropdownIconColor={"white"}
+                            dropdownIconColor={colors.tailwind.slate[400]}
                             style={{
                               width: 185,
-                              color: "white",
+                              color: colors.tailwind.slate[400],
                             }}
                           >
                             <Picker.Item label="match" value="like" />
@@ -2254,10 +2277,10 @@ function FilterPathComponent(props: {
                               }
                               setSelectedOp(op);
                             }}
-                            dropdownIconColor={"white"}
+                            dropdownIconColor={colors.tailwind.slate[400]}
                             style={{
                               width: 185,
-                              color: "white",
+                              color: colors.tailwind.slate[400],
                             }}
                           >
                             <Picker.Item label="equals" value="==" />
@@ -2303,10 +2326,10 @@ function FilterPathComponent(props: {
                               }
                               setSelectedOp(op);
                             }}
-                            dropdownIconColor={"white"}
+                            dropdownIconColor={colors.tailwind.slate[400]}
                             style={{
                               width: 185,
-                              color: "white",
+                              color: colors.tailwind.slate[400],
                             }}
                           >
                             <Picker.Item label="equals" value="==" />
@@ -2383,10 +2406,10 @@ function FilterPathComponent(props: {
                               }
                               setSelectedOp(op);
                             }}
-                            dropdownIconColor={"white"}
+                            dropdownIconColor={colors.tailwind.slate[400]}
                             style={{
                               width: 185,
-                              color: "white",
+                              color: colors.tailwind.slate[400],
                             }}
                           >
                             <Picker.Item label="equals" value="==" />
@@ -2434,10 +2457,10 @@ function FilterPathComponent(props: {
                               }
                               setSelectedOp(op);
                             }}
-                            dropdownIconColor={"white"}
+                            dropdownIconColor={colors.tailwind.slate[400]}
                             style={{
                               width: 185,
-                              color: "white",
+                              color: colors.tailwind.slate[400],
                             }}
                           >
                             <Picker.Item label="equals" value="==" />
@@ -2546,7 +2569,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -2809,7 +2832,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -3077,7 +3100,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -3376,7 +3399,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -3662,7 +3685,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -3953,7 +3976,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -4257,7 +4280,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -4543,7 +4566,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -4834,7 +4857,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -5140,7 +5163,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -5430,7 +5453,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -5725,7 +5748,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -6029,7 +6052,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -6317,7 +6340,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -6610,7 +6633,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -6908,7 +6931,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -7188,7 +7211,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -7473,7 +7496,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -7771,7 +7794,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -8051,7 +8074,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -8336,7 +8359,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -8621,7 +8644,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -8906,7 +8929,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -9195,7 +9218,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -9489,7 +9512,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -9787,7 +9810,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -10075,7 +10098,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -10368,7 +10391,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -10718,7 +10741,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -11058,7 +11081,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -11403,7 +11426,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color="white"
+                                      color={colors.tailwind.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -11687,7 +11710,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color="white"
+                                color={colors.tailwind.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>

@@ -17,7 +17,6 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { Feather, FontAwesome } from "@expo/vector-icons";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../../main/themed/colors";
 import Checkbox from "expo-checkbox";
@@ -333,309 +332,250 @@ export default function Component(props: RootNavigatorProps<"SelectionModal">) {
   return (
     <BottomSheetModalProvider>
       <View style={{ flex: 1, flexDirection: "column" }}>
-        <View style={{ justifyContent: "flex-end" }}>
-          <Pressable
-            onPress={() => bottomSheetModalRef4.current?.present()}
+        <props.route.params.render_custom_fields
+          filters={state.filters}
+          dispatch={dispatch}
+          show_views={() => bottomSheetModalRef4.current?.present()}
+          show_sorting={() => bottomSheetModalRef2.current?.present()}
+          show_filters={() => bottomSheetModalRef1.current?.present()}
+        />
+
+        <BottomSheetModal
+          ref={bottomSheetModalRef4}
+          snapPoints={["50%", "95%"]}
+          index={0}
+          backgroundStyle={{
+            backgroundColor: colors.custom.black[900],
+            borderColor: colors.tailwind.gray[500],
+            borderWidth: 1,
+          }}
+        >
+          <View
             style={{
-              alignSelf: "center",
+              paddingBottom: 10,
+              marginHorizontal: 1,
+              paddingHorizontal: 8,
+              borderBottomWidth: 1,
+              backgroundColor: colors.custom.black[900],
             }}
           >
             <Text
               style={{
-                alignSelf: "flex-end",
                 fontSize: 15,
-                fontWeight: "500",
+                fontWeight: "bold",
                 textAlign: "center",
-                paddingHorizontal: 4,
-                paddingVertical: 2,
-                color: "white",
               }}
             >
-              View <Feather name="layout" size={16} color="white" />
+              VIEW
             </Text>
-          </Pressable>
-          <BottomSheetModal
-            ref={bottomSheetModalRef4}
-            snapPoints={["50%", "95%"]}
-            index={0}
-            backgroundStyle={{
-              backgroundColor: colors.custom.black[900],
-              borderColor: colors.tailwind.gray[500],
-              borderWidth: 1,
-            }}
-          >
-            <View
-              style={{
-                paddingBottom: 10,
-                marginHorizontal: 1,
-                paddingHorizontal: 8,
-                borderBottomWidth: 1,
-                backgroundColor: colors.custom.black[900],
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                VIEW
-              </Text>
-              <View>
-                <Pressable
-                  onPress={() => bottomSheetModalRef4.current?.close()}
-                  style={{ paddingRight: 8 }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "700",
-                      textAlign: "center",
-                      paddingHorizontal: 5,
-                      paddingVertical: 2,
-                      borderRadius: 2,
-                      backgroundColor: colors.custom.red[900],
-                    }}
-                  >
-                    Close
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-            <BottomSheetScrollView
-              contentContainerStyle={{
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                margin: 5,
-              }}
-            >
-              <View
-                style={{
-                  justifyContent: "flex-start",
-                  marginHorizontal: 5,
-                  marginVertical: 10,
-                }}
-              >
-                {arrow(() => {
-                  const active = state.layout === "";
-                  return (
-                    <Checkbox
-                      value={active}
-                      onValueChange={(x) => {
-                        if (x) {
-                          dispatch(["layout", ""]);
-                          bottomSheetModalRef4.current?.close();
-                        }
-                      }}
-                      color={active ? colors.custom.red[900] : undefined}
-                    />
-                  );
-                })}
-                <Text style={{ paddingLeft: 10 }}>Default</Text>
-              </View>
-              {Object.keys(props.route.params.render_list_element[1]).map(
-                (layout) => {
-                  return (
-                    <View
-                      style={{
-                        justifyContent: "flex-start",
-                        marginHorizontal: 5,
-                        marginVertical: 10,
-                      }}
-                    >
-                      {arrow(() => {
-                        const active = state.layout === layout;
-                        return (
-                          <Checkbox
-                            value={active}
-                            onValueChange={(x) => {
-                              if (x) {
-                                dispatch(["layout", layout]);
-                                bottomSheetModalRef4.current?.close();
-                              }
-                            }}
-                            color={active ? colors.custom.red[900] : undefined}
-                          />
-                        );
-                      })}
-                      <Text style={{ paddingLeft: 10 }}>{layout}</Text>
-                    </View>
-                  );
-                }
-              )}
-            </BottomSheetScrollView>
-          </BottomSheetModal>
-          <Pressable
-            onPress={() => bottomSheetModalRef2.current?.present()}
-            style={{
-              alignSelf: "center",
-            }}
-          >
-            <Text
-              style={{
-                alignSelf: "flex-end",
-                fontSize: 15,
-                fontWeight: "500",
-                textAlign: "center",
-                paddingHorizontal: 4,
-                paddingVertical: 2,
-                color: "white",
-              }}
-            >
-              Sort <FontAwesome name="unsorted" size={16} color="white" />
-            </Text>
-          </Pressable>
-          <BottomSheetModal
-            ref={bottomSheetModalRef2}
-            snapPoints={["50%", "95%"]}
-            index={0}
-            backgroundStyle={{
-              backgroundColor: colors.custom.black[900],
-              borderColor: colors.tailwind.gray[500],
-              borderWidth: 1,
-            }}
-          >
-            <View
-              style={{
-                paddingBottom: 10,
-                marginHorizontal: 1,
-                paddingHorizontal: 8,
-                borderBottomWidth: 1,
-                backgroundColor: colors.custom.black[900],
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                SORT
-              </Text>
-              <View>
-                <Pressable
-                  onPress={() => bottomSheetModalRef3.current?.present()}
-                  style={{ paddingRight: 8 }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "700",
-                      textAlign: "center",
-                      paddingHorizontal: 5,
-                      paddingVertical: 2,
-                      borderRadius: 2,
-                      backgroundColor: colors.custom.red[900],
-                    }}
-                  >
-                    Add Field
-                  </Text>
-                </Pressable>
-                <Pressable
-                  onPress={() => bottomSheetModalRef2.current?.close()}
-                  style={{ paddingRight: 8 }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "700",
-                      textAlign: "center",
-                      paddingHorizontal: 5,
-                      paddingVertical: 2,
-                      borderRadius: 2,
-                      backgroundColor: colors.custom.red[900],
-                    }}
-                  >
-                    Close
-                  </Text>
-                </Pressable>
-              </View>
-            </View>
-            <SortComponent
-              init_filter={state.init_filter}
-              dispatch={dispatch}
-            />
-            <BottomSheetModal
-              ref={bottomSheetModalRef3}
-              snapPoints={["50%", "95%"]}
-              index={0}
-              backgroundStyle={{
-                backgroundColor: colors.custom.black[900],
-                borderColor: colors.tailwind.gray[500],
-                borderWidth: 1,
-              }}
-            >
-              <View
-                style={{
-                  paddingBottom: 10,
-                  marginHorizontal: 1,
-                  paddingHorizontal: 8,
-                  borderBottomWidth: 1,
-                  backgroundColor: colors.custom.black[900],
-                }}
+            <View>
+              <Pressable
+                onPress={() => bottomSheetModalRef4.current?.close()}
+                style={{ paddingRight: 8 }}
               >
                 <Text
                   style={{
                     fontSize: 15,
-                    fontWeight: "bold",
+                    fontWeight: "700",
                     textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
                   }}
                 >
-                  Fields
+                  Close
                 </Text>
-                <View>
-                  <Pressable
-                    onPress={() => bottomSheetModalRef3.current?.close()}
-                    style={{ paddingRight: 8 }}
+              </Pressable>
+            </View>
+          </View>
+          <BottomSheetScrollView
+            contentContainerStyle={{
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              margin: 5,
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "flex-start",
+                marginHorizontal: 5,
+                marginVertical: 10,
+              }}
+            >
+              {arrow(() => {
+                const active = state.layout === "";
+                return (
+                  <Checkbox
+                    value={active}
+                    onValueChange={(x) => {
+                      if (x) {
+                        dispatch(["layout", ""]);
+                        bottomSheetModalRef4.current?.close();
+                      }
+                    }}
+                    color={active ? colors.custom.red[900] : undefined}
+                  />
+                );
+              })}
+              <Text style={{ paddingLeft: 10 }}>Default</Text>
+            </View>
+            {Object.keys(props.route.params.render_list_element[1]).map(
+              (layout) => {
+                return (
+                  <View
+                    style={{
+                      justifyContent: "flex-start",
+                      marginHorizontal: 5,
+                      marginVertical: 10,
+                    }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "700",
-                        textAlign: "center",
-                        paddingHorizontal: 5,
-                        paddingVertical: 2,
-                        borderRadius: 2,
-                        backgroundColor: colors.custom.red[900],
-                      }}
-                    >
-                      Close
-                    </Text>
-                  </Pressable>
-                </View>
-              </View>
-              <SortComponentFields
-                init_filter={state.init_filter}
-                dispatch={dispatch}
-              />
-            </BottomSheetModal>
-          </BottomSheetModal>
-          <Pressable
-            onPress={() => bottomSheetModalRef1.current?.present()}
+                    {arrow(() => {
+                      const active = state.layout === layout;
+                      return (
+                        <Checkbox
+                          value={active}
+                          onValueChange={(x) => {
+                            if (x) {
+                              dispatch(["layout", layout]);
+                              bottomSheetModalRef4.current?.close();
+                            }
+                          }}
+                          color={active ? colors.custom.red[900] : undefined}
+                        />
+                      );
+                    })}
+                    <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                  </View>
+                );
+              }
+            )}
+          </BottomSheetScrollView>
+        </BottomSheetModal>
+
+        <BottomSheetModal
+          ref={bottomSheetModalRef2}
+          snapPoints={["50%", "95%"]}
+          index={0}
+          backgroundStyle={{
+            backgroundColor: colors.custom.black[900],
+            borderColor: colors.tailwind.gray[500],
+            borderWidth: 1,
+          }}
+        >
+          <View
             style={{
-              paddingLeft: 4,
+              paddingBottom: 10,
+              marginHorizontal: 1,
+              paddingHorizontal: 8,
+              borderBottomWidth: 1,
+              backgroundColor: colors.custom.black[900],
             }}
           >
             <Text
               style={{
-                alignSelf: "flex-end",
                 fontSize: 15,
-                fontWeight: "500",
+                fontWeight: "bold",
                 textAlign: "center",
-                paddingHorizontal: 4,
-                paddingVertical: 2,
               }}
             >
-              Filter <FontAwesome name="filter" size={16} color="white" />
+              SORT
             </Text>
-          </Pressable>
-        </View>
-        <props.route.params.render_custom_fields
-          filters={state.filters}
-          dispatch={dispatch}
-        />
+            <View>
+              <Pressable
+                onPress={() => bottomSheetModalRef3.current?.present()}
+                style={{ paddingRight: 8 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "700",
+                    textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
+                  }}
+                >
+                  Add Field
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => bottomSheetModalRef2.current?.close()}
+                style={{ paddingRight: 8 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "700",
+                    textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
+                  }}
+                >
+                  Close
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
+          <BottomSheetModal
+            ref={bottomSheetModalRef3}
+            snapPoints={["50%", "95%"]}
+            index={0}
+            backgroundStyle={{
+              backgroundColor: colors.custom.black[900],
+              borderColor: colors.tailwind.gray[500],
+              borderWidth: 1,
+            }}
+          >
+            <View
+              style={{
+                paddingBottom: 10,
+                marginHorizontal: 1,
+                paddingHorizontal: 8,
+                borderBottomWidth: 1,
+                backgroundColor: colors.custom.black[900],
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                Fields
+              </Text>
+              <View>
+                <Pressable
+                  onPress={() => bottomSheetModalRef3.current?.close()}
+                  style={{ paddingRight: 8 }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "700",
+                      textAlign: "center",
+                      paddingHorizontal: 5,
+                      paddingVertical: 2,
+                      borderRadius: 2,
+                      backgroundColor: colors.custom.red[900],
+                    }}
+                  >
+                    Close
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+            <SortComponentFields
+              init_filter={state.init_filter}
+              dispatch={dispatch}
+            />
+          </BottomSheetModal>
+        </BottomSheetModal>
 
         <FlatList
           data={state.variables}

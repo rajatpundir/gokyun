@@ -683,9 +683,21 @@ function get_filter_path_stmt(
                 return `"${path_ref}" ${op} ${apply(value[1][1], (it) => {
                   if (typeof it === "string") {
                     if (op === "like") {
-                      args.push(`%${it}%`);
+                      args.push(
+                        `%${it
+                          .split(" ")
+                          .map((x) => x.trim())
+                          .filter((x) => x !== "")
+                          .join("%")}%`
+                      );
                     } else if (op === "glob") {
-                      args.push(`*${it}*`);
+                      args.push(
+                        `*${it
+                          .split(" ")
+                          .map((x) => x.trim())
+                          .filter((x) => x !== "")
+                          .join("*")}*`
+                      );
                     } else {
                       args.push(it);
                     }

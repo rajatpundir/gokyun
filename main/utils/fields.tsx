@@ -917,6 +917,9 @@ function Other_Field(
     render_custom_fields: (props: {
       filters: HashSet<Filter>;
       dispatch: React.Dispatch<FilterListAction>;
+      show_views: () => void;
+      show_sorting: () => void;
+      show_filters: () => void;
     }) => JSX.Element;
   }
 ): JSX.Element | null {
@@ -1042,6 +1045,9 @@ export function Field(props: {
           render_custom_fields: (props: {
             filters: HashSet<Filter>;
             dispatch: React.Dispatch<FilterListAction>;
+            show_views: () => void;
+            show_sorting: () => void;
+            show_filters: () => void;
           }) => JSX.Element;
         }
       ];

@@ -26,7 +26,7 @@ export function View(props: ViewProps) {
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
-          borderColor: colors.tailwind.gray[600],
+          borderColor: colors.tailwind.slate[400],
         },
         style,
       ]}
@@ -47,7 +47,7 @@ export function Text(props: TextProps) {
           textAlignVertical: "center",
           paddingRight: 5,
           flexShrink: 1,
-          borderColor: colors.tailwind.gray[900],
+          borderColor: colors.tailwind.slate[400],
         },
         style,
       ]}
@@ -62,16 +62,16 @@ export function TextInput(props: TextInputProps) {
   const { style, ...otherProps } = props;
   return (
     <DefaultTextInput
-      selectionColor={colors.custom.red[900]}
-      underlineColorAndroid={colors.custom.red[900]}
+      selectionColor={colors.tailwind.slate[400]}
+      underlineColorAndroid={colors.tailwind.gray[600]}
       placeholder="Enter text"
       placeholderTextColor={colors.tailwind.slate[500]}
       style={[
         {
-          color: colors.custom.white[900],
+          color: colors.tailwind.slate[300],
           height: 40,
           textAlign: "auto",
-          paddingRight: 5,
+          padding: 5,
         },
         style,
       ]}
