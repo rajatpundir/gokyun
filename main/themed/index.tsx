@@ -43,7 +43,7 @@ export function Text(props: TextProps) {
     <DefaultText
       style={[
         {
-          color: colors.custom.white[900],
+          color: colors.tailwind.slate[300],
           textAlignVertical: "center",
           paddingRight: 5,
           flexShrink: 1,

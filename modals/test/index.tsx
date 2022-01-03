@@ -393,7 +393,11 @@ function CreateComponent(props: {
                         <View>
                           <Text>Select User</Text>
                           {props.state.mode === "write" ? (
-                            <FontAwesome name="edit" size={24} color="white" />
+                            <FontAwesome
+                              name="edit"
+                              size={24}
+                              color={colors.tailwind.slate[400]}
+                            />
                           ) : (
                             <></>
                           )}
@@ -404,7 +408,11 @@ function CreateComponent(props: {
                         <View>
                           <Field {...props} path={[["user"], "nickname"]} />
                           {props.state.mode === "write" ? (
-                            <FontAwesome name="edit" size={24} color="white" />
+                            <FontAwesome
+                              name="edit"
+                              size={24}
+                              color={colors.tailwind.slate[400]}
+                            />
                           ) : (
                             <></>
                           )}
@@ -479,8 +487,8 @@ function CreateComponent(props: {
                               borderRadius: 5,
                               paddingVertical: 5,
                               marginVertical: 5,
-                              backgroundColor: colors.tailwind.gray[800],
-                              borderWidth: 2,
+                              backgroundColor: colors.tailwind.slate[800],
+                              borderWidth: 1,
                             }}
                           >
                             <View>
@@ -499,28 +507,6 @@ function CreateComponent(props: {
                               <Label {...it} path={"product_count"} />
                               <Field {...it} path={"product_count"} />
                             </View>
-                            <Pressable
-                              onPress={() =>
-                                props.disptach_values(props.variable)
-                              }
-                              style={{
-                                alignSelf: "flex-end",
-                                paddingVertical: 10,
-                                paddingRight: 5,
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  backgroundColor: colors.custom.red[900],
-                                  paddingHorizontal: 6,
-                                  paddingVertical: 2,
-                                  fontWeight: "bold",
-                                  borderRadius: 2,
-                                }}
-                              >
-                                OK
-                              </Text>
-                            </Pressable>
                           </View>
                         );
                       } else {
@@ -532,7 +518,7 @@ function CreateComponent(props: {
                               borderRadius: 5,
                               paddingVertical: 5,
                               marginVertical: 5,
-                              backgroundColor: colors.tailwind.gray[900],
+                              backgroundColor: colors.tailwind.slate[900],
                             }}
                           >
                             <View>
@@ -563,7 +549,7 @@ function CreateComponent(props: {
                             >
                               <Text
                                 style={{
-                                  backgroundColor: colors.custom.red[900],
+                                  backgroundColor: colors.tailwind.slate[700],
                                   paddingHorizontal: 6,
                                   paddingVertical: 2,
                                   fontWeight: "bold",
@@ -637,36 +623,14 @@ function CreateComponent(props: {
                                 borderRadius: 5,
                                 paddingVertical: 5,
                                 marginVertical: 5,
-                                backgroundColor: colors.tailwind.gray[800],
-                                borderWidth: 2,
+                                backgroundColor: colors.tailwind.slate[800],
+                                borderWidth: 1,
                               }}
                             >
                               <View>
                                 <Label {...it} path={"nickname"} />
                                 <Field {...it} path={"nickname"} />
                               </View>
-                              <Pressable
-                                onPress={() =>
-                                  props.disptach_values(props.variable)
-                                }
-                                style={{
-                                  alignSelf: "flex-end",
-                                  paddingVertical: 10,
-                                  paddingRight: 5,
-                                }}
-                              >
-                                <Text
-                                  style={{
-                                    backgroundColor: colors.custom.red[900],
-                                    paddingHorizontal: 6,
-                                    paddingVertical: 2,
-                                    fontWeight: "bold",
-                                    borderRadius: 2,
-                                  }}
-                                >
-                                  OK
-                                </Text>
-                              </Pressable>
                             </View>
                           );
                         } else {
@@ -678,7 +642,7 @@ function CreateComponent(props: {
                                 borderRadius: 5,
                                 paddingVertical: 5,
                                 marginVertical: 5,
-                                backgroundColor: colors.tailwind.gray[900],
+                                backgroundColor: colors.tailwind.slate[900],
                               }}
                             >
                               <View>
@@ -697,7 +661,7 @@ function CreateComponent(props: {
                               >
                                 <Text
                                   style={{
-                                    backgroundColor: colors.custom.red[900],
+                                    backgroundColor: colors.tailwind.slate[700],
                                     paddingHorizontal: 6,
                                     paddingVertical: 2,
                                     fontWeight: "bold",

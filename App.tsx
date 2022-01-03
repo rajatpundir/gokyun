@@ -143,7 +143,7 @@ export default function App() {
                 options={{
                   title: "Select variable",
                   headerStyle: { backgroundColor: colors.custom.black[900] },
-                  headerTintColor: "white",
+                  headerTintColor: colors.tailwind.slate[400],
                 }}
               />
               <Stack.Screen
@@ -152,7 +152,7 @@ export default function App() {
                 options={{
                   title: "Test",
                   headerStyle: { backgroundColor: colors.custom.black[900] },
-                  headerTintColor: "white",
+                  headerTintColor: colors.tailwind.slate[400],
                 }}
               />
               <Stack.Screen

@@ -43,7 +43,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
       initialRouteName="System"
       screenOptions={{
         lazy: true,
-        tabBarActiveTintColor: colors.custom.white[900],
+        tabBarActiveTintColor: colors.tailwind.slate[400],
         tabBarInactiveTintColor: "#9b9baf",
         tabBarLabelStyle: { fontSize: 11 },
         tabBarStyle: { backgroundColor: colors.custom.black[900] },

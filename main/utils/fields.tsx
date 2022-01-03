@@ -49,12 +49,7 @@ function Str(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           value={value.value}
           onChangeText={(x) =>
@@ -73,15 +68,7 @@ function Str(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value}
         </Text>
       );
@@ -100,12 +87,7 @@ function Lstr(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           value={value.value}
           onChangeText={(x) =>
@@ -124,15 +106,7 @@ function Lstr(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value}
         </Text>
       );
@@ -151,12 +125,7 @@ function Clob(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           value={value.value}
           onChangeText={(x) =>
@@ -175,15 +144,7 @@ function Clob(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value}
         </Text>
       );
@@ -202,12 +163,7 @@ function I_32(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -231,15 +187,7 @@ function I_32(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -258,12 +206,7 @@ function U_32(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -287,15 +230,7 @@ function U_32(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -314,12 +249,7 @@ function I_64(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -343,15 +273,7 @@ function I_64(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -370,12 +292,7 @@ function U_64(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -399,15 +316,7 @@ function U_64(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -426,12 +335,7 @@ function I_Double(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -451,15 +355,7 @@ function I_Double(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -478,12 +374,7 @@ function U_Double(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -503,15 +394,7 @@ function U_Double(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -530,12 +413,7 @@ function I_Decimal(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -555,15 +433,7 @@ function I_Decimal(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -582,12 +452,7 @@ function U_Decimal(
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
+          style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
           value={value.value.toString()}
@@ -607,15 +472,7 @@ function U_Decimal(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {value.value.toString()}
         </Text>
       );
@@ -669,15 +526,7 @@ function Date_Field(
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text
-              style={[
-                {
-                  color: "white",
-                },
-                style,
-              ]}
-              {...otherProps}
-            >
+            <Text style={[{}, style]} {...otherProps}>
               {moment(value.value).format("Do MMM YYYY")}
             </Text>
           </Pressable>
@@ -706,15 +555,7 @@ function Date_Field(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {moment(value.value).format("MMM Do YYYY")}
         </Text>
       );
@@ -735,15 +576,7 @@ function Time_Field(
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text
-              style={[
-                {
-                  color: "white",
-                },
-                style,
-              ]}
-              {...otherProps}
-            >
+            <Text style={[{}, style]} {...otherProps}>
               {moment(value.value).format("h:mm A")}
             </Text>
           </Pressable>
@@ -772,15 +605,7 @@ function Time_Field(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {moment(value.value).format("h:mm A")}
         </Text>
       );
@@ -810,15 +635,7 @@ function Timestamp_Field(
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text
-              style={[
-                {
-                  color: "white",
-                },
-                style,
-              ]}
-              {...otherProps}
-            >
+            <Text style={[{}, style]} {...otherProps}>
               {moment(value.value).format("Do MMM YYYY, h:mm A")}
             </Text>
           </Pressable>
@@ -875,15 +692,7 @@ function Timestamp_Field(
       );
     } else {
       return (
-        <Text
-          style={[
-            {
-              color: "white",
-            },
-            style,
-          ]}
-          {...otherProps}
-        >
+        <Text style={[{}, style]} {...otherProps}>
           {moment(value.value).format("Do MMM YYYY, h:mm A")}
         </Text>
       );
@@ -1639,15 +1448,7 @@ export function Check(
     if (unwrap(result)) {
       if (!result.value) {
         return (
-          <Text
-            style={[
-              {
-                color: "white",
-              },
-              style,
-            ]}
-            {...otherProps}
-          >
+          <Text style={[style]} {...otherProps}>
             {props.message}
           </Text>
         );

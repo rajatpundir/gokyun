@@ -5,14 +5,14 @@ const tintColorDark = colors.custom.white[900];
 
 export default {
   light: {
-    text: colors.custom.white[900],
+    text: colors.tailwind.slate[400],
     background: colors.custom.black[900],
     tint: tintColorLight,
     tabIconDefault: "#ccc",
     tabIconSelected: tintColorLight,
   },
   dark: {
-    text: colors.custom.white[900],
+    text: colors.tailwind.slate[400],
     background: colors.custom.black[900],
     tint: tintColorDark,
     tabIconDefault: "#ccc",
