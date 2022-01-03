@@ -13,7 +13,7 @@ import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
-import { Action } from ".";
+import { ListAction } from "./list";
 import {
   BottomSheetFlatList,
   BottomSheetModal,
@@ -48,7 +48,7 @@ function View(props: ViewProps) {
 
 export function SortComponent(props: {
   init_filter: Filter;
-  dispatch: React.Dispatch<Action>;
+  dispatch: React.Dispatch<ListAction>;
 }) {
   return (
     <BottomSheetScrollView
@@ -156,7 +156,7 @@ export function SortComponent(props: {
 
 export function SortComponentFields(props: {
   init_filter: Filter;
-  dispatch: React.Dispatch<Action>;
+  dispatch: React.Dispatch<ListAction>;
 }) {
   return (
     <BottomSheetScrollView
@@ -217,7 +217,7 @@ export function SortComponentFields(props: {
 export function FilterComponent(props: {
   init_filter: Filter;
   filter: Filter;
-  dispatch: React.Dispatch<Action>;
+  dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   return (
@@ -1843,7 +1843,7 @@ function FilterPathComponent(props: {
   init_filter: Filter;
   filter_path: FilterPath;
   filter: Filter;
-  dispatch: React.Dispatch<Action>;
+  dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   const [showPicker1, setPicker1] = useState(false);
   const [mode1, setMode1] = useState("date");

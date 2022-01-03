@@ -23,7 +23,9 @@ import {
 
 import NotFoundScreen from "./main/NotFoundScreen";
 
-import SelectionModal, { Action as FilterListAction } from "./modals/selection";
+import SelectionModal from "./modals/selection";
+import { ListAction } from "./main/utils/list";
+
 import { Struct, Variable } from "./main/utils/variable";
 
 import Test from "./modals/test";
@@ -70,7 +72,7 @@ export type NavigatorParams = {
     disptach_values: (variable: Variable) => void;
     render_custom_fields: (props: {
       filters: HashSet<Filter>;
-      dispatch: React.Dispatch<FilterListAction>;
+      dispatch: React.Dispatch<ListAction>;
       show_views: () => void;
       show_sorting: () => void;
       show_filters: () => void;

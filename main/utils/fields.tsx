@@ -30,7 +30,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
 import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
-import { Action as FilterListAction } from "../../modals/selection";
+import { ListAction } from "../utils/list";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -725,7 +725,7 @@ function Other_Field(
     limit: Decimal;
     render_custom_fields: (props: {
       filters: HashSet<Filter>;
-      dispatch: React.Dispatch<FilterListAction>;
+      dispatch: React.Dispatch<ListAction>;
       show_views: () => void;
       show_sorting: () => void;
       show_filters: () => void;
@@ -853,7 +853,7 @@ export function Field(props: {
           limit: Decimal;
           render_custom_fields: (props: {
             filters: HashSet<Filter>;
-            dispatch: React.Dispatch<FilterListAction>;
+            dispatch: React.Dispatch<ListAction>;
             show_views: () => void;
             show_sorting: () => void;
             show_filters: () => void;

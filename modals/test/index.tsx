@@ -32,7 +32,7 @@ import { Label, Field, Check } from "../../main/utils/fields";
 import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
-import { Action as FilterListAction } from "../selection";
+import { ListAction } from "../../main/utils/list";
 
 // Create / Update Test component
 // List Tests component
@@ -681,7 +681,7 @@ function CreateComponent(props: {
               ],
               render_custom_fields: (props: {
                 filters: HashSet<Filter>;
-                dispatch: React.Dispatch<FilterListAction>;
+                dispatch: React.Dispatch<ListAction>;
                 show_views: () => void;
                 show_sorting: () => void;
                 show_filters: () => void;
