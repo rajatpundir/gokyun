@@ -260,7 +260,8 @@ export function FilterComponent(props: {
           <AntDesign
             name="plussquareo"
             size={24}
-            color={colors.custom.red[900]}
+            color={colors.custom.blue[900]}
+            style={{ paddingHorizontal: 5 }}
           />
         </Pressable>
         <BottomSheetModal

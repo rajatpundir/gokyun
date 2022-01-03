@@ -33,9 +33,9 @@ import Test from "./modals/test";
 import Decimal from "decimal.js";
 import { Filter } from "./main/utils/db";
 
-import { NativeBaseProvider } from "native-base";
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
+import { KeyboardAvoidingView, Platform } from "react-native";
 
 declare global {
   namespace ReactNavigation {
@@ -127,46 +127,48 @@ export default function App() {
     return null;
   } else {
     return (
-      <NativeBaseProvider>
-        <SafeAreaProvider>
-          <NavigationContainer
-            linking={linking}
-            theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
-          >
-            <Stack.Navigator>
-              <Stack.Screen
-                name="Main"
-                component={Navigator}
-                options={{ headerShown: false, animation: "none" }}
-              />
-              <Stack.Screen
-                name="SelectionModal"
-                component={SelectionModal}
-                options={{
-                  title: "Select variable",
-                  headerStyle: { backgroundColor: colors.custom.black[900] },
-                  headerTintColor: colors.tailwind.slate[400],
-                }}
-              />
-              <Stack.Screen
-                name="Test"
-                component={Test}
-                options={{
-                  title: "Test",
-                  headerStyle: { backgroundColor: colors.custom.black[900] },
-                  headerTintColor: colors.tailwind.slate[400],
-                }}
-              />
-              <Stack.Screen
-                name="NotFound"
-                component={NotFoundScreen}
-                options={{ title: "Oops!" }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-          <StatusBar />
-        </SafeAreaProvider>
-      </NativeBaseProvider>
+      <SafeAreaProvider>
+        {/* <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+        </KeyboardAvoidingView> */}
+        <NavigationContainer
+          linking={linking}
+          theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Main"
+              component={Navigator}
+              options={{ headerShown: false, animation: "none" }}
+            />
+            <Stack.Screen
+              name="SelectionModal"
+              component={SelectionModal}
+              options={{
+                title: "Select variable",
+                headerStyle: { backgroundColor: colors.custom.black[900] },
+                headerTintColor: colors.tailwind.slate[400],
+              }}
+            />
+            <Stack.Screen
+              name="Test"
+              component={Test}
+              options={{
+                title: "Test",
+                headerStyle: { backgroundColor: colors.custom.black[900] },
+                headerTintColor: colors.tailwind.slate[400],
+              }}
+            />
+            <Stack.Screen
+              name="NotFound"
+              component={NotFoundScreen}
+              options={{ title: "Oops!" }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <StatusBar />
+      </SafeAreaProvider>
     );
   }
 }

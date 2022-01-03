@@ -6,7 +6,7 @@ import { Filter, FilterPath, get_variables } from "./db";
 import { Struct, Variable } from "./variable";
 import { View, Text } from "../themed";
 import Decimal from "decimal.js";
-import { Pressable } from "react-native";
+import { KeyboardAvoidingView, Platform, Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import {
@@ -359,7 +359,10 @@ export function List(props: {
   const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
   return (
     <BottomSheetModalProvider>
-      <View style={{ flex: 1, flexDirection: "column" }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1, flexDirection: "column" }}
+      >
         <props.render_custom_fields
           filters={state.filters}
           dispatch={dispatch}
@@ -370,7 +373,7 @@ export function List(props: {
 
         <BottomSheetModal
           ref={bottomSheetModalRef4}
-          snapPoints={["50%", "95%"]}
+          snapPoints={["50%", "90%"]}
           index={0}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],
@@ -481,7 +484,7 @@ export function List(props: {
 
         <BottomSheetModal
           ref={bottomSheetModalRef2}
-          snapPoints={["50%", "95%"]}
+          snapPoints={["50%", "90%"]}
           index={0}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],
@@ -549,7 +552,7 @@ export function List(props: {
           <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
           <BottomSheetModal
             ref={bottomSheetModalRef3}
-            snapPoints={["50%", "95%"]}
+            snapPoints={["50%", "90%"]}
             index={0}
             backgroundStyle={{
               backgroundColor: colors.custom.black[900],
@@ -635,7 +638,7 @@ export function List(props: {
 
         <BottomSheetModal
           ref={bottomSheetModalRef1}
-          snapPoints={["50%", "95%"]}
+          snapPoints={["50%", "90%"]}
           index={1}
           backgroundStyle={{
             backgroundColor: colors.custom.black[900],
@@ -658,6 +661,9 @@ export function List(props: {
               style={{
                 borderBottomWidth: 1,
                 backgroundColor: colors.custom.black[900],
+                paddingHorizontal: 10,
+                paddingBottom: 5,
+                marginBottom: 5,
               }}
             >
               <Text
@@ -754,7 +760,7 @@ export function List(props: {
             />
           </View>
         </BottomSheetModal>
-      </View>
+      </KeyboardAvoidingView>
     </BottomSheetModalProvider>
   );
 }
