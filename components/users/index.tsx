@@ -324,8 +324,8 @@ export default function Component({
                           }}
                         >
                           <FontAwesome
-                            name="unsorted"
-                            size={20}
+                            name="sort-alpha-asc"
+                            size={16}
                             color={colors.tailwind.slate[400]}
                             style={{ alignSelf: "center" }}
                           />

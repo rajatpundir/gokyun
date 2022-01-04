@@ -698,7 +698,7 @@ export function List(props: {
                   color={state.active ? colors.custom.red[900] : undefined}
                   style={{
                     alignSelf: "center",
-                    marginRight: 6,
+                    marginHorizontal: 6,
                   }}
                 />
               </View>
@@ -720,7 +720,7 @@ export function List(props: {
                   color={!state.level ? colors.custom.red[900] : undefined}
                   style={{
                     alignSelf: "center",
-                    marginRight: 6,
+                    marginHorizontal: 6,
                   }}
                 />
               </View>
