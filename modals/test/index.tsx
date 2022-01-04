@@ -392,7 +392,7 @@ function CreateComponent(props: {
                     if (value.type === "other" && value.value.equals(-1)) {
                       return (
                         <View>
-                          <Text>Select User</Text>
+                          <Text>Select User </Text>
                           {props.state.mode === "write" ? (
                             <FontAwesome
                               name="edit"
@@ -408,6 +408,7 @@ function CreateComponent(props: {
                       return (
                         <View>
                           <Field {...props} path={[["user"], "nickname"]} />
+                          <Text> </Text>
                           {props.state.mode === "write" ? (
                             <FontAwesome
                               name="edit"
@@ -744,6 +745,7 @@ function CreateComponent(props: {
             style={{
               fontWeight: "bold",
               fontSize: 15,
+              paddingRight: 0,
             }}
           >
             Cancel
@@ -766,6 +768,7 @@ function CreateComponent(props: {
             style={{
               fontWeight: "bold",
               fontSize: 15,
+              paddingRight: 0,
             }}
           >
             SAVE

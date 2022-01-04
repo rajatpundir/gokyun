@@ -1,8 +1,3 @@
-/**
- * Learn more about Light and Dark modes:
- * https://docs.expo.io/guides/color-schemes/
- */
-
 import * as React from "react";
 import {
   View as DefaultView,
@@ -45,7 +40,6 @@ export function Text(props: TextProps) {
         {
           color: colors.tailwind.slate[200],
           textAlignVertical: "center",
-          paddingRight: 5,
           flexShrink: 1,
           borderColor: colors.tailwind.slate[600],
         },

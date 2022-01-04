@@ -35,7 +35,6 @@ import { Filter } from "./main/utils/db";
 
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
-import { KeyboardAvoidingView, Platform } from "react-native";
 
 declare global {
   namespace ReactNavigation {
@@ -128,10 +127,6 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        {/* <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-        </KeyboardAvoidingView> */}
         <NavigationContainer
           linking={linking}
           theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
@@ -148,7 +143,7 @@ export default function App() {
               options={{
                 title: "Select variable",
                 headerStyle: { backgroundColor: colors.custom.black[900] },
-                headerTintColor: colors.tailwind.slate[400],
+                headerTintColor: colors.tailwind.slate[200],
               }}
             />
             <Stack.Screen
@@ -157,7 +152,7 @@ export default function App() {
               options={{
                 title: "Test",
                 headerStyle: { backgroundColor: colors.custom.black[900] },
-                headerTintColor: colors.tailwind.slate[400],
+                headerTintColor: colors.tailwind.slate[200],
               }}
             />
             <Stack.Screen
