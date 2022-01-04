@@ -244,8 +244,8 @@ export default function Component({
                         borderColor: colors.tailwind.slate[500],
                         paddingVertical: 2,
                         paddingHorizontal: 10,
-                        marginHorizontal: 20,
-                        marginVertical: 5,
+                        marginHorizontal: 10,
+                        marginTop: 4,
                       }}
                     >
                       <Feather

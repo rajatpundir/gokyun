@@ -379,6 +379,37 @@ export function List(props: {
           show_filters={() => bottomSheetModalRef1.current?.present()}
         />
 
+        <FlatList
+          data={state.variables}
+          renderItem={(list_item) => {
+            const ElementJSX = arrow(() => {
+              if (state.layout in props.render_list_element[1]) {
+                return props.render_list_element[1][state.layout];
+              }
+              return props.render_list_element[0];
+            });
+            return (
+              <ElementJSX
+                selected={props.selected}
+                variable={list_item.item}
+                disptach_values={props.disptach_values}
+              />
+            );
+          }}
+          keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+          refreshing={state.refreshing}
+          onRefresh={() => {}}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => dispatch(["offset"])}
+          ListFooterComponent={arrow(() => {
+            if (!state.reached_end) {
+              return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+            }
+            return <></>;
+          })}
+          style={{ marginTop: 4 }}
+        />
+
         <BottomSheetModal
           ref={bottomSheetModalRef4}
           snapPoints={["50%", "90%"]}
@@ -613,36 +644,6 @@ export function List(props: {
             />
           </BottomSheetModal>
         </BottomSheetModal>
-
-        <FlatList
-          data={state.variables}
-          renderItem={(list_item) => {
-            const ElementJSX = arrow(() => {
-              if (state.layout in props.render_list_element[1]) {
-                return props.render_list_element[1][state.layout];
-              }
-              return props.render_list_element[0];
-            });
-            return (
-              <ElementJSX
-                selected={props.selected}
-                variable={list_item.item}
-                disptach_values={props.disptach_values}
-              />
-            );
-          }}
-          keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
-          refreshing={state.refreshing}
-          onRefresh={() => {}}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => dispatch(["offset"])}
-          ListFooterComponent={arrow(() => {
-            if (!state.reached_end) {
-              return <Text style={{ textAlign: "center" }}>Loading...</Text>;
-            }
-            return <></>;
-          })}
-        />
 
         <BottomSheetModal
           ref={bottomSheetModalRef1}
