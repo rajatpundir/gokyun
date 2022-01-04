@@ -41,6 +41,7 @@ export type State = Immutable<{
   created_at: Date;
   updated_at: Date;
   values: HashSet<Path>;
+  init_values: HashSet<Path>;
   mode: "read" | "write";
   event_trigger: number;
   check_trigger: number;
@@ -80,7 +81,8 @@ export type Action =
     ]
   | ["event_trigger"]
   | ["check_trigger"]
-  | ["check", string, Result<boolean>];
+  | ["check", string, Result<boolean>]
+  | ["mode", "read" | "write"];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -153,6 +155,7 @@ export function reducer(state: Draft<State>, action: Action) {
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = action[1].paths;
+      state.init_values = action[1].paths;
       state.event_trigger += 1;
       state.check_trigger += 1;
       break;
@@ -171,6 +174,34 @@ export function reducer(state: Draft<State>, action: Action) {
     }
     case "check": {
       state.checks[action[1]] = action[2];
+      break;
+    }
+    case "mode": {
+      state.mode = action[1];
+      if (state.mode === "read") {
+        // Code for dispatch['values', HashSet<Path>] is repeated for loading initial values
+        for (let value of state.init_values) {
+          const result = state.values.findAny((x) => x.equals(value));
+          if (result.isSome()) {
+            const path: Path = result.get();
+            state.values = apply(state.values.remove(path), (vals) => {
+              return vals.add(
+                apply(path, (path) => {
+                  path.path[1] = [path.path[1][0], value.path[1][1]];
+                  path.modified = value.modified;
+                  return path;
+                })
+              );
+            });
+            if (path.trigger_dependency) {
+              state.event_trigger += 1;
+            }
+            if (path.check_dependency) {
+              state.check_trigger += 1;
+            }
+          }
+        }
+      }
       break;
     }
     default: {
@@ -409,16 +440,18 @@ export function get_writeable_paths(
 
 export function get_filter_paths(
   struct: Struct,
-  state: State
+  labels: Array<[string, PathString]>,
+  user_paths: Array<PathString>,
+  borrows: Array<string>
 ): HashSet<FilterPath> {
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,
-    state.user_paths as PathString[],
-    state.borrows as string[]
+    user_paths as PathString[],
+    borrows as string[]
   );
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
     permissions,
-    state.labels
+    labels
   );
   let filter_paths: HashSet<FilterPath> = HashSet.of();
   for (let permission of labeled_permissions) {

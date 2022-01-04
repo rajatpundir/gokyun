@@ -91,48 +91,6 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       {/* <A />
       <B />
       <A /> */}
-      <Pressable
-        onPress={() => {
-          if (struct.isSome()) {
-            navigation.navigate("VariablesModal", {
-              struct: struct.get(),
-              filter: {
-                variable_filters: {
-                  active: true,
-                  level: undefined,
-                  id: [],
-                  created_at: [],
-                  updated_at: [],
-                },
-                path_filters: [],
-                limit_offset: undefined,
-              },
-              selected: new Decimal(0),
-              set_selected: (selected: Decimal) => {},
-              render_item: (
-                variable: Variable,
-                selected: Immutable<Decimal>,
-                set_selected: (selected: Decimal) => void
-              ) => {
-                return (
-                  <>
-                    <Text>PKPKPKPK</Text>
-                    {/* <TextInput
-                      value={"9i09i09i09i09"}
-                      keyboardType={"number-pad"}
-                      onChangeText={
-                        (x) => {}
-                      }
-                    /> */}
-                  </>
-                );
-              },
-            });
-          }
-        }}
-      >
-        <Text>GOTO VARIABLES MODAL</Text>
-      </Pressable>
 
       {/* Floating button */}
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />

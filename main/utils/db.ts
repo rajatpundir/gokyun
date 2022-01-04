@@ -140,7 +140,7 @@ function query(
     });
   };
   arrow(() => {
-    append_to_select_stmt("MAX(v1.level) AS _level");
+    append_to_select_stmt("v1.level AS _level");
     append_to_select_stmt("v1.struct_name AS _struct_name");
     append_to_select_stmt("v1.id AS _id");
     append_to_select_stmt("v1.active AS _active");

@@ -20,7 +20,12 @@ import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { log_permissions } from "../../main/utils/permissions";
-import { Filter, FilterPath, get_variable } from "../../main/utils/db";
+import {
+  Filter,
+  FilterPath,
+  get_variable,
+  replace_variable,
+} from "../../main/utils/db";
 import {
   compare_paths,
   Path,
@@ -33,13 +38,11 @@ import { apply, arrow, unwrap } from "../../main/utils/prelude";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
 import { ListAction } from "../../main/utils/list";
-
-// Create / Update Test component
-// List Tests component
+import { useNavigation } from "@react-navigation/native";
 
 // Create, Read, Update, Delete
 
-// Fix react navigation error related to serializability of props passed
+// List Tests component
 
 // Complete testing Test
 
@@ -58,6 +61,7 @@ export default function Component(
     created_at: new Date(),
     updated_at: new Date(),
     values: HashSet.of(),
+    init_values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
     event_trigger: 0,
     check_trigger: 0,
@@ -97,6 +101,7 @@ export default function Component(
     created_at: new Date(),
     updated_at: new Date(),
     values: HashSet.of(),
+    init_values: HashSet.of(),
     mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
     event_trigger: 0,
     check_trigger: 0,
@@ -166,7 +171,12 @@ export default function Component(
             true,
             undefined,
             state.id as Decimal,
-            get_filter_paths(struct.value, state)
+            get_filter_paths(
+              struct.value,
+              state.labels as Array<[string, PathString]>,
+              state.user_paths as Array<PathString>,
+              state.borrows as Array<string>
+            )
           );
           if (unwrap(result)) {
             dispatch([
@@ -203,7 +213,12 @@ export default function Component(
             true,
             undefined,
             state2.id as Decimal,
-            get_filter_paths(struct2.value, state2)
+            get_filter_paths(
+              struct2.value,
+              state2.labels as Array<[string, PathString]>,
+              state2.user_paths as Array<PathString>,
+              state2.borrows as Array<string>
+            )
           );
           if (unwrap(result)) {
             dispatch2([
@@ -262,6 +277,7 @@ export default function Component(
       compute_checks(struct2.value, state2, dispatch2);
     }
   }, [state2.check_trigger]);
+
   if (unwrap(struct) && unwrap(struct2)) {
     if (state.mode === "write") {
       if (state.id.equals(new Decimal(-1))) {
@@ -276,6 +292,8 @@ export default function Component(
               struct={struct2.value}
               state={state2}
               dispatch={dispatch2}
+              save_variable={save_variable}
+              close={close}
             /> */}
           </>
         );
@@ -306,8 +324,9 @@ function CreateComponent(props: {
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
+  const navigation = useNavigation();
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: colors.custom.black[900] }}>
       <View>
         <Label {...props} path={"str"} />
         <Field {...props} path={"str"} />
@@ -447,6 +466,7 @@ function CreateComponent(props: {
                       created_at: props.variable.created_at,
                       updated_at: props.variable.updated_at,
                       values: props.variable.paths,
+                      init_values: props.variable.paths,
                       mode: "read",
                       event_trigger: 0,
                       check_trigger: 0,
@@ -505,6 +525,18 @@ function CreateComponent(props: {
                             }}
                           >
                             <View>
+                              <Text>Unique ID</Text>
+                              <Text>{state.id.toString()}</Text>
+                            </View>
+                            <View>
+                              <Text>Created</Text>
+                              <Text>{state.created_at.toString()}</Text>
+                            </View>
+                            <View>
+                              <Text>Updated</Text>
+                              <Text>{state.updated_at.toString()}</Text>
+                            </View>
+                            <View>
                               <Label {...it} path={"nickname"} />
                               <Field {...it} path={"nickname"} />
                             </View>
@@ -534,6 +566,18 @@ function CreateComponent(props: {
                               backgroundColor: colors.tailwind.slate[900],
                             }}
                           >
+                            <View>
+                              <Text>Unique ID</Text>
+                              <Text>{state.id.toString()}</Text>
+                            </View>
+                            <View>
+                              <Text>Created</Text>
+                              <Text>{state.created_at.toString()}</Text>
+                            </View>
+                            <View>
+                              <Text>Updated</Text>
+                              <Text>{state.updated_at.toString()}</Text>
+                            </View>
                             <View>
                               <Label {...it} path={"nickname"} />
                               <Field {...it} path={"nickname"} />
@@ -604,7 +648,7 @@ function CreateComponent(props: {
                       <Feather
                         name="search"
                         size={24}
-                        color={colors.tailwind.slate[400]}
+                        color={colors.tailwind.slate[300]}
                         style={{ alignSelf: "center" }}
                       />
                       <TextInput
@@ -729,7 +773,7 @@ function CreateComponent(props: {
         }}
       >
         <Pressable
-          onPress={() => {}}
+          onPress={() => navigation.goBack()}
           style={{
             marginVertical: 10,
             marginHorizontal: 5,
@@ -752,7 +796,22 @@ function CreateComponent(props: {
           </Text>
         </Pressable>
         <Pressable
-          onPress={() => {}}
+          onPress={async () => {
+            try {
+              await replace_variable(
+                new Decimal(0),
+                new Variable(
+                  props.struct,
+                  props.state.id as Decimal,
+                  props.state.active,
+                  props.state.created_at,
+                  props.state.updated_at,
+                  props.state.values as HashSet<Path>
+                )
+              );
+              navigation.goBack();
+            } catch (e) {}
+          }}
           style={{
             marginVertical: 10,
             marginHorizontal: 5,
@@ -784,8 +843,9 @@ function UpdateComponent(props: {
   state: State;
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
+  // props.dispatch(["mode", "read"])
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.custom.black[900] }}>
       <View>
         <Label {...props} path={"str"} />
         <Field {...props} path={"str"} />
@@ -800,7 +860,7 @@ function ShowComponent(props: {
   dispatch: React.Dispatch<Action>;
 }): JSX.Element {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: colors.custom.black[900] }}>
       <View>
         <Label {...props} path={"str"} />
         <Field {...props} path={"str"} />

@@ -12,6 +12,8 @@ import {
 import { get_struct } from "./schema";
 import { get_strong_enum, PathString, StrongEnum, Struct } from "./variable";
 
+// Cache computed permissions for same input
+
 export class PathPermission {
   path: [Array<[string, Struct]>, [string, StrongEnum]];
   writeable: boolean = false;

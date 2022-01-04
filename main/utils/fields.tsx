@@ -32,6 +32,8 @@ import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
 import { ListAction } from "../utils/list";
 
+// Store value in internal state and show it, try to dispatch on change
+
 type ComponentProps = {
   mode: "read" | "write";
   struct: Struct;

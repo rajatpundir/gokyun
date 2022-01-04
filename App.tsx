@@ -118,6 +118,8 @@ const linking: LinkingOptions<NavigatorParams> = {
 
 const Stack = createNativeStackNavigator<NavigatorParams>();
 
+// Ignore react navigation error related to serializability of props passed
+
 export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();

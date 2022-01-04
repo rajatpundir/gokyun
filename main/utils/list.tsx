@@ -56,7 +56,15 @@ export function reducer(state: Draft<State>, action: ListAction) {
         state.variables = action[1] as any;
       } else {
         for (let v of action[1]) {
-          state.variables.push(v as any);
+          let check = true;
+          for (let v1 of state.variables) {
+            if (v1.equals(v)) {
+              check = false;
+            }
+          }
+          if (check) {
+            state.variables.push(v as any);
+          }
         }
       }
       state.refreshing = false;
