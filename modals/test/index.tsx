@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { Pressable, ScrollView } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View, Text, TextInput } from "../../main/themed";
@@ -36,8 +36,6 @@ import { ListAction } from "../../main/utils/list";
 
 // Create / Update Test component
 // List Tests component
-
-// Test if bulk update of values by trigger speeds up component loading
 
 // Create, Read, Update, Delete
 
@@ -720,6 +718,59 @@ function CreateComponent(props: {
             },
           ]}
         />
+      </View>
+      <View
+        style={{
+          justifyContent: "flex-end",
+          borderTopWidth: 1,
+          marginHorizontal: 0,
+          marginTop: 10,
+        }}
+      >
+        <Pressable
+          onPress={() => {}}
+          style={{
+            marginVertical: 10,
+            marginHorizontal: 5,
+            paddingVertical: 10,
+            paddingHorizontal: 10,
+            backgroundColor: colors.tailwind.slate[700],
+            borderRadius: 4,
+            borderWidth: 1,
+            borderColor: colors.tailwind.slate[600],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 15,
+            }}
+          >
+            Cancel
+          </Text>
+        </Pressable>
+        <Pressable
+          onPress={() => {}}
+          style={{
+            marginVertical: 10,
+            marginHorizontal: 5,
+            paddingVertical: 10,
+            paddingHorizontal: 10,
+            backgroundColor: colors.tailwind.slate[700],
+            borderRadius: 4,
+            borderWidth: 1,
+            borderColor: colors.tailwind.slate[600],
+          }}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 15,
+            }}
+          >
+            SAVE
+          </Text>
+        </Pressable>
       </View>
     </ScrollView>
   );

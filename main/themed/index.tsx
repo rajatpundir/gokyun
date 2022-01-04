@@ -26,7 +26,7 @@ export function View(props: ViewProps) {
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
-          borderColor: colors.tailwind.slate[400],
+          borderColor: colors.tailwind.slate[600],
         },
         style,
       ]}
@@ -43,11 +43,11 @@ export function Text(props: TextProps) {
     <DefaultText
       style={[
         {
-          color: colors.tailwind.slate[300],
+          color: colors.tailwind.slate[200],
           textAlignVertical: "center",
           paddingRight: 5,
           flexShrink: 1,
-          borderColor: colors.tailwind.slate[400],
+          borderColor: colors.tailwind.slate[600],
         },
         style,
       ]}

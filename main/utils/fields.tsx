@@ -337,7 +337,7 @@ function I_Double(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          keyboardType={"number-pad"}
+          keyboardType={"decimal-pad"}
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
@@ -376,7 +376,7 @@ function U_Double(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          keyboardType={"number-pad"}
+          keyboardType={"decimal-pad"}
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
@@ -415,7 +415,7 @@ function I_Decimal(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          keyboardType={"number-pad"}
+          keyboardType={"decimal-pad"}
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
@@ -454,7 +454,7 @@ function U_Decimal(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          keyboardType={"number-pad"}
+          keyboardType={"decimal-pad"}
           value={value.value.toString()}
           onChangeText={(x) =>
             dispatch([

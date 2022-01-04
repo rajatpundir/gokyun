@@ -817,18 +817,7 @@ const schema: Record<
         "mobile",
       ],
     },
-    triggers: {
-      whatever_aa: {
-        event: ["after_creation", "after_update"],
-        monitor: [[[], "product_count"]],
-        operation: {
-          op: "update",
-          path_updates: [
-            [[[], "mobile"], new DotExpression(new Dot(["product_count"]))],
-          ],
-        },
-      },
-    },
+    triggers: {},
     checks: {
       mobile_is_not_empty: [
         new LogicalUnaryExpression(
