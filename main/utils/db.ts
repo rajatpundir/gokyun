@@ -2112,7 +2112,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(34) }],
             ]),
           ])
         ),
@@ -2137,7 +2137,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(33) }],
             ]),
           ])
         ),
@@ -2162,7 +2162,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(53) }],
             ]),
           ])
         ),
@@ -2187,7 +2187,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(63) }],
             ]),
           ])
         ),
@@ -2212,7 +2212,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(73) }],
             ]),
           ])
         ),
@@ -2237,7 +2237,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(83) }],
             ]),
           ])
         ),
@@ -2262,7 +2262,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(93) }],
             ]),
           ])
         ),
@@ -2287,7 +2287,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(39) }],
             ]),
           ])
         ),
@@ -2312,7 +2312,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(38) }],
             ]),
           ])
         ),
@@ -2337,7 +2337,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(37) }],
             ]),
           ])
         ),
@@ -2362,7 +2362,7 @@ async function load_test_data() {
             ]),
             new Path("Product Count", [
               [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
+              ["product_count", { type: "u32", value: new Decimal(36) }],
             ]),
           ])
         ),

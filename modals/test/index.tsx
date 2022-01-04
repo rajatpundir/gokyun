@@ -36,8 +36,11 @@ import { ListAction } from "../../main/utils/list";
 
 // Create / Update Test component
 // List Tests component
-// TODO 444 (Running trigger, checks, etc inside fetched other field paths)
+
 // Test if bulk update of values by trigger speeds up component loading
+
+// Create, Read, Update, Delete
+
 // Fix react navigation error related to serializability of props passed
 
 // Complete testing Test
@@ -435,6 +438,8 @@ function CreateComponent(props: {
                   variable: Variable;
                   disptach_values: (variable: Variable) => void;
                 }) => {
+                  const struct_name = "User";
+                  const struct = get_struct(struct_name);
                   const [state, dispatch] = useImmerReducer<State, Action>(
                     reducer,
                     {
@@ -467,7 +472,16 @@ function CreateComponent(props: {
                       ),
                     ]);
                   }, [props.variable.struct, props.variable.paths]);
-                  // TODO. Try running trigger, checks, etc here.
+                  React.useEffect(() => {
+                    if (unwrap(struct)) {
+                      run_triggers(struct.value, state, dispatch);
+                    }
+                  }, [state.event_trigger]);
+                  React.useEffect(() => {
+                    if (unwrap(struct)) {
+                      compute_checks(struct.value, state, dispatch);
+                    }
+                  }, [state.check_trigger]);
                   return apply(
                     {
                       struct: props.variable.struct,
@@ -617,7 +631,6 @@ function CreateComponent(props: {
                           return "";
                         })}
                         onChangeText={(x) => {
-                          console.log(x);
                           props.dispatch([
                             "filters",
                             filter.get(),
@@ -681,7 +694,7 @@ function CreateComponent(props: {
                         >
                           <Ionicons
                             name="filter"
-                            size={24}
+                            size={20}
                             color={colors.tailwind.slate[400]}
                             style={{ alignSelf: "center" }}
                           />
@@ -741,15 +754,3 @@ function ShowComponent(props: {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    backgroundColor: "grey",
-  },
-  contentContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-});

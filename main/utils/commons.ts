@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
 import React from "react";
-import { FilterPath, PathFilter } from "./db";
+import { FilterPath } from "./db";
 import { ErrMsg, errors } from "./errors";
 import {
   LispExpression,
@@ -620,7 +620,9 @@ function dispatch_result(
           case "str":
           case "lstr":
           case "clob": {
-            if (expr_result instanceof Text) {
+            const result = expr_result.get_text({});
+            if (unwrap(result)) {
+              result.value.value;
               dispatch([
                 "value",
                 apply(value, (it) => {
@@ -628,7 +630,7 @@ function dispatch_result(
                     it.path[1][0],
                     {
                       type: field.type,
-                      value: expr_result.value as string,
+                      value: result.value.value,
                     },
                   ];
                   return it;
@@ -827,27 +829,27 @@ export async function run_triggers(
   for (let trigger_name of Object.keys(struct.triggers)) {
     const trigger = struct.triggers[trigger_name];
     if (trigger.operation.op === "update") {
-      if (state.mode === "write") {
-        if (state.id.equals(-1)) {
-          if (trigger.event.includes("after_creation")) {
-            run_path_updates(
-              state,
-              dispatch,
-              trigger.operation.path_updates,
-              undefined
-            );
-          }
-        } else {
-          if (trigger.event.includes("after_update")) {
-            run_path_updates(
-              state,
-              dispatch,
-              trigger.operation.path_updates,
-              undefined
-            );
-          }
+      // if (state.mode === "write") {
+      if (state.id.equals(-1)) {
+        if (trigger.event.includes("after_creation")) {
+          run_path_updates(
+            state,
+            dispatch,
+            trigger.operation.path_updates,
+            undefined
+          );
+        }
+      } else {
+        if (trigger.event.includes("after_update")) {
+          run_path_updates(
+            state,
+            dispatch,
+            trigger.operation.path_updates,
+            undefined
+          );
         }
       }
+      // }
     }
   }
 }
