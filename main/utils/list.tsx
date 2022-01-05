@@ -6,7 +6,7 @@ import { Filter, FilterPath, get_variables } from "./db";
 import { Struct, Variable } from "./variable";
 import { View, Text } from "../themed";
 import Decimal from "decimal.js";
-import { KeyboardAvoidingView, Platform, Pressable } from "react-native";
+import { Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import {
@@ -367,10 +367,7 @@ export function List(props: {
   const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
   return (
     <BottomSheetModalProvider>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, flexDirection: "column" }}
-      >
+      <View style={{ flex: 1, flexDirection: "column" }}>
         <props.render_custom_fields
           filters={state.filters}
           dispatch={dispatch}
@@ -769,7 +766,7 @@ export function List(props: {
             />
           </View>
         </BottomSheetModal>
-      </KeyboardAvoidingView>
+      </View>
     </BottomSheetModalProvider>
   );
 }

@@ -35,6 +35,7 @@ import { Filter } from "./main/utils/db";
 
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 declare global {
   namespace ReactNavigation {
