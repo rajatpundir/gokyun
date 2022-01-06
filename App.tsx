@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
-import * as Linking from "expo-linking";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
@@ -12,7 +11,6 @@ import {
 } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { LinkingOptions } from "@react-navigation/native";
 
 import useAssets from "./main/hooks/useAssets";
 import useColorScheme from "./main/hooks/useColorScheme";
@@ -31,7 +29,7 @@ import { Struct, Variable } from "./main/utils/variable";
 import Test from "./modals/test";
 
 import Decimal from "decimal.js";
-import { Filter, load_test_data } from "./main/utils/db";
+import { Filter } from "./main/utils/db";
 
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
@@ -46,11 +44,7 @@ import { arrow } from "./main/utils/prelude";
 import Checkbox from "expo-checkbox";
 import { Pressable } from "react-native";
 
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends NavigatorParams {}
-  }
-}
+// Ignore react navigation error related to serializability of props passed
 
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
@@ -91,13 +85,6 @@ export type NavigatorParams = {
     id: number;
   };
 };
-
-export type NavigatorProps<Screen extends keyof NavigatorParams> =
-  NativeStackScreenProps<NavigatorParams, Screen>;
-
-const Stack = createNativeStackNavigator<NavigatorParams>();
-
-// Ignore react navigation error related to serializability of props passed
 
 export default function App() {
   const isLoadingComplete = useAssets();
@@ -331,3 +318,14 @@ export default function App() {
     );
   }
 }
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends NavigatorParams {}
+  }
+}
+
+export type NavigatorProps<Screen extends keyof NavigatorParams> =
+  NativeStackScreenProps<NavigatorParams, Screen>;
+
+const Stack = createNativeStackNavigator<NavigatorParams>();
