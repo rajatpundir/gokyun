@@ -200,7 +200,7 @@ export default function App() {
             return (
               <BottomSheetModal
                 ref={bsm_ref_view}
-                snapPoints={["50%", "90%"]}
+                snapPoints={["50%", "82%"]}
                 index={0}
                 backgroundStyle={{
                   backgroundColor: colors.custom.black[900],
