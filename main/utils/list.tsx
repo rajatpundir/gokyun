@@ -376,7 +376,7 @@ export function List(props: {
         {props.render_custom_fields({
           filters: state.filters,
           dispatch: dispatch,
-          show_views: (props: { element: JSX.Element }) => {
+          show_views: ({ element }: { element: JSX.Element }) => {
             return (
               <Pressable
                 onPress={() => {
@@ -384,31 +384,31 @@ export function List(props: {
                     bottom_sheet_props: {
                       state: state,
                       dispatch: dispatch,
-                      render_list_element: [() => <></>, {}],
+                      render_list_element: props.render_list_element,
                     },
                     bsm_view: s.bsm_view + 1,
                   }));
                 }}
               >
-                {props.element}
+                {element}
               </Pressable>
             );
           },
-          show_sorting: (props: { element: JSX.Element }) => {
+          show_sorting: ({ element }: { element: JSX.Element }) => {
             return (
               <Pressable
                 onPress={() => bottomSheetModalRef2.current?.present()}
               >
-                {props.element}
+                {element}
               </Pressable>
             );
           },
-          show_filters: (props: { element: JSX.Element }) => {
+          show_filters: ({ element }: { element: JSX.Element }) => {
             return (
               <Pressable
                 onPress={() => bottomSheetModalRef1.current?.present()}
               >
-                {props.element}
+                {element}
               </Pressable>
             );
           },
@@ -444,117 +444,6 @@ export function List(props: {
           })}
           style={{ marginTop: 4 }}
         />
-
-        {/* <BottomSheetModal
-          ref={bottomSheetModalRef4}
-          snapPoints={["50%", "90%"]}
-          index={0}
-          backgroundStyle={{
-            backgroundColor: colors.custom.black[900],
-            borderColor: colors.tailwind.gray[500],
-            borderWidth: 1,
-          }}
-        >
-          <View
-            style={{
-              paddingBottom: 10,
-              marginHorizontal: 1,
-              paddingHorizontal: 8,
-              borderBottomWidth: 1,
-              backgroundColor: colors.custom.black[900],
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              VIEW
-            </Text>
-            <View>
-              <Pressable
-                onPress={() => bottomSheetModalRef4.current?.close()}
-                style={{ paddingRight: 8 }}
-              >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "700",
-                    textAlign: "center",
-                    paddingHorizontal: 5,
-                    paddingVertical: 2,
-                    borderRadius: 2,
-                    backgroundColor: colors.custom.red[900],
-                  }}
-                >
-                  Close
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-          <BottomSheetScrollView
-            contentContainerStyle={{
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              margin: 5,
-            }}
-          >
-            <View
-              style={{
-                justifyContent: "flex-start",
-                marginHorizontal: 5,
-                marginVertical: 10,
-              }}
-            >
-              {arrow(() => {
-                const active = state.layout === "";
-                return (
-                  <Checkbox
-                    value={active}
-                    onValueChange={(x) => {
-                      if (x) {
-                        dispatch(["layout", ""]);
-                        bottomSheetModalRef4.current?.close();
-                      }
-                    }}
-                    color={active ? colors.custom.red[900] : undefined}
-                  />
-                );
-              })}
-              <Text style={{ paddingLeft: 10 }}>Default</Text>
-            </View>
-            {Object.keys(props.render_list_element[1]).map((layout) => {
-              return (
-                <View
-                  style={{
-                    justifyContent: "flex-start",
-                    marginHorizontal: 5,
-                    marginVertical: 10,
-                  }}
-                >
-                  {arrow(() => {
-                    const active = state.layout === layout;
-                    return (
-                      <Checkbox
-                        value={active}
-                        onValueChange={(x) => {
-                          if (x) {
-                            dispatch(["layout", layout]);
-                            bottomSheetModalRef4.current?.close();
-                          }
-                        }}
-                        color={active ? colors.custom.red[900] : undefined}
-                      />
-                    );
-                  })}
-                  <Text style={{ paddingLeft: 10 }}>{layout}</Text>
-                </View>
-              );
-            })}
-          </BottomSheetScrollView>
-        </BottomSheetModal> */}
 
         <BottomSheetModal
           ref={bottomSheetModalRef2}
