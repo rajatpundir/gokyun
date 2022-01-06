@@ -31,7 +31,7 @@ import { Struct, Variable } from "./main/utils/variable";
 import Test from "./modals/test";
 
 import Decimal from "decimal.js";
-import { Filter } from "./main/utils/db";
+import { Filter, load_test_data } from "./main/utils/db";
 
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
@@ -95,37 +95,6 @@ export type NavigatorParams = {
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
   NativeStackScreenProps<NavigatorParams, Screen>;
 
-const linking: LinkingOptions<NavigatorParams> = {
-  prefixes: [Linking.makeUrl("/")],
-  config: {
-    screens: {
-      Main: {
-        screens: {
-          Alliances: "alliances",
-          Clans: "clans",
-          Guilds: "guilds",
-          System: {
-            path: "system",
-            screens: {
-              Categories: "categories",
-              Countries: {
-                path: "country/:id",
-                parse: {
-                  id: (id: number) => `${id}`,
-                },
-              },
-              Languages: "languages",
-              Tags: "tags",
-            },
-          },
-          Users: "users",
-        },
-      },
-      NotFound: "*",
-    },
-  },
-};
-
 const Stack = createNativeStackNavigator<NavigatorParams>();
 
 // Ignore react navigation error related to serializability of props passed
@@ -134,14 +103,28 @@ export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
 
-  const bottom_sheet_props = getState().bottom_sheet_props;
+  let [bottom_sheet_props, set_bottom_sheet_props] = React.useState(
+    getState().bottom_sheet_props
+  );
 
   const bsm_ref_view = useRef<BottomSheetModal>(null);
 
   useEffect(() => {
     const unsub = subscribe(
+      (s) => s.bottom_sheet_props,
+      (x) => {
+        set_bottom_sheet_props(x);
+      }
+    );
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    const unsub = subscribe(
       (s) => s.bsm_view,
-      () => bsm_ref_view.current?.present()
+      () => {
+        bsm_ref_view.current?.present();
+      }
     );
     return unsub;
   }, []);
@@ -153,7 +136,6 @@ export default function App() {
       <BottomSheetModalProvider>
         <SafeAreaProvider>
           <NavigationContainer
-            linking={linking}
             theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
           >
             <Stack.Navigator>
@@ -189,6 +171,7 @@ export default function App() {
           </NavigationContainer>
           <StatusBar />
         </SafeAreaProvider>
+
         {arrow(() => {
           if (bottom_sheet_props !== undefined) {
             const [state, dispatch, render_list_element] = [

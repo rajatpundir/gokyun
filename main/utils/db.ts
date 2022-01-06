@@ -32,8 +32,9 @@ const db_name: string = "test1.db";
 const db = apply(SQLite.openDatabase(db_name), (db) => {
   db.exec(
     [
-      { sql: "PRAGMA journal_mode = WAL;", args: [] },
-      { sql: "PRAGMA synchronous = 1;", args: [] },
+      // Note. We maybe getting some fields as null due to WAL mode.
+      // { sql: "PRAGMA journal_mode = WAL;", args: [] },
+      // { sql: "PRAGMA synchronous = 1;", args: [] },
       { sql: "PRAGMA foreign_keys = ON;", args: [] },
       { sql: "VACUUM;", args: [] },
       { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
@@ -1966,101 +1967,9 @@ export class Filter {
   }
 }
 
-function get_variable_filters(
-  active: boolean,
-  level: Decimal | undefined,
-  filters: [Filter, HashSet<Filter>]
-): {
-  active: boolean;
-  level: Decimal | undefined;
-  id: [
-    (
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-      | ["between" | "not_between", [Decimal, Decimal]]
-      | undefined
-    ),
-    ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Decimal]
-      | ["between" | "not_between", [Decimal, Decimal]]
-      | undefined
-    >
-  ];
-  created_at: [
-    (
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    ),
-    ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    >
-  ];
-  updated_at: [
-    (
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    ),
-    ReadonlyArray<
-      | ["==" | "!=" | ">=" | "<=" | ">" | "<", Date]
-      | ["between" | "not_between", [Date, Date]]
-      | undefined
-    >
-  ];
-} {
-  return {
-    active: active,
-    level: level,
-    id: [
-      apply(filters[0], (x) => {
-        if (x.id[0]) {
-          return x.id[1];
-        }
-        return undefined;
-      }),
-      filters[1].toArray().map((x) => {
-        if (x.id[0]) {
-          return x.id[1];
-        }
-        return undefined;
-      }),
-    ],
-    created_at: [
-      apply(filters[0], (x) => {
-        if (x.created_at[0]) {
-          return x.created_at[1];
-        }
-        return undefined;
-      }),
-      filters[1].toArray().map((x) => {
-        if (x.created_at[0]) {
-          return x.created_at[1];
-        }
-        return undefined;
-      }),
-    ],
-    updated_at: [
-      apply(filters[0], (x) => {
-        if (x.updated_at[0]) {
-          return x.updated_at[1];
-        }
-        return undefined;
-      }),
-      filters[1].toArray().map((x) => {
-        if (x.updated_at[0]) {
-          return x.updated_at[1];
-        }
-        return undefined;
-      }),
-    ],
-  };
-}
-
 ///////////////////////////////////
 
-async function load_test_data() {
+export async function load_test_data() {
   const struct = get_struct("User");
   if (unwrap(struct)) {
     await replace_variables(
@@ -2397,5 +2306,3 @@ async function load_test_data() {
   // const x = await execute_transaction("SELECT * FROM VARS;", []);
   // console.log(x);
 }
-
-load_test_data();

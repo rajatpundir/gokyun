@@ -51,6 +51,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
           backgroundColor: colors.custom.black[900],
           height: 55,
         },
+        tabBarHideOnKeyboard: true,
       }}
     >
       <BottomTab.Screen
