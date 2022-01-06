@@ -196,10 +196,9 @@ export default function App() {
               bottom_sheet_props.dispatch,
               bottom_sheet_props.render_list_element,
             ];
-            const bottomSheetModalRef4 = bsm_ref_view;
             return (
               <BottomSheetModal
-                ref={bottomSheetModalRef4}
+                ref={bsm_ref_view}
                 snapPoints={["50%", "90%"]}
                 index={0}
                 backgroundStyle={{
@@ -228,7 +227,7 @@ export default function App() {
                   </Text>
                   <View>
                     <Pressable
-                      onPress={() => bottomSheetModalRef4.current?.close()}
+                      onPress={() => bsm_ref_view.current?.close()}
                       style={{ paddingRight: 8 }}
                     >
                       <Text
@@ -269,7 +268,7 @@ export default function App() {
                           onValueChange={(x) => {
                             if (x) {
                               dispatch(["layout", ""]);
-                              bottomSheetModalRef4.current?.close();
+                              bsm_ref_view.current?.close();
                             }
                           }}
                           color={active ? colors.custom.red[900] : undefined}
@@ -295,7 +294,7 @@ export default function App() {
                               onValueChange={(x) => {
                                 if (x) {
                                   dispatch(["layout", layout]);
-                                  bottomSheetModalRef4.current?.close();
+                                  bsm_ref_view.current?.close();
                                 }
                               }}
                               color={
