@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
@@ -19,7 +19,7 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../themed/colors";
 import Checkbox from "expo-checkbox";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { setState, useStore } from "./store";
+import { getState, setState, useStore } from "./store";
 
 export type ListState = {
   struct: Struct;
@@ -362,31 +362,7 @@ export function List(props: {
     state.offset,
   ]);
 
-  // useEffect(() => {
-  //   const handler = () => {
-  //     console.log("COMPONENT DID UNMOUNT");
-  //   };
-  //   window.addEventListener("unhandledRejection", handler);
-  //   return () => {
-  //     window.removeEventListener("unhandledRejection", handler);
-  //   };
-  // }, []);
-
   const set_bottom_sheet_props = useStore((s) => s.set_bottom_sheet_props);
-
-  const x = () => {
-    console.log("#####################111");
-    set_bottom_sheet_props({
-      state: state,
-      dispatch: dispatch,
-      render_list_element: props.render_list_element,
-      view: useRef<BottomSheetModal>(null),
-      sorting: useRef<BottomSheetModal>(null),
-      sorting_fields: useRef<BottomSheetModal>(null),
-      filters: useRef<BottomSheetModal>(null),
-    });
-    console.log("#####################2222");
-  };
 
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
@@ -401,15 +377,31 @@ export function List(props: {
           backgroundColor: colors.custom.black[900],
         }}
       >
-        <props.render_custom_fields
-          filters={state.filters}
-          dispatch={dispatch}
-          show_views={(props: { element: JSX.Element }) => {
-            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@111");
-            // bottomSheetModalRef4.current?.present()
-            return <Pressable onPress={() => x()}>{props.element}</Pressable>;
-          }}
-          show_sorting={(props: { element: JSX.Element }) => {
+        {props.render_custom_fields({
+          filters: state.filters,
+          dispatch: dispatch,
+          show_views: (props: { element: JSX.Element }) => {
+            return (
+              <Pressable
+                onPress={() => {
+                  console.log("@@@@@@@@@@@@@@@@@@@@######@@@@@@@@@@@@@@@@@111");
+                  set_bottom_sheet_props({
+                    state: state,
+                    dispatch: dispatch,
+                    render_list_element: [() => <></>, {}],
+                    // view: useRef<BottomSheetModal>(null),
+                    // sorting: useRef<BottomSheetModal>(null),
+                    // sorting_fields: useRef<BottomSheetModal>(null),
+                    // filters: useRef<BottomSheetModal>(null),
+                  });
+                  console.log("@@@@@@@@@@@@@@@@@##$###@@@@@@@@@@@@@@@@@@@@111");
+                }}
+              >
+                {props.element}
+              </Pressable>
+            );
+          },
+          show_sorting: (props: { element: JSX.Element }) => {
             return (
               <Pressable
                 onPress={() => bottomSheetModalRef2.current?.present()}
@@ -417,8 +409,8 @@ export function List(props: {
                 {props.element}
               </Pressable>
             );
-          }}
-          show_filters={(props: { element: JSX.Element }) => {
+          },
+          show_filters: (props: { element: JSX.Element }) => {
             return (
               <Pressable
                 onPress={() => bottomSheetModalRef1.current?.present()}
@@ -426,8 +418,8 @@ export function List(props: {
                 {props.element}
               </Pressable>
             );
-          }}
-        />
+          },
+        })}
 
         <FlatList
           data={state.variables}
@@ -831,16 +823,29 @@ export function SelectionModal(
     props.navigation.setOptions({ headerTitle: props.route.params.title });
   }, []);
   return (
-    <List
-      selected={props.route.params.selected}
-      struct={props.route.params.struct}
-      active={props.route.params.active}
-      level={props.route.params.level}
-      filters={props.route.params.filters}
-      limit={props.route.params.limit}
-      render_list_element={props.route.params.render_list_element}
-      disptach_values={props.route.params.disptach_values}
-      render_custom_fields={props.route.params.render_custom_fields}
-    />
+    <>
+      {/* {List({
+        selected: props.route.params.selected,
+        struct: props.route.params.struct,
+        active: props.route.params.active,
+        level: props.route.params.level,
+        filters: props.route.params.filters,
+        limit: props.route.params.limit,
+        render_list_element: props.route.params.render_list_element,
+        disptach_values: props.route.params.disptach_values,
+        render_custom_fields: props.route.params.render_custom_fields,
+      })} */}
+      <List
+        selected={props.route.params.selected}
+        struct={props.route.params.struct}
+        active={props.route.params.active}
+        level={props.route.params.level}
+        filters={props.route.params.filters}
+        limit={props.route.params.limit}
+        render_list_element={props.route.params.render_list_element}
+        disptach_values={props.route.params.disptach_values}
+        render_custom_fields={props.route.params.render_custom_fields}
+      />
+    </>
   );
 }

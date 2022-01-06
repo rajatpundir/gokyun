@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
@@ -139,7 +139,12 @@ export default function App() {
   const [bottom_sheet_props, set_bottom_sheet_props] = useState(
     getState().bottom_sheet_props
   );
-  subscribe((s) => set_bottom_sheet_props(s.bottom_sheet_props));
+  useEffect(() => {
+    subscribe((s) => {
+      console.log("something");
+      set_bottom_sheet_props(s.bottom_sheet_props);
+    });
+  }, []);
   if (!isLoadingComplete) {
     return null;
   } else {
