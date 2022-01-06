@@ -106,9 +106,6 @@ export default function App() {
   let [bottom_sheet_props, set_bottom_sheet_props] = React.useState(
     getState().bottom_sheet_props
   );
-
-  const bsm_ref_view = useRef<BottomSheetModal>(null);
-
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.bottom_sheet_props,
@@ -119,11 +116,45 @@ export default function App() {
     return unsub;
   }, []);
 
+  const bsm_ref_view = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_view,
       () => {
         bsm_ref_view.current?.present();
+      }
+    );
+    return unsub;
+  }, []);
+
+  const bsm_ref_sorting = useRef<BottomSheetModal>(null);
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.bsm_sorting,
+      () => {
+        bsm_ref_sorting.current?.present();
+      }
+    );
+    return unsub;
+  }, []);
+
+  const bsm_ref_sorting_fields = useRef<BottomSheetModal>(null);
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.bsm_sorting_fields,
+      () => {
+        bsm_ref_sorting_fields.current?.present();
+      }
+    );
+    return unsub;
+  }, []);
+
+  const bsm_ref_filters = useRef<BottomSheetModal>(null);
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.bsm_filters,
+      () => {
+        bsm_ref_filters.current?.present();
       }
     );
     return unsub;
