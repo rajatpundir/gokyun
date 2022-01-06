@@ -376,42 +376,32 @@ export function List(props: {
         {props.render_custom_fields({
           filters: state.filters,
           dispatch: dispatch,
-          show_views: ({ element }: { element: JSX.Element }) => {
-            return (
-              <Pressable
-                onPress={() => {
-                  setState((s) => ({
-                    bottom_sheet_props: {
-                      state: state,
-                      dispatch: dispatch,
-                      render_list_element: props.render_list_element,
-                    },
-                    bsm_view: s.bsm_view + 1,
-                  }));
-                }}
-              >
-                {element}
-              </Pressable>
-            );
-          },
-          show_sorting: ({ element }: { element: JSX.Element }) => {
-            return (
-              <Pressable
-                onPress={() => bottomSheetModalRef2.current?.present()}
-              >
-                {element}
-              </Pressable>
-            );
-          },
-          show_filters: ({ element }: { element: JSX.Element }) => {
-            return (
-              <Pressable
-                onPress={() => bottomSheetModalRef1.current?.present()}
-              >
-                {element}
-              </Pressable>
-            );
-          },
+          show_views: ({ element }: { element: JSX.Element }) => (
+            <Pressable
+              onPress={() => {
+                setState((s) => ({
+                  bottom_sheet_props: {
+                    state: state,
+                    dispatch: dispatch,
+                    render_list_element: props.render_list_element,
+                  },
+                  bsm_view: s.bsm_view + 1,
+                }));
+              }}
+            >
+              {element}
+            </Pressable>
+          ),
+          show_sorting: ({ element }: { element: JSX.Element }) => (
+            <Pressable onPress={() => bottomSheetModalRef2.current?.present()}>
+              {element}
+            </Pressable>
+          ),
+          show_filters: ({ element }: { element: JSX.Element }) => (
+            <Pressable onPress={() => bottomSheetModalRef1.current?.present()}>
+              {element}
+            </Pressable>
+          ),
         })}
 
         <FlatList
