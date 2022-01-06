@@ -728,9 +728,9 @@ function Other_Field(
     render_custom_fields: (props: {
       filters: HashSet<Filter>;
       dispatch: React.Dispatch<ListAction>;
-      show_views: () => void;
-      show_sorting: () => void;
-      show_filters: () => void;
+      show_views: (props: { element: JSX.Element }) => JSX.Element;
+      show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+      show_filters: (props: { element: JSX.Element }) => JSX.Element;
     }) => JSX.Element;
   }
 ): JSX.Element | null {
@@ -856,9 +856,9 @@ export function Field(props: {
           render_custom_fields: (props: {
             filters: HashSet<Filter>;
             dispatch: React.Dispatch<ListAction>;
-            show_views: () => void;
-            show_sorting: () => void;
-            show_filters: () => void;
+            show_views: (props: { element: JSX.Element }) => JSX.Element;
+            show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+            show_filters: (props: { element: JSX.Element }) => JSX.Element;
           }) => JSX.Element;
         }
       ];

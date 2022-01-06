@@ -19,8 +19,9 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../themed/colors";
 import Checkbox from "expo-checkbox";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
+import { setState, useStore } from "./store";
 
-type State = {
+export type ListState = {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
@@ -49,7 +50,7 @@ export type ListAction =
   | ["filters", Filter, "replace", FilterPath]
   | ["layout", string];
 
-export function reducer(state: Draft<State>, action: ListAction) {
+export function reducer(state: Draft<ListState>, action: ListAction) {
   switch (action[0]) {
     case "variables": {
       if (state.offset.equals(0)) {
@@ -316,12 +317,12 @@ export function List(props: {
   render_custom_fields: (props: {
     filters: HashSet<Filter>;
     dispatch: React.Dispatch<ListAction>;
-    show_views: () => void;
-    show_sorting: () => void;
-    show_filters: () => void;
+    show_views: (props: { element: JSX.Element }) => JSX.Element;
+    show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+    show_filters: (props: { element: JSX.Element }) => JSX.Element;
   }) => JSX.Element;
-}) {
-  const [state, dispatch] = useImmerReducer<State, ListAction>(reducer, {
+}): JSX.Element {
+  const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
     active: props.active,
     level: props.level,
@@ -361,19 +362,71 @@ export function List(props: {
     state.offset,
   ]);
 
+  // useEffect(() => {
+  //   const handler = () => {
+  //     console.log("COMPONENT DID UNMOUNT");
+  //   };
+  //   window.addEventListener("unhandledRejection", handler);
+  //   return () => {
+  //     window.removeEventListener("unhandledRejection", handler);
+  //   };
+  // }, []);
+
+  const set_bottom_sheet_props = useStore((s) => s.set_bottom_sheet_props);
+
+  const x = () => {
+    console.log("#####################111");
+    set_bottom_sheet_props({
+      state: state,
+      dispatch: dispatch,
+      render_list_element: props.render_list_element,
+      view: useRef<BottomSheetModal>(null),
+      sorting: useRef<BottomSheetModal>(null),
+      sorting_fields: useRef<BottomSheetModal>(null),
+      filters: useRef<BottomSheetModal>(null),
+    });
+    console.log("#####################2222");
+  };
+
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef3 = useRef<BottomSheetModal>(null);
-  const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
+  // const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
   return (
     <BottomSheetModalProvider>
-      <View style={{ flex: 1, flexDirection: "column" }}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          backgroundColor: colors.custom.black[900],
+        }}
+      >
         <props.render_custom_fields
           filters={state.filters}
           dispatch={dispatch}
-          show_views={() => bottomSheetModalRef4.current?.present()}
-          show_sorting={() => bottomSheetModalRef2.current?.present()}
-          show_filters={() => bottomSheetModalRef1.current?.present()}
+          show_views={(props: { element: JSX.Element }) => {
+            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@111");
+            // bottomSheetModalRef4.current?.present()
+            return <Pressable onPress={() => x()}>{props.element}</Pressable>;
+          }}
+          show_sorting={(props: { element: JSX.Element }) => {
+            return (
+              <Pressable
+                onPress={() => bottomSheetModalRef2.current?.present()}
+              >
+                {props.element}
+              </Pressable>
+            );
+          }}
+          show_filters={(props: { element: JSX.Element }) => {
+            return (
+              <Pressable
+                onPress={() => bottomSheetModalRef1.current?.present()}
+              >
+                {props.element}
+              </Pressable>
+            );
+          }}
         />
 
         <FlatList
@@ -407,7 +460,7 @@ export function List(props: {
           style={{ marginTop: 4 }}
         />
 
-        <BottomSheetModal
+        {/* <BottomSheetModal
           ref={bottomSheetModalRef4}
           snapPoints={["50%", "90%"]}
           index={0}
@@ -516,7 +569,7 @@ export function List(props: {
               );
             })}
           </BottomSheetScrollView>
-        </BottomSheetModal>
+        </BottomSheetModal> */}
 
         <BottomSheetModal
           ref={bottomSheetModalRef2}
@@ -771,7 +824,9 @@ export function List(props: {
   );
 }
 
-export function SelectionModal(props: RootNavigatorProps<"SelectionModal">) {
+export function SelectionModal(
+  props: RootNavigatorProps<"SelectionModal">
+): JSX.Element {
   React.useEffect(() => {
     props.navigation.setOptions({ headerTitle: props.route.params.title });
   }, []);

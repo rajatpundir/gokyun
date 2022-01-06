@@ -27,9 +27,9 @@ import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 // Some mechanism to update and delete this list
 // Edit and Show modes to show or edit this list
 
-export default function Component({
-  navigation,
-}: ParentNavigatorProps<"Users">) {
+export default function Component(
+  props: ParentNavigatorProps<"Users">
+): JSX.Element {
   const struct_name = "User";
   const struct = get_struct(struct_name);
   return (
@@ -225,9 +225,9 @@ export default function Component({
               render_custom_fields={(props: {
                 filters: HashSet<Filter>;
                 dispatch: React.Dispatch<ListAction>;
-                show_views: () => void;
-                show_sorting: () => void;
-                show_filters: () => void;
+                show_views: (props: { element: JSX.Element }) => JSX.Element;
+                show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+                show_filters: (props: { element: JSX.Element }) => JSX.Element;
               }) => {
                 const filter = props.filters.findAny((x) => x.index === 0);
                 if (filter.isSome()) {
@@ -295,51 +295,60 @@ export default function Component({
                         }}
                       />
                       <>
-                        <Pressable
-                          onPress={props.show_views}
+                        <View
                           style={{
                             padding: 2,
                             marginHorizontal: 1,
                             alignSelf: "center",
                           }}
                         >
-                          <Feather
-                            name="layout"
-                            size={20}
-                            color={colors.tailwind.slate[400]}
-                            style={{ alignSelf: "center" }}
+                          <props.show_views
+                            element={
+                              <Feather
+                                name="layout"
+                                size={20}
+                                color={colors.tailwind.slate[400]}
+                                style={{ alignSelf: "center" }}
+                              />
+                            }
                           />
-                        </Pressable>
-                        <Pressable
-                          onPress={props.show_sorting}
+                        </View>
+                        <View
                           style={{
                             padding: 2,
                             marginHorizontal: 1,
                             alignSelf: "center",
                           }}
                         >
-                          <FontAwesome
-                            name="sort-alpha-asc"
-                            size={16}
-                            color={colors.tailwind.slate[400]}
-                            style={{ alignSelf: "center" }}
+                          <props.show_sorting
+                            element={
+                              <FontAwesome
+                                name="sort-alpha-asc"
+                                size={16}
+                                color={colors.tailwind.slate[400]}
+                                style={{ alignSelf: "center" }}
+                              />
+                            }
                           />
-                        </Pressable>
-                        <Pressable
-                          onPress={props.show_filters}
+                        </View>
+                        <View
                           style={{
                             padding: 2,
                             marginHorizontal: 1,
                             alignSelf: "center",
                           }}
                         >
-                          <Ionicons
-                            name="filter"
-                            size={20}
-                            color={colors.tailwind.slate[400]}
-                            style={{ alignSelf: "center" }}
+                          <props.show_filters
+                            element={
+                              <Ionicons
+                                name="filter"
+                                size={20}
+                                color={colors.tailwind.slate[400]}
+                                style={{ alignSelf: "center" }}
+                              />
+                            }
                           />
-                        </Pressable>
+                        </View>
                       </>
                     </View>
                   );

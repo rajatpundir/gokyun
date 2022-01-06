@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
@@ -35,7 +35,16 @@ import { Filter } from "./main/utils/db";
 
 import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { Text, View } from "./main/themed";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
+import { getState, subscribe } from "./main/utils/store";
+import { arrow } from "./main/utils/prelude";
+import Checkbox from "expo-checkbox";
+import { Pressable } from "react-native";
 
 declare global {
   namespace ReactNavigation {
@@ -73,9 +82,9 @@ export type NavigatorParams = {
     render_custom_fields: (props: {
       filters: HashSet<Filter>;
       dispatch: React.Dispatch<ListAction>;
-      show_views: () => void;
-      show_sorting: () => void;
-      show_filters: () => void;
+      show_views: (props: { element: JSX.Element }) => JSX.Element;
+      show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+      show_filters: (props: { element: JSX.Element }) => JSX.Element;
     }) => JSX.Element;
   };
   Test: {
@@ -121,52 +130,185 @@ const Stack = createNativeStackNavigator<NavigatorParams>();
 
 // Ignore react navigation error related to serializability of props passed
 
+// Use Zustand state to hide bottom tab via styling.
+// On component unmount via return callback of useEffect, manipulate zustand state.
+
 export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
-
+  const [bottom_sheet_props, set_bottom_sheet_props] = useState(
+    getState().bottom_sheet_props
+  );
+  subscribe((s) => set_bottom_sheet_props(s.bottom_sheet_props));
   if (!isLoadingComplete) {
     return null;
   } else {
     return (
-      <SafeAreaProvider>
-        <NavigationContainer
-          linking={linking}
-          theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Main"
-              component={Navigator}
-              options={{ headerShown: false, animation: "none" }}
-            />
-            <Stack.Screen
-              name="SelectionModal"
-              component={SelectionModal}
-              options={{
-                title: "Select variable",
-                headerStyle: { backgroundColor: colors.custom.black[900] },
-                headerTintColor: colors.tailwind.slate[200],
-              }}
-            />
-            <Stack.Screen
-              name="Test"
-              component={Test}
-              options={{
-                title: "Test",
-                headerStyle: { backgroundColor: colors.custom.black[900] },
-                headerTintColor: colors.tailwind.slate[200],
-              }}
-            />
-            <Stack.Screen
-              name="NotFound"
-              component={NotFoundScreen}
-              options={{ title: "Oops!" }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-        <StatusBar />
-      </SafeAreaProvider>
+      <BottomSheetModalProvider>
+        <SafeAreaProvider>
+          <NavigationContainer
+            linking={linking}
+            theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
+          >
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Main"
+                component={Navigator}
+                options={{ headerShown: false, animation: "none" }}
+              />
+              <Stack.Screen
+                name="SelectionModal"
+                component={SelectionModal}
+                options={{
+                  title: "Select variable",
+                  headerStyle: { backgroundColor: colors.custom.black[900] },
+                  headerTintColor: colors.tailwind.slate[200],
+                }}
+              />
+              <Stack.Screen
+                name="Test"
+                component={Test}
+                options={{
+                  title: "Test",
+                  headerStyle: { backgroundColor: colors.custom.black[900] },
+                  headerTintColor: colors.tailwind.slate[200],
+                }}
+              />
+              <Stack.Screen
+                name="NotFound"
+                component={NotFoundScreen}
+                options={{ title: "Oops!" }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+          <StatusBar />
+        </SafeAreaProvider>
+        {/* {arrow(() => {
+          if (bottom_sheet_props !== undefined) {
+            const [state, dispatch, render_list_element] = [
+              bottom_sheet_props.state,
+              bottom_sheet_props.dispatch,
+              bottom_sheet_props.render_list_element,
+            ];
+            const bottomSheetModalRef4 = bottom_sheet_props.view;
+            return (
+              <BottomSheetModal
+                ref={bottomSheetModalRef4}
+                snapPoints={["50%", "90%"]}
+                index={0}
+                backgroundStyle={{
+                  backgroundColor: colors.custom.black[900],
+                  borderColor: colors.tailwind.gray[500],
+                  borderWidth: 1,
+                }}
+              >
+                <View
+                  style={{
+                    paddingBottom: 10,
+                    marginHorizontal: 1,
+                    paddingHorizontal: 8,
+                    borderBottomWidth: 1,
+                    backgroundColor: colors.custom.black[900],
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      textAlign: "center",
+                    }}
+                  >
+                    VIEW
+                  </Text>
+                  <View>
+                    <Pressable
+                      onPress={() => bottomSheetModalRef4.current?.close()}
+                      style={{ paddingRight: 8 }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "700",
+                          textAlign: "center",
+                          paddingHorizontal: 5,
+                          paddingVertical: 2,
+                          borderRadius: 2,
+                          backgroundColor: colors.custom.red[900],
+                        }}
+                      >
+                        Close
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+                <BottomSheetScrollView
+                  contentContainerStyle={{
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    margin: 5,
+                  }}
+                >
+                  <View
+                    style={{
+                      justifyContent: "flex-start",
+                      marginHorizontal: 5,
+                      marginVertical: 10,
+                    }}
+                  >
+                    {arrow(() => {
+                      const active = state.layout === "";
+                      return (
+                        <Checkbox
+                          value={active}
+                          onValueChange={(x) => {
+                            if (x) {
+                              dispatch(["layout", ""]);
+                              bottomSheetModalRef4.current?.close();
+                            }
+                          }}
+                          color={active ? colors.custom.red[900] : undefined}
+                        />
+                      );
+                    })}
+                    <Text style={{ paddingLeft: 10 }}>Default</Text>
+                  </View>
+                  {Object.keys(render_list_element[1]).map((layout) => {
+                    return (
+                      <View
+                        style={{
+                          justifyContent: "flex-start",
+                          marginHorizontal: 5,
+                          marginVertical: 10,
+                        }}
+                      >
+                        {arrow(() => {
+                          const active = state.layout === layout;
+                          return (
+                            <Checkbox
+                              value={active}
+                              onValueChange={(x) => {
+                                if (x) {
+                                  dispatch(["layout", layout]);
+                                  bottomSheetModalRef4.current?.close();
+                                }
+                              }}
+                              color={
+                                active ? colors.custom.red[900] : undefined
+                              }
+                            />
+                          );
+                        })}
+                        <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                      </View>
+                    );
+                  })}
+                </BottomSheetScrollView>
+              </BottomSheetModal>
+            );
+          }
+          return <></>;
+        })} */}
+      </BottomSheetModalProvider>
     );
   }
 }
