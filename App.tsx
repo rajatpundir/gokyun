@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
@@ -130,21 +130,22 @@ const Stack = createNativeStackNavigator<NavigatorParams>();
 
 // Ignore react navigation error related to serializability of props passed
 
-// Use Zustand state to hide bottom tab via styling.
-// On component unmount via return callback of useEffect, manipulate zustand state.
-
 export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
-  const [bottom_sheet_props, set_bottom_sheet_props] = useState(
-    getState().bottom_sheet_props
-  );
+
+  const bottom_sheet_props = getState().bottom_sheet_props;
+
+  const bsm_ref_view = useRef<BottomSheetModal>(null);
+
   useEffect(() => {
-    subscribe((s) => {
-      console.log("something");
-      set_bottom_sheet_props(s.bottom_sheet_props);
-    });
+    const unsub = subscribe(
+      (s) => s.bsm_view,
+      () => bsm_ref_view.current?.present()
+    );
+    return unsub;
   }, []);
+
   if (!isLoadingComplete) {
     return null;
   } else {
@@ -188,14 +189,14 @@ export default function App() {
           </NavigationContainer>
           <StatusBar />
         </SafeAreaProvider>
-        {/* {arrow(() => {
+        {arrow(() => {
           if (bottom_sheet_props !== undefined) {
             const [state, dispatch, render_list_element] = [
               bottom_sheet_props.state,
               bottom_sheet_props.dispatch,
               bottom_sheet_props.render_list_element,
             ];
-            const bottomSheetModalRef4 = bottom_sheet_props.view;
+            const bottomSheetModalRef4 = bsm_ref_view;
             return (
               <BottomSheetModal
                 ref={bottomSheetModalRef4}
@@ -312,7 +313,7 @@ export default function App() {
             );
           }
           return <></>;
-        })} */}
+        })}
       </BottomSheetModalProvider>
     );
   }

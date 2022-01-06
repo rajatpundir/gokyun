@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
@@ -13,13 +13,12 @@ import {
   BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
-  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { colors } from "../themed/colors";
 import Checkbox from "expo-checkbox";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { getState, setState, useStore } from "./store";
+import { setState } from "./store";
 
 export type ListState = {
   struct: Struct;
@@ -362,12 +361,9 @@ export function List(props: {
     state.offset,
   ]);
 
-  const set_bottom_sheet_props = useStore((s) => s.set_bottom_sheet_props);
-
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef3 = useRef<BottomSheetModal>(null);
-  // const bottomSheetModalRef4 = useRef<BottomSheetModal>(null);
   return (
     <BottomSheetModalProvider>
       <View
@@ -384,17 +380,14 @@ export function List(props: {
             return (
               <Pressable
                 onPress={() => {
-                  console.log("@@@@@@@@@@@@@@@@@@@@######@@@@@@@@@@@@@@@@@111");
-                  set_bottom_sheet_props({
-                    state: state,
-                    dispatch: dispatch,
-                    render_list_element: [() => <></>, {}],
-                    // view: useRef<BottomSheetModal>(null),
-                    // sorting: useRef<BottomSheetModal>(null),
-                    // sorting_fields: useRef<BottomSheetModal>(null),
-                    // filters: useRef<BottomSheetModal>(null),
-                  });
-                  console.log("@@@@@@@@@@@@@@@@@##$###@@@@@@@@@@@@@@@@@@@@111");
+                  setState((s) => ({
+                    bottom_sheet_props: {
+                      state: state,
+                      dispatch: dispatch,
+                      render_list_element: [() => <></>, {}],
+                    },
+                    bsm_view: s.bsm_view + 1,
+                  }));
                 }}
               >
                 {props.element}

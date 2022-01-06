@@ -8,18 +8,10 @@ import { Text, View } from "../../../main/themed";
 import { Option } from "prelude-ts";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { get_structs } from "../../../main/utils/schema";
-import { Struct, Variable } from "../../../main/utils/variable";
+import { Struct } from "../../../main/utils/variable";
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import { log_permissions } from "../../../main/utils/permissions";
 import { useNavigation } from "@react-navigation/core";
-import Decimal from "decimal.js";
-import { Immutable } from "immer";
-import {
-  getState,
-  setState,
-  subscribe,
-  // useStore,
-} from "../../../main/utils/store";
+import { getState, subscribe } from "../../../main/utils/store";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
