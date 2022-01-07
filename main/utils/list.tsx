@@ -338,25 +338,32 @@ export function List(props: {
     layout: "",
   });
 
-  const token = useRef(0);
+  const request_counter = useRef(0);
   useEffect(() => {
     const get_vars = async () => {
-      token.current += 1;
-      const request_token = token.current;
-      const variables = await get_variables(
-        state.struct,
-        state.active,
-        state.level,
-        state.init_filter,
-        state.filters,
-        state.limit,
-        state.offset
-      );
-      if (request_token === token.current) {
-        if (unwrap(variables)) {
-          dispatch(["variables", variables.value]);
+      request_counter.current += 1;
+      const request_count = request_counter.current;
+      setTimeout(async () => {
+        // Only request if new request was not made during timeout
+        if (request_count === request_counter.current) {
+          const variables = await get_variables(
+            state.struct,
+            state.active,
+            state.level,
+            state.init_filter,
+            state.filters,
+            state.limit,
+            state.offset
+          );
+          // Only update if new request was not made during current request
+          if (request_count === request_counter.current) {
+            if (unwrap(variables)) {
+              dispatch(["variables", variables.value]);
+            }
+          }
         }
-      }
+        // Try adjusting the time in ms value to some unnoticable range(100ms or less)
+      }, 100);
     };
     get_vars();
   }, [
