@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useRef } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
@@ -101,7 +101,7 @@ export default function App() {
     getState().bsm_view.props
   );
   const bsm_view_ref = useRef<BottomSheetModal>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_view.props,
       (x) => {
@@ -110,7 +110,7 @@ export default function App() {
     );
     return unsub;
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_view.count,
       () => {
@@ -125,7 +125,7 @@ export default function App() {
   );
   const bsm_sorting_ref = useRef<BottomSheetModal>(null);
   const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_sorting.props,
       (x) => {
@@ -134,7 +134,7 @@ export default function App() {
     );
     return unsub;
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_sorting.count,
       () => {
@@ -148,7 +148,7 @@ export default function App() {
     getState().bsm_filters.props
   );
   const bsm_filters_ref = useRef<BottomSheetModal>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_filters.props,
       (x) => {
@@ -157,7 +157,7 @@ export default function App() {
     );
     return unsub;
   }, []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_filters.count,
       () => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
@@ -359,7 +359,7 @@ export function List(props: {
   const [bsm_sorting_count, set_bsm_sorting_count] = useState(-1);
   const [bsm_filters_count, set_bsm_filters_count] = useState(-1);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (getState().bsm_view.count === bsm_view_count) {
       setState((s) => {
         return {
