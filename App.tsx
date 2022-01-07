@@ -86,6 +86,7 @@ export type NavigatorParams = {
       show_sorting: (props: { element: JSX.Element }) => JSX.Element;
       show_filters: (props: { element: JSX.Element }) => JSX.Element;
     }) => JSX.Element;
+    horizontal: boolean;
   };
   Test: {
     id: number;

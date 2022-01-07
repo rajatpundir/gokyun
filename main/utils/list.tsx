@@ -313,6 +313,7 @@ export function List(props: {
     show_sorting: (props: { element: JSX.Element }) => JSX.Element;
     show_filters: (props: { element: JSX.Element }) => JSX.Element;
   }) => JSX.Element;
+  horizontal?: boolean;
 }): JSX.Element {
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
@@ -503,7 +504,7 @@ export function List(props: {
           }
           return <></>;
         })}
-        // horizontal={true}
+        horizontal={props.horizontal}
         style={{ marginTop: 4 }}
       />
     </View>
@@ -527,6 +528,7 @@ export function SelectionModal(
       render_list_element={props.route.params.render_list_element}
       disptach_values={props.route.params.disptach_values}
       render_custom_fields={props.route.params.render_custom_fields}
+      horizontal={props.route.params.horizontal}
     />
   );
 }

@@ -732,6 +732,7 @@ function Other_Field(
       show_sorting: (props: { element: JSX.Element }) => JSX.Element;
       show_filters: (props: { element: JSX.Element }) => JSX.Element;
     }) => JSX.Element;
+    horizontal?: boolean;
   }
 ): JSX.Element | null {
   const { state, dispatch } = props;
@@ -779,6 +780,7 @@ function Other_Field(
                   navigation.goBack();
                 },
                 render_custom_fields: props.render_custom_fields,
+                horizontal: !!props.horizontal,
               });
             }
           }}
@@ -860,6 +862,7 @@ export function Field(props: {
             show_sorting: (props: { element: JSX.Element }) => JSX.Element;
             show_filters: (props: { element: JSX.Element }) => JSX.Element;
           }) => JSX.Element;
+          horizontal?: boolean;
         }
       ];
 }): JSX.Element | null {
@@ -1422,6 +1425,7 @@ export function Field(props: {
                 render_list_element={props.options[1].render_list_element}
                 limit={props.options[1].limit}
                 render_custom_fields={props.options[1].render_custom_fields}
+                horizontal={props.options[1].horizontal}
               />
             );
           }
