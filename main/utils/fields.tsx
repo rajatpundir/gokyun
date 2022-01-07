@@ -32,6 +32,7 @@ import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
 import { ListAction } from "../utils/list";
 
+// TODO. To resolve deciaml exception, do below.
 // Store value in internal state and show it, try to dispatch on change
 
 type ComponentProps = {
@@ -53,7 +54,7 @@ function Str(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          value={value.value}
+          defaultValue={value.value}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -91,7 +92,7 @@ function Lstr(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          value={value.value}
+          defaultValue={value.value}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -129,7 +130,7 @@ function Clob(
         <TextInput
           style={[{}, style]}
           {...otherProps}
-          value={value.value}
+          defaultValue={value.value}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -168,7 +169,7 @@ function I_32(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -211,7 +212,7 @@ function U_32(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -254,7 +255,7 @@ function I_64(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -297,7 +298,7 @@ function U_64(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"number-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -340,7 +341,7 @@ function I_Double(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"decimal-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -379,7 +380,7 @@ function U_Double(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"decimal-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -418,7 +419,7 @@ function I_Decimal(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"decimal-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
@@ -457,7 +458,7 @@ function U_Decimal(
           style={[{}, style]}
           {...otherProps}
           keyboardType={"decimal-pad"}
-          value={value.value.toString()}
+          defaultValue={value.value.toString()}
           onChangeText={(x) =>
             dispatch([
               "value",
