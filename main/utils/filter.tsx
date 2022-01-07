@@ -25,8 +25,7 @@ import { colors } from "../../main/themed/colors";
 
 // TODO. To resolve deciaml exception, do below.
 // Store value in internal state and show it, try to dispatch on change
-// As demonstrated in fields.tsx
-// Also set appropriate keyboard type for decimal type fields
+// Copy changes for text and numeric fields over from fields.tsx
 
 function View(props: ViewProps) {
   const { style, ...otherProps } = props;

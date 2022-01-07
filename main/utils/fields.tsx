@@ -32,6 +32,7 @@ import { Immutable } from "immer";
 import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
 import { ListAction } from "../utils/list";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -46,26 +47,82 @@ function Str(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
+  const default_value = "";
   if (value.type === "str") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[{}, style]}
-          {...otherProps}
-          defaultValue={value.value}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "str",
-                  value: x.substring(0, 256),
-                };
-                return it;
+        <View
+          style={{
+            paddingHorizontal: 0,
+          }}
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
               }),
-            ])
-          }
-        />
+              ,
+              style,
+            ]}
+            {...otherProps}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "str",
+                      value: x.substring(0, 256),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value);
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "str",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -84,26 +141,82 @@ function Lstr(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
+  const default_value = "";
   if (value.type === "lstr") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[{}, style]}
-          {...otherProps}
-          defaultValue={value.value}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "lstr",
-                  value: x.substring(0, 1024),
-                };
-                return it;
+        <View
+          style={{
+            paddingHorizontal: 0,
+          }}
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
               }),
-            ])
-          }
-        />
+              ,
+              style,
+            ]}
+            {...otherProps}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "lstr",
+                      value: x.substring(0, 1024),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value);
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "str",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -122,26 +235,82 @@ function Clob(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
+  const default_value = "";
   if (value.type === "clob") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[{}, style]}
-          {...otherProps}
-          defaultValue={value.value}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "clob",
-                  value: x,
-                };
-                return it;
+        <View
+          style={{
+            paddingHorizontal: 0,
+          }}
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
               }),
-            ])
-          }
-        />
+              ,
+              style,
+            ]}
+            {...otherProps}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "clob",
+                      value: x,
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value);
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "str",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -162,46 +331,85 @@ function I_32(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "i32") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"numbers-and-punctuation"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "i32",
-                    value: Decimal.clamp(
-                      new Decimal(x || "0").truncated(),
-                      -2147483648,
-                      2147483648
-                    ),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              ,
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"numbers-and-punctuation"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "i32",
+                      value: Decimal.clamp(
+                        new Decimal(x || "0").truncated(),
+                        -2147483648,
+                        2147483648
+                      ),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "i32",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -222,46 +430,84 @@ function U_32(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "u32") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"number-pad"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "u32",
-                    value: Decimal.clamp(
-                      new Decimal(x || "0").truncated(),
-                      0,
-                      2147483648
-                    ),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"number-pad"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "u32",
+                      value: Decimal.clamp(
+                        new Decimal(x || "0").truncated(),
+                        0,
+                        2147483648
+                      ),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "u32",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -282,46 +528,85 @@ function I_64(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "i64") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"numbers-and-punctuation"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "i64",
-                    value: Decimal.clamp(
-                      new Decimal(x || "0").truncated(),
-                      new Decimal("-9223372036854775807"),
-                      new Decimal("9223372036854775807")
-                    ),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              ,
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"numbers-and-punctuation"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "i64",
+                      value: Decimal.clamp(
+                        new Decimal(x || "0").truncated(),
+                        new Decimal("-9223372036854775807"),
+                        new Decimal("9223372036854775807")
+                      ),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "i64",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -342,46 +627,85 @@ function U_64(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "u64") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"number-pad"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "u64",
-                    value: Decimal.clamp(
-                      new Decimal(x || "0").truncated(),
-                      0,
-                      new Decimal("9223372036854775807")
-                    ),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              ,
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"number-pad"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "u64",
+                      value: Decimal.clamp(
+                        new Decimal(x || "0").truncated(),
+                        0,
+                        new Decimal("9223372036854775807")
+                      ),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "u64",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -402,42 +726,81 @@ function I_Double(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "idouble") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"numbers-and-punctuation"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "idouble",
-                    value: new Decimal(x || "0"),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              ,
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"numbers-and-punctuation"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "idouble",
+                      value: new Decimal(x || "0"),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "idouble",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -458,42 +821,81 @@ function U_Double(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "udouble") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"numbers-and-punctuation"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "udouble",
-                    value: new Decimal(x || "0").abs(),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              ,
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"numbers-and-punctuation"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "udouble",
+                      value: new Decimal(x || "0").abs(),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "udouble",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -514,42 +916,81 @@ function I_Decimal(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "idecimal") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            ,
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"numbers-and-punctuation"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "idecimal",
-                    value: new Decimal(x || "0"),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              ,
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"numbers-and-punctuation"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "idecimal",
+                      value: new Decimal(x || "0"),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "idecimal",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (
@@ -570,41 +1011,80 @@ function U_Decimal(
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  const default_value = new Decimal(0);
   if (value.type === "udecimal") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <TextInput
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.custom.blue[900] };
-              }
-              return {};
-            }),
-            style,
-          ]}
-          {...otherProps}
-          keyboardType={"numbers-and-punctuation"}
-          defaultValue={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "udecimal",
-                    value: new Decimal(x || "0").abs(),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
+        <View
+          style={{
+            paddingHorizontal: 0,
           }}
-        />
+        >
+          <TextInput
+            style={[
+              arrow(() => {
+                if (has_errors) {
+                  return { color: colors.custom.blue[900] };
+                }
+                return {};
+              }),
+              style,
+            ]}
+            {...otherProps}
+            keyboardType={"numbers-and-punctuation"}
+            defaultValue={local_val}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "udecimal",
+                      value: new Decimal(x || "0").abs(),
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+          />
+          {apply(default_value.toString() !== local_val, (it) => {
+            if (it) {
+              return (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "udecimal",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={{
+                    alignSelf: "center",
+                    marginTop: 2,
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={colors.tailwind.slate[300]}
+                  />
+                </Pressable>
+              );
+            }
+            return null;
+          })}
+        </View>
       );
     } else {
       return (

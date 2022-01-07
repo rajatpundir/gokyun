@@ -20,6 +20,8 @@ import {
 import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 
+// TODO. Handle large virtualized list, shouldComponentUpdate
+
 export type ListState = {
   struct: Struct;
   active: boolean;
