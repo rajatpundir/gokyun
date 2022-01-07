@@ -23,6 +23,11 @@ import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "../../main/utils/variable";
 import { colors } from "../../main/themed/colors";
 
+// TODO. To resolve deciaml exception, do below.
+// Store value in internal state and show it, try to dispatch on change
+// As demonstrated in fields.tsx
+// Also set appropriate keyboard type for decimal type fields
+
 function View(props: ViewProps) {
   const { style, ...otherProps } = props;
   return (

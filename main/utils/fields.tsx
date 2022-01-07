@@ -19,6 +19,7 @@ import {
   Path,
   PathString,
   StrongEnum,
+  strong_enum_to_string,
   Struct,
   Variable,
 } from "./variable";
@@ -31,9 +32,6 @@ import { Immutable } from "immer";
 import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
 import { ListAction } from "../utils/list";
-
-// TODO. To resolve deciaml exception, do below.
-// Store value in internal state and show it, try to dispatch on change
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -162,30 +160,47 @@ function I_32(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "i32") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
-          keyboardType={"number-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "i32",
-                  value: Decimal.clamp(
-                    new Decimal(x || "0").truncated(),
-                    -2147483648,
-                    2147483648
-                  ),
-                };
-                return it;
-              }),
-            ])
-          }
+          keyboardType={"numbers-and-punctuation"}
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "i32",
+                    value: Decimal.clamp(
+                      new Decimal(x || "0").truncated(),
+                      -2147483648,
+                      2147483648
+                    ),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -205,30 +220,47 @@ function U_32(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "u32") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "u32",
-                  value: Decimal.clamp(
-                    new Decimal(x || "0").truncated(),
-                    0,
-                    2147483648
-                  ),
-                };
-                return it;
-              }),
-            ])
-          }
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "u32",
+                    value: Decimal.clamp(
+                      new Decimal(x || "0").truncated(),
+                      0,
+                      2147483648
+                    ),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -248,30 +280,47 @@ function I_64(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "i64") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
-          keyboardType={"number-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "i64",
-                  value: Decimal.clamp(
-                    new Decimal(x || "0").truncated(),
-                    new Decimal("-9223372036854775807"),
-                    new Decimal("9223372036854775807")
-                  ),
-                };
-                return it;
-              }),
-            ])
-          }
+          keyboardType={"numbers-and-punctuation"}
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "i64",
+                    value: Decimal.clamp(
+                      new Decimal(x || "0").truncated(),
+                      new Decimal("-9223372036854775807"),
+                      new Decimal("9223372036854775807")
+                    ),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -291,30 +340,47 @@ function U_64(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "u64") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
           keyboardType={"number-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "u64",
-                  value: Decimal.clamp(
-                    new Decimal(x || "0").truncated(),
-                    0,
-                    new Decimal("9223372036854775807")
-                  ),
-                };
-                return it;
-              }),
-            ])
-          }
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "u64",
+                    value: Decimal.clamp(
+                      new Decimal(x || "0").truncated(),
+                      0,
+                      new Decimal("9223372036854775807")
+                    ),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -334,26 +400,43 @@ function I_Double(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "idouble") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
-          keyboardType={"decimal-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "idouble",
-                  value: new Decimal(x || "0"),
-                };
-                return it;
-              }),
-            ])
-          }
+          keyboardType={"numbers-and-punctuation"}
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "idouble",
+                    value: new Decimal(x || "0"),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -373,26 +456,43 @@ function U_Double(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "udouble") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
-          keyboardType={"decimal-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "udouble",
-                  value: new Decimal(x || "0").abs(),
-                };
-                return it;
-              }),
-            ])
-          }
+          keyboardType={"numbers-and-punctuation"}
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "udouble",
+                    value: new Decimal(x || "0").abs(),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -412,26 +512,43 @@ function I_Decimal(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "idecimal") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            style,
+          ]}
           {...otherProps}
-          keyboardType={"decimal-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "idecimal",
-                  value: new Decimal(x || "0"),
-                };
-                return it;
-              }),
-            ])
-          }
+          keyboardType={"numbers-and-punctuation"}
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "idecimal",
+                    value: new Decimal(x || "0"),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {
@@ -451,26 +568,42 @@ function U_Decimal(
 ): JSX.Element | null {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
+  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const [has_errors, set_has_errors] = useState(false);
   if (value.type === "udecimal") {
     if (props.path.writeable && props.mode === "write") {
       return (
         <TextInput
-          style={[{}, style]}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            style,
+          ]}
           {...otherProps}
-          keyboardType={"decimal-pad"}
-          defaultValue={value.value.toString()}
-          onChangeText={(x) =>
-            dispatch([
-              "value",
-              apply(props.path, (it) => {
-                it.path[1][1] = {
-                  type: "udecimal",
-                  value: new Decimal(x || "0").abs(),
-                };
-                return it;
-              }),
-            ])
-          }
+          keyboardType={"numbers-and-punctuation"}
+          defaultValue={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "udecimal",
+                    value: new Decimal(x || "0").abs(),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
+            }
+          }}
         />
       );
     } else {

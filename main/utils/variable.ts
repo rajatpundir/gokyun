@@ -396,12 +396,7 @@ export function get_strong_enum(field: WeakEnum): StrongEnum {
       case "i32":
       case "u32":
       case "i64":
-      case "u64": {
-        return {
-          type: field.type,
-          value: field.default || new Decimal(0),
-        };
-      }
+      case "u64":
       case "idouble":
       case "udouble":
       case "idecimal":
@@ -474,4 +469,39 @@ export function concat_path_strings(
 
 export function get_flattened_path(path_string: PathString) {
   return [...path_string[0], path_string[1]];
+}
+
+export function strong_enum_to_string(field: StrongEnum) {
+  switch (field.type) {
+    case "str":
+    case "lstr":
+    case "clob": {
+      return field.value;
+    }
+    case "i32":
+    case "u32":
+    case "i64":
+    case "u64":
+    case "idouble":
+    case "udouble":
+    case "idecimal":
+    case "udecimal": {
+      return field.value.toString();
+    }
+    case "bool": {
+      return String(field.value);
+    }
+    case "date":
+    case "time":
+    case "timestamp": {
+      return field.value.getTime().toString();
+    }
+    case "other": {
+      return field.value.toString();
+    }
+    default: {
+      const _exhaustiveCheck: never = field;
+      return _exhaustiveCheck;
+    }
+  }
 }
