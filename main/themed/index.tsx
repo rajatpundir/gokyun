@@ -52,6 +52,7 @@ export function Text(props: TextProps) {
 
 export type TextInputProps = DefaultTextInput["props"];
 
+// Add a cross button on TextInput for clearing Text
 export function TextInput(props: TextInputProps) {
   const { style, ...otherProps } = props;
   return (

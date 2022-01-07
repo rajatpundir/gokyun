@@ -293,6 +293,14 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
 // TODO. the problem with flickering may lie with dipatch filters replace
 // When filter path is active, there is more flickering, less otherwise
 // This indicates the source of problem, since variation in input changes output
+// May want to have filter paths to be in array and values replaced in place
+
+// Solution: Use defaultValue instead of value prop.
+
+// TODO. Everytime a request is issued, also issue a token
+// When result returns from request, only update if token matches
+// This prevents flickering between intermediate results when typing
+
 export function List(props: {
   selected: number;
   struct: Struct;
