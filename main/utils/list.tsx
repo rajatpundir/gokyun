@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
@@ -290,17 +290,6 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
   }
 }
 
-// TODO. the problem with flickering may lie with dipatch filters replace
-// When filter path is active, there is more flickering, less otherwise
-// This indicates the source of problem, since variation in input changes output
-// May want to have filter paths to be in array and values replaced in place
-
-// Solution: Use defaultValue instead of value prop.
-
-// TODO. Everytime a request is issued, also issue a token
-// When result returns from request, only update if token matches
-// This prevents flickering between intermediate results when typing
-
 export function List(props: {
   selected: number;
   struct: Struct;
@@ -347,8 +336,11 @@ export function List(props: {
     layout: "",
   });
 
-  useLayoutEffect(() => {
+  const token = useRef(0);
+  useEffect(() => {
     const get_vars = async () => {
+      token.current += 1;
+      const request_token = token.current;
       const variables = await get_variables(
         state.struct,
         state.active,
@@ -358,8 +350,10 @@ export function List(props: {
         state.limit,
         state.offset
       );
-      if (unwrap(variables)) {
-        dispatch(["variables", variables.value]);
+      if (request_token === token.current) {
+        if (unwrap(variables)) {
+          dispatch(["variables", variables.value]);
+        }
       }
     };
     get_vars();
@@ -806,7 +800,7 @@ export function List(props: {
 export function SelectionModal(
   props: RootNavigatorProps<"SelectionModal">
 ): JSX.Element {
-  useLayoutEffect(() => {
+  useEffect(() => {
     props.navigation.setOptions({ headerTitle: props.route.params.title });
   }, []);
   return (
