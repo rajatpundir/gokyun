@@ -23,6 +23,9 @@ import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "../../main/utils/variable";
 import { colors } from "../../main/themed/colors";
 
+// For fields.tsx, test TextInput for long values of text
+// Also cross button should reset value to default for that key in case of text and decimal fields
+
 // TODO. To resolve deciaml exception, do below.
 // Store value in internal state and show it, try to dispatch on change
 // Copy changes for text and numeric fields over from fields.tsx
