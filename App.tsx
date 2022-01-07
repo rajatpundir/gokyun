@@ -220,61 +220,61 @@ export default function App() {
             borderWidth: 1,
           }}
         >
-          {arrow(() => {
-            if (bsm_view_props !== undefined) {
-              const [state, dispatch, render_list_element] = [
-                bsm_view_props.state,
-                bsm_view_props.dispatch,
-                bsm_view_props.render_list_element,
-              ];
-              return (
-                <>
-                  <View
-                    style={{
-                      paddingBottom: 10,
-                      marginHorizontal: 1,
-                      paddingHorizontal: 8,
-                      borderBottomWidth: 1,
-                      backgroundColor: colors.custom.black[900],
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        textAlign: "center",
-                      }}
-                    >
-                      VIEW
-                    </Text>
-                    <View>
-                      <Pressable
-                        onPress={() => bsm_view_ref.current?.close()}
-                        style={{ paddingRight: 8 }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: "700",
-                            textAlign: "center",
-                            paddingHorizontal: 5,
-                            paddingVertical: 2,
-                            borderRadius: 2,
-                            backgroundColor: colors.custom.red[900],
-                          }}
-                        >
-                          Close
-                        </Text>
-                      </Pressable>
-                    </View>
-                  </View>
-                  <BottomSheetScrollView
-                    contentContainerStyle={{
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      margin: 5,
-                    }}
-                  >
+          <View
+            style={{
+              paddingBottom: 10,
+              marginHorizontal: 1,
+              paddingHorizontal: 8,
+              borderBottomWidth: 1,
+              backgroundColor: colors.custom.black[900],
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              VIEW
+            </Text>
+            <View>
+              <Pressable
+                onPress={() => bsm_view_ref.current?.close()}
+                style={{ paddingRight: 8 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "700",
+                    textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
+                  }}
+                >
+                  Close
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <BottomSheetScrollView
+            contentContainerStyle={{
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              margin: 5,
+            }}
+          >
+            {arrow(() => {
+              if (bsm_view_props !== undefined) {
+                const [state, dispatch, render_list_element] = [
+                  bsm_view_props.state,
+                  bsm_view_props.dispatch,
+                  bsm_view_props.render_list_element,
+                ];
+                return (
+                  <>
                     <View
                       style={{
                         justifyContent: "flex-start",
@@ -329,12 +329,12 @@ export default function App() {
                         </View>
                       );
                     })}
-                  </BottomSheetScrollView>
-                </>
-              );
-            }
-            return <></>;
-          })}
+                  </>
+                );
+              }
+              return <></>;
+            })}
+          </BottomSheetScrollView>
         </BottomSheetModal>
 
         <BottomSheetModal
@@ -347,6 +347,63 @@ export default function App() {
             borderWidth: 1,
           }}
         >
+          <View
+            style={{
+              paddingBottom: 10,
+              marginHorizontal: 1,
+              paddingHorizontal: 8,
+              borderBottomWidth: 1,
+              backgroundColor: colors.custom.black[900],
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              SORT
+            </Text>
+            <View>
+              <Pressable
+                onPress={() => bsm_sorting_fields_ref.current?.present()}
+                style={{ paddingRight: 8 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "700",
+                    textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
+                  }}
+                >
+                  Add Field
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => bsm_sorting_ref.current?.close()}
+                style={{ paddingRight: 8 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "700",
+                    textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
+                  }}
+                >
+                  Close
+                </Text>
+              </Pressable>
+            </View>
+          </View>
           {arrow(() => {
             if (bsm_sorting_props !== undefined) {
               const [state, dispatch] = [
@@ -355,65 +412,6 @@ export default function App() {
               ];
               return (
                 <>
-                  <View
-                    style={{
-                      paddingBottom: 10,
-                      marginHorizontal: 1,
-                      paddingHorizontal: 8,
-                      borderBottomWidth: 1,
-                      backgroundColor: colors.custom.black[900],
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        textAlign: "center",
-                      }}
-                    >
-                      SORT
-                    </Text>
-                    <View>
-                      <Pressable
-                        onPress={() =>
-                          bsm_sorting_fields_ref.current?.present()
-                        }
-                        style={{ paddingRight: 8 }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: "700",
-                            textAlign: "center",
-                            paddingHorizontal: 5,
-                            paddingVertical: 2,
-                            borderRadius: 2,
-                            backgroundColor: colors.custom.red[900],
-                          }}
-                        >
-                          Add Field
-                        </Text>
-                      </Pressable>
-                      <Pressable
-                        onPress={() => bsm_sorting_ref.current?.close()}
-                        style={{ paddingRight: 8 }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: "700",
-                            textAlign: "center",
-                            paddingHorizontal: 5,
-                            paddingVertical: 2,
-                            borderRadius: 2,
-                            backgroundColor: colors.custom.red[900],
-                          }}
-                        >
-                          Close
-                        </Text>
-                      </Pressable>
-                    </View>
-                  </View>
                   <SortComponent
                     init_filter={state.init_filter}
                     dispatch={dispatch}
