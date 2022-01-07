@@ -43,6 +43,7 @@ import { getState, subscribe } from "./main/utils/store";
 import { arrow } from "./main/utils/prelude";
 import Checkbox from "expo-checkbox";
 import { Pressable } from "react-native";
+import { SortComponent, SortComponentFields } from "./main/utils/filter";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -97,6 +98,7 @@ export default function App() {
     const unsub = subscribe(
       (s) => s.bottom_sheet_props,
       (x) => {
+        console.log("#######bottom_sheet_props##########");
         set_bottom_sheet_props(x);
       }
     );
@@ -108,6 +110,7 @@ export default function App() {
     const unsub = subscribe(
       (s) => s.bsm_view,
       () => {
+        console.log("########bsm_view#########");
         bsm_ref_view.current?.present();
       }
     );
@@ -115,22 +118,13 @@ export default function App() {
   }, []);
 
   const bsm_ref_sorting = useRef<BottomSheetModal>(null);
+  const bsm_ref_sorting_fields = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_sorting,
       () => {
+        console.log("#######bsm_sorting##########");
         bsm_ref_sorting.current?.present();
-      }
-    );
-    return unsub;
-  }, []);
-
-  const bsm_ref_sorting_fields = useRef<BottomSheetModal>(null);
-  useEffect(() => {
-    const unsub = subscribe(
-      (s) => s.bsm_sorting_fields,
-      () => {
-        bsm_ref_sorting_fields.current?.present();
       }
     );
     return unsub;
@@ -141,6 +135,7 @@ export default function App() {
     const unsub = subscribe(
       (s) => s.bsm_filters,
       () => {
+        console.log("########bsm_filters#########");
         bsm_ref_filters.current?.present();
       }
     );
@@ -198,118 +193,251 @@ export default function App() {
               bottom_sheet_props.render_list_element,
             ];
             return (
-              <BottomSheetModal
-                ref={bsm_ref_view}
-                snapPoints={["50%", "82%"]}
-                index={0}
-                backgroundStyle={{
-                  backgroundColor: colors.custom.black[900],
-                  borderColor: colors.tailwind.gray[500],
-                  borderWidth: 1,
-                }}
-              >
-                <View
-                  style={{
-                    paddingBottom: 10,
-                    marginHorizontal: 1,
-                    paddingHorizontal: 8,
-                    borderBottomWidth: 1,
+              <>
+                <BottomSheetModal
+                  ref={bsm_ref_view}
+                  snapPoints={["50%", "82%"]}
+                  index={0}
+                  backgroundStyle={{
                     backgroundColor: colors.custom.black[900],
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    VIEW
-                  </Text>
-                  <View>
-                    <Pressable
-                      onPress={() => bsm_ref_view.current?.close()}
-                      style={{ paddingRight: 8 }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 15,
-                          fontWeight: "700",
-                          textAlign: "center",
-                          paddingHorizontal: 5,
-                          paddingVertical: 2,
-                          borderRadius: 2,
-                          backgroundColor: colors.custom.red[900],
-                        }}
-                      >
-                        Close
-                      </Text>
-                    </Pressable>
-                  </View>
-                </View>
-                <BottomSheetScrollView
-                  contentContainerStyle={{
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    margin: 5,
+                    borderColor: colors.tailwind.gray[500],
+                    borderWidth: 1,
                   }}
                 >
                   <View
                     style={{
-                      justifyContent: "flex-start",
-                      marginHorizontal: 5,
-                      marginVertical: 10,
+                      paddingBottom: 10,
+                      marginHorizontal: 1,
+                      paddingHorizontal: 8,
+                      borderBottomWidth: 1,
+                      backgroundColor: colors.custom.black[900],
                     }}
                   >
-                    {arrow(() => {
-                      const active = state.layout === "";
-                      return (
-                        <Checkbox
-                          value={active}
-                          onValueChange={(x) => {
-                            if (x) {
-                              dispatch(["layout", ""]);
-                              bsm_ref_view.current?.close();
-                            }
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      VIEW
+                    </Text>
+                    <View>
+                      <Pressable
+                        onPress={() => bsm_ref_view.current?.close()}
+                        style={{ paddingRight: 8 }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "700",
+                            textAlign: "center",
+                            paddingHorizontal: 5,
+                            paddingVertical: 2,
+                            borderRadius: 2,
+                            backgroundColor: colors.custom.red[900],
                           }}
-                          color={active ? colors.custom.red[900] : undefined}
-                        />
+                        >
+                          Close
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                  <BottomSheetScrollView
+                    contentContainerStyle={{
+                      flexDirection: "column",
+                      justifyContent: "flex-start",
+                      margin: 5,
+                    }}
+                  >
+                    <View
+                      style={{
+                        justifyContent: "flex-start",
+                        marginHorizontal: 5,
+                        marginVertical: 10,
+                      }}
+                    >
+                      {arrow(() => {
+                        const active = state.layout === "";
+                        return (
+                          <Checkbox
+                            value={active}
+                            onValueChange={(x) => {
+                              if (x) {
+                                dispatch(["layout", ""]);
+                                bsm_ref_view.current?.close();
+                              }
+                            }}
+                            color={active ? colors.custom.red[900] : undefined}
+                          />
+                        );
+                      })}
+                      <Text style={{ paddingLeft: 10 }}>Default</Text>
+                    </View>
+                    {Object.keys(render_list_element[1]).map((layout) => {
+                      return (
+                        <View
+                          style={{
+                            justifyContent: "flex-start",
+                            marginHorizontal: 5,
+                            marginVertical: 10,
+                          }}
+                        >
+                          {arrow(() => {
+                            const active = state.layout === layout;
+                            return (
+                              <Checkbox
+                                value={active}
+                                onValueChange={(x) => {
+                                  if (x) {
+                                    dispatch(["layout", layout]);
+                                    bsm_ref_view.current?.close();
+                                  }
+                                }}
+                                color={
+                                  active ? colors.custom.red[900] : undefined
+                                }
+                              />
+                            );
+                          })}
+                          <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                        </View>
                       );
                     })}
-                    <Text style={{ paddingLeft: 10 }}>Default</Text>
+                  </BottomSheetScrollView>
+                </BottomSheetModal>
+
+                <BottomSheetModal
+                  ref={bsm_ref_sorting}
+                  snapPoints={["50%", "82%"]}
+                  index={0}
+                  backgroundStyle={{
+                    backgroundColor: colors.custom.black[900],
+                    borderColor: colors.tailwind.gray[500],
+                    borderWidth: 1,
+                  }}
+                >
+                  <View
+                    style={{
+                      paddingBottom: 10,
+                      marginHorizontal: 1,
+                      paddingHorizontal: 8,
+                      borderBottomWidth: 1,
+                      backgroundColor: colors.custom.black[900],
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      SORT
+                    </Text>
+                    <View>
+                      <Pressable
+                        onPress={() =>
+                          bsm_ref_sorting_fields.current?.present()
+                        }
+                        style={{ paddingRight: 8 }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "700",
+                            textAlign: "center",
+                            paddingHorizontal: 5,
+                            paddingVertical: 2,
+                            borderRadius: 2,
+                            backgroundColor: colors.custom.red[900],
+                          }}
+                        >
+                          Add Field
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        onPress={() => bsm_ref_sorting.current?.close()}
+                        style={{ paddingRight: 8 }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "700",
+                            textAlign: "center",
+                            paddingHorizontal: 5,
+                            paddingVertical: 2,
+                            borderRadius: 2,
+                            backgroundColor: colors.custom.red[900],
+                          }}
+                        >
+                          Close
+                        </Text>
+                      </Pressable>
+                    </View>
                   </View>
-                  {Object.keys(render_list_element[1]).map((layout) => {
-                    return (
-                      <View
+                  <SortComponent
+                    init_filter={state.init_filter}
+                    dispatch={dispatch}
+                  />
+                  <BottomSheetModal
+                    ref={bsm_ref_sorting_fields}
+                    snapPoints={["50%", "82%"]}
+                    index={0}
+                    backgroundStyle={{
+                      backgroundColor: colors.custom.black[900],
+                      borderColor: colors.tailwind.gray[500],
+                      borderWidth: 1,
+                    }}
+                  >
+                    <View
+                      style={{
+                        paddingBottom: 10,
+                        marginHorizontal: 1,
+                        paddingHorizontal: 8,
+                        borderBottomWidth: 1,
+                        backgroundColor: colors.custom.black[900],
+                      }}
+                    >
+                      <Text
                         style={{
-                          justifyContent: "flex-start",
-                          marginHorizontal: 5,
-                          marginVertical: 10,
+                          fontSize: 15,
+                          fontWeight: "bold",
+                          textAlign: "center",
                         }}
                       >
-                        {arrow(() => {
-                          const active = state.layout === layout;
-                          return (
-                            <Checkbox
-                              value={active}
-                              onValueChange={(x) => {
-                                if (x) {
-                                  dispatch(["layout", layout]);
-                                  bsm_ref_view.current?.close();
-                                }
-                              }}
-                              color={
-                                active ? colors.custom.red[900] : undefined
-                              }
-                            />
-                          );
-                        })}
-                        <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                        Fields
+                      </Text>
+                      <View>
+                        <Pressable
+                          onPress={() =>
+                            bsm_ref_sorting_fields.current?.close()
+                          }
+                          style={{ paddingRight: 8 }}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: "700",
+                              textAlign: "center",
+                              paddingHorizontal: 5,
+                              paddingVertical: 2,
+                              borderRadius: 2,
+                              backgroundColor: colors.custom.red[900],
+                            }}
+                          >
+                            Close
+                          </Text>
+                        </Pressable>
                       </View>
-                    );
-                  })}
-                </BottomSheetScrollView>
-              </BottomSheetModal>
+                    </View>
+                    <SortComponentFields
+                      init_filter={state.init_filter}
+                      dispatch={dispatch}
+                    />
+                  </BottomSheetModal>
+                </BottomSheetModal>
+              </>
             );
           }
           return <></>;

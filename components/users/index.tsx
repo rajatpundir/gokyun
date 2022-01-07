@@ -297,9 +297,9 @@ export default function Component(
                       <>
                         <View
                           style={{
-                            padding: 2,
-                            marginHorizontal: 1,
                             alignSelf: "center",
+                            paddingHorizontal: 0,
+                            marginHorizontal: 0,
                           }}
                         >
                           <props.show_views
@@ -308,34 +308,46 @@ export default function Component(
                                 name="layout"
                                 size={20}
                                 color={colors.tailwind.slate[400]}
-                                style={{ alignSelf: "center" }}
+                                style={{
+                                  alignSelf: "center",
+                                  padding: 4,
+                                  marginHorizontal: 0,
+                                  borderColor: "white",
+                                  borderWidth: 1,
+                                }}
                               />
                             }
                           />
                         </View>
                         <View
                           style={{
-                            padding: 2,
-                            marginHorizontal: 1,
                             alignSelf: "center",
+                            paddingHorizontal: 0,
+                            marginHorizontal: 0,
                           }}
                         >
                           <props.show_sorting
                             element={
                               <FontAwesome
                                 name="sort-alpha-asc"
-                                size={16}
+                                size={20}
                                 color={colors.tailwind.slate[400]}
-                                style={{ alignSelf: "center" }}
+                                style={{
+                                  alignSelf: "center",
+                                  padding: 4,
+                                  marginHorizontal: 0,
+                                  borderColor: "white",
+                                  borderWidth: 1,
+                                }}
                               />
                             }
                           />
                         </View>
                         <View
                           style={{
-                            padding: 2,
-                            marginHorizontal: 1,
                             alignSelf: "center",
+                            paddingHorizontal: 0,
+                            marginHorizontal: 0,
                           }}
                         >
                           <props.show_filters
@@ -344,7 +356,13 @@ export default function Component(
                                 name="filter"
                                 size={20}
                                 color={colors.tailwind.slate[400]}
-                                style={{ alignSelf: "center" }}
+                                style={{
+                                  alignSelf: "center",
+                                  padding: 3,
+                                  marginHorizontal: 0,
+                                  borderColor: "white",
+                                  borderWidth: 1,
+                                }}
                               />
                             }
                           />

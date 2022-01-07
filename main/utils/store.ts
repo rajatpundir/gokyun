@@ -35,7 +35,7 @@ type State = {
     | undefined;
   bsm_view: number;
   bsm_sorting: number;
-  bsm_sorting_fields: number;
+  // bsm_sorting_fields: number;
   bsm_filters: number;
 };
 
@@ -56,7 +56,7 @@ export const store = create<
         bottom_sheet_props: undefined,
         bsm_view: 0,
         bsm_sorting: 0,
-        bsm_sorting_fields: 0,
+        // bsm_sorting_fields: 0,
         bsm_filters: 0,
       } as State)
   )
