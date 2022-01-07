@@ -12,6 +12,7 @@ import { HashSet } from "prelude-ts";
 import { colors } from "../themed/colors";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { getState, setState } from "./store";
+import { Portal } from "@gorhom/portal";
 
 export type ListState = {
   struct: Struct;
@@ -507,6 +508,10 @@ export function List(props: {
         horizontal={props.horizontal}
         style={{ marginTop: 4 }}
       />
+
+      <Portal>
+        <Text>Text to be teleported to the root host</Text>
+      </Portal>
     </View>
   );
 }

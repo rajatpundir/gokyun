@@ -49,6 +49,7 @@ import {
   SortComponent,
   SortComponentFields,
 } from "./main/utils/filter";
+import { PortalProvider } from "@gorhom/portal";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -173,41 +174,49 @@ export default function App() {
     return (
       <BottomSheetModalProvider>
         <SafeAreaProvider>
-          <NavigationContainer
-            theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
-          >
-            <Stack.Navigator>
-              <Stack.Screen
-                name="Main"
-                component={Navigator}
-                options={{ headerShown: false, animation: "none" }}
-              />
-              <Stack.Screen
-                name="SelectionModal"
-                component={SelectionModal}
-                options={{
-                  title: "Select variable",
-                  headerStyle: { backgroundColor: colors.custom.black[900] },
-                  headerTintColor: colors.tailwind.slate[200],
-                }}
-              />
-              <Stack.Screen
-                name="Test"
-                component={Test}
-                options={{
-                  title: "Test",
-                  headerStyle: { backgroundColor: colors.custom.black[900] },
-                  headerTintColor: colors.tailwind.slate[200],
-                }}
-              />
-              <Stack.Screen
-                name="NotFound"
-                component={NotFoundScreen}
-                options={{ title: "Oops!" }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-          <StatusBar />
+          <BottomSheetModalProvider>
+            <PortalProvider>
+              <NavigationContainer
+                theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
+              >
+                <Stack.Navigator>
+                  <Stack.Screen
+                    name="Main"
+                    component={Navigator}
+                    options={{ headerShown: false, animation: "none" }}
+                  />
+                  <Stack.Screen
+                    name="SelectionModal"
+                    component={SelectionModal}
+                    options={{
+                      title: "Select variable",
+                      headerStyle: {
+                        backgroundColor: colors.custom.black[900],
+                      },
+                      headerTintColor: colors.tailwind.slate[200],
+                    }}
+                  />
+                  <Stack.Screen
+                    name="Test"
+                    component={Test}
+                    options={{
+                      title: "Test",
+                      headerStyle: {
+                        backgroundColor: colors.custom.black[900],
+                      },
+                      headerTintColor: colors.tailwind.slate[200],
+                    }}
+                  />
+                  <Stack.Screen
+                    name="NotFound"
+                    component={NotFoundScreen}
+                    options={{ title: "Oops!" }}
+                  />
+                </Stack.Navigator>
+              </NavigationContainer>
+              <StatusBar />
+            </PortalProvider>
+          </BottomSheetModalProvider>
         </SafeAreaProvider>
 
         <BottomSheetModal
