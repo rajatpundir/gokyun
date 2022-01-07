@@ -132,7 +132,7 @@ function Str(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -226,7 +226,7 @@ function Lstr(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -320,7 +320,7 @@ function Clob(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -419,7 +419,7 @@ function I_32(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -517,7 +517,7 @@ function U_32(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -616,7 +616,7 @@ function I_64(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -715,7 +715,7 @@ function U_64(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -810,7 +810,7 @@ function I_Double(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -905,7 +905,7 @@ function U_Double(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1000,7 +1000,7 @@ function I_Decimal(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1094,7 +1094,7 @@ function U_Decimal(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1127,7 +1127,7 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
       return <Text>{value.value ? "Yes" : "No"}</Text>;
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1177,7 +1177,7 @@ function Date_Field(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1227,7 +1227,7 @@ function Time_Field(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1314,7 +1314,7 @@ function Timestamp_Field(
       );
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
@@ -1406,7 +1406,7 @@ function Other_Field(
       return props.element;
     }
   }
-  console.log("ERROR: Invalid path: ", props.path);
+  console.log("[ERROR] Invalid path: ", props.path);
   return null;
 }
 
