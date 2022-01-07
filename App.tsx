@@ -94,31 +94,36 @@ export default function App() {
   let [bottom_sheet_props, set_bottom_sheet_props] = React.useState(
     getState().bottom_sheet_props
   );
+
+  const bsm_ref_view = useRef<BottomSheetModal>(null);
+  const bsm_ref_sorting = useRef<BottomSheetModal>(null);
+  const bsm_ref_sorting_fields = useRef<BottomSheetModal>(null);
+
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.bottom_sheet_props,
       (x) => {
-        console.log("#######bottom_sheet_props##########");
+        console.log(
+          "#######bottom_sheet_props##########",
+          bsm_ref_view.current === null
+        );
         set_bottom_sheet_props(x);
       }
     );
     return unsub;
   }, []);
 
-  const bsm_ref_view = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_view,
       () => {
-        console.log("########bsm_view#########");
+        console.log("########bsm_view#########", bsm_ref_view.current === null);
         bsm_ref_view.current?.present();
       }
     );
     return unsub;
   }, []);
 
-  const bsm_ref_sorting = useRef<BottomSheetModal>(null);
-  const bsm_ref_sorting_fields = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.bsm_sorting,
@@ -185,25 +190,25 @@ export default function App() {
           <StatusBar />
         </SafeAreaProvider>
 
-        {arrow(() => {
-          if (bottom_sheet_props !== undefined) {
-            const [state, dispatch, render_list_element] = [
-              bottom_sheet_props.state,
-              bottom_sheet_props.dispatch,
-              bottom_sheet_props.render_list_element,
-            ];
-            return (
-              <>
-                <BottomSheetModal
-                  ref={bsm_ref_view}
-                  snapPoints={["50%", "82%"]}
-                  index={0}
-                  backgroundStyle={{
-                    backgroundColor: colors.custom.black[900],
-                    borderColor: colors.tailwind.gray[500],
-                    borderWidth: 1,
-                  }}
-                >
+        <BottomSheetModal
+          ref={bsm_ref_view}
+          snapPoints={["50%", "82%"]}
+          index={0}
+          backgroundStyle={{
+            backgroundColor: colors.custom.black[900],
+            borderColor: colors.tailwind.gray[500],
+            borderWidth: 1,
+          }}
+        >
+          {arrow(() => {
+            if (bottom_sheet_props !== undefined) {
+              const [state, dispatch, render_list_element] = [
+                bottom_sheet_props.state,
+                bottom_sheet_props.dispatch,
+                bottom_sheet_props.render_list_element,
+              ];
+              return (
+                <>
                   <View
                     style={{
                       paddingBottom: 10,
@@ -305,18 +310,32 @@ export default function App() {
                       );
                     })}
                   </BottomSheetScrollView>
-                </BottomSheetModal>
+                </>
+              );
+            }
+            return <></>;
+          })}
+        </BottomSheetModal>
 
-                <BottomSheetModal
-                  ref={bsm_ref_sorting}
-                  snapPoints={["50%", "82%"]}
-                  index={0}
-                  backgroundStyle={{
-                    backgroundColor: colors.custom.black[900],
-                    borderColor: colors.tailwind.gray[500],
-                    borderWidth: 1,
-                  }}
-                >
+        <BottomSheetModal
+          ref={bsm_ref_sorting}
+          snapPoints={["50%", "82%"]}
+          index={0}
+          backgroundStyle={{
+            backgroundColor: colors.custom.black[900],
+            borderColor: colors.tailwind.gray[500],
+            borderWidth: 1,
+          }}
+        >
+          {arrow(() => {
+            if (bottom_sheet_props !== undefined) {
+              const [state, dispatch, render_list_element] = [
+                bottom_sheet_props.state,
+                bottom_sheet_props.dispatch,
+                bottom_sheet_props.render_list_element,
+              ];
+              return (
+                <>
                   <View
                     style={{
                       paddingBottom: 10,
@@ -436,12 +455,12 @@ export default function App() {
                       dispatch={dispatch}
                     />
                   </BottomSheetModal>
-                </BottomSheetModal>
-              </>
-            );
-          }
-          return <></>;
-        })}
+                </>
+              );
+            }
+            return <></>;
+          })}
+        </BottomSheetModal>
       </BottomSheetModalProvider>
     );
   }
