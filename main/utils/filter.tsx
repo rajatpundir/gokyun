@@ -264,6 +264,7 @@ export function FilterComponent(props: {
             style={{ paddingHorizontal: 5 }}
           />
         </Pressable>
+
         <BottomSheetModal
           ref={bottomSheetModalRef}
           snapPoints={["50%", "82%"]}
@@ -2577,6 +2578,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -2840,6 +2842,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -3108,6 +3111,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -3407,6 +3411,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -3693,6 +3698,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -3984,6 +3990,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -4288,6 +4295,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -4574,6 +4582,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -4865,6 +4874,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -5171,6 +5181,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -5461,6 +5472,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -5756,6 +5768,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -6060,6 +6073,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -6348,6 +6362,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -6641,6 +6656,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -6939,6 +6955,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -7219,6 +7236,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -7504,6 +7522,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -7802,6 +7821,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -8082,6 +8102,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -8367,6 +8388,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -8652,6 +8674,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -8937,6 +8960,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -9226,6 +9250,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -9520,6 +9545,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -9818,6 +9844,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -10106,6 +10133,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -10399,6 +10427,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -10749,6 +10778,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
@@ -11089,6 +11119,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
@@ -11434,6 +11465,7 @@ function FilterPathComponent(props: {
                                 ) : (
                                   <></>
                                 )}
+
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
@@ -11718,6 +11750,7 @@ function FilterPathComponent(props: {
                           ) : (
                             <></>
                           )}
+
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
