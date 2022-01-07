@@ -312,8 +312,6 @@ export default function Component(
                                   alignSelf: "center",
                                   padding: 4,
                                   marginHorizontal: 0,
-                                  borderColor: "white",
-                                  borderWidth: 1,
                                 }}
                               />
                             }
@@ -336,8 +334,6 @@ export default function Component(
                                   alignSelf: "center",
                                   padding: 4,
                                   marginHorizontal: 0,
-                                  borderColor: "white",
-                                  borderWidth: 1,
                                 }}
                               />
                             }
@@ -360,8 +356,6 @@ export default function Component(
                                   alignSelf: "center",
                                   padding: 3,
                                   marginHorizontal: 0,
-                                  borderColor: "white",
-                                  borderWidth: 1,
                                 }}
                               />
                             }

@@ -35,6 +35,7 @@ import { HashSet } from "prelude-ts";
 import { colors } from "./main/themed/colors";
 import { Text, View } from "./main/themed";
 import {
+  BottomSheetFlatList,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetScrollView,
@@ -43,7 +44,11 @@ import { getState, subscribe } from "./main/utils/store";
 import { arrow } from "./main/utils/prelude";
 import Checkbox from "expo-checkbox";
 import { Pressable } from "react-native";
-import { SortComponent, SortComponentFields } from "./main/utils/filter";
+import {
+  FilterComponent,
+  SortComponent,
+  SortComponentFields,
+} from "./main/utils/filter";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -91,57 +96,71 @@ export default function App() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
 
-  let [bottom_sheet_props, set_bottom_sheet_props] = React.useState(
-    getState().bottom_sheet_props
+  let [bsm_view_props, set_bsm_view_props] = React.useState(
+    getState().bsm_view.props
   );
-
-  const bsm_ref_view = useRef<BottomSheetModal>(null);
-  const bsm_ref_sorting = useRef<BottomSheetModal>(null);
-  const bsm_ref_sorting_fields = useRef<BottomSheetModal>(null);
-
+  const bsm_view_ref = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.bottom_sheet_props,
+      (s) => s.bsm_view.props,
       (x) => {
-        console.log(
-          "#######bottom_sheet_props##########",
-          bsm_ref_view.current === null
-        );
-        set_bottom_sheet_props(x);
+        set_bsm_view_props(x);
+      }
+    );
+    return unsub;
+  }, []);
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.bsm_view.count,
+      () => {
+        bsm_view_ref.current?.present();
       }
     );
     return unsub;
   }, []);
 
+  let [bsm_sorting_props, set_bsm_sorting_props] = React.useState(
+    getState().bsm_sorting.props
+  );
+  const bsm_sorting_ref = useRef<BottomSheetModal>(null);
+  const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.bsm_view,
+      (s) => s.bsm_sorting.props,
+      (x) => {
+        set_bsm_sorting_props(x);
+      }
+    );
+    return unsub;
+  }, []);
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.bsm_sorting.count,
       () => {
-        console.log("########bsm_view#########", bsm_ref_view.current === null);
-        bsm_ref_view.current?.present();
+        bsm_sorting_ref.current?.present();
       }
     );
     return unsub;
   }, []);
 
+  let [bsm_filters_props, set_bsm_filters_props] = React.useState(
+    getState().bsm_filters.props
+  );
+  const bsm_filters_ref = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.bsm_sorting,
-      () => {
-        console.log("#######bsm_sorting##########");
-        bsm_ref_sorting.current?.present();
+      (s) => s.bsm_filters.props,
+      (x) => {
+        set_bsm_filters_props(x);
       }
     );
     return unsub;
   }, []);
-
-  const bsm_ref_filters = useRef<BottomSheetModal>(null);
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.bsm_filters,
+      (s) => s.bsm_filters.count,
       () => {
-        console.log("########bsm_filters#########");
-        bsm_ref_filters.current?.present();
+        bsm_filters_ref.current?.present();
       }
     );
     return unsub;
@@ -191,7 +210,7 @@ export default function App() {
         </SafeAreaProvider>
 
         <BottomSheetModal
-          ref={bsm_ref_view}
+          ref={bsm_view_ref}
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={{
@@ -201,11 +220,11 @@ export default function App() {
           }}
         >
           {arrow(() => {
-            if (bottom_sheet_props !== undefined) {
+            if (bsm_view_props !== undefined) {
               const [state, dispatch, render_list_element] = [
-                bottom_sheet_props.state,
-                bottom_sheet_props.dispatch,
-                bottom_sheet_props.render_list_element,
+                bsm_view_props.state,
+                bsm_view_props.dispatch,
+                bsm_view_props.render_list_element,
               ];
               return (
                 <>
@@ -229,7 +248,7 @@ export default function App() {
                     </Text>
                     <View>
                       <Pressable
-                        onPress={() => bsm_ref_view.current?.close()}
+                        onPress={() => bsm_view_ref.current?.close()}
                         style={{ paddingRight: 8 }}
                       >
                         <Text
@@ -270,7 +289,7 @@ export default function App() {
                             onValueChange={(x) => {
                               if (x) {
                                 dispatch(["layout", ""]);
-                                bsm_ref_view.current?.close();
+                                bsm_view_ref.current?.close();
                               }
                             }}
                             color={active ? colors.custom.red[900] : undefined}
@@ -296,7 +315,7 @@ export default function App() {
                                 onValueChange={(x) => {
                                   if (x) {
                                     dispatch(["layout", layout]);
-                                    bsm_ref_view.current?.close();
+                                    bsm_view_ref.current?.close();
                                   }
                                 }}
                                 color={
@@ -318,7 +337,7 @@ export default function App() {
         </BottomSheetModal>
 
         <BottomSheetModal
-          ref={bsm_ref_sorting}
+          ref={bsm_sorting_ref}
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={{
@@ -328,11 +347,10 @@ export default function App() {
           }}
         >
           {arrow(() => {
-            if (bottom_sheet_props !== undefined) {
-              const [state, dispatch, render_list_element] = [
-                bottom_sheet_props.state,
-                bottom_sheet_props.dispatch,
-                bottom_sheet_props.render_list_element,
+            if (bsm_sorting_props !== undefined) {
+              const [state, dispatch] = [
+                bsm_sorting_props.state,
+                bsm_sorting_props.dispatch,
               ];
               return (
                 <>
@@ -357,7 +375,7 @@ export default function App() {
                     <View>
                       <Pressable
                         onPress={() =>
-                          bsm_ref_sorting_fields.current?.present()
+                          bsm_sorting_fields_ref.current?.present()
                         }
                         style={{ paddingRight: 8 }}
                       >
@@ -376,7 +394,7 @@ export default function App() {
                         </Text>
                       </Pressable>
                       <Pressable
-                        onPress={() => bsm_ref_sorting.current?.close()}
+                        onPress={() => bsm_sorting_ref.current?.close()}
                         style={{ paddingRight: 8 }}
                       >
                         <Text
@@ -400,7 +418,7 @@ export default function App() {
                     dispatch={dispatch}
                   />
                   <BottomSheetModal
-                    ref={bsm_ref_sorting_fields}
+                    ref={bsm_sorting_fields_ref}
                     snapPoints={["50%", "82%"]}
                     index={0}
                     backgroundStyle={{
@@ -430,7 +448,7 @@ export default function App() {
                       <View>
                         <Pressable
                           onPress={() =>
-                            bsm_ref_sorting_fields.current?.close()
+                            bsm_sorting_fields_ref.current?.close()
                           }
                           style={{ paddingRight: 8 }}
                         >
@@ -456,6 +474,146 @@ export default function App() {
                     />
                   </BottomSheetModal>
                 </>
+              );
+            }
+            return <></>;
+          })}
+        </BottomSheetModal>
+
+        <BottomSheetModal
+          ref={bsm_filters_ref}
+          snapPoints={["50%", "82%"]}
+          index={1}
+          backgroundStyle={{
+            backgroundColor: colors.custom.black[900],
+            borderColor: colors.tailwind.gray[500],
+            borderWidth: 1,
+          }}
+        >
+          {arrow(() => {
+            if (bsm_filters_props !== undefined) {
+              const [state, dispatch] = [
+                bsm_filters_props.state,
+                bsm_filters_props.dispatch,
+              ];
+              return (
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "column",
+                    backgroundColor: colors.custom.black[900],
+                    borderColor: colors.tailwind.gray[500],
+                    borderLeftWidth: 1,
+                    borderRightWidth: 1,
+                    paddingHorizontal: 0,
+                  }}
+                >
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      backgroundColor: colors.custom.black[900],
+                      paddingHorizontal: 10,
+                      paddingBottom: 5,
+                      marginBottom: 5,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      FILTERS
+                    </Text>
+                    <View
+                      style={{
+                        paddingHorizontal: 4,
+                        paddingVertical: 4,
+                        backgroundColor: colors.custom.black[900],
+                      }}
+                    >
+                      <Text>Active</Text>
+                      <Checkbox
+                        value={state.active}
+                        onValueChange={(x) => dispatch(["active", x])}
+                        color={
+                          state.active ? colors.custom.red[900] : undefined
+                        }
+                        style={{
+                          alignSelf: "center",
+                          marginHorizontal: 6,
+                        }}
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        paddingHorizontal: 4,
+                        paddingVertical: 4,
+                        marginBottom: 2,
+                        backgroundColor: colors.custom.black[900],
+                      }}
+                    >
+                      <Text>Unsynced</Text>
+                      <Checkbox
+                        value={!state.level ? true : false}
+                        onValueChange={(x) =>
+                          dispatch(["level", x ? undefined : new Decimal(0)])
+                        }
+                        color={
+                          !state.level ? colors.custom.red[900] : undefined
+                        }
+                        style={{
+                          alignSelf: "center",
+                          marginHorizontal: 6,
+                        }}
+                      />
+                    </View>
+                    <Pressable
+                      onPress={() => {
+                        dispatch(["filter", "add"]);
+                      }}
+                      style={{
+                        alignSelf: "center",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          backgroundColor: colors.custom.red[900],
+                          alignSelf: "flex-end",
+                          paddingHorizontal: 6,
+                          paddingVertical: 2,
+                          fontWeight: "bold",
+                          marginRight: 4,
+                          color: "white",
+                          borderRadius: 2,
+                        }}
+                      >
+                        Add Filter
+                      </Text>
+                    </Pressable>
+                  </View>
+
+                  <BottomSheetFlatList
+                    data={state.filters
+                      .toArray()
+                      .sort((a, b) =>
+                        a.index > b.index ? 1 : a.index < b.index ? -1 : 0
+                      )}
+                    keyExtractor={(list_item) => list_item.index.toString()}
+                    renderItem={(list_item) => {
+                      return (
+                        <FilterComponent
+                          key={list_item.item.index}
+                          init_filter={state.init_filter}
+                          filter={list_item.item}
+                          dispatch={dispatch}
+                        />
+                      );
+                    }}
+                  />
+                </View>
               );
             }
             return <></>;

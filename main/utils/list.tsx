@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
@@ -9,16 +9,9 @@ import Decimal from "decimal.js";
 import { Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-} from "@gorhom/bottom-sheet";
-import { FilterComponent } from "./filter";
 import { colors } from "../themed/colors";
-import Checkbox from "expo-checkbox";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { setState } from "./store";
+import { getState, setState } from "./store";
 
 export type ListState = {
   struct: Struct;
@@ -361,217 +354,159 @@ export function List(props: {
     state.offset,
   ]);
 
-  const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
+  const [bsm_view_count, set_bsm_view_count] = useState(-1);
+  const [bsm_sorting_count, set_bsm_sorting_count] = useState(-1);
+  const [bsm_filters_count, set_bsm_filters_count] = useState(-1);
+
+  useEffect(() => {
+    if (getState().bsm_view.count === bsm_view_count) {
+      setState((s) => {
+        return {
+          bsm_view: {
+            props: {
+              state: state,
+              dispatch: dispatch,
+              render_list_element: props.render_list_element,
+            },
+            count: s.bsm_view.count,
+          },
+        };
+      });
+    }
+    if (getState().bsm_sorting.count === bsm_sorting_count) {
+      setState((s) => {
+        return {
+          bsm_sorting: {
+            props: {
+              state: state,
+              dispatch: dispatch,
+            },
+            count: s.bsm_sorting.count,
+          },
+        };
+      });
+    }
+    if (getState().bsm_filters.count === bsm_filters_count) {
+      setState((s) => {
+        return {
+          bsm_filters: {
+            props: {
+              state: state,
+              dispatch: dispatch,
+            },
+            count: s.bsm_filters.count,
+          },
+        };
+      });
+    }
+  }, [state, dispatch, props.render_list_element]);
+
   return (
-    <BottomSheetModalProvider>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          backgroundColor: colors.custom.black[900],
-        }}
-      >
-        {props.render_custom_fields({
-          filters: state.filters,
-          dispatch: dispatch,
-          show_views: ({ element }: { element: JSX.Element }) => (
-            <Pressable
-              onPress={() => {
-                console.log("@@@@@@@@@VIEW@@@@@@@@@@@");
-                setState((s) => ({
-                  bottom_sheet_props: {
-                    state: state,
-                    dispatch: dispatch,
-                    render_list_element: props.render_list_element,
+    <View
+      style={{
+        flex: 1,
+        flexDirection: "column",
+        backgroundColor: colors.custom.black[900],
+      }}
+    >
+      {props.render_custom_fields({
+        filters: state.filters,
+        dispatch: dispatch,
+        show_views: ({ element }: { element: JSX.Element }) => (
+          <Pressable
+            onPress={() => {
+              setState((s) => {
+                set_bsm_view_count(s.bsm_view.count + 1);
+                return {
+                  bsm_view: {
+                    props: {
+                      state: state,
+                      dispatch: dispatch,
+                      render_list_element: props.render_list_element,
+                    },
+                    count: s.bsm_view.count + 1,
                   },
-                  bsm_view: s.bsm_view + 1,
-                }));
-              }}
-            >
-              {element}
-            </Pressable>
-          ),
-          show_sorting: ({ element }: { element: JSX.Element }) => (
-            <Pressable
-              onPress={() => {
-                console.log("@@@@@@@@@SORTING@@@@@@@@@@@");
-                setState((s) => ({
-                  bottom_sheet_props: {
-                    state: state,
-                    dispatch: dispatch,
-                    render_list_element: props.render_list_element,
-                  },
-                  bsm_sorting: s.bsm_sorting + 1,
-                }));
-              }}
-            >
-              {element}
-            </Pressable>
-          ),
-          show_filters: ({ element }: { element: JSX.Element }) => (
-            <Pressable onPress={() => bottomSheetModalRef1.current?.present()}>
-              {element}
-            </Pressable>
-          ),
-        })}
-
-        <FlatList
-          data={state.variables}
-          renderItem={(list_item) => {
-            const ElementJSX = arrow(() => {
-              if (state.layout in props.render_list_element[1]) {
-                return props.render_list_element[1][state.layout];
-              }
-              return props.render_list_element[0];
-            });
-            return (
-              <ElementJSX
-                selected={props.selected}
-                variable={list_item.item}
-                disptach_values={props.disptach_values}
-              />
-            );
-          }}
-          keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
-          refreshing={state.refreshing}
-          onRefresh={() => {}}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => dispatch(["offset"])}
-          ListFooterComponent={arrow(() => {
-            if (!state.reached_end) {
-              return <Text style={{ textAlign: "center" }}>Loading...</Text>;
-            }
-            return <></>;
-          })}
-          style={{ marginTop: 4 }}
-        />
-
-        <BottomSheetModal
-          ref={bottomSheetModalRef1}
-          snapPoints={["50%", "90%"]}
-          index={1}
-          backgroundStyle={{
-            backgroundColor: colors.custom.black[900],
-            borderColor: colors.tailwind.gray[500],
-            borderWidth: 1,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              backgroundColor: colors.custom.black[900],
-              borderColor: colors.tailwind.gray[500],
-              borderLeftWidth: 1,
-              borderRightWidth: 1,
-              paddingHorizontal: 0,
+                };
+              });
             }}
           >
-            <View
-              style={{
-                borderBottomWidth: 1,
-                backgroundColor: colors.custom.black[900],
-                paddingHorizontal: 10,
-                paddingBottom: 5,
-                marginBottom: 5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                FILTERS
-              </Text>
-              <View
-                style={{
-                  paddingHorizontal: 4,
-                  paddingVertical: 4,
-                  backgroundColor: colors.custom.black[900],
-                }}
-              >
-                <Text>Active</Text>
-                <Checkbox
-                  value={state.active}
-                  onValueChange={(x) => dispatch(["active", x])}
-                  color={state.active ? colors.custom.red[900] : undefined}
-                  style={{
-                    alignSelf: "center",
-                    marginHorizontal: 6,
-                  }}
-                />
-              </View>
+            {element}
+          </Pressable>
+        ),
+        show_sorting: ({ element }: { element: JSX.Element }) => (
+          <Pressable
+            onPress={() => {
+              setState((s) => {
+                set_bsm_sorting_count(s.bsm_sorting.count + 1);
+                return {
+                  bsm_sorting: {
+                    props: {
+                      state: state,
+                      dispatch: dispatch,
+                    },
+                    count: s.bsm_sorting.count + 1,
+                  },
+                };
+              });
+            }}
+          >
+            {element}
+          </Pressable>
+        ),
+        show_filters: ({ element }: { element: JSX.Element }) => (
+          <Pressable
+            onPress={() => {
+              setState((s) => {
+                set_bsm_filters_count(s.bsm_filters.count + 1);
+                return {
+                  bsm_filters: {
+                    props: {
+                      state: state,
+                      dispatch: dispatch,
+                    },
+                    count: s.bsm_filters.count + 1,
+                  },
+                };
+              });
+            }}
+          >
+            {element}
+          </Pressable>
+        ),
+      })}
 
-              <View
-                style={{
-                  paddingHorizontal: 4,
-                  paddingVertical: 4,
-                  marginBottom: 2,
-                  backgroundColor: colors.custom.black[900],
-                }}
-              >
-                <Text>Unsynced</Text>
-                <Checkbox
-                  value={!state.level ? true : false}
-                  onValueChange={(x) =>
-                    dispatch(["level", x ? undefined : new Decimal(0)])
-                  }
-                  color={!state.level ? colors.custom.red[900] : undefined}
-                  style={{
-                    alignSelf: "center",
-                    marginHorizontal: 6,
-                  }}
-                />
-              </View>
-              <Pressable
-                onPress={() => {
-                  dispatch(["filter", "add"]);
-                }}
-                style={{
-                  alignSelf: "center",
-                }}
-              >
-                <Text
-                  style={{
-                    backgroundColor: colors.custom.red[900],
-                    alignSelf: "flex-end",
-                    paddingHorizontal: 6,
-                    paddingVertical: 2,
-                    fontWeight: "bold",
-                    marginRight: 4,
-                    color: "white",
-                    borderRadius: 2,
-                  }}
-                >
-                  Add Filter
-                </Text>
-              </Pressable>
-            </View>
-
-            <BottomSheetFlatList
-              data={state.filters
-                .toArray()
-                .sort((a, b) =>
-                  a.index > b.index ? 1 : a.index < b.index ? -1 : 0
-                )}
-              keyExtractor={(list_item) => list_item.index.toString()}
-              renderItem={(list_item) => {
-                return (
-                  <FilterComponent
-                    key={list_item.item.index}
-                    init_filter={state.init_filter}
-                    filter={list_item.item}
-                    dispatch={dispatch}
-                  />
-                );
-              }}
+      <FlatList
+        data={state.variables}
+        renderItem={(list_item) => {
+          const ElementJSX = arrow(() => {
+            if (state.layout in props.render_list_element[1]) {
+              return props.render_list_element[1][state.layout];
+            }
+            return props.render_list_element[0];
+          });
+          return (
+            <ElementJSX
+              selected={props.selected}
+              variable={list_item.item}
+              disptach_values={props.disptach_values}
             />
-          </View>
-        </BottomSheetModal>
-      </View>
-    </BottomSheetModalProvider>
+          );
+        }}
+        keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+        refreshing={state.refreshing}
+        onRefresh={() => {}}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => dispatch(["offset"])}
+        ListFooterComponent={arrow(() => {
+          if (!state.reached_end) {
+            return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+          }
+          return <></>;
+        })}
+        // horizontal={true}
+        style={{ marginTop: 4 }}
+      />
+    </View>
   );
 }
 
