@@ -436,7 +436,7 @@ export function List(props: {
           return <></>;
         })}
         horizontal={props.horizontal}
-        style={{ marginTop: 4 }}
+        style={{ marginTop: 5 }}
       />
 
       <Portal>

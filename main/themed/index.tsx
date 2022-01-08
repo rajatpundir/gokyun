@@ -52,12 +52,11 @@ export function Text(props: TextProps) {
 
 export type TextInputProps = DefaultTextInput["props"];
 
+// Use TextInput from React Native Paper instead
 export function TextInput(props: TextInputProps) {
   const { style, ...otherProps } = props;
   return (
     <DefaultTextInput
-      multiline={true}
-      textAlignVertical="top"
       selectionColor={colors.tailwind.slate[400]}
       underlineColorAndroid={colors.tailwind.gray[600]}
       placeholderTextColor={colors.tailwind.slate[500]}
@@ -69,8 +68,8 @@ export function TextInput(props: TextInputProps) {
           alignSelf: "center",
           paddingLeft: 5,
           paddingRight: 10,
+          paddingVertical: 0,
           minHeight: 40,
-          maxWidth: 200,
         },
         style,
       ]}
