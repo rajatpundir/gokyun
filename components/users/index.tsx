@@ -241,7 +241,7 @@ export default function Component(
                         paddingVertical: 2,
                         paddingHorizontal: 10,
                         marginHorizontal: 10,
-                        marginTop: 4,
+                        marginTop: 10,
                       }}
                     >
                       <Feather
