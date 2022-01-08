@@ -277,12 +277,20 @@ export function FilterComponent(props: {
             padding: 3,
           }}
         >
-          <AntDesign
-            name="plussquareo"
-            size={24}
-            color={colors.custom.blue[900]}
-            style={{ paddingHorizontal: 5 }}
-          />
+          <Text
+            style={{
+              backgroundColor: colors.custom.blue[900],
+              alignSelf: "flex-end",
+              paddingHorizontal: 6,
+              paddingVertical: 2,
+              fontWeight: "bold",
+              marginRight: 4,
+              color: "white",
+              borderRadius: 2,
+            }}
+          >
+            Field++
+          </Text>
         </Pressable>
 
         <BottomSheetModal
@@ -352,25 +360,23 @@ export function FilterComponent(props: {
                 ]);
               };
               return (
-                <View
+                <Pressable
+                  onPress={() => toggle(!active)}
                   style={{
+                    flex: 1,
+                    flexDirection: "row",
                     justifyContent: "flex-start",
                     marginHorizontal: 5,
-                    marginVertical: 10,
+                    marginVertical: 5,
                   }}
                 >
-                  <Checkbox
-                    value={active}
-                    onValueChange={() => toggle(!active)}
-                    color={active ? colors.custom.red[900] : undefined}
-                  />
-                  <Pressable
-                    onPress={() => toggle(!active)}
-                    style={{ paddingLeft: 10 }}
-                  >
-                    <Text>Unique ID</Text>
-                  </Pressable>
-                </View>
+                  {active ? (
+                    <Ionicons name="radio-button-on" size={24} color="red" />
+                  ) : (
+                    <Ionicons name="radio-button-off" size={24} color="red" />
+                  )}
+                  <Text style={{ paddingLeft: 10 }}>Unique ID</Text>
+                </Pressable>
               );
             })}
             {arrow(() => {
@@ -389,25 +395,23 @@ export function FilterComponent(props: {
                 ]);
               };
               return (
-                <View
+                <Pressable
+                  onPress={() => toggle(!active)}
                   style={{
+                    flex: 1,
+                    flexDirection: "row",
                     justifyContent: "flex-start",
                     marginHorizontal: 5,
-                    marginVertical: 10,
+                    marginVertical: 5,
                   }}
                 >
-                  <Checkbox
-                    value={active}
-                    onValueChange={() => toggle(!active)}
-                    color={active ? colors.custom.red[900] : undefined}
-                  />
-                  <Pressable
-                    onPress={() => toggle(!active)}
-                    style={{ paddingLeft: 10 }}
-                  >
-                    <Text>Created</Text>
-                  </Pressable>
-                </View>
+                  {active ? (
+                    <Ionicons name="radio-button-on" size={24} color="red" />
+                  ) : (
+                    <Ionicons name="radio-button-off" size={24} color="red" />
+                  )}
+                  <Text style={{ paddingLeft: 10 }}>Created</Text>
+                </Pressable>
               );
             })}
             {arrow(() => {
@@ -426,25 +430,23 @@ export function FilterComponent(props: {
                 ]);
               };
               return (
-                <View
+                <Pressable
+                  onPress={() => toggle(!active)}
                   style={{
+                    flex: 1,
+                    flexDirection: "row",
                     justifyContent: "flex-start",
                     marginHorizontal: 5,
-                    marginVertical: 10,
+                    marginVertical: 5,
                   }}
                 >
-                  <Checkbox
-                    value={active}
-                    onValueChange={() => toggle(!active)}
-                    color={active ? colors.custom.red[900] : undefined}
-                  />
-                  <Pressable
-                    onPress={() => toggle(!active)}
-                    style={{ paddingLeft: 10 }}
-                  >
-                    <Text>Updated</Text>
-                  </Pressable>
-                </View>
+                  {active ? (
+                    <Ionicons name="radio-button-on" size={24} color="red" />
+                  ) : (
+                    <Ionicons name="radio-button-off" size={24} color="red" />
+                  )}
+                  <Text style={{ paddingLeft: 10 }}>Updated</Text>
+                </Pressable>
               );
             })}
             {props.init_filter.filter_paths
@@ -556,26 +558,24 @@ export function FilterComponent(props: {
                   }
                 };
                 return (
-                  <View
+                  <Pressable
                     key={index}
+                    onPress={() => toggle(!active)}
                     style={{
+                      flex: 1,
+                      flexDirection: "row",
                       justifyContent: "flex-start",
                       marginHorizontal: 5,
-                      marginVertical: 10,
+                      marginVertical: 5,
                     }}
                   >
-                    <Checkbox
-                      value={active}
-                      onValueChange={() => toggle(!active)}
-                      color={active ? colors.custom.red[900] : undefined}
-                    />
-                    <Pressable
-                      onPress={() => toggle(!active)}
-                      style={{ paddingLeft: 10 }}
-                    >
-                      <Text>{filter_path.label}</Text>
-                    </Pressable>
-                  </View>
+                    {active ? (
+                      <Ionicons name="radio-button-on" size={24} color="red" />
+                    ) : (
+                      <Ionicons name="radio-button-off" size={24} color="red" />
+                    )}
+                    <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                  </Pressable>
                 );
               })}
           </BottomSheetScrollView>

@@ -19,6 +19,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
+import { Ionicons } from "@expo/vector-icons";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -495,78 +496,52 @@ export function List(props: {
               margin: 5,
             }}
           >
-            <View
+            <Pressable
+              onPress={() => {
+                if (state.layout !== "") {
+                  dispatch(["layout", ""]);
+                  bsm_view_ref.current?.close();
+                }
+              }}
               style={{
+                flex: 1,
+                flexDirection: "row",
                 justifyContent: "flex-start",
                 marginHorizontal: 5,
-                marginVertical: 10,
+                marginVertical: 5,
               }}
             >
-              {arrow(() => {
-                const active = state.layout === "";
-                return (
-                  <Checkbox
-                    value={active}
-                    onValueChange={(x) => {
-                      if (x) {
-                        dispatch(["layout", ""]);
-                        bsm_view_ref.current?.close();
-                      }
-                    }}
-                    color={active ? colors.custom.red[900] : undefined}
-                  />
-                );
-              })}
+              {state.layout === "" ? (
+                <Ionicons name="radio-button-on" size={24} color="red" />
+              ) : (
+                <Ionicons name="radio-button-off" size={24} color="red" />
+              )}
+              <Text style={{ paddingLeft: 10 }}>Default</Text>
+            </Pressable>
+            {Object.keys(props.render_list_element[1]).map((layout) => (
               <Pressable
                 onPress={() => {
-                  if (state.layout !== "") {
-                    dispatch(["layout", ""]);
+                  if (state.layout !== layout) {
+                    dispatch(["layout", layout]);
                     bsm_view_ref.current?.close();
                   }
                 }}
-                style={{ paddingLeft: 10 }}
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  marginHorizontal: 5,
+                  marginVertical: 5,
+                }}
               >
-                <Text>Default</Text>
+                {state.layout === layout ? (
+                  <Ionicons name="radio-button-on" size={24} color="red" />
+                ) : (
+                  <Ionicons name="radio-button-off" size={24} color="red" />
+                )}
+                <Text style={{ paddingLeft: 10 }}>{layout}</Text>
               </Pressable>
-            </View>
-            {Object.keys(props.render_list_element[1]).map((layout) => {
-              return (
-                <View
-                  style={{
-                    justifyContent: "flex-start",
-                    marginHorizontal: 5,
-                    marginVertical: 10,
-                  }}
-                >
-                  {arrow(() => {
-                    const active = state.layout === layout;
-                    return (
-                      <Checkbox
-                        value={active}
-                        onValueChange={(x) => {
-                          if (x) {
-                            dispatch(["layout", layout]);
-                            bsm_view_ref.current?.close();
-                          }
-                        }}
-                        color={active ? colors.custom.red[900] : undefined}
-                      />
-                    );
-                  })}
-                  <Pressable
-                    onPress={() => {
-                      if (state.layout !== layout) {
-                        dispatch(["layout", layout]);
-                        bsm_view_ref.current?.close();
-                      }
-                    }}
-                    style={{ paddingLeft: 10 }}
-                  >
-                    <Text>{layout}</Text>
-                  </Pressable>
-                </View>
-              );
-            })}
+            ))}
           </BottomSheetScrollView>
         </BottomSheetModal>
 
@@ -767,12 +742,12 @@ export function List(props: {
                 }}
               >
                 <Pressable
-                  onPress={() => {
+                  onPress={() =>
                     dispatch([
                       "level",
                       !!state.level ? undefined : new Decimal(0),
-                    ]);
-                  }}
+                    ])
+                  }
                 >
                   <Text>Unsynced</Text>
                 </Pressable>
@@ -789,9 +764,7 @@ export function List(props: {
                 />
               </View>
               <Pressable
-                onPress={() => {
-                  dispatch(["filter", "add"]);
-                }}
+                onPress={() => dispatch(["filter", "add"])}
                 style={{
                   alignSelf: "center",
                 }}
@@ -808,7 +781,7 @@ export function List(props: {
                     borderRadius: 2,
                   }}
                 >
-                  Add Filter
+                  Filter++
                 </Text>
               </Pressable>
             </View>
