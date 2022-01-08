@@ -1127,6 +1127,7 @@ export function FilterComponent(props: {
                     style={{
                       justifyContent: "space-between",
                       flexShrink: 1,
+                      paddingVertical: 10,
                     }}
                   >
                     {arrow(() => {
@@ -1649,6 +1650,7 @@ export function FilterComponent(props: {
                     style={{
                       justifyContent: "space-between",
                       flexShrink: 1,
+                      paddingVertical: 10,
                     }}
                   >
                     {arrow(() => {
