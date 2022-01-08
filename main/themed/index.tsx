@@ -56,18 +56,21 @@ export function TextInput(props: TextInputProps) {
   const { style, ...otherProps } = props;
   return (
     <DefaultTextInput
+      multiline={true}
+      textAlignVertical="top"
       selectionColor={colors.tailwind.slate[400]}
       underlineColorAndroid={colors.tailwind.gray[600]}
-      placeholder="Enter text"
       placeholderTextColor={colors.tailwind.slate[500]}
+      placeholder="Enter text"
       style={[
         {
           color: colors.tailwind.slate[300],
-          height: 40,
           textAlign: "auto",
-          paddingLeft: 5,
           alignSelf: "center",
-          textAlignVertical: "center",
+          paddingLeft: 5,
+          paddingRight: 10,
+          minHeight: 40,
+          maxWidth: 200,
         },
         style,
       ]}
