@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import { Text, View } from "../../../main/themed";
 
 import { NavigatorProps as ParentNavigatorProps } from "..";
+import { colors } from "../../../main/themed/colors";
 
 export default function Component(props: ParentNavigatorProps<"Tags">) {
   return (
@@ -14,6 +15,7 @@ export default function Component(props: ParentNavigatorProps<"Tags">) {
       style={{
         flexDirection: "column",
         flexGrow: 1,
+        backgroundColor: colors.custom.black[900],
       }}
     >
       <Text>ddd</Text>

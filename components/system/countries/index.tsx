@@ -12,6 +12,7 @@ import { Struct } from "../../../main/utils/variable";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import { useNavigation } from "@react-navigation/core";
 import { getState, subscribe } from "../../../main/utils/store";
+import { colors } from "../../../main/themed/colors";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
@@ -78,6 +79,7 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       style={{
         flexDirection: "column",
         flexGrow: 1,
+        backgroundColor: colors.custom.black[900],
       }}
     >
       {/* <A />

@@ -38,6 +38,7 @@ export default function Component(
         flex: 1,
         flexDirection: "column",
         paddingHorizontal: 8,
+        backgroundColor: colors.custom.black[900],
       }}
     >
       {arrow(() => {

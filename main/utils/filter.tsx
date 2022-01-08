@@ -23,8 +23,6 @@ import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "../../main/utils/variable";
 import { colors } from "../../main/themed/colors";
 
-// Draw border around op picker
-
 // For fields.tsx, test TextInput for long values of text
 // Also cross button should reset value to default for that key in case of text and decimal fields
 

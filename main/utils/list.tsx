@@ -749,7 +749,7 @@ export function List(props: {
                     ])
                   }
                 >
-                  <Text>Unsynced</Text>
+                  <Text>Unsaved</Text>
                 </Pressable>
                 <Checkbox
                   value={!state.level ? true : false}
