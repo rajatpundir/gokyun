@@ -344,7 +344,6 @@ export function List(props: {
       request_counter.current += 1;
       const request_count = request_counter.current;
       setTimeout(async () => {
-        // Only request if new request was not made during timeout
         if (request_count === request_counter.current) {
           const variables = await get_variables(
             state.struct,
@@ -355,14 +354,12 @@ export function List(props: {
             state.limit,
             state.offset
           );
-          // Only update if new request was not made during current request
           if (request_count === request_counter.current) {
             if (unwrap(variables)) {
               dispatch(["variables", variables.value]);
             }
           }
         }
-        // Try adjusting the time in ms value to some unnoticable range(100ms or less)
       }, 100);
     };
     get_vars();
@@ -520,7 +517,17 @@ export function List(props: {
                   />
                 );
               })}
-              <Text style={{ paddingLeft: 10 }}>Default</Text>
+              <Pressable
+                onPress={() => {
+                  if (state.layout !== "") {
+                    dispatch(["layout", ""]);
+                    bsm_view_ref.current?.close();
+                  }
+                }}
+                style={{ paddingLeft: 10 }}
+              >
+                <Text>Default</Text>
+              </Pressable>
             </View>
             {Object.keys(props.render_list_element[1]).map((layout) => {
               return (
@@ -546,7 +553,17 @@ export function List(props: {
                       />
                     );
                   })}
-                  <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                  <Pressable
+                    onPress={() => {
+                      if (state.layout !== layout) {
+                        dispatch(["layout", layout]);
+                        bsm_view_ref.current?.close();
+                      }
+                    }}
+                    style={{ paddingLeft: 10 }}
+                  >
+                    <Text>{layout}</Text>
+                  </Pressable>
                 </View>
               );
             })}
@@ -723,10 +740,16 @@ export function List(props: {
                   backgroundColor: colors.custom.black[900],
                 }}
               >
-                <Text>Active</Text>
+                <Pressable
+                  onPress={() => {
+                    dispatch(["active", !state.active]);
+                  }}
+                >
+                  <Text>Active</Text>
+                </Pressable>
                 <Checkbox
                   value={state.active}
-                  onValueChange={(x) => dispatch(["active", x])}
+                  onValueChange={() => dispatch(["active", !state.active])}
                   color={state.active ? colors.custom.red[900] : undefined}
                   style={{
                     alignSelf: "center",
@@ -743,7 +766,16 @@ export function List(props: {
                   backgroundColor: colors.custom.black[900],
                 }}
               >
-                <Text>Unsynced</Text>
+                <Pressable
+                  onPress={() => {
+                    dispatch([
+                      "level",
+                      !!state.level ? undefined : new Decimal(0),
+                    ]);
+                  }}
+                >
+                  <Text>Unsynced</Text>
+                </Pressable>
                 <Checkbox
                   value={!state.level ? true : false}
                   onValueChange={(x) =>

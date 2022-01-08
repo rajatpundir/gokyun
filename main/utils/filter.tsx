@@ -119,7 +119,14 @@ export function SortComponent(props: {
                   </Pressable>
                 </View>
                 <View style={{ flexGrow: 1 }}>
-                  <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                  <Pressable
+                    onPress={() =>
+                      props.dispatch(["sort", "toggle", filter_path])
+                    }
+                    style={{ paddingLeft: 10 }}
+                  >
+                    <Text>{filter_path.label}</Text>
+                  </Pressable>
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "toggle", filter_path])
@@ -178,6 +185,28 @@ export function SortComponentFields(props: {
         .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
         .map((filter_path, index) => {
           const active = filter_path.ordering !== undefined;
+          const toggle = (x: boolean) => {
+            if (x) {
+              const field_struct_name = filter_path.value[0];
+              props.dispatch([
+                "sort",
+                "add",
+                filter_path,
+                apply(true, (it) => {
+                  switch (field_struct_name) {
+                    case "str":
+                    case "lstr":
+                    case "clob": {
+                      return false;
+                    }
+                  }
+                  return it;
+                }),
+              ]);
+            } else {
+              props.dispatch(["sort", "remove", filter_path]);
+            }
+          };
           return (
             <View
               key={index}
@@ -189,31 +218,15 @@ export function SortComponentFields(props: {
             >
               <Checkbox
                 value={active}
-                onValueChange={(x) => {
-                  if (x) {
-                    const field_struct_name = filter_path.value[0];
-                    props.dispatch([
-                      "sort",
-                      "add",
-                      filter_path,
-                      apply(true, (it) => {
-                        switch (field_struct_name) {
-                          case "str":
-                          case "lstr":
-                          case "clob": {
-                            return false;
-                          }
-                        }
-                        return it;
-                      }),
-                    ]);
-                  } else {
-                    props.dispatch(["sort", "remove", filter_path]);
-                  }
-                }}
+                onValueChange={() => toggle(!active)}
                 color={active ? colors.custom.red[900] : undefined}
               />
-              <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+              <Pressable
+                onPress={() => toggle(!active)}
+                style={{ paddingLeft: 10 }}
+              >
+                <Text>{filter_path.label}</Text>
+              </Pressable>
             </View>
           );
         })}
@@ -328,6 +341,16 @@ export function FilterComponent(props: {
           >
             {arrow(() => {
               const active = props.filter.id[1] !== undefined;
+              const toggle = (x: boolean) => {
+                props.dispatch([
+                  "filter",
+                  "replace",
+                  apply(props.filter, (it) => {
+                    it.id = [false, x ? ["==", new Decimal(0)] : undefined];
+                    return it;
+                  }),
+                ]);
+              };
               return (
                 <View
                   style={{
@@ -338,27 +361,33 @@ export function FilterComponent(props: {
                 >
                   <Checkbox
                     value={active}
-                    onValueChange={(x) => {
-                      props.dispatch([
-                        "filter",
-                        "replace",
-                        apply(props.filter, (it) => {
-                          it.id = [
-                            false,
-                            x ? ["==", new Decimal(0)] : undefined,
-                          ];
-                          return it;
-                        }),
-                      ]);
-                    }}
+                    onValueChange={() => toggle(!active)}
                     color={active ? colors.custom.red[900] : undefined}
                   />
-                  <Text style={{ paddingLeft: 10 }}>Unique ID</Text>
+                  <Pressable
+                    onPress={() => toggle(!active)}
+                    style={{ paddingLeft: 10 }}
+                  >
+                    <Text>Unique ID</Text>
+                  </Pressable>
                 </View>
               );
             })}
             {arrow(() => {
               const active = props.filter.created_at[1] !== undefined;
+              const toggle = (x: boolean) => {
+                props.dispatch([
+                  "filter",
+                  "replace",
+                  apply(props.filter, (it) => {
+                    it.created_at = [
+                      false,
+                      x ? ["between", [new Date(), new Date()]] : undefined,
+                    ];
+                    return it;
+                  }),
+                ]);
+              };
               return (
                 <View
                   style={{
@@ -369,29 +398,33 @@ export function FilterComponent(props: {
                 >
                   <Checkbox
                     value={active}
-                    onValueChange={(x) => {
-                      props.dispatch([
-                        "filter",
-                        "replace",
-                        apply(props.filter, (it) => {
-                          it.created_at = [
-                            false,
-                            x
-                              ? ["between", [new Date(), new Date()]]
-                              : undefined,
-                          ];
-                          return it;
-                        }),
-                      ]);
-                    }}
+                    onValueChange={() => toggle(!active)}
                     color={active ? colors.custom.red[900] : undefined}
                   />
-                  <Text style={{ paddingLeft: 10 }}>Created</Text>
+                  <Pressable
+                    onPress={() => toggle(!active)}
+                    style={{ paddingLeft: 10 }}
+                  >
+                    <Text>Created</Text>
+                  </Pressable>
                 </View>
               );
             })}
             {arrow(() => {
               const active = props.filter.updated_at[1] !== undefined;
+              const toggle = (x: boolean) => {
+                props.dispatch([
+                  "filter",
+                  "replace",
+                  apply(props.filter, (it) => {
+                    it.updated_at = [
+                      false,
+                      x ? ["between", [new Date(), new Date()]] : undefined,
+                    ];
+                    return it;
+                  }),
+                ]);
+              };
               return (
                 <View
                   style={{
@@ -402,24 +435,15 @@ export function FilterComponent(props: {
                 >
                   <Checkbox
                     value={active}
-                    onValueChange={(x) => {
-                      props.dispatch([
-                        "filter",
-                        "replace",
-                        apply(props.filter, (it) => {
-                          it.updated_at = [
-                            false,
-                            x
-                              ? ["between", [new Date(), new Date()]]
-                              : undefined,
-                          ];
-                          return it;
-                        }),
-                      ]);
-                    }}
+                    onValueChange={() => toggle(!active)}
                     color={active ? colors.custom.red[900] : undefined}
                   />
-                  <Text style={{ paddingLeft: 10 }}>Updated</Text>
+                  <Pressable
+                    onPress={() => toggle(!active)}
+                    style={{ paddingLeft: 10 }}
+                  >
+                    <Text>Updated</Text>
+                  </Pressable>
                 </View>
               );
             })}
@@ -433,6 +457,104 @@ export function FilterComponent(props: {
                 const active = props.filter.filter_paths.anyMatch(
                   (x) => x.equals(filter_path) && x.value[1] !== undefined
                 );
+                const toggle = (x: boolean) => {
+                  switch (field_struct_type) {
+                    case "str":
+                    case "lstr":
+                    case "clob": {
+                      props.dispatch([
+                        "filters",
+                        props.filter,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [field_struct_type, x ? ["like", ""] : undefined],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "i32":
+                    case "u32":
+                    case "i64":
+                    case "u64":
+                    case "idouble":
+                    case "udouble":
+                    case "idecimal":
+                    case "udecimal": {
+                      props.dispatch([
+                        "filters",
+                        props.filter,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [
+                            field_struct_type,
+                            x ? ["==", new Decimal(0)] : undefined,
+                          ],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "bool": {
+                      props.dispatch([
+                        "filters",
+                        props.filter,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [field_struct_type, x ? ["==", true] : undefined],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "date":
+                    case "time":
+                    case "timestamp": {
+                      props.dispatch([
+                        "filters",
+                        props.filter,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [
+                            field_struct_type,
+                            x
+                              ? ["between", [new Date(), new Date()]]
+                              : undefined,
+                          ],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                    case "other": {
+                      const other_struct = filter_path.value[2];
+                      props.dispatch([
+                        "filters",
+                        props.filter,
+                        "replace",
+                        new FilterPath(
+                          filter_path.label,
+                          filter_path.path,
+                          [
+                            field_struct_type,
+                            x ? ["==", new Decimal(-1)] : undefined,
+                            other_struct,
+                          ],
+                          undefined
+                        ),
+                      ]);
+                      break;
+                    }
+                  }
+                };
                 return (
                   <View
                     key={index}
@@ -444,113 +566,15 @@ export function FilterComponent(props: {
                   >
                     <Checkbox
                       value={active}
-                      onValueChange={(x) => {
-                        switch (field_struct_type) {
-                          case "str":
-                          case "lstr":
-                          case "clob": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              new FilterPath(
-                                filter_path.label,
-                                filter_path.path,
-                                [
-                                  field_struct_type,
-                                  x ? ["like", ""] : undefined,
-                                ],
-                                undefined
-                              ),
-                            ]);
-                            break;
-                          }
-                          case "i32":
-                          case "u32":
-                          case "i64":
-                          case "u64":
-                          case "idouble":
-                          case "udouble":
-                          case "idecimal":
-                          case "udecimal": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              new FilterPath(
-                                filter_path.label,
-                                filter_path.path,
-                                [
-                                  field_struct_type,
-                                  x ? ["==", new Decimal(0)] : undefined,
-                                ],
-                                undefined
-                              ),
-                            ]);
-                            break;
-                          }
-                          case "bool": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              new FilterPath(
-                                filter_path.label,
-                                filter_path.path,
-                                [
-                                  field_struct_type,
-                                  x ? ["==", true] : undefined,
-                                ],
-                                undefined
-                              ),
-                            ]);
-                            break;
-                          }
-                          case "date":
-                          case "time":
-                          case "timestamp": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              new FilterPath(
-                                filter_path.label,
-                                filter_path.path,
-                                [
-                                  field_struct_type,
-                                  x
-                                    ? ["between", [new Date(), new Date()]]
-                                    : undefined,
-                                ],
-                                undefined
-                              ),
-                            ]);
-                            break;
-                          }
-                          case "other": {
-                            const other_struct = filter_path.value[2];
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              new FilterPath(
-                                filter_path.label,
-                                filter_path.path,
-                                [
-                                  field_struct_type,
-                                  x ? ["==", new Decimal(-1)] : undefined,
-                                  other_struct,
-                                ],
-                                undefined
-                              ),
-                            ]);
-                            break;
-                          }
-                        }
-                      }}
+                      onValueChange={() => toggle(!active)}
                       color={active ? colors.custom.red[900] : undefined}
                     />
-                    <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+                    <Pressable
+                      onPress={() => toggle(!active)}
+                      style={{ paddingLeft: 10 }}
+                    >
+                      <Text>{filter_path.label}</Text>
+                    </Pressable>
                   </View>
                 );
               })}
@@ -582,6 +606,16 @@ export function FilterComponent(props: {
                 props.filter.id[1] ? props.filter.id[1][0] : "=="
               );
               const [active, value] = props.filter.id;
+              const toggle = (x: boolean) => {
+                props.dispatch([
+                  "filter",
+                  "replace",
+                  apply(props.filter, (it) => {
+                    it.id[0] = x;
+                    return it;
+                  }),
+                ]);
+              };
               if (value !== undefined) {
                 return (
                   <View
@@ -592,25 +626,25 @@ export function FilterComponent(props: {
                     <View>
                       <Checkbox
                         value={active}
-                        onValueChange={(x) =>
-                          props.dispatch([
-                            "filter",
-                            "replace",
-                            apply(props.filter, (it) => {
-                              it.id[0] = x;
-                              return it;
-                            }),
-                          ])
-                        }
+                        onValueChange={() => toggle(!active)}
                         color={active ? colors.custom.red[900] : undefined}
                         style={{
                           alignSelf: "center",
                           marginRight: 6,
                         }}
                       />
-                      <Text style={{ color: colors.tailwind.slate[400] }}>
-                        ID
-                      </Text>
+                      <Pressable
+                        onPress={() => toggle(!active)}
+                        style={{ alignSelf: "center" }}
+                      >
+                        <Text
+                          style={{
+                            color: colors.tailwind.slate[400],
+                          }}
+                        >
+                          Unique ID
+                        </Text>
+                      </Pressable>
                     </View>
                     <View
                       style={{
@@ -844,6 +878,16 @@ export function FilterComponent(props: {
                   : "between"
               );
               const [active, value] = props.filter.created_at;
+              const toggle = (x: boolean) => {
+                props.dispatch([
+                  "filter",
+                  "replace",
+                  apply(props.filter, (it) => {
+                    it.created_at[0] = x;
+                    return it;
+                  }),
+                ]);
+              };
               if (value !== undefined) {
                 return (
                   <View
@@ -854,25 +898,25 @@ export function FilterComponent(props: {
                     <View>
                       <Checkbox
                         value={active}
-                        onValueChange={(x) =>
-                          props.dispatch([
-                            "filter",
-                            "replace",
-                            apply(props.filter, (it) => {
-                              it.created_at[0] = x;
-                              return it;
-                            }),
-                          ])
-                        }
+                        onValueChange={() => toggle(!active)}
                         color={active ? colors.custom.red[900] : undefined}
                         style={{
                           alignSelf: "center",
                           marginRight: 6,
                         }}
                       />
-                      <Text style={{ color: colors.tailwind.slate[400] }}>
-                        Created
-                      </Text>
+                      <Pressable
+                        onPress={() => toggle(!active)}
+                        style={{ alignSelf: "center" }}
+                      >
+                        <Text
+                          style={{
+                            color: colors.tailwind.slate[400],
+                          }}
+                        >
+                          Created
+                        </Text>
+                      </Pressable>
                     </View>
                     <View
                       style={{
@@ -1342,6 +1386,16 @@ export function FilterComponent(props: {
                   : "between"
               );
               const [active, value] = props.filter.updated_at;
+              const toggle = (x: boolean) => {
+                props.dispatch([
+                  "filter",
+                  "replace",
+                  apply(props.filter, (it) => {
+                    it.updated_at[0] = x;
+                    return it;
+                  }),
+                ]);
+              };
               if (value !== undefined) {
                 return (
                   <View
@@ -1352,25 +1406,25 @@ export function FilterComponent(props: {
                     <View>
                       <Checkbox
                         value={active}
-                        onValueChange={(x) =>
-                          props.dispatch([
-                            "filter",
-                            "replace",
-                            apply(props.filter, (it) => {
-                              it.updated_at[0] = x;
-                              return it;
-                            }),
-                          ])
-                        }
+                        onValueChange={() => toggle(!active)}
                         color={active ? colors.custom.red[900] : undefined}
                         style={{
                           alignSelf: "center",
                           marginRight: 6,
                         }}
                       />
-                      <Text style={{ color: colors.tailwind.slate[400] }}>
-                        Updated
-                      </Text>
+                      <Pressable
+                        onPress={() => toggle(!active)}
+                        style={{ alignSelf: "center" }}
+                      >
+                        <Text
+                          style={{
+                            color: colors.tailwind.slate[400],
+                          }}
+                        >
+                          Updated
+                        </Text>
+                      </Pressable>
                     </View>
                     <View
                       style={{
@@ -2072,6 +2126,17 @@ function FilterPathComponent(props: {
           })
         );
         if (props.filter_path.value[1] !== undefined) {
+          const toggle = (x: boolean) => {
+            props.dispatch([
+              "filters",
+              props.filter,
+              "replace",
+              apply(props.filter_path, (it) => {
+                it.active = x;
+                return it;
+              }),
+            ]);
+          };
           return (
             <View
               style={{
@@ -2081,17 +2146,7 @@ function FilterPathComponent(props: {
               <View style={{ flexShrink: 1 }}>
                 <Checkbox
                   value={props.filter_path.active}
-                  onValueChange={(x) => {
-                    props.dispatch([
-                      "filters",
-                      props.filter,
-                      "replace",
-                      apply(props.filter_path, (it) => {
-                        it.active = x;
-                        return it;
-                      }),
-                    ]);
-                  }}
+                  onValueChange={() => toggle(!props.filter_path.active)}
                   color={
                     props.filter_path.active
                       ? colors.custom.red[900]
@@ -2102,9 +2157,18 @@ function FilterPathComponent(props: {
                     marginRight: 6,
                   }}
                 />
-                <Text style={{ color: colors.tailwind.slate[400] }}>
-                  {props.filter_path.label}
-                </Text>
+                <Pressable
+                  onPress={() => toggle(!props.filter_path.active)}
+                  style={{ alignSelf: "center" }}
+                >
+                  <Text
+                    style={{
+                      color: colors.tailwind.slate[400],
+                    }}
+                  >
+                    {props.filter_path.label}
+                  </Text>
+                </Pressable>
               </View>
               <View
                 style={{
