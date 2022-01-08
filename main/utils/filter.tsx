@@ -697,62 +697,76 @@ export function FilterComponent(props: {
                             }
                           });
                           return (
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.id[1] = [op, v1];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.id[1] = [op, [v1, v2]];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                            <View
                               style={{
-                                width: 185,
-                                color: colors.tailwind.slate[400],
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                paddingHorizontal: 0,
+                                paddingVertical: 0,
+                                marginHorizontal: 0,
+                                marginVertical: 0,
                               }}
                             >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
-                              />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
+                              <Picker
+                                selectedValue={selectedOp}
+                                onValueChange={(op, _) => {
+                                  switch (op) {
+                                    case "==":
+                                    case "!=":
+                                    case ">=":
+                                    case "<=":
+                                    case ">":
+                                    case "<": {
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.id[1] = [op, v1];
+                                          return it;
+                                        }),
+                                      ]);
+                                      break;
+                                    }
+                                    case "between":
+                                    case "not_between": {
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.id[1] = [op, [v1, v2]];
+                                          return it;
+                                        }),
+                                      ]);
+                                      break;
+                                    }
+                                  }
+                                  setSelectedOp(op);
+                                }}
+                                dropdownIconColor={colors.tailwind.slate[400]}
+                                style={{
+                                  width: 185,
+                                  color: colors.tailwind.slate[400],
+                                }}
+                              >
+                                <Picker.Item label="equals" value="==" />
+                                <Picker.Item label="not equals" value="!=" />
+                                <Picker.Item
+                                  label="greater or equals"
+                                  value=">="
+                                />
+                                <Picker.Item
+                                  label="less or equals"
+                                  value="<="
+                                />
+                                <Picker.Item label="greater than" value=">" />
+                                <Picker.Item label="less than" value="<" />
+                                <Picker.Item label="between" value="between" />
+                                <Picker.Item
+                                  label="not between"
+                                  value="not_between"
+                                />
+                              </Picker>
+                            </View>
                           );
                         }
                         return <></>;
@@ -969,62 +983,76 @@ export function FilterComponent(props: {
                             }
                           });
                           return (
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.created_at[1] = [op, v1];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.created_at[1] = [op, [v1, v2]];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                            <View
                               style={{
-                                width: 185,
-                                color: colors.tailwind.slate[400],
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                paddingHorizontal: 0,
+                                paddingVertical: 0,
+                                marginHorizontal: 0,
+                                marginVertical: 0,
                               }}
                             >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
-                              />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
+                              <Picker
+                                selectedValue={selectedOp}
+                                onValueChange={(op, _) => {
+                                  switch (op) {
+                                    case "==":
+                                    case "!=":
+                                    case ">=":
+                                    case "<=":
+                                    case ">":
+                                    case "<": {
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.created_at[1] = [op, v1];
+                                          return it;
+                                        }),
+                                      ]);
+                                      break;
+                                    }
+                                    case "between":
+                                    case "not_between": {
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.created_at[1] = [op, [v1, v2]];
+                                          return it;
+                                        }),
+                                      ]);
+                                      break;
+                                    }
+                                  }
+                                  setSelectedOp(op);
+                                }}
+                                dropdownIconColor={colors.tailwind.slate[400]}
+                                style={{
+                                  width: 185,
+                                  color: colors.tailwind.slate[400],
+                                }}
+                              >
+                                <Picker.Item label="equals" value="==" />
+                                <Picker.Item label="not equals" value="!=" />
+                                <Picker.Item
+                                  label="greater or equals"
+                                  value=">="
+                                />
+                                <Picker.Item
+                                  label="less or equals"
+                                  value="<="
+                                />
+                                <Picker.Item label="greater than" value=">" />
+                                <Picker.Item label="less than" value="<" />
+                                <Picker.Item label="between" value="between" />
+                                <Picker.Item
+                                  label="not between"
+                                  value="not_between"
+                                />
+                              </Picker>
+                            </View>
                           );
                         }
                         return <></>;
@@ -1477,62 +1505,76 @@ export function FilterComponent(props: {
                             }
                           });
                           return (
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.updated_at[1] = [op, v1];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.updated_at[1] = [op, [v1, v2]];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                            <View
                               style={{
-                                width: 185,
-                                color: colors.tailwind.slate[400],
+                                borderWidth: 1,
+                                borderRadius: 5,
+                                paddingHorizontal: 0,
+                                paddingVertical: 0,
+                                marginHorizontal: 0,
+                                marginVertical: 0,
                               }}
                             >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
-                              />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
+                              <Picker
+                                selectedValue={selectedOp}
+                                onValueChange={(op, _) => {
+                                  switch (op) {
+                                    case "==":
+                                    case "!=":
+                                    case ">=":
+                                    case "<=":
+                                    case ">":
+                                    case "<": {
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.updated_at[1] = [op, v1];
+                                          return it;
+                                        }),
+                                      ]);
+                                      break;
+                                    }
+                                    case "between":
+                                    case "not_between": {
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.updated_at[1] = [op, [v1, v2]];
+                                          return it;
+                                        }),
+                                      ]);
+                                      break;
+                                    }
+                                  }
+                                  setSelectedOp(op);
+                                }}
+                                dropdownIconColor={colors.tailwind.slate[400]}
+                                style={{
+                                  width: 185,
+                                  color: colors.tailwind.slate[400],
+                                }}
+                              >
+                                <Picker.Item label="equals" value="==" />
+                                <Picker.Item label="not equals" value="!=" />
+                                <Picker.Item
+                                  label="greater or equals"
+                                  value=">="
+                                />
+                                <Picker.Item
+                                  label="less or equals"
+                                  value="<="
+                                />
+                                <Picker.Item label="greater than" value=">" />
+                                <Picker.Item label="less than" value="<" />
+                                <Picker.Item label="between" value="between" />
+                                <Picker.Item
+                                  label="not between"
+                                  value="not_between"
+                                />
+                              </Picker>
+                            </View>
                           );
                         }
                         return <></>;
@@ -2209,71 +2251,88 @@ function FilterPathComponent(props: {
                           }
                         });
                         return (
-                          <Picker
-                            selectedValue={selectedOp}
-                            onValueChange={(op, _) => {
-                              switch (op) {
-                                case "==":
-                                case "!=":
-                                case ">=":
-                                case "<=":
-                                case ">":
-                                case "<":
-                                case "like":
-                                case "glob": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [field_struct_name, [op, v1]];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                                case "between":
-                                case "not_between": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, [v1, v2]],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                              }
-                              setSelectedOp(op);
-                            }}
-                            dropdownIconColor={colors.tailwind.slate[400]}
+                          <View
                             style={{
-                              width: 185,
-                              color: colors.tailwind.slate[400],
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              paddingHorizontal: 0,
+                              paddingVertical: 0,
+                              marginHorizontal: 0,
+                              marginVertical: 0,
                             }}
                           >
-                            <Picker.Item label="match" value="like" />
-                            <Picker.Item
-                              label="match(case sensitive)"
-                              value="glob"
-                            />
-                            <Picker.Item label="equals" value="==" />
-                            <Picker.Item label="not equals" value="!=" />
-                            <Picker.Item label="greater or equals" value=">=" />
-                            <Picker.Item label="less or equals" value="<=" />
-                            <Picker.Item label="greater than" value=">" />
-                            <Picker.Item label="less than" value="<" />
-                            <Picker.Item label="between" value="between" />
-                            <Picker.Item
-                              label="not between"
-                              value="not_between"
-                            />
-                          </Picker>
+                            <Picker
+                              selectedValue={selectedOp}
+                              onValueChange={(op, _) => {
+                                switch (op) {
+                                  case "==":
+                                  case "!=":
+                                  case ">=":
+                                  case "<=":
+                                  case ">":
+                                  case "<":
+                                  case "like":
+                                  case "glob": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, v1],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                  case "between":
+                                  case "not_between": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, [v1, v2]],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                }
+                                setSelectedOp(op);
+                              }}
+                              dropdownIconColor={colors.tailwind.slate[400]}
+                              style={{
+                                width: 185,
+                                color: colors.tailwind.slate[400],
+                              }}
+                            >
+                              <Picker.Item label="match" value="like" />
+                              <Picker.Item
+                                label="match(case sensitive)"
+                                value="glob"
+                              />
+                              <Picker.Item label="equals" value="==" />
+                              <Picker.Item label="not equals" value="!=" />
+                              <Picker.Item
+                                label="greater or equals"
+                                value=">="
+                              />
+                              <Picker.Item label="less or equals" value="<=" />
+                              <Picker.Item label="greater than" value=">" />
+                              <Picker.Item label="less than" value="<" />
+                              <Picker.Item label="between" value="between" />
+                              <Picker.Item
+                                label="not between"
+                                value="not_between"
+                              />
+                            </Picker>
+                          </View>
                         );
                       }
                       return <></>;
@@ -2310,64 +2369,81 @@ function FilterPathComponent(props: {
                           }
                         });
                         return (
-                          <Picker
-                            selectedValue={selectedOp}
-                            onValueChange={(op, _) => {
-                              switch (op) {
-                                case "==":
-                                case "!=":
-                                case ">=":
-                                case "<=":
-                                case ">":
-                                case "<": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [field_struct_name, [op, v1]];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                                case "between":
-                                case "not_between": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, [v1, v2]],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                              }
-                              setSelectedOp(op);
-                            }}
-                            dropdownIconColor={colors.tailwind.slate[400]}
+                          <View
                             style={{
-                              width: 185,
-                              color: colors.tailwind.slate[400],
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              paddingHorizontal: 0,
+                              paddingVertical: 0,
+                              marginHorizontal: 0,
+                              marginVertical: 0,
                             }}
                           >
-                            <Picker.Item label="equals" value="==" />
-                            <Picker.Item label="not equals" value="!=" />
-                            <Picker.Item label="greater or equals" value=">=" />
-                            <Picker.Item label="less or equals" value="<=" />
-                            <Picker.Item label="greater than" value=">" />
-                            <Picker.Item label="less than" value="<" />
-                            <Picker.Item label="between" value="between" />
-                            <Picker.Item
-                              label="not between"
-                              value="not_between"
-                            />
-                          </Picker>
+                            <Picker
+                              selectedValue={selectedOp}
+                              onValueChange={(op, _) => {
+                                switch (op) {
+                                  case "==":
+                                  case "!=":
+                                  case ">=":
+                                  case "<=":
+                                  case ">":
+                                  case "<": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, v1],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                  case "between":
+                                  case "not_between": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, [v1, v2]],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                }
+                                setSelectedOp(op);
+                              }}
+                              dropdownIconColor={colors.tailwind.slate[400]}
+                              style={{
+                                width: 185,
+                                color: colors.tailwind.slate[400],
+                              }}
+                            >
+                              <Picker.Item label="equals" value="==" />
+                              <Picker.Item label="not equals" value="!=" />
+                              <Picker.Item
+                                label="greater or equals"
+                                value=">="
+                              />
+                              <Picker.Item label="less or equals" value="<=" />
+                              <Picker.Item label="greater than" value=">" />
+                              <Picker.Item label="less than" value="<" />
+                              <Picker.Item label="between" value="between" />
+                              <Picker.Item
+                                label="not between"
+                                value="not_between"
+                              />
+                            </Picker>
+                          </View>
                         );
                       }
                       return <></>;
@@ -2376,38 +2452,49 @@ function FilterPathComponent(props: {
                       if (props.filter_path.value[1] !== undefined) {
                         const value = props.filter_path.value[1];
                         return (
-                          <Picker
-                            selectedValue={selectedOp}
-                            onValueChange={(op, _) => {
-                              switch (op) {
-                                case "==":
-                                case "!=": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, value[1]],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                              }
-                              setSelectedOp(op);
-                            }}
-                            dropdownIconColor={colors.tailwind.slate[400]}
+                          <View
                             style={{
-                              width: 185,
-                              color: colors.tailwind.slate[400],
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              paddingHorizontal: 0,
+                              paddingVertical: 0,
+                              marginHorizontal: 0,
+                              marginVertical: 0,
                             }}
                           >
-                            <Picker.Item label="equals" value="==" />
-                            <Picker.Item label="not equals" value="!=" />
-                          </Picker>
+                            <Picker
+                              selectedValue={selectedOp}
+                              onValueChange={(op, _) => {
+                                switch (op) {
+                                  case "==":
+                                  case "!=": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, value[1]],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                }
+                                setSelectedOp(op);
+                              }}
+                              dropdownIconColor={colors.tailwind.slate[400]}
+                              style={{
+                                width: 185,
+                                color: colors.tailwind.slate[400],
+                              }}
+                            >
+                              <Picker.Item label="equals" value="==" />
+                              <Picker.Item label="not equals" value="!=" />
+                            </Picker>
+                          </View>
                         );
                       }
                       return <></>;
@@ -2439,64 +2526,81 @@ function FilterPathComponent(props: {
                           }
                         });
                         return (
-                          <Picker
-                            selectedValue={selectedOp}
-                            onValueChange={(op, _) => {
-                              switch (op) {
-                                case "==":
-                                case "!=":
-                                case ">=":
-                                case "<=":
-                                case ">":
-                                case "<": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [field_struct_name, [op, v1]];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                                case "between":
-                                case "not_between": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, [v1, v2]],
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                              }
-                              setSelectedOp(op);
-                            }}
-                            dropdownIconColor={colors.tailwind.slate[400]}
+                          <View
                             style={{
-                              width: 185,
-                              color: colors.tailwind.slate[400],
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              paddingHorizontal: 0,
+                              paddingVertical: 0,
+                              marginHorizontal: 0,
+                              marginVertical: 0,
                             }}
                           >
-                            <Picker.Item label="equals" value="==" />
-                            <Picker.Item label="not equals" value="!=" />
-                            <Picker.Item label="greater or equals" value=">=" />
-                            <Picker.Item label="less or equals" value="<=" />
-                            <Picker.Item label="greater than" value=">" />
-                            <Picker.Item label="less than" value="<" />
-                            <Picker.Item label="between" value="between" />
-                            <Picker.Item
-                              label="not between"
-                              value="not_between"
-                            />
-                          </Picker>
+                            <Picker
+                              selectedValue={selectedOp}
+                              onValueChange={(op, _) => {
+                                switch (op) {
+                                  case "==":
+                                  case "!=":
+                                  case ">=":
+                                  case "<=":
+                                  case ">":
+                                  case "<": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, v1],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                  case "between":
+                                  case "not_between": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, [v1, v2]],
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                }
+                                setSelectedOp(op);
+                              }}
+                              dropdownIconColor={colors.tailwind.slate[400]}
+                              style={{
+                                width: 185,
+                                color: colors.tailwind.slate[400],
+                              }}
+                            >
+                              <Picker.Item label="equals" value="==" />
+                              <Picker.Item label="not equals" value="!=" />
+                              <Picker.Item
+                                label="greater or equals"
+                                value=">="
+                              />
+                              <Picker.Item label="less or equals" value="<=" />
+                              <Picker.Item label="greater than" value=">" />
+                              <Picker.Item label="less than" value="<" />
+                              <Picker.Item label="between" value="between" />
+                              <Picker.Item
+                                label="not between"
+                                value="not_between"
+                              />
+                            </Picker>
+                          </View>
                         );
                       }
                       return <></>;
@@ -2506,39 +2610,50 @@ function FilterPathComponent(props: {
                         const value = props.filter_path.value[1];
                         const other_struct = props.filter_path.value[2];
                         return (
-                          <Picker
-                            selectedValue={selectedOp}
-                            onValueChange={(op, _) => {
-                              switch (op) {
-                                case "==":
-                                case "!=": {
-                                  props.dispatch([
-                                    "filters",
-                                    props.filter,
-                                    "replace",
-                                    apply(props.filter_path, (it) => {
-                                      it.value = [
-                                        field_struct_name,
-                                        [op, value[1]],
-                                        other_struct,
-                                      ];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                              }
-                              setSelectedOp(op);
-                            }}
-                            dropdownIconColor={colors.tailwind.slate[400]}
+                          <View
                             style={{
-                              width: 185,
-                              color: colors.tailwind.slate[400],
+                              borderWidth: 1,
+                              borderRadius: 5,
+                              paddingHorizontal: 0,
+                              paddingVertical: 0,
+                              marginHorizontal: 0,
+                              marginVertical: 0,
                             }}
                           >
-                            <Picker.Item label="equals" value="==" />
-                            <Picker.Item label="not equals" value="!=" />
-                          </Picker>
+                            <Picker
+                              selectedValue={selectedOp}
+                              onValueChange={(op, _) => {
+                                switch (op) {
+                                  case "==":
+                                  case "!=": {
+                                    props.dispatch([
+                                      "filters",
+                                      props.filter,
+                                      "replace",
+                                      apply(props.filter_path, (it) => {
+                                        it.value = [
+                                          field_struct_name,
+                                          [op, value[1]],
+                                          other_struct,
+                                        ];
+                                        return it;
+                                      }),
+                                    ]);
+                                    break;
+                                  }
+                                }
+                                setSelectedOp(op);
+                              }}
+                              dropdownIconColor={colors.tailwind.slate[400]}
+                              style={{
+                                width: 185,
+                                color: colors.tailwind.slate[400],
+                              }}
+                            >
+                              <Picker.Item label="equals" value="==" />
+                              <Picker.Item label="not equals" value="!=" />
+                            </Picker>
+                          </View>
                         );
                       }
                       return <></>;
