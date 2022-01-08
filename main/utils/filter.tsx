@@ -11,7 +11,7 @@ import { Platform, Pressable } from "react-native";
 import { apply, arrow, is_decimal } from "../../main/utils/prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { ListAction } from "./list";
 import {
@@ -22,6 +22,8 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "../../main/utils/variable";
 import { colors } from "../../main/themed/colors";
+
+// Draw border around op picker
 
 // For fields.tsx, test TextInput for long values of text
 // Also cross button should reset value to default for that key in case of text and decimal fields
@@ -208,26 +210,24 @@ export function SortComponentFields(props: {
             }
           };
           return (
-            <View
+            <Pressable
               key={index}
+              onPress={() => toggle(!active)}
               style={{
+                flex: 1,
+                flexDirection: "row",
                 justifyContent: "flex-start",
                 marginHorizontal: 5,
-                marginVertical: 10,
+                marginVertical: 5,
               }}
             >
-              <Checkbox
-                value={active}
-                onValueChange={() => toggle(!active)}
-                color={active ? colors.custom.red[900] : undefined}
-              />
-              <Pressable
-                onPress={() => toggle(!active)}
-                style={{ paddingLeft: 10 }}
-              >
-                <Text>{filter_path.label}</Text>
-              </Pressable>
-            </View>
+              {active ? (
+                <Ionicons name="radio-button-on" size={24} color="red" />
+              ) : (
+                <Ionicons name="radio-button-off" size={24} color="red" />
+              )}
+              <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+            </Pressable>
           );
         })}
     </BottomSheetScrollView>
@@ -2790,13 +2790,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (typeof value === "string") {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -2806,14 +2803,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -3063,13 +3063,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (typeof value === "string") {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -3079,15 +3076,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -3332,13 +3331,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (typeof value === "string") {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -3348,15 +3344,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -3628,13 +3626,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -3644,14 +3639,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -3924,13 +3922,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -3940,15 +3935,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -4216,13 +4213,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -4232,15 +4226,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -4512,13 +4508,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -4528,14 +4521,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -4808,13 +4804,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -4824,15 +4817,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -5100,13 +5095,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -5116,15 +5108,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -5398,13 +5392,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -5414,14 +5405,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -5698,13 +5692,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -5714,15 +5705,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -5994,13 +5987,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -6010,15 +6000,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -6290,13 +6282,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -6306,14 +6295,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -6588,13 +6580,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -6604,15 +6593,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -6882,13 +6873,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -6898,15 +6886,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -7172,13 +7162,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -7188,14 +7175,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -7462,13 +7452,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -7478,15 +7465,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -7748,13 +7737,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -7764,15 +7750,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -8038,13 +8026,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -8054,14 +8039,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -8328,13 +8316,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -8344,15 +8329,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -8614,13 +8601,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (is_decimal(value)) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -8630,15 +8614,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -8884,13 +8870,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (typeof value === "boolean") {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -8900,14 +8883,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -9170,13 +9156,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (value instanceof Date) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -9186,14 +9169,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -9469,13 +9455,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (value1 instanceof Date) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -9485,15 +9468,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -9764,13 +9749,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (value2 instanceof Date) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -9780,15 +9762,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -10054,13 +10038,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (value instanceof Date) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -10070,14 +10051,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -10352,13 +10336,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (value instanceof Date) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -10368,15 +10349,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -10646,13 +10629,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (value instanceof Date) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -10662,15 +10642,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -10988,13 +10970,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (value instanceof Date) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -11004,14 +10983,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
@@ -11338,13 +11320,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (value instanceof Date) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -11354,15 +11333,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -11684,13 +11665,10 @@ function FilterPathComponent(props: {
                                             {arrow(() => {
                                               if (value instanceof Date) {
                                                 return (
-                                                  <Checkbox
-                                                    value={false}
-                                                    color={
-                                                      false
-                                                        ? colors.custom.red[900]
-                                                        : undefined
-                                                    }
+                                                  <Ionicons
+                                                    name="radio-button-off"
+                                                    size={24}
+                                                    color="red"
                                                   />
                                                 );
                                               } else {
@@ -11700,15 +11678,17 @@ function FilterPathComponent(props: {
                                                     list_item.item.path
                                                   ),
                                                   (active) => {
-                                                    return (
-                                                      <Checkbox
-                                                        value={active}
-                                                        color={
-                                                          active
-                                                            ? colors.custom
-                                                                .red[900]
-                                                            : undefined
-                                                        }
+                                                    return active ? (
+                                                      <Ionicons
+                                                        name="radio-button-on"
+                                                        size={24}
+                                                        color="red"
+                                                      />
+                                                    ) : (
+                                                      <Ionicons
+                                                        name="radio-button-off"
+                                                        size={24}
+                                                        color="red"
                                                       />
                                                     );
                                                   }
@@ -11967,13 +11947,10 @@ function FilterPathComponent(props: {
                                       {arrow(() => {
                                         if (is_decimal(value)) {
                                           return (
-                                            <Checkbox
-                                              value={false}
-                                              color={
-                                                false
-                                                  ? colors.custom.red[900]
-                                                  : undefined
-                                              }
+                                            <Ionicons
+                                              name="radio-button-off"
+                                              size={24}
+                                              color="red"
                                             />
                                           );
                                         } else {
@@ -11983,14 +11960,17 @@ function FilterPathComponent(props: {
                                               list_item.item.path
                                             ),
                                             (active) => {
-                                              return (
-                                                <Checkbox
-                                                  value={active}
-                                                  color={
-                                                    active
-                                                      ? colors.custom.red[900]
-                                                      : undefined
-                                                  }
+                                              return active ? (
+                                                <Ionicons
+                                                  name="radio-button-on"
+                                                  size={24}
+                                                  color="red"
+                                                />
+                                              ) : (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color="red"
                                                 />
                                               );
                                             }
