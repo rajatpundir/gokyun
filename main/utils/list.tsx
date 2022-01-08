@@ -589,7 +589,7 @@ export function List(props: {
                     backgroundColor: colors.custom.red[900],
                   }}
                 >
-                  Add Field
+                  Field++
                 </Text>
               </Pressable>
               <Pressable
