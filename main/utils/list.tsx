@@ -433,7 +433,7 @@ export function List(props: {
           if (!state.reached_end) {
             return <Text style={{ textAlign: "center" }}>Loading...</Text>;
           }
-          return <></>;
+          return <View style={{ marginTop: 5 }} />;
         })}
         horizontal={props.horizontal}
         style={{ marginTop: 5 }}

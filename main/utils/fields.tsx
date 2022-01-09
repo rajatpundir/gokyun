@@ -34,6 +34,11 @@ import { colors } from "../themed/colors";
 import { ListAction } from "../utils/list";
 import { MaterialIcons } from "@expo/vector-icons";
 
+// TODO. Update all components to use TextInput from react-native-paper in write mode
+
+// In write mode, text input will contain labels.
+// In read mode, labels will be beside their values.s
+
 type ComponentProps = {
   mode: "read" | "write";
   struct: Struct;
@@ -44,7 +49,7 @@ type ComponentProps = {
 
 function Str(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -120,7 +125,7 @@ function Str(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -133,12 +138,12 @@ function Str(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function Lstr(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -214,7 +219,7 @@ function Lstr(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -227,12 +232,12 @@ function Lstr(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function Clob(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -308,7 +313,7 @@ function Clob(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -321,12 +326,12 @@ function Clob(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function I_32(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -407,7 +412,7 @@ function I_32(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -420,12 +425,12 @@ function I_32(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function U_32(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -505,7 +510,7 @@ function U_32(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -518,12 +523,12 @@ function U_32(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function I_64(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -604,7 +609,7 @@ function I_64(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -617,12 +622,12 @@ function I_64(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function U_64(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -703,7 +708,7 @@ function U_64(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -716,12 +721,12 @@ function U_64(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function I_Double(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -798,7 +803,7 @@ function I_Double(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -811,12 +816,12 @@ function I_Double(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function U_Double(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -893,7 +898,7 @@ function U_Double(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -906,12 +911,12 @@ function U_Double(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function I_Decimal(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -988,7 +993,7 @@ function I_Decimal(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -1001,12 +1006,12 @@ function I_Decimal(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function U_Decimal(
   props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -1082,7 +1087,7 @@ function U_Decimal(
                 </Pressable>
               );
             }
-            return null;
+            return <></>;
           })}
         </View>
       );
@@ -1095,10 +1100,10 @@ function U_Decimal(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
-function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
+function Bool(props: CheckboxProps & ComponentProps): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   if (value.type === "bool") {
@@ -1128,12 +1133,10 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element | null {
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
-function Date_Field(
-  props: DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+function Date_Field(props: DefaultText["props"] & ComponentProps): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [showPicker, setPicker] = useState(false);
@@ -1178,12 +1181,10 @@ function Date_Field(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
-function Time_Field(
-  props: DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+function Time_Field(props: DefaultText["props"] & ComponentProps): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [showPicker, setPicker] = useState(false);
@@ -1228,12 +1229,12 @@ function Time_Field(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function Timestamp_Field(
   props: DefaultText["props"] & ComponentProps
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [showPicker, setPicker] = useState(false);
@@ -1315,7 +1316,7 @@ function Timestamp_Field(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 function Other_Field(
@@ -1348,7 +1349,7 @@ function Other_Field(
     }) => JSX.Element;
     horizontal?: boolean;
   }
-): JSX.Element | null {
+): JSX.Element {
   const { state, dispatch } = props;
   const value = props.path.path[1][1];
   const navigation = useNavigation();
@@ -1407,13 +1408,13 @@ function Other_Field(
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
-  return null;
+  return <></>;
 }
 
 export function Label(props: {
   state: State;
   path: PathString | string;
-}): JSX.Element | null {
+}): JSX.Element {
   const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
       return [[], props.path];
@@ -1433,7 +1434,7 @@ export function Label(props: {
         </Text>
       );
     }
-    return null;
+    return <></>;
   });
 }
 
@@ -1479,7 +1480,7 @@ export function Field(props: {
           horizontal?: boolean;
         }
       ];
-}): JSX.Element | null {
+}): JSX.Element {
   const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
       return [[], props.path];
@@ -2051,7 +2052,7 @@ export function Field(props: {
         }
       }
     }
-    return null;
+    return <></>;
   });
 }
 
@@ -2061,7 +2062,7 @@ export function Check(
     name: string;
     message: string;
   }
-): JSX.Element | null {
+): JSX.Element {
   const { state, style, ...otherProps } = props;
   if (props.name in state.checks) {
     const result = state.checks[props.name] as Result<boolean>;
@@ -2075,7 +2076,7 @@ export function Check(
       }
     }
   }
-  return null;
+  return <></>;
 }
 
 function get_upscaled_labels(
