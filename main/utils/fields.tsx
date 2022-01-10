@@ -1328,14 +1328,14 @@ function Other_Field(
       (props: {
         selected: number;
         variable: Variable;
-        disptach_values: (variable: Variable) => void;
+        update_parent_values: (variable: Variable) => void;
       }) => JSX.Element,
       Record<
         string,
         (props: {
           selected: number;
           variable: Variable;
-          disptach_values: (variable: Variable) => void;
+          update_parent_values: (variable: Variable) => void;
         }) => JSX.Element
       >
     ];
@@ -1383,7 +1383,7 @@ function Other_Field(
                 ],
                 limit: props.limit,
                 render_list_element: props.render_list_element,
-                disptach_values: (variable: Variable) => {
+                update_parent_values: (variable: Variable) => {
                   dispatch([
                     "values",
                     get_upscaled_paths(
@@ -1458,14 +1458,14 @@ export function Field(props: {
             (props: {
               selected: number;
               variable: Variable;
-              disptach_values: (variable: Variable) => void;
+              update_parent_values: (variable: Variable) => void;
             }) => JSX.Element,
             Record<
               string,
               (props: {
                 selected: number;
                 variable: Variable;
-                disptach_values: (variable: Variable) => void;
+                update_parent_values: (variable: Variable) => void;
               }) => JSX.Element
             >
           ];

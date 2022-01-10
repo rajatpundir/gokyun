@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Pressable, ScrollView } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
@@ -47,6 +47,123 @@ import { useNavigation } from "@react-navigation/native";
 // Complete testing Test
 
 // Get working on creating actual app components for real by fifth of Jan!
+
+type Y = {
+  struct: Struct;
+  id: Decimal;
+  extensions: State["extensions"];
+  labels: State["labels"];
+  higher_structs: State["higher_structs"];
+  user_paths: State["user_paths"];
+  borrows: State["borrows"];
+  create: (props: {
+    struct: Struct;
+    state: State;
+    dispatch: React.Dispatch<Action>;
+  }) => JSX.Element;
+  update: (props: {
+    struct: Struct;
+    state: State;
+    dispatch: React.Dispatch<Action>;
+  }) => JSX.Element;
+  show: (props: {
+    struct: Struct;
+    state: State;
+    dispatch: React.Dispatch<Action>;
+  }) => JSX.Element;
+};
+
+function useX(props: Y) {
+  const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
+    id: new Decimal(props.id),
+    active: true,
+    created_at: new Date(),
+    updated_at: new Date(),
+    values: HashSet.of(),
+    init_values: HashSet.of(),
+    mode: new Decimal(props.id).equals(-1) ? "write" : "read",
+    event_trigger: 0,
+    check_trigger: 0,
+    checks: {},
+    extensions: props.extensions,
+    higher_structs: props.higher_structs,
+    labels: props.labels,
+    user_paths: props.user_paths,
+    borrows: props.borrows,
+  });
+  useEffect(() => {
+    const update_values = async () => {
+      if (state.id.equals(-1)) {
+        dispatch([
+          "variable",
+          new Variable(
+            props.struct,
+            new Decimal(-1),
+            state.active,
+            state.created_at,
+            state.updated_at,
+            get_creation_paths(props.struct, state)
+          ),
+        ]);
+      } else {
+        const result = await get_variable(
+          props.struct,
+          true,
+          undefined,
+          state.id as Decimal,
+          get_filter_paths(
+            props.struct,
+            state.labels as Array<[string, PathString]>,
+            state.user_paths as Array<PathString>,
+            state.borrows as Array<string>
+          )
+        );
+        if (unwrap(result)) {
+          dispatch([
+            "variable",
+            apply(result.value, (it) => {
+              it.paths = get_writeable_paths(props.struct, state, it.paths);
+              return it;
+            }),
+          ]);
+        }
+      }
+    };
+    update_values();
+  }, []);
+  useEffect(() => {
+    run_triggers(props.struct, state, dispatch);
+  }, [state.event_trigger]);
+  useEffect(() => {
+    compute_checks(props.struct, state, dispatch);
+  }, [state.check_trigger]);
+  const jsx: JSX.Element = arrow(() => {
+    if (state.mode === "write") {
+      if (state.id.equals(-1)) {
+        return (
+          <props.create
+            struct={props.struct}
+            state={state}
+            dispatch={dispatch}
+          />
+        );
+      } else {
+        return (
+          <props.update
+            struct={props.struct}
+            state={state}
+            dispatch={dispatch}
+          />
+        );
+      }
+    } else {
+      return (
+        <props.show struct={props.struct} state={state} dispatch={dispatch} />
+      );
+    }
+  });
+  return [state, dispatch, jsx];
+}
 
 export default function Component(
   props: RootNavigatorProps<"Test">
@@ -131,7 +248,7 @@ export default function Component(
     borrows: [],
     checks: {},
   });
-  React.useEffect(() => {
+  useEffect(() => {
     const set_title = async (title: string) => {
       props.navigation.setOptions({ headerTitle: title });
     };
@@ -146,6 +263,8 @@ export default function Component(
         set_title("Test");
       }
     }
+  }, []);
+  useEffect(() => {
     const update_values = async () => {
       if (unwrap(struct)) {
         log_permissions(
@@ -234,7 +353,7 @@ export default function Component(
     };
     update_values();
   }, [state2.mode, state2.id]);
-  React.useEffect(() => {
+  useEffect(() => {
     // state is getting embedded so state.values is necessary dependency for the effect
     if (unwrap(struct)) {
       dispatch2([
@@ -255,24 +374,24 @@ export default function Component(
       ]);
     }
   }, [state.values]);
-  React.useEffect(() => {
+  useEffect(() => {
     if (unwrap(struct)) {
       run_triggers(struct.value, state, dispatch);
       dispatch2(["event_trigger"]);
     }
   }, [state.event_trigger]);
-  React.useEffect(() => {
+  useEffect(() => {
     if (unwrap(struct2)) {
       run_triggers(struct2.value, state2, dispatch2);
     }
   }, [state2.event_trigger]);
-  React.useEffect(() => {
+  useEffect(() => {
     if (unwrap(struct)) {
       compute_checks(struct.value, state, dispatch);
       dispatch2(["check_trigger"]);
     }
   }, [state.check_trigger]);
-  React.useEffect(() => {
+  useEffect(() => {
     if (unwrap(struct2)) {
       compute_checks(struct2.value, state2, dispatch2);
     }
@@ -454,7 +573,7 @@ function CreateComponent(props: {
                 (props: {
                   selected: number;
                   variable: Variable;
-                  disptach_values: (variable: Variable) => void;
+                  update_parent_values: (variable: Variable) => void;
                 }) => {
                   const struct_name = "User";
                   const struct = get_struct(struct_name);
@@ -491,12 +610,12 @@ function CreateComponent(props: {
                       ),
                     ]);
                   }, [props.variable.struct, props.variable.paths]);
-                  React.useEffect(() => {
+                  useEffect(() => {
                     if (unwrap(struct)) {
                       run_triggers(struct.value, state, dispatch);
                     }
                   }, [state.event_trigger]);
-                  React.useEffect(() => {
+                  useEffect(() => {
                     if (unwrap(struct)) {
                       compute_checks(struct.value, state, dispatch);
                     }
@@ -596,7 +715,7 @@ function CreateComponent(props: {
                             </View>
                             <Pressable
                               onPress={() =>
-                                props.disptach_values(props.variable)
+                                props.update_parent_values(props.variable)
                               }
                               style={{
                                 alignSelf: "flex-end",

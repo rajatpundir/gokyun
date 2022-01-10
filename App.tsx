@@ -56,18 +56,18 @@ export type NavigatorParams = {
       (props: {
         selected: number;
         variable: Variable;
-        disptach_values: (variable: Variable) => void;
+        update_parent_values: (variable: Variable) => void;
       }) => JSX.Element,
       Record<
         string,
         (props: {
           selected: number;
           variable: Variable;
-          disptach_values: (variable: Variable) => void;
+          update_parent_values: (variable: Variable) => void;
         }) => JSX.Element
       >
     ];
-    disptach_values: (variable: Variable) => void;
+    update_parent_values: (variable: Variable) => void;
     render_custom_fields: (props: {
       filters: HashSet<Filter>;
       dispatch: React.Dispatch<ListAction>;

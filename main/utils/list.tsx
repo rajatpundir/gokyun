@@ -304,18 +304,18 @@ export function List(props: {
     (props: {
       selected: number;
       variable: Variable;
-      disptach_values: (variable: Variable) => void;
+      update_parent_values: (variable: Variable) => void;
     }) => JSX.Element,
     Record<
       string,
       (props: {
         selected: number;
         variable: Variable;
-        disptach_values: (variable: Variable) => void;
+        update_parent_values: (variable: Variable) => void;
       }) => JSX.Element
     >
   ];
-  disptach_values: (variable: Variable) => void;
+  update_parent_values: (variable: Variable) => void;
   render_custom_fields: (props: {
     filters: HashSet<Filter>;
     dispatch: React.Dispatch<ListAction>;
@@ -420,7 +420,7 @@ export function List(props: {
             <ElementJSX
               selected={props.selected}
               variable={list_item.item}
-              disptach_values={props.disptach_values}
+              update_parent_values={props.update_parent_values}
             />
           );
         }}
@@ -826,7 +826,7 @@ export function SelectionModal(
       filters={props.route.params.filters}
       limit={props.route.params.limit}
       render_list_element={props.route.params.render_list_element}
-      disptach_values={props.route.params.disptach_values}
+      update_parent_values={props.route.params.update_parent_values}
       render_custom_fields={props.route.params.render_custom_fields}
       horizontal={props.route.params.horizontal}
     />

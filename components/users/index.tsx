@@ -74,7 +74,7 @@ export default function Component(
                 (props: {
                   selected: number;
                   variable: Variable;
-                  disptach_values: (variable: Variable) => void;
+                  update_parent_values: (variable: Variable) => void;
                 }) => {
                   const struct_name = "User";
                   const struct = get_struct(struct_name);
@@ -222,7 +222,7 @@ export default function Component(
                 },
                 {},
               ]}
-              disptach_values={() => {}}
+              update_parent_values={() => {}}
               render_custom_fields={(props: {
                 filters: HashSet<Filter>;
                 dispatch: React.Dispatch<ListAction>;

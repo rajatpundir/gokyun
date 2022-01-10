@@ -6,17 +6,17 @@ type A = Record<
     create: (props: {
       selected: number;
       variable: Variable;
-      disptach_values: (variable: Variable) => void;
+      update_parent_values: (variable: Variable) => void;
     }) => JSX.Element;
     update: (props: {
       selected: number;
       variable: Variable;
-      disptach_values: (variable: Variable) => void;
+      update_parent_values: (variable: Variable) => void;
     }) => JSX.Element;
     show: (props: {
       selected: number;
       variable: Variable;
-      disptach_values: (variable: Variable) => void;
+      update_parent_values: (variable: Variable) => void;
     }) => JSX.Element;
   }
 >;
@@ -38,5 +38,5 @@ type B = Record<string, A>;
 // (props: {
 //     variable: Variable;
 //     selected: number;
-//     disptach_values: (variable: Variable) => void;
+//     update_parent_values: (variable: Variable) => void;
 //   }) => JSX.Element
