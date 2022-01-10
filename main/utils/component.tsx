@@ -244,7 +244,8 @@ export function SearchBar(props: {
           paddingVertical: 2,
           paddingHorizontal: 10,
           marginHorizontal: 20,
-          marginBottom: 8,
+          marginBottom: 10,
+          backgroundColor: colors.custom.black[900],
         }}
       >
         <Feather

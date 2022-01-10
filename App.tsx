@@ -111,38 +111,42 @@ export default function App() {
                 theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
               >
                 <Stack.Navigator>
-                  <Stack.Screen
-                    name="Main"
-                    component={Navigator}
-                    options={{ headerShown: false, animation: "none" }}
-                  />
-                  <Stack.Screen
-                    name="SelectionModal"
-                    component={SelectionModal}
-                    options={{
-                      title: "Select variable",
-                      headerStyle: {
-                        backgroundColor: colors.custom.black[900],
-                      },
-                      headerTintColor: colors.tailwind.slate[200],
-                    }}
-                  />
-                  <Stack.Screen
-                    name="Test"
-                    component={Test}
-                    options={{
-                      title: "Test",
-                      headerStyle: {
-                        backgroundColor: colors.custom.black[900],
-                      },
-                      headerTintColor: colors.tailwind.slate[200],
-                    }}
-                  />
-                  <Stack.Screen
-                    name="NotFound"
-                    component={NotFoundScreen}
-                    options={{ title: "Oops!" }}
-                  />
+                  <Stack.Group>
+                    <Stack.Screen
+                      name="Main"
+                      component={Navigator}
+                      options={{ headerShown: false, animation: "none" }}
+                    />
+                  </Stack.Group>
+                  <Stack.Group screenOptions={{ presentation: "modal" }}>
+                    <Stack.Screen
+                      name="SelectionModal"
+                      component={SelectionModal}
+                      options={{
+                        title: "Select variable",
+                        headerStyle: {
+                          backgroundColor: colors.custom.black[900],
+                        },
+                        headerTintColor: colors.tailwind.slate[200],
+                      }}
+                    />
+                    <Stack.Screen
+                      name="Test"
+                      component={Test}
+                      options={{
+                        title: "Test",
+                        headerStyle: {
+                          backgroundColor: colors.custom.black[900],
+                        },
+                        headerTintColor: colors.tailwind.slate[200],
+                      }}
+                    />
+                    <Stack.Screen
+                      name="NotFound"
+                      component={NotFoundScreen}
+                      options={{ title: "Oops!" }}
+                    />
+                  </Stack.Group>
                 </Stack.Navigator>
               </NavigationContainer>
               <StatusBar />

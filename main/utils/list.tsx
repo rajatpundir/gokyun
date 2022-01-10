@@ -386,7 +386,12 @@ export function List(props: {
       style={{
         flex: 1,
         flexDirection: "column",
+        flexGrow: 1,
         backgroundColor: colors.custom.black[900],
+        paddingHorizontal: 0,
+        paddingVertical: 0,
+        marginHorizontal: 0,
+        marginVertical: 0,
       }}
     >
       {props.render_custom_fields({
@@ -441,7 +446,7 @@ export function List(props: {
           return <View style={{ marginTop: 5 }} />;
         })}
         horizontal={props.horizontal}
-        style={{ marginTop: 5 }}
+        style={{}}
       />
 
       <Portal>
