@@ -16,6 +16,31 @@ import {
   compute_checks,
 } from "./commons";
 
+export type ComponentViews = Record<
+  string,
+  {
+    create: (props: {
+      struct: Struct;
+      state: State;
+      dispatch: React.Dispatch<Action>;
+    }) => JSX.Element;
+    update: (props: {
+      struct: Struct;
+      state: State;
+      dispatch: React.Dispatch<Action>;
+      selected: boolean;
+      update_parent_values: () => void;
+    }) => JSX.Element;
+    show: (props: {
+      struct: Struct;
+      state: State;
+      dispatch: React.Dispatch<Action>;
+      selected: boolean;
+      update_parent_values: () => void;
+    }) => JSX.Element;
+  }
+>;
+
 export function useComponent(props: {
   struct: Struct;
   id: Decimal;
@@ -29,27 +54,9 @@ export function useComponent(props: {
   higher_structs: State["higher_structs"];
   user_paths: State["user_paths"];
   borrows: State["borrows"];
-  create: (props: {
-    struct: Struct;
-    state: State;
-    dispatch: React.Dispatch<Action>;
-    selected: boolean;
-    update_parent_values: () => void;
-  }) => JSX.Element;
-  update: (props: {
-    struct: Struct;
-    state: State;
-    dispatch: React.Dispatch<Action>;
-    selected: boolean;
-    update_parent_values: () => void;
-  }) => JSX.Element;
-  show: (props: {
-    struct: Struct;
-    state: State;
-    dispatch: React.Dispatch<Action>;
-    selected: boolean;
-    update_parent_values: () => void;
-  }) => JSX.Element;
+  create: ComponentViews[string]["create"];
+  update: ComponentViews[string]["update"];
+  show: ComponentViews[string]["show"];
   selected?: boolean;
   update_parent_values?: () => void;
 }): [State, React.Dispatch<Action>, JSX.Element] {
@@ -124,10 +131,6 @@ export function useComponent(props: {
             struct={props.struct}
             state={state}
             dispatch={dispatch}
-            selected={!!props.selected}
-            update_parent_values={
-              props.update_parent_values ? props.update_parent_values : () => {}
-            }
           />
         );
       } else {

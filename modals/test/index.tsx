@@ -3,13 +3,9 @@ import { Pressable, ScrollView } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View, Text, TextInput } from "../../main/themed";
-import { useImmerReducer } from "use-immer";
 import {
   State,
   Action,
-  reducer,
-  run_triggers,
-  compute_checks,
   get_path,
   mark_trigger_dependencies,
 } from "../../main/utils/commons";
@@ -20,7 +16,6 @@ import { Filter, FilterPath, replace_variable } from "../../main/utils/db";
 import {
   compare_paths,
   Path,
-  PathString,
   Struct,
   Variable,
 } from "../../main/utils/variable";
@@ -31,7 +26,7 @@ import { colors } from "../../main/themed/colors";
 import { ListAction } from "../../main/utils/list";
 import { useNavigation } from "@react-navigation/native";
 import { useComponent } from "../../main/utils/component";
-import { render } from "mustache";
+import { views } from "../../views";
 
 // Create, Read, Update, Delete
 
@@ -302,121 +297,6 @@ function CreateComponent(props: {
                   selected: boolean;
                   update_parent_values: () => void;
                 }) => {
-                  const render_jsx = (it: {
-                    struct: Struct;
-                    state: State;
-                    dispatch: React.Dispatch<Action>;
-                    selected: boolean;
-                    update_parent_values: () => void;
-                  }) => {
-                    if (!props.variable.id.equals(-1) && props.selected) {
-                      return (
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            borderRadius: 5,
-                            paddingVertical: 5,
-                            marginVertical: 5,
-                            backgroundColor: colors.tailwind.slate[800],
-                            borderWidth: 1,
-                          }}
-                        >
-                          <View>
-                            <Text>Unique ID</Text>
-                            <Text>{state.id.toString()}</Text>
-                          </View>
-                          <View>
-                            <Text>Created</Text>
-                            <Text>{state.created_at.toString()}</Text>
-                          </View>
-                          <View>
-                            <Text>Updated</Text>
-                            <Text>{state.updated_at.toString()}</Text>
-                          </View>
-                          <View>
-                            <Label {...it} path={"nickname"} />
-                            <Field {...it} path={"nickname"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"knows_english"} />
-                            <Field {...it} path={"knows_english"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"mobile"} />
-                            <Field {...it} path={"mobile"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"product_count"} />
-                            <Field {...it} path={"product_count"} />
-                          </View>
-                        </View>
-                      );
-                    } else {
-                      return (
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            borderRadius: 5,
-                            paddingVertical: 5,
-                            marginVertical: 5,
-                            backgroundColor: colors.tailwind.slate[900],
-                          }}
-                        >
-                          <View>
-                            <Text>Unique ID</Text>
-                            <Text>{state.id.toString()}</Text>
-                          </View>
-                          <View>
-                            <Text>Created</Text>
-                            <Text>{state.created_at.toString()}</Text>
-                          </View>
-                          <View>
-                            <Text>Updated</Text>
-                            <Text>{state.updated_at.toString()}</Text>
-                          </View>
-                          <View>
-                            <Label {...it} path={"nickname"} />
-                            <Field {...it} path={"nickname"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"knows_english"} />
-                            <Field {...it} path={"knows_english"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"mobile"} />
-                            <Field {...it} path={"mobile"} />
-                          </View>
-                          <View>
-                            <Label {...it} path={"product_count"} />
-                            <Field {...it} path={"product_count"} />
-                          </View>
-                          <Pressable
-                            onPress={it.update_parent_values}
-                            style={{
-                              alignSelf: "flex-end",
-                              paddingVertical: 10,
-                              paddingRight: 5,
-                            }}
-                          >
-                            <Text
-                              style={{
-                                backgroundColor: colors.tailwind.slate[700],
-                                paddingHorizontal: 6,
-                                paddingVertical: 2,
-                                fontWeight: "bold",
-                                borderRadius: 2,
-                              }}
-                            >
-                              OK
-                            </Text>
-                          </Pressable>
-                        </View>
-                      );
-                    }
-                  };
-
                   const [state, dispatch, jsx] = useComponent({
                     struct: props.struct,
                     id: props.variable.id,
@@ -431,9 +311,9 @@ function CreateComponent(props: {
                     higher_structs: [],
                     user_paths: [],
                     borrows: [],
-                    create: render_jsx,
-                    update: render_jsx,
-                    show: render_jsx,
+                    create: views.User["Default"].create,
+                    update: views.User["Default"].update,
+                    show: views.User["Default"].show,
                   });
 
                   useEffect(() => {
