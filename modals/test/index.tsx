@@ -314,9 +314,12 @@ function CreateComponent(props: {
                     create: views.User["Default"].create,
                     update: views.User["Default"].update,
                     show: views.User["Default"].show,
+                    selected: props.selected,
+                    update_parent_values: props.update_parent_values,
                   });
-
                   useEffect(() => {
+                    // TODO. If values are overwritten with init_values then need to mark trigger dependencies again
+
                     // Mark triggers, checks, etc
                     // Writeable fields would already have been correctly marked
                     dispatch([

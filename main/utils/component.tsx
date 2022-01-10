@@ -92,26 +92,28 @@ export function useComponent(props: {
           ),
         ]);
       } else {
-        const result = await get_variable(
-          props.struct,
-          true,
-          undefined,
-          state.id as Decimal,
-          get_filter_paths(
+        if (state.init_values.length() === 0) {
+          const result = await get_variable(
             props.struct,
-            state.labels as Array<[string, PathString]>,
-            state.user_paths as Array<PathString>,
-            state.borrows as Array<string>
-          )
-        );
-        if (unwrap(result)) {
-          dispatch([
-            "variable",
-            apply(result.value, (it) => {
-              it.paths = get_writeable_paths(props.struct, state, it.paths);
-              return it;
-            }),
-          ]);
+            true,
+            undefined,
+            state.id as Decimal,
+            get_filter_paths(
+              props.struct,
+              state.labels as Array<[string, PathString]>,
+              state.user_paths as Array<PathString>,
+              state.borrows as Array<string>
+            )
+          );
+          if (unwrap(result)) {
+            dispatch([
+              "variable",
+              apply(result.value, (it) => {
+                it.paths = get_writeable_paths(props.struct, state, it.paths);
+                return it;
+              }),
+            ]);
+          }
         }
       }
     };
