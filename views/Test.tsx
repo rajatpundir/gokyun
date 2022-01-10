@@ -99,8 +99,16 @@ export default {
               options={[
                 "other",
                 {
-                  limit: new Decimal(10),
                   title: "Select User",
+                  limit: new Decimal(10),
+                  user_paths: [],
+                  borrows: [],
+                  labels: [
+                    ["Nickname", [[], "nickname"]],
+                    ["Knows english", [[], "knows_english"]],
+                    ["Mobile", [[], "mobile"]],
+                    ["Product Count", [[], "product_count"]],
+                  ],
                   element: arrow(() => {
                     const result = get_path(props.state, [[], "user"]);
                     if (unwrap(result)) {
@@ -143,12 +151,6 @@ export default {
                     }
                     return <></>;
                   }),
-                  labels: [
-                    ["Nickname", [[], "nickname"]],
-                    ["Knows english", [[], "knows_english"]],
-                    ["Mobile", [[], "mobile"]],
-                    ["Product Count", [[], "product_count"]],
-                  ],
                   render_list_element: [
                     (props) => (
                       <OtherComponent {...props} view={views.User["Default"]} />

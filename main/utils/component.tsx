@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variable } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
@@ -10,9 +10,7 @@ import {
   Action,
   reducer,
   get_filter_paths,
-  mark_trigger_dependencies,
   get_creation_paths,
-  get_writeable_paths,
   run_triggers,
   compute_checks,
 } from "./commons";
@@ -111,13 +109,7 @@ export function useComponent(props: {
             )
           );
           if (unwrap(result)) {
-            dispatch([
-              "variable",
-              apply(result.value, (it) => {
-                it.paths = get_writeable_paths(props.struct, state, it.paths);
-                return it;
-              }),
-            ]);
+            dispatch(["variable", result.value]);
           }
         }
       }
@@ -172,6 +164,8 @@ export function useComponent(props: {
 
 export function useOtherComponent(props: {
   struct: Struct;
+  user_paths: Array<PathString>;
+  borrows: Array<string>;
   variable: Variable;
   selected: boolean;
   update_parent_values: () => void;
@@ -186,36 +180,25 @@ export function useOtherComponent(props: {
     values: props.variable.paths,
     init_values: props.variable.paths,
     extensions: {},
-    // Labels received from above already exist on values
-    labels: [],
     higher_structs: [],
-    user_paths: [],
-    borrows: [],
+    labels: props.variable.paths
+      .toArray()
+      .map((v) => [v.label, [v.path[0].map((x) => x[0]), v.path[1][0]]]),
+    user_paths: props.user_paths,
+    borrows: props.borrows,
     create: props.view.create,
     update: props.view.update,
     show: props.view.show,
     selected: props.selected,
     update_parent_values: props.update_parent_values,
   });
-  useEffect(() => {
-    // TODO. If values are overwritten with init_values then need to mark trigger dependencies again
-
-    // Mark triggers, checks, etc
-    // Writeable fields would already have been correctly marked
-    dispatch([
-      "values",
-      mark_trigger_dependencies(
-        props.struct,
-        state.values as HashSet<Path>,
-        state
-      ),
-    ]);
-  }, [props.struct, props.variable.paths]);
   return [state, dispatch, jsx];
 }
 
 export function OtherComponent(props: {
   struct: Struct;
+  user_paths: Array<PathString>;
+  borrows: Array<string>;
   variable: Variable;
   selected: boolean;
   update_parent_values: () => void;

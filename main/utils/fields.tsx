@@ -36,8 +36,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
 
-// In write mode, text input will contain labels.
-// In read mode, labels will be beside their values.s
+// In write mode, text input will contain labels
+// In read mode, labels will be beside their values
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -1322,11 +1322,15 @@ function Timestamp_Field(
 function Other_Field(
   props: ComponentProps & {
     title: string;
+    user_paths: Array<PathString>;
+    borrows: Array<string>;
     labels: Immutable<Array<[string, PathString]>>;
     element: JSX.Element;
     render_list_element: [
       (props: {
         struct: Struct;
+        user_paths: Array<PathString>;
+        borrows: Array<string>;
         variable: Variable;
         selected: boolean;
         update_parent_values: () => void;
@@ -1335,6 +1339,8 @@ function Other_Field(
         string,
         (props: {
           struct: Struct;
+          user_paths: Array<PathString>;
+          borrows: Array<string>;
           variable: Variable;
           selected: boolean;
           update_parent_values: () => void;
@@ -1367,6 +1373,8 @@ function Other_Field(
                 title: props.title,
                 selected: value.value,
                 struct: struct.value,
+                user_paths: props.user_paths,
+                borrows: props.borrows,
                 active: true,
                 level: undefined,
                 filters: [
@@ -1455,11 +1463,15 @@ export function Field(props: {
         "other",
         {
           title: string;
+          user_paths: Array<PathString>;
+          borrows: Array<string>;
           labels: Immutable<Array<[string, PathString]>>;
           element: JSX.Element;
           render_list_element: [
             (props: {
               struct: Struct;
+              user_paths: Array<PathString>;
+              borrows: Array<string>;
               variable: Variable;
               selected: boolean;
               update_parent_values: () => void;
@@ -1468,6 +1480,8 @@ export function Field(props: {
               string,
               (props: {
                 struct: Struct;
+                user_paths: Array<PathString>;
+                borrows: Array<string>;
                 variable: Variable;
                 selected: boolean;
                 update_parent_values: () => void;
@@ -2044,6 +2058,8 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 title={props.options[1].title}
+                user_paths={props.options[1].user_paths}
+                borrows={props.options[1].borrows}
                 labels={props.options[1].labels}
                 element={props.options[1].element}
                 render_list_element={props.options[1].render_list_element}

@@ -3,7 +3,7 @@ import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
-import { Struct, Variable } from "./variable";
+import { PathString, Struct, Variable } from "./variable";
 import { View, Text } from "../themed";
 import Decimal from "decimal.js";
 import { ListRenderItemInfo, Pressable } from "react-native";
@@ -11,7 +11,6 @@ import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { colors } from "../themed/colors";
 import { NavigatorProps as RootNavigatorProps } from "../../App";
-import { Portal } from "@gorhom/portal";
 import {
   BottomSheetFlatList,
   BottomSheetModal,
@@ -20,6 +19,7 @@ import {
 import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
+import { Portal } from "@gorhom/portal";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -298,6 +298,8 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
 export function List(props: {
   selected: Decimal;
   struct: Struct;
+  user_paths: Array<PathString>;
+  borrows: Array<string>;
   active: boolean;
   level: Decimal | undefined;
   filters: [Filter, HashSet<Filter>];
@@ -305,6 +307,8 @@ export function List(props: {
   render_list_element: [
     (props: {
       struct: Struct;
+      user_paths: Array<PathString>;
+      borrows: Array<string>;
       variable: Variable;
       selected: boolean;
       update_parent_values: () => void;
@@ -313,6 +317,8 @@ export function List(props: {
       string,
       (props: {
         struct: Struct;
+        user_paths: Array<PathString>;
+        borrows: Array<string>;
         variable: Variable;
         selected: boolean;
         update_parent_values: () => void;
@@ -395,6 +401,8 @@ export function List(props: {
       return (
         <ElementJSX
           struct={state.struct}
+          user_paths={props.user_paths}
+          borrows={props.borrows}
           variable={list_item.item}
           selected={list_item.item.id.equals(props.selected)}
           update_parent_values={() =>
@@ -481,7 +489,6 @@ export function List(props: {
             borderColor: colors.tailwind.gray[500],
             borderWidth: 1,
           }}
-          enablePanDownToClose={true}
         >
           <View
             style={{
@@ -854,6 +861,8 @@ export function SelectionModal(
     <List
       selected={props.route.params.selected}
       struct={props.route.params.struct}
+      user_paths={props.route.params.user_paths}
+      borrows={props.route.params.borrows}
       active={props.route.params.active}
       level={props.route.params.level}
       filters={props.route.params.filters}

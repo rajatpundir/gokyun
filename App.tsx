@@ -28,7 +28,7 @@ import NotFoundScreen from "./main/NotFoundScreen";
 import { SelectionModal } from "./main/utils/list";
 import { ListAction } from "./main/utils/list";
 
-import { Struct, Variable } from "./main/utils/variable";
+import { PathString, Struct, Variable } from "./main/utils/variable";
 
 import Test from "./modals/test";
 
@@ -47,6 +47,8 @@ export type NavigatorParams = {
     title: string;
     selected: Decimal;
     struct: Struct;
+    user_paths: Array<PathString>;
+    borrows: Array<string>;
     active: boolean;
     level: Decimal | undefined;
     filters: [Filter, HashSet<Filter>];
@@ -54,6 +56,8 @@ export type NavigatorParams = {
     render_list_element: [
       (props: {
         struct: Struct;
+        user_paths: Array<PathString>;
+        borrows: Array<string>;
         variable: Variable;
         selected: boolean;
         update_parent_values: () => void;
@@ -62,6 +66,8 @@ export type NavigatorParams = {
         string,
         (props: {
           struct: Struct;
+          user_paths: Array<PathString>;
+          borrows: Array<string>;
           variable: Variable;
           selected: boolean;
           update_parent_values: () => void;

@@ -154,8 +154,12 @@ export function reducer(state: Draft<State>, action: Action) {
       state.active = action[1].active;
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
-      state.values = action[1].paths;
-      state.init_values = action[1].paths;
+      state.values = get_writeable_paths(
+        action[1].struct,
+        state,
+        action[1].paths
+      );
+      state.init_values = state.values;
       state.event_trigger += 1;
       state.check_trigger += 1;
       break;
