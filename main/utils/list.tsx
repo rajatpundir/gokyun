@@ -6,7 +6,7 @@ import { Filter, FilterPath, get_variables } from "./db";
 import { Struct, Variable } from "./variable";
 import { View, Text } from "../themed";
 import Decimal from "decimal.js";
-import { Pressable } from "react-native";
+import { ListRenderItemInfo, Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { colors } from "../themed/colors";
@@ -382,6 +382,40 @@ export function List(props: {
   const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
   const bsm_filters_ref = useRef<BottomSheetModal>(null);
 
+  const renderItem = useCallback(
+    (list_item: ListRenderItemInfo<Variable>) => {
+      const ElementJSX = arrow(() => {
+        if (state.layout in props.render_list_element[1]) {
+          return props.render_list_element[1][state.layout];
+        }
+        return props.render_list_element[0];
+      });
+      return (
+        <ElementJSX
+          struct={state.struct}
+          variable={list_item.item}
+          selected={list_item.item.id.equals(props.selected)}
+          update_parent_values={() =>
+            props.update_parent_values(list_item.item)
+          }
+        />
+      );
+    },
+    [state.struct, state.layout, props.selected]
+  );
+
+  const keyExtractor = useCallback(
+    (list_item: Variable) => list_item.id.valueOf(),
+    []
+  );
+
+  const ListFooterComponent = useCallback(() => {
+    if (!state.reached_end) {
+      return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+    }
+    return <View style={{ marginTop: 5 }} />;
+  }, [state.reached_end]);
+
   return (
     <View
       style={{
@@ -401,7 +435,11 @@ export function List(props: {
         dispatch: dispatch,
         show_views: [
           ({ element }: { element: JSX.Element }) => (
-            <Pressable onPress={() => bsm_view_ref.current?.present()}>
+            <Pressable
+              onPress={() => {
+                bsm_view_ref.current?.present();
+              }}
+            >
               {element}
             </Pressable>
           ),
@@ -421,37 +459,14 @@ export function List(props: {
 
       <FlatList
         data={state.variables}
-        renderItem={(list_item) => {
-          const ElementJSX = arrow(() => {
-            if (state.layout in props.render_list_element[1]) {
-              return props.render_list_element[1][state.layout];
-            }
-            return props.render_list_element[0];
-          });
-          return (
-            <ElementJSX
-              struct={state.struct}
-              variable={list_item.item}
-              selected={list_item.item.id.equals(props.selected)}
-              update_parent_values={() =>
-                props.update_parent_values(list_item.item)
-              }
-            />
-          );
-        }}
-        keyExtractor={(list_item: Variable) => list_item.id.valueOf()}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
         refreshing={state.refreshing}
         onRefresh={() => {}}
         onEndReachedThreshold={0.5}
         onEndReached={() => dispatch(["offset"])}
-        ListFooterComponent={arrow(() => {
-          if (!state.reached_end) {
-            return <Text style={{ textAlign: "center" }}>Loading...</Text>;
-          }
-          return <View style={{ marginTop: 5 }} />;
-        })}
+        ListFooterComponent={ListFooterComponent}
         horizontal={props.horizontal}
-        style={{}}
       />
 
       <Portal>
@@ -464,6 +479,7 @@ export function List(props: {
             borderColor: colors.tailwind.gray[500],
             borderWidth: 1,
           }}
+          enablePanDownToClose={true}
         >
           <View
             style={{
@@ -483,7 +499,7 @@ export function List(props: {
             >
               VIEW
             </Text>
-            <View>
+            {/* <View>
               <Pressable
                 onPress={() => bsm_view_ref.current?.close()}
                 style={{ paddingRight: 8 }}
@@ -502,7 +518,7 @@ export function List(props: {
                   Close
                 </Text>
               </Pressable>
-            </View>
+            </View> */}
           </View>
           <BottomSheetScrollView
             contentContainerStyle={{
@@ -514,8 +530,8 @@ export function List(props: {
             <Pressable
               onPress={() => {
                 if (state.layout !== "") {
+                  // bsm_view_ref.current?.close();
                   dispatch(["layout", ""]);
-                  bsm_view_ref.current?.close();
                 }
               }}
               style={{
@@ -537,8 +553,8 @@ export function List(props: {
               <Pressable
                 onPress={() => {
                   if (state.layout !== layout) {
+                    // bsm_view_ref.current?.close();
                     dispatch(["layout", layout]);
-                    bsm_view_ref.current?.close();
                   }
                 }}
                 style={{
@@ -607,7 +623,7 @@ export function List(props: {
                   Field++
                 </Text>
               </Pressable>
-              <Pressable
+              {/* <Pressable
                 onPress={() => bsm_sorting_ref.current?.close()}
                 style={{ paddingRight: 8 }}
               >
@@ -624,7 +640,7 @@ export function List(props: {
                 >
                   Close
                 </Text>
-              </Pressable>
+              </Pressable> */}
             </View>
           </View>
           <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
@@ -656,7 +672,7 @@ export function List(props: {
               >
                 Fields
               </Text>
-              <View>
+              {/* <View>
                 <Pressable
                   onPress={() => bsm_sorting_fields_ref.current?.close()}
                   style={{ paddingRight: 8 }}
@@ -675,7 +691,7 @@ export function List(props: {
                     Close
                   </Text>
                 </Pressable>
-              </View>
+              </View> */}
             </View>
             <SortComponentFields
               init_filter={state.init_filter}

@@ -17,7 +17,7 @@ import {
   compute_checks,
 } from "./commons";
 import { ListAction } from "./list";
-import { View, Text, TextInput } from "../../main/themed";
+import { View, TextInput } from "../../main/themed";
 import { colors } from "../themed/colors";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 

@@ -289,7 +289,7 @@ function CreateComponent(props: {
                 ),
                 {
                   CC: (props) => (
-                    <OtherComponent {...props} view={views.User["Default"]} />
+                    <OtherComponent {...props} view={views.User["Default2"]} />
                   ),
                 },
               ],
