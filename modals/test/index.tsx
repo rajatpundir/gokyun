@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Pressable, ScrollView } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
@@ -73,7 +73,7 @@ type Y = {
   }) => JSX.Element;
 };
 
-function useX(props: Y) {
+function useX(props: Y): [State, React.Dispatch<Action>, JSX.Element] {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.id),
     active: true,
@@ -168,93 +168,97 @@ function useX(props: Y) {
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
-  const struct_name = "Test";
-  const struct = get_struct(struct_name);
-  const struct2_name = "Test2";
-  const struct2 = get_struct(struct2_name);
-  const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
-    id: new Decimal(props.route.params.id),
-    active: true,
-    created_at: new Date(),
-    updated_at: new Date(),
-    values: HashSet.of(),
-    init_values: HashSet.of(),
-    mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
-    event_trigger: 0,
-    check_trigger: 0,
-    extensions: {},
-    higher_structs: apply([] as Array<[Struct, PathString]>, (it) => {
-      if (unwrap(struct2)) {
-        it.push([struct2.value, [[], "z"]]);
-      }
-      return it;
-    }),
-    checks: {},
-    labels: [
-      ["STR", [[], "str"]],
-      ["LSTR", [[], "lstr"]],
-      ["CLOB", [[], "clob"]],
-      ["U32", [[], "u32"]],
-      ["I32", [[], "i32"]],
-      ["U64", [[], "u64"]],
-      ["I64", [[], "i64"]],
-      ["UDOUBLE", [[], "udouble"]],
-      ["IDOUBLE", [[], "idouble"]],
-      ["UDECIMAL", [[], "udecimal"]],
-      ["IDECIMAL", [[], "idecimal"]],
-      ["BOOL", [[], "bool"]],
-      ["DATE", [[], "date"]],
-      ["TIME", [[], "time"]],
-      ["TIMESTAMP", [[], "timestamp"]],
-      ["USER", [[], "user"]],
-      ["USER NICKNAME", [["user"], "nickname"]],
-    ],
-    user_paths: [[[], "user"]],
-    borrows: [],
-  });
-  const [state2, dispatch2] = useImmerReducer<State, Action>(reducer, {
-    id: new Decimal(props.route.params.id),
-    active: true,
-    created_at: new Date(),
-    updated_at: new Date(),
-    values: HashSet.of(),
-    init_values: HashSet.of(),
-    mode: new Decimal(props.route.params.id).equals(-1) ? "write" : "read",
-    event_trigger: 0,
-    check_trigger: 0,
-    extensions: {},
-    labels: [
-      ["STR2", [[], "str"]],
-      ["STR3", [["z"], "str"]],
-      ["LSTR2", [[], "lstr"]],
-      ["CLOB2", [[], "clob"]],
-      ["U322", [[], "u32"]],
-      ["I322", [[], "i32"]],
-      ["U642", [[], "u64"]],
-      ["I642", [[], "i64"]],
-      ["UDOUBLE2", [[], "udouble"]],
-      ["IDOUBLE2", [[], "idouble"]],
-      ["UDECIMAL2", [[], "udecimal"]],
-      ["IDECIMAL2", [[], "idecimal"]],
-      ["BOOL2", [[], "bool"]],
-      ["DATE2", [[], "date"]],
-      ["TIME2", [[], "time"]],
-      ["TIMESTAMP2", [[], "timestamp"]],
-      ["USER2", [[], "user"]],
-      ["USER NICKNAME2", [["user"], "nickname"]],
-    ],
-    higher_structs: [],
-    user_paths: [[[], "user"]],
-    borrows: [],
-    checks: {},
-  });
-  useEffect(() => {
-    const set_title = async (title: string) => {
-      props.navigation.setOptions({ headerTitle: title });
-    };
-    if (unwrap(struct)) {
-      if (state.mode === "write") {
-        if (state.id.equals(new Decimal(-1))) {
+  const struct1 = get_struct("Test");
+  const struct2 = get_struct("Test2");
+  if (unwrap(struct1) && unwrap(struct2)) {
+    const [state1, dispatch1, jsx1] = useX({
+      struct: struct1.value,
+      id: new Decimal(props.route.params.id),
+      extensions: {},
+      labels: [
+        ["STR", [[], "str"]],
+        ["LSTR", [[], "lstr"]],
+        ["CLOB", [[], "clob"]],
+        ["U32", [[], "u32"]],
+        ["I32", [[], "i32"]],
+        ["U64", [[], "u64"]],
+        ["I64", [[], "i64"]],
+        ["UDOUBLE", [[], "udouble"]],
+        ["IDOUBLE", [[], "idouble"]],
+        ["UDECIMAL", [[], "udecimal"]],
+        ["IDECIMAL", [[], "idecimal"]],
+        ["BOOL", [[], "bool"]],
+        ["DATE", [[], "date"]],
+        ["TIME", [[], "time"]],
+        ["TIMESTAMP", [[], "timestamp"]],
+        ["USER", [[], "user"]],
+        ["USER NICKNAME", [["user"], "nickname"]],
+      ],
+      higher_structs: [[struct2.value, [[], "z"]]],
+      user_paths: [[[], "user"]],
+      borrows: [],
+      create: CreateComponent,
+      update: UpdateComponent,
+      show: ShowComponent,
+    });
+
+    const [state2, dispatch2, jsx2] = useX({
+      struct: struct2.value,
+      id: new Decimal(props.route.params.id),
+      extensions: {},
+      labels: [
+        ["STR2", [[], "str"]],
+        ["STR3", [["z"], "str"]],
+        ["LSTR2", [[], "lstr"]],
+        ["CLOB2", [[], "clob"]],
+        ["U322", [[], "u32"]],
+        ["I322", [[], "i32"]],
+        ["U642", [[], "u64"]],
+        ["I642", [[], "i64"]],
+        ["UDOUBLE2", [[], "udouble"]],
+        ["IDOUBLE2", [[], "idouble"]],
+        ["UDECIMAL2", [[], "udecimal"]],
+        ["IDECIMAL2", [[], "idecimal"]],
+        ["BOOL2", [[], "bool"]],
+        ["DATE2", [[], "date"]],
+        ["TIME2", [[], "time"]],
+        ["TIMESTAMP2", [[], "timestamp"]],
+        ["USER2", [[], "user"]],
+        ["USER NICKNAME2", [["user"], "nickname"]],
+      ],
+      higher_structs: [],
+      user_paths: [[[], "user"]],
+      borrows: [],
+      create: CreateComponent,
+      update: UpdateComponent,
+      show: ShowComponent,
+    });
+
+    useEffect(() => {
+      // state1 is getting embedded so state.values is necessary dependency for the effect
+      dispatch2([
+        "extension",
+        {
+          ...state2.extensions,
+          z: {
+            struct: struct1.value,
+            state: state1,
+            dispatch: dispatch1,
+          },
+        },
+      ]);
+    }, [state1.values]);
+
+    useEffect(() => dispatch2(["event_trigger"]), [state1.event_trigger]);
+
+    useEffect(() => dispatch2(["check_trigger"]), [state1.check_trigger]);
+
+    useEffect(() => {
+      const set_title = async (title: string) => {
+        props.navigation.setOptions({ headerTitle: title });
+      };
+      if (state1.mode === "write") {
+        if (state1.id.equals(-1)) {
           set_title("Create Test");
         } else {
           set_title("Update Test");
@@ -262,178 +266,14 @@ export default function Component(
       } else {
         set_title("Test");
       }
-    }
-  }, []);
-  useEffect(() => {
-    const update_values = async () => {
-      if (unwrap(struct)) {
-        log_permissions(
-          struct.value,
-          state.user_paths as PathString[],
-          state.borrows as string[]
-        );
-        if (state.id.equals(-1)) {
-          dispatch([
-            "variable",
-            new Variable(
-              struct.value,
-              new Decimal(-1),
-              state.active,
-              state.created_at,
-              state.updated_at,
-              get_creation_paths(struct.value, state)
-            ),
-          ]);
-        } else {
-          const result = await get_variable(
-            struct.value,
-            true,
-            undefined,
-            state.id as Decimal,
-            get_filter_paths(
-              struct.value,
-              state.labels as Array<[string, PathString]>,
-              state.user_paths as Array<PathString>,
-              state.borrows as Array<string>
-            )
-          );
-          if (unwrap(result)) {
-            dispatch([
-              "variable",
-              apply(result.value, (it) => {
-                it.paths = get_writeable_paths(struct.value, state, it.paths);
-                return it;
-              }),
-            ]);
-          }
-        }
-      }
-      if (unwrap(struct2)) {
-        log_permissions(
-          struct2.value,
-          state2.user_paths as PathString[],
-          state2.borrows as string[]
-        );
-        if (state2.id.equals(-1)) {
-          dispatch2([
-            "variable",
-            new Variable(
-              struct2.value,
-              new Decimal(-1),
-              state2.active,
-              state2.created_at,
-              state2.updated_at,
-              get_creation_paths(struct2.value, state2)
-            ),
-          ]);
-        } else {
-          const result = await get_variable(
-            struct2.value,
-            true,
-            undefined,
-            state2.id as Decimal,
-            get_filter_paths(
-              struct2.value,
-              state2.labels as Array<[string, PathString]>,
-              state2.user_paths as Array<PathString>,
-              state2.borrows as Array<string>
-            )
-          );
-          if (unwrap(result)) {
-            dispatch2([
-              "variable",
-              apply(result.value, (it) => {
-                it.paths = get_writeable_paths(struct2.value, state2, it.paths);
-                return it;
-              }),
-            ]);
-          }
-        }
-      }
-    };
-    update_values();
-  }, [state2.mode, state2.id]);
-  useEffect(() => {
-    // state is getting embedded so state.values is necessary dependency for the effect
-    if (unwrap(struct)) {
-      dispatch2([
-        "extension",
-        apply({}, (it) => {
-          if (unwrap(struct)) {
-            return {
-              ...state2.extensions,
-              z: {
-                struct: struct.value,
-                state: state,
-                dispatch: dispatch,
-              },
-            };
-          }
-          return it;
-        }),
-      ]);
-    }
-  }, [state.values]);
-  useEffect(() => {
-    if (unwrap(struct)) {
-      run_triggers(struct.value, state, dispatch);
-      dispatch2(["event_trigger"]);
-    }
-  }, [state.event_trigger]);
-  useEffect(() => {
-    if (unwrap(struct2)) {
-      run_triggers(struct2.value, state2, dispatch2);
-    }
-  }, [state2.event_trigger]);
-  useEffect(() => {
-    if (unwrap(struct)) {
-      compute_checks(struct.value, state, dispatch);
-      dispatch2(["check_trigger"]);
-    }
-  }, [state.check_trigger]);
-  useEffect(() => {
-    if (unwrap(struct2)) {
-      compute_checks(struct2.value, state2, dispatch2);
-    }
-  }, [state2.check_trigger]);
+    }, []);
 
-  if (unwrap(struct) && unwrap(struct2)) {
-    if (state.mode === "write") {
-      if (state.id.equals(new Decimal(-1))) {
-        return (
-          <>
-            <CreateComponent
-              struct={struct.value}
-              state={state}
-              dispatch={dispatch}
-            />
-            {/* <CreateComponent
-              struct={struct2.value}
-              state={state2}
-              dispatch={dispatch2}
-              save_variable={save_variable}
-              close={close}
-            /> */}
-          </>
-        );
-      } else {
-        return (
-          <UpdateComponent
-            struct={struct.value}
-            state={state}
-            dispatch={dispatch}
-          />
-        );
-      }
-    } else {
-      return (
-        <ShowComponent
-          struct={struct.value}
-          state={state}
-          dispatch={dispatch}
-        />
-      );
-    }
+    return (
+      <>
+        {jsx1}
+        {jsx2}
+      </>
+    );
   }
   return <></>;
 }

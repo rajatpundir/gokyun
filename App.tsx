@@ -94,7 +94,7 @@ export default function App() {
         <BottomSheetModalProvider>
           <PortalProvider>
             <SafeAreaProvider>
-              <TextInput
+              {/* <TextInput
                 mode="outlined"
                 autoComplete={true}
                 // style={styles.inputContainerStyle}
@@ -106,7 +106,7 @@ export default function App() {
                   (outlinedMultiline) => {}
                   // inputActionHandler('outlinedMultiline', outlinedMultiline)
                 }
-              />
+              /> */}
               <NavigationContainer
                 theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
               >
