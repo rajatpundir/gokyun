@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import { Pressable, ScrollView } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
@@ -8,9 +8,6 @@ import {
   State,
   Action,
   reducer,
-  get_filter_paths,
-  get_creation_paths,
-  get_writeable_paths,
   run_triggers,
   compute_checks,
   get_path,
@@ -19,17 +16,10 @@ import {
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { log_permissions } from "../../main/utils/permissions";
-import {
-  Filter,
-  FilterPath,
-  get_variable,
-  replace_variable,
-} from "../../main/utils/db";
+import { Filter, FilterPath, replace_variable } from "../../main/utils/db";
 import {
   compare_paths,
   Path,
-  PathString,
   Struct,
   Variable,
 } from "../../main/utils/variable";
@@ -39,6 +29,7 @@ import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
 import { ListAction } from "../../main/utils/list";
 import { useNavigation } from "@react-navigation/native";
+import { useComponent } from "../../main/utils/component";
 
 // Create, Read, Update, Delete
 
@@ -48,130 +39,13 @@ import { useNavigation } from "@react-navigation/native";
 
 // Get working on creating actual app components for real by fifth of Jan!
 
-type Y = {
-  struct: Struct;
-  id: Decimal;
-  extensions: State["extensions"];
-  labels: State["labels"];
-  higher_structs: State["higher_structs"];
-  user_paths: State["user_paths"];
-  borrows: State["borrows"];
-  create: (props: {
-    struct: Struct;
-    state: State;
-    dispatch: React.Dispatch<Action>;
-  }) => JSX.Element;
-  update: (props: {
-    struct: Struct;
-    state: State;
-    dispatch: React.Dispatch<Action>;
-  }) => JSX.Element;
-  show: (props: {
-    struct: Struct;
-    state: State;
-    dispatch: React.Dispatch<Action>;
-  }) => JSX.Element;
-};
-
-function useX(props: Y): [State, React.Dispatch<Action>, JSX.Element] {
-  const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
-    id: new Decimal(props.id),
-    active: true,
-    created_at: new Date(),
-    updated_at: new Date(),
-    values: HashSet.of(),
-    init_values: HashSet.of(),
-    mode: new Decimal(props.id).equals(-1) ? "write" : "read",
-    event_trigger: 0,
-    check_trigger: 0,
-    checks: {},
-    extensions: props.extensions,
-    higher_structs: props.higher_structs,
-    labels: props.labels,
-    user_paths: props.user_paths,
-    borrows: props.borrows,
-  });
-  useEffect(() => {
-    const update_values = async () => {
-      if (state.id.equals(-1)) {
-        dispatch([
-          "variable",
-          new Variable(
-            props.struct,
-            new Decimal(-1),
-            state.active,
-            state.created_at,
-            state.updated_at,
-            get_creation_paths(props.struct, state)
-          ),
-        ]);
-      } else {
-        const result = await get_variable(
-          props.struct,
-          true,
-          undefined,
-          state.id as Decimal,
-          get_filter_paths(
-            props.struct,
-            state.labels as Array<[string, PathString]>,
-            state.user_paths as Array<PathString>,
-            state.borrows as Array<string>
-          )
-        );
-        if (unwrap(result)) {
-          dispatch([
-            "variable",
-            apply(result.value, (it) => {
-              it.paths = get_writeable_paths(props.struct, state, it.paths);
-              return it;
-            }),
-          ]);
-        }
-      }
-    };
-    update_values();
-  }, []);
-  useEffect(() => {
-    run_triggers(props.struct, state, dispatch);
-  }, [state.event_trigger]);
-  useEffect(() => {
-    compute_checks(props.struct, state, dispatch);
-  }, [state.check_trigger]);
-  const jsx: JSX.Element = arrow(() => {
-    if (state.mode === "write") {
-      if (state.id.equals(-1)) {
-        return (
-          <props.create
-            struct={props.struct}
-            state={state}
-            dispatch={dispatch}
-          />
-        );
-      } else {
-        return (
-          <props.update
-            struct={props.struct}
-            state={state}
-            dispatch={dispatch}
-          />
-        );
-      }
-    } else {
-      return (
-        <props.show struct={props.struct} state={state} dispatch={dispatch} />
-      );
-    }
-  });
-  return [state, dispatch, jsx];
-}
-
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
   const struct1 = get_struct("Test");
   const struct2 = get_struct("Test2");
   if (unwrap(struct1) && unwrap(struct2)) {
-    const [state1, dispatch1, jsx1] = useX({
+    const [state1, dispatch1, jsx1] = useComponent({
       struct: struct1.value,
       id: new Decimal(props.route.params.id),
       extensions: {},
@@ -202,7 +76,7 @@ export default function Component(
       show: ShowComponent,
     });
 
-    const [state2, dispatch2, jsx2] = useX({
+    const [state2, dispatch2, jsx2] = useComponent({
       struct: struct2.value,
       id: new Decimal(props.route.params.id),
       extensions: {},
@@ -234,7 +108,7 @@ export default function Component(
       show: ShowComponent,
     });
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       // state1 is getting embedded so state.values is necessary dependency for the effect
       dispatch2([
         "extension",
@@ -249,9 +123,9 @@ export default function Component(
       ]);
     }, [state1.values]);
 
-    useEffect(() => dispatch2(["event_trigger"]), [state1.event_trigger]);
+    useLayoutEffect(() => dispatch2(["event_trigger"]), [state1.event_trigger]);
 
-    useEffect(() => dispatch2(["check_trigger"]), [state1.check_trigger]);
+    useLayoutEffect(() => dispatch2(["check_trigger"]), [state1.check_trigger]);
 
     useEffect(() => {
       const set_title = async (title: string) => {
@@ -271,7 +145,7 @@ export default function Component(
     return (
       <>
         {jsx1}
-        {jsx2}
+        {/* {jsx2} */}
       </>
     );
   }
