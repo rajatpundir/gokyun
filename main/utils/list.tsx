@@ -293,6 +293,8 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
   }
 }
 
+// TODO: [Bug] bottomSheetRef.current?.close() closes bottom sheet permanently
+// Also try using portal from React Native Paper instead
 export function List(props: {
   selected: Decimal;
   struct: Struct;
