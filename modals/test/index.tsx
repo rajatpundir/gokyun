@@ -20,6 +20,7 @@ import { Filter, FilterPath, replace_variable } from "../../main/utils/db";
 import {
   compare_paths,
   Path,
+  PathString,
   Struct,
   Variable,
 } from "../../main/utils/variable";
@@ -30,6 +31,7 @@ import { colors } from "../../main/themed/colors";
 import { ListAction } from "../../main/utils/list";
 import { useNavigation } from "@react-navigation/native";
 import { useComponent } from "../../main/utils/component";
+import { render } from "mustache";
 
 // Create, Read, Update, Delete
 
@@ -48,6 +50,11 @@ export default function Component(
     const [state1, dispatch1, jsx1] = useComponent({
       struct: struct1.value,
       id: new Decimal(props.route.params.id),
+      active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+      values: HashSet.of(),
+      init_values: HashSet.of(),
       extensions: {},
       labels: [
         ["STR", [[], "str"]],
@@ -79,6 +86,11 @@ export default function Component(
     const [state2, dispatch2, jsx2] = useComponent({
       struct: struct2.value,
       id: new Decimal(props.route.params.id),
+      active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+      values: HashSet.of(),
+      init_values: HashSet.of(),
       extensions: {},
       labels: [
         ["STR2", [[], "str"]],
@@ -285,175 +297,159 @@ function CreateComponent(props: {
               ],
               render_list_element: [
                 (props: {
-                  selected: number;
+                  struct: Struct;
                   variable: Variable;
+                  selected: boolean;
                   update_parent_values: (variable: Variable) => void;
                 }) => {
-                  const struct_name = "User";
-                  const struct = get_struct(struct_name);
-                  const [state, dispatch] = useImmerReducer<State, Action>(
-                    reducer,
-                    {
-                      id: props.variable.id,
-                      active: props.variable.active,
-                      created_at: props.variable.created_at,
-                      updated_at: props.variable.updated_at,
-                      values: props.variable.paths,
-                      init_values: props.variable.paths,
-                      mode: "read",
-                      event_trigger: 0,
-                      check_trigger: 0,
-                      extensions: {},
-                      higher_structs: [],
-                      checks: {},
-                      labels: [],
-                      // user_paths and borrows fields does not play much role, since parent had already deduced permissions
-                      user_paths: [],
-                      borrows: [],
+                  const render_jsx = (it: {
+                    struct: Struct;
+                    state: State;
+                    dispatch: React.Dispatch<Action>;
+                  }) => {
+                    if (!props.variable.id.equals(-1) && props.selected) {
+                      return (
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            borderRadius: 5,
+                            paddingVertical: 5,
+                            marginVertical: 5,
+                            backgroundColor: colors.tailwind.slate[800],
+                            borderWidth: 1,
+                          }}
+                        >
+                          <View>
+                            <Text>Unique ID</Text>
+                            <Text>{state.id.toString()}</Text>
+                          </View>
+                          <View>
+                            <Text>Created</Text>
+                            <Text>{state.created_at.toString()}</Text>
+                          </View>
+                          <View>
+                            <Text>Updated</Text>
+                            <Text>{state.updated_at.toString()}</Text>
+                          </View>
+                          <View>
+                            <Label {...it} path={"nickname"} />
+                            <Field {...it} path={"nickname"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"knows_english"} />
+                            <Field {...it} path={"knows_english"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"mobile"} />
+                            <Field {...it} path={"mobile"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"product_count"} />
+                            <Field {...it} path={"product_count"} />
+                          </View>
+                        </View>
+                      );
+                    } else {
+                      return (
+                        <View
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            borderRadius: 5,
+                            paddingVertical: 5,
+                            marginVertical: 5,
+                            backgroundColor: colors.tailwind.slate[900],
+                          }}
+                        >
+                          <View>
+                            <Text>Unique ID</Text>
+                            <Text>{state.id.toString()}</Text>
+                          </View>
+                          <View>
+                            <Text>Created</Text>
+                            <Text>{state.created_at.toString()}</Text>
+                          </View>
+                          <View>
+                            <Text>Updated</Text>
+                            <Text>{state.updated_at.toString()}</Text>
+                          </View>
+                          <View>
+                            <Label {...it} path={"nickname"} />
+                            <Field {...it} path={"nickname"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"knows_english"} />
+                            <Field {...it} path={"knows_english"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"mobile"} />
+                            <Field {...it} path={"mobile"} />
+                          </View>
+                          <View>
+                            <Label {...it} path={"product_count"} />
+                            <Field {...it} path={"product_count"} />
+                          </View>
+                          <Pressable
+                            onPress={() =>
+                              props.update_parent_values(props.variable)
+                            }
+                            style={{
+                              alignSelf: "flex-end",
+                              paddingVertical: 10,
+                              paddingRight: 5,
+                            }}
+                          >
+                            <Text
+                              style={{
+                                backgroundColor: colors.tailwind.slate[700],
+                                paddingHorizontal: 6,
+                                paddingVertical: 2,
+                                fontWeight: "bold",
+                                borderRadius: 2,
+                              }}
+                            >
+                              OK
+                            </Text>
+                          </Pressable>
+                        </View>
+                      );
                     }
-                  );
+                  };
+
+                  const [state, dispatch, jsx] = useComponent({
+                    struct: props.struct,
+                    id: props.variable.id,
+                    active: props.variable.active,
+                    created_at: props.variable.created_at,
+                    updated_at: props.variable.updated_at,
+                    values: props.variable.paths,
+                    init_values: props.variable.paths,
+                    extensions: {},
+                    // Labels received from above already exist on values
+                    labels: [],
+                    higher_structs: [],
+                    user_paths: [],
+                    borrows: [],
+                    create: render_jsx,
+                    update: render_jsx,
+                    show: render_jsx,
+                  });
+
                   useEffect(() => {
                     // Mark triggers, checks, etc
                     // Writeable fields would already have been correctly marked
                     dispatch([
                       "values",
                       mark_trigger_dependencies(
-                        props.variable.struct,
+                        props.struct,
                         state.values as HashSet<Path>,
                         state
                       ),
                     ]);
-                  }, [props.variable.struct, props.variable.paths]);
-                  useEffect(() => {
-                    if (unwrap(struct)) {
-                      run_triggers(struct.value, state, dispatch);
-                    }
-                  }, [state.event_trigger]);
-                  useEffect(() => {
-                    if (unwrap(struct)) {
-                      compute_checks(struct.value, state, dispatch);
-                    }
-                  }, [state.check_trigger]);
-                  return apply(
-                    {
-                      struct: props.variable.struct,
-                      state: state,
-                      dispatch: dispatch,
-                    },
-                    (it) => {
-                      if (
-                        !props.variable.id.equals(-1) &&
-                        props.variable.id.equals(props.selected)
-                      ) {
-                        return (
-                          <View
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              borderRadius: 5,
-                              paddingVertical: 5,
-                              marginVertical: 5,
-                              backgroundColor: colors.tailwind.slate[800],
-                              borderWidth: 1,
-                            }}
-                          >
-                            <View>
-                              <Text>Unique ID</Text>
-                              <Text>{state.id.toString()}</Text>
-                            </View>
-                            <View>
-                              <Text>Created</Text>
-                              <Text>{state.created_at.toString()}</Text>
-                            </View>
-                            <View>
-                              <Text>Updated</Text>
-                              <Text>{state.updated_at.toString()}</Text>
-                            </View>
-                            <View>
-                              <Label {...it} path={"nickname"} />
-                              <Field {...it} path={"nickname"} />
-                            </View>
-                            <View>
-                              <Label {...it} path={"knows_english"} />
-                              <Field {...it} path={"knows_english"} />
-                            </View>
-                            <View>
-                              <Label {...it} path={"mobile"} />
-                              <Field {...it} path={"mobile"} />
-                            </View>
-                            <View>
-                              <Label {...it} path={"product_count"} />
-                              <Field {...it} path={"product_count"} />
-                            </View>
-                          </View>
-                        );
-                      } else {
-                        return (
-                          <View
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              borderRadius: 5,
-                              paddingVertical: 5,
-                              marginVertical: 5,
-                              backgroundColor: colors.tailwind.slate[900],
-                            }}
-                          >
-                            <View>
-                              <Text>Unique ID</Text>
-                              <Text>{state.id.toString()}</Text>
-                            </View>
-                            <View>
-                              <Text>Created</Text>
-                              <Text>{state.created_at.toString()}</Text>
-                            </View>
-                            <View>
-                              <Text>Updated</Text>
-                              <Text>{state.updated_at.toString()}</Text>
-                            </View>
-                            <View>
-                              <Label {...it} path={"nickname"} />
-                              <Field {...it} path={"nickname"} />
-                            </View>
-                            <View>
-                              <Label {...it} path={"knows_english"} />
-                              <Field {...it} path={"knows_english"} />
-                            </View>
-                            <View>
-                              <Label {...it} path={"mobile"} />
-                              <Field {...it} path={"mobile"} />
-                            </View>
-                            <View>
-                              <Label {...it} path={"product_count"} />
-                              <Field {...it} path={"product_count"} />
-                            </View>
-                            <Pressable
-                              onPress={() =>
-                                props.update_parent_values(props.variable)
-                              }
-                              style={{
-                                alignSelf: "flex-end",
-                                paddingVertical: 10,
-                                paddingRight: 5,
-                              }}
-                            >
-                              <Text
-                                style={{
-                                  backgroundColor: colors.tailwind.slate[700],
-                                  paddingHorizontal: 6,
-                                  paddingVertical: 2,
-                                  fontWeight: "bold",
-                                  borderRadius: 2,
-                                }}
-                              >
-                                OK
-                              </Text>
-                            </Pressable>
-                          </View>
-                        );
-                      }
-                    }
-                  );
+                  }, [props.struct, props.variable.paths]);
+
+                  return jsx;
                 },
                 {},
               ],

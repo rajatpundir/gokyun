@@ -24,7 +24,7 @@ import NotFoundScreen from "./main/NotFoundScreen";
 import { SelectionModal } from "./main/utils/list";
 import { ListAction } from "./main/utils/list";
 
-import { Struct, Variable } from "./main/utils/variable";
+import { PathString, Struct, Variable } from "./main/utils/variable";
 
 import Test from "./modals/test";
 
@@ -37,8 +37,6 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { Provider as PaperProvider } from "react-native-paper";
 
-import { TextInput } from "react-native-paper";
-
 // Ignore react navigation error related to serializability of props passed
 
 export type NavigatorParams = {
@@ -46,7 +44,7 @@ export type NavigatorParams = {
   NotFound: undefined;
   SelectionModal: {
     title: string;
-    selected: number;
+    selected: Decimal;
     struct: Struct;
     active: boolean;
     level: Decimal | undefined;
@@ -54,15 +52,17 @@ export type NavigatorParams = {
     limit: Decimal;
     render_list_element: [
       (props: {
-        selected: number;
+        struct: Struct;
         variable: Variable;
+        selected: boolean;
         update_parent_values: (variable: Variable) => void;
       }) => JSX.Element,
       Record<
         string,
         (props: {
-          selected: number;
+          struct: Struct;
           variable: Variable;
+          selected: boolean;
           update_parent_values: (variable: Variable) => void;
         }) => JSX.Element
       >

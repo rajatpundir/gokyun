@@ -4,7 +4,7 @@ import { useLayoutEffect } from "react";
 import { useImmerReducer } from "use-immer";
 import { get_variable } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
-import { PathString, Struct, Variable } from "./variable";
+import { Path, PathString, Struct, Variable } from "./variable";
 import {
   State,
   Action,
@@ -19,6 +19,11 @@ import {
 export function useComponent(props: {
   struct: Struct;
   id: Decimal;
+  active: boolean;
+  created_at: Date;
+  updated_at: Date;
+  values: HashSet<Path>;
+  init_values: HashSet<Path>;
   extensions: State["extensions"];
   labels: State["labels"];
   higher_structs: State["higher_structs"];
@@ -28,25 +33,29 @@ export function useComponent(props: {
     struct: Struct;
     state: State;
     dispatch: React.Dispatch<Action>;
+    selected: boolean;
   }) => JSX.Element;
   update: (props: {
     struct: Struct;
     state: State;
     dispatch: React.Dispatch<Action>;
+    selected: boolean;
   }) => JSX.Element;
   show: (props: {
     struct: Struct;
     state: State;
     dispatch: React.Dispatch<Action>;
+    selected: boolean;
   }) => JSX.Element;
+  selected?: boolean;
 }): [State, React.Dispatch<Action>, JSX.Element] {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.id),
-    active: true,
-    created_at: new Date(),
-    updated_at: new Date(),
-    values: HashSet.of(),
-    init_values: HashSet.of(),
+    active: props.active,
+    created_at: props.created_at,
+    updated_at: props.updated_at,
+    values: props.values,
+    init_values: props.init_values,
     mode: new Decimal(props.id).equals(-1) ? "write" : "read",
     event_trigger: 0,
     check_trigger: 0,
@@ -111,6 +120,7 @@ export function useComponent(props: {
             struct={props.struct}
             state={state}
             dispatch={dispatch}
+            selected={!!props.selected}
           />
         );
       } else {
@@ -119,12 +129,18 @@ export function useComponent(props: {
             struct={props.struct}
             state={state}
             dispatch={dispatch}
+            selected={!!props.selected}
           />
         );
       }
     } else {
       return (
-        <props.show struct={props.struct} state={state} dispatch={dispatch} />
+        <props.show
+          struct={props.struct}
+          state={state}
+          dispatch={dispatch}
+          selected={!!props.selected}
+        />
       );
     }
   });

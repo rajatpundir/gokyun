@@ -3,7 +3,7 @@ import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
-import { Struct, Variable } from "./variable";
+import { PathString, Struct, Variable } from "./variable";
 import { View, Text } from "../themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
@@ -294,7 +294,7 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
 }
 
 export function List(props: {
-  selected: number;
+  selected: Decimal;
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
@@ -302,15 +302,17 @@ export function List(props: {
   limit: Decimal;
   render_list_element: [
     (props: {
-      selected: number;
+      struct: Struct;
       variable: Variable;
+      selected: boolean;
       update_parent_values: (variable: Variable) => void;
     }) => JSX.Element,
     Record<
       string,
       (props: {
-        selected: number;
+        struct: Struct;
         variable: Variable;
+        selected: boolean;
         update_parent_values: (variable: Variable) => void;
       }) => JSX.Element
     >
@@ -418,8 +420,9 @@ export function List(props: {
           });
           return (
             <ElementJSX
-              selected={props.selected}
+              struct={state.struct}
               variable={list_item.item}
+              selected={list_item.item.id.equals(props.selected)}
               update_parent_values={props.update_parent_values}
             />
           );

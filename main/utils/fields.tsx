@@ -1326,15 +1326,17 @@ function Other_Field(
     element: JSX.Element;
     render_list_element: [
       (props: {
-        selected: number;
+        struct: Struct;
         variable: Variable;
+        selected: boolean;
         update_parent_values: (variable: Variable) => void;
       }) => JSX.Element,
       Record<
         string,
         (props: {
-          selected: number;
+          struct: Struct;
           variable: Variable;
+          selected: boolean;
           update_parent_values: (variable: Variable) => void;
         }) => JSX.Element
       >
@@ -1362,7 +1364,7 @@ function Other_Field(
             if (unwrap(struct)) {
               navigation.navigate("SelectionModal", {
                 title: props.title,
-                selected: value.value.toNumber(),
+                selected: value.value,
                 struct: struct.value,
                 active: true,
                 level: undefined,
@@ -1456,15 +1458,17 @@ export function Field(props: {
           element: JSX.Element;
           render_list_element: [
             (props: {
-              selected: number;
+              struct: Struct;
               variable: Variable;
+              selected: boolean;
               update_parent_values: (variable: Variable) => void;
             }) => JSX.Element,
             Record<
               string,
               (props: {
-                selected: number;
+                struct: Struct;
                 variable: Variable;
+                selected: boolean;
                 update_parent_values: (variable: Variable) => void;
               }) => JSX.Element
             >
