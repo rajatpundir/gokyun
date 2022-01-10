@@ -3,12 +3,7 @@ import { Pressable, ScrollView } from "react-native";
 
 import { NavigatorProps as RootNavigatorProps } from "../../App";
 import { View, Text, TextInput } from "../../main/themed";
-import {
-  State,
-  Action,
-  get_path,
-  mark_trigger_dependencies,
-} from "../../main/utils/commons";
+import { State, Action, get_path } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
@@ -25,7 +20,11 @@ import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
 import { ListAction } from "../../main/utils/list";
 import { useNavigation } from "@react-navigation/native";
-import { useComponent } from "../../main/utils/component";
+import {
+  OtherComponent,
+  SearchBar,
+  useComponent,
+} from "../../main/utils/component";
 import { views } from "../../views";
 
 // Create, Read, Update, Delete
@@ -291,208 +290,18 @@ function CreateComponent(props: {
                 ["Product Count", [[], "product_count"]],
               ],
               render_list_element: [
-                (props: {
-                  struct: Struct;
-                  variable: Variable;
-                  selected: boolean;
-                  update_parent_values: () => void;
-                }) => {
-                  const [state, dispatch, jsx] = useComponent({
-                    struct: props.struct,
-                    id: props.variable.id,
-                    active: props.variable.active,
-                    created_at: props.variable.created_at,
-                    updated_at: props.variable.updated_at,
-                    values: props.variable.paths,
-                    init_values: props.variable.paths,
-                    extensions: {},
-                    // Labels received from above already exist on values
-                    labels: [],
-                    higher_structs: [],
-                    user_paths: [],
-                    borrows: [],
-                    create: views.User["Default"].create,
-                    update: views.User["Default"].update,
-                    show: views.User["Default"].show,
-                    selected: props.selected,
-                    update_parent_values: props.update_parent_values,
-                  });
-                  useEffect(() => {
-                    // TODO. If values are overwritten with init_values then need to mark trigger dependencies again
-
-                    // Mark triggers, checks, etc
-                    // Writeable fields would already have been correctly marked
-                    dispatch([
-                      "values",
-                      mark_trigger_dependencies(
-                        props.struct,
-                        state.values as HashSet<Path>,
-                        state
-                      ),
-                    ]);
-                  }, [props.struct, props.variable.paths]);
-
-                  return jsx;
-                },
+                (props) => (
+                  <OtherComponent {...props} view={views.User["Default"]} />
+                ),
                 {},
               ],
-              render_custom_fields: (props: {
-                filters: HashSet<Filter>;
-                dispatch: React.Dispatch<ListAction>;
-                show_views: (props: { element: JSX.Element }) => JSX.Element;
-                show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-                show_filters: (props: { element: JSX.Element }) => JSX.Element;
-              }) => {
-                const filter = props.filters.findAny((x) => x.index === 0);
-                if (filter.isSome()) {
-                  return (
-                    <View
-                      style={{
-                        borderWidth: 1,
-                        borderRadius: 5,
-                        borderColor: colors.tailwind.slate[500],
-                        paddingVertical: 2,
-                        paddingHorizontal: 10,
-                        marginHorizontal: 20,
-                        marginBottom: 8,
-                      }}
-                    >
-                      <Feather
-                        name="search"
-                        size={24}
-                        color={colors.tailwind.slate[300]}
-                        style={{ alignSelf: "center" }}
-                      />
-                      <TextInput
-                        placeholder="Nickname"
-                        value={arrow(() => {
-                          const result = filter
-                            .get()
-                            .filter_paths.findAny((x) =>
-                              compare_paths(x.path, [[], "nickname"])
-                            );
-                          if (result.isSome()) {
-                            const v = result.get().value;
-                            if (
-                              v[0] === "str" &&
-                              v[1] !== undefined &&
-                              v[1][0] === "like"
-                            ) {
-                              if (typeof v[1][1] === "string") {
-                                return v[1][1];
-                              }
-                            }
-                          }
-                          return "";
-                        })}
-                        onChangeText={(x) => {
-                          props.dispatch([
-                            "filters",
-                            filter.get(),
-                            "replace",
-                            apply(
-                              new FilterPath(
-                                "Nickname",
-                                [[], "nickname"],
-                                ["str", ["like", x]],
-                                undefined
-                              ),
-                              (it) => {
-                                it.active = true;
-                                return it;
-                              }
-                            ),
-                          ]);
-                        }}
-                        style={{
-                          flexGrow: 1,
-                        }}
-                      />
-                      <>
-                        <View
-                          style={{
-                            alignSelf: "center",
-                            paddingHorizontal: 0,
-                            marginHorizontal: 0,
-                          }}
-                        >
-                          <props.show_views
-                            element={
-                              <Feather
-                                name="layout"
-                                size={20}
-                                color={colors.tailwind.slate[400]}
-                                style={{
-                                  alignSelf: "center",
-                                  padding: 4,
-                                  marginHorizontal: 0,
-                                }}
-                              />
-                            }
-                          />
-                        </View>
-                        <View
-                          style={{
-                            alignSelf: "center",
-                            paddingHorizontal: 0,
-                            marginHorizontal: 0,
-                          }}
-                        >
-                          <props.show_sorting
-                            element={
-                              <FontAwesome
-                                name="sort-alpha-asc"
-                                size={20}
-                                color={colors.tailwind.slate[400]}
-                                style={{
-                                  alignSelf: "center",
-                                  padding: 4,
-                                  marginHorizontal: 0,
-                                }}
-                              />
-                            }
-                          />
-                        </View>
-                        <View
-                          style={{
-                            alignSelf: "center",
-                            paddingHorizontal: 0,
-                            marginHorizontal: 0,
-                          }}
-                        >
-                          <props.show_filters
-                            element={
-                              <Ionicons
-                                name="filter"
-                                size={20}
-                                color={colors.tailwind.slate[400]}
-                                style={{
-                                  alignSelf: "center",
-                                  padding: 3,
-                                  marginHorizontal: 0,
-                                }}
-                              />
-                            }
-                          />
-                        </View>
-                      </>
-                    </View>
-                  );
-                } else {
-                  props.dispatch([
-                    "filter",
-                    "replace",
-                    new Filter(
-                      0,
-                      [false, undefined],
-                      [false, undefined],
-                      [false, undefined],
-                      HashSet.of()
-                    ),
-                  ]);
-                }
-                return <></>;
-              },
+              render_custom_fields: (props) => (
+                <SearchBar
+                  {...props}
+                  placeholder="Nickname"
+                  path={[[], "nickname"]}
+                />
+              ),
             },
           ]}
         />

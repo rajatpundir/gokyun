@@ -1,20 +1,25 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useImmerReducer } from "use-immer";
-import { get_variable } from "./db";
+import { Filter, FilterPath, get_variable } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
-import { Path, PathString, Struct, Variable } from "./variable";
+import { compare_paths, Path, PathString, Struct, Variable } from "./variable";
 import {
   State,
   Action,
   reducer,
   get_filter_paths,
+  mark_trigger_dependencies,
   get_creation_paths,
   get_writeable_paths,
   run_triggers,
   compute_checks,
 } from "./commons";
+import { ListAction } from "./list";
+import { View, Text, TextInput } from "../../main/themed";
+import { colors } from "../themed/colors";
+import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 
 export type ComponentViews = Record<
   string,
@@ -163,4 +168,212 @@ export function useComponent(props: {
     }
   });
   return [state, dispatch, jsx];
+}
+
+export function useOtherComponent(props: {
+  struct: Struct;
+  variable: Variable;
+  selected: boolean;
+  update_parent_values: () => void;
+  view: ComponentViews[string];
+}): [State, React.Dispatch<Action>, JSX.Element] {
+  const [state, dispatch, jsx] = useComponent({
+    struct: props.struct,
+    id: props.variable.id,
+    active: props.variable.active,
+    created_at: props.variable.created_at,
+    updated_at: props.variable.updated_at,
+    values: props.variable.paths,
+    init_values: props.variable.paths,
+    extensions: {},
+    // Labels received from above already exist on values
+    labels: [],
+    higher_structs: [],
+    user_paths: [],
+    borrows: [],
+    create: props.view.create,
+    update: props.view.update,
+    show: props.view.show,
+    selected: props.selected,
+    update_parent_values: props.update_parent_values,
+  });
+  useEffect(() => {
+    // TODO. If values are overwritten with init_values then need to mark trigger dependencies again
+
+    // Mark triggers, checks, etc
+    // Writeable fields would already have been correctly marked
+    dispatch([
+      "values",
+      mark_trigger_dependencies(
+        props.struct,
+        state.values as HashSet<Path>,
+        state
+      ),
+    ]);
+  }, [props.struct, props.variable.paths]);
+  return [state, dispatch, jsx];
+}
+
+export function OtherComponent(props: {
+  struct: Struct;
+  variable: Variable;
+  selected: boolean;
+  update_parent_values: () => void;
+  view: ComponentViews[string];
+}): JSX.Element {
+  return useOtherComponent(props)[2];
+}
+
+export function SearchBar(props: {
+  filters: HashSet<Filter>;
+  dispatch: React.Dispatch<ListAction>;
+  show_views: (props: { element: JSX.Element }) => JSX.Element;
+  show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+  show_filters: (props: { element: JSX.Element }) => JSX.Element;
+  placeholder: string;
+  path: PathString;
+}): JSX.Element {
+  const filter = props.filters.findAny((x) => x.index === 0);
+  if (filter.isSome()) {
+    return (
+      <View
+        style={{
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: colors.tailwind.slate[500],
+          paddingVertical: 2,
+          paddingHorizontal: 10,
+          marginHorizontal: 20,
+          marginBottom: 8,
+        }}
+      >
+        <Feather
+          name="search"
+          size={24}
+          color={colors.tailwind.slate[300]}
+          style={{ alignSelf: "center" }}
+        />
+        <TextInput
+          placeholder={props.placeholder}
+          value={arrow(() => {
+            const result = filter
+              .get()
+              .filter_paths.findAny((x) => compare_paths(x.path, props.path));
+            if (result.isSome()) {
+              const v = result.get().value;
+              if (v[0] === "str" && v[1] !== undefined && v[1][0] === "like") {
+                if (typeof v[1][1] === "string") {
+                  return v[1][1];
+                }
+              }
+            }
+            return "";
+          })}
+          onChangeText={(x) => {
+            props.dispatch([
+              "filters",
+              filter.get(),
+              "replace",
+              apply(
+                new FilterPath(
+                  "Nickname",
+                  props.path,
+                  ["str", ["like", x]],
+                  undefined
+                ),
+                (it) => {
+                  it.active = true;
+                  return it;
+                }
+              ),
+            ]);
+          }}
+          style={{
+            flexGrow: 1,
+          }}
+        />
+        <>
+          <View
+            style={{
+              alignSelf: "center",
+              paddingHorizontal: 0,
+              marginHorizontal: 0,
+            }}
+          >
+            <props.show_views
+              element={
+                <Feather
+                  name="layout"
+                  size={20}
+                  color={colors.tailwind.slate[400]}
+                  style={{
+                    alignSelf: "center",
+                    padding: 4,
+                    marginHorizontal: 0,
+                  }}
+                />
+              }
+            />
+          </View>
+          <View
+            style={{
+              alignSelf: "center",
+              paddingHorizontal: 0,
+              marginHorizontal: 0,
+            }}
+          >
+            <props.show_sorting
+              element={
+                <FontAwesome
+                  name="sort-alpha-asc"
+                  size={20}
+                  color={colors.tailwind.slate[400]}
+                  style={{
+                    alignSelf: "center",
+                    padding: 4,
+                    marginHorizontal: 0,
+                  }}
+                />
+              }
+            />
+          </View>
+          <View
+            style={{
+              alignSelf: "center",
+              paddingHorizontal: 0,
+              marginHorizontal: 0,
+            }}
+          >
+            <props.show_filters
+              element={
+                <Ionicons
+                  name="filter"
+                  size={20}
+                  color={colors.tailwind.slate[400]}
+                  style={{
+                    alignSelf: "center",
+                    padding: 3,
+                    marginHorizontal: 0,
+                  }}
+                />
+              }
+            />
+          </View>
+        </>
+      </View>
+    );
+  } else {
+    props.dispatch([
+      "filter",
+      "replace",
+      new Filter(
+        0,
+        [false, undefined],
+        [false, undefined],
+        [false, undefined],
+        HashSet.of()
+      ),
+    ]);
+  }
+  return <></>;
 }
