@@ -224,6 +224,7 @@ export function OtherComponent(props: {
   return useOtherComponent(props)[2];
 }
 
+// TODO: [Bug] buttons dont open modal on state change, probably need wire state in there
 export function SearchBar(props: {
   init_filter: Filter;
   filters: HashSet<Filter>;

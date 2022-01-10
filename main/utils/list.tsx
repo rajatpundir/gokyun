@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
