@@ -8,13 +8,11 @@ import { unwrap } from "../../main/utils/prelude";
 import { useComponent } from "../../main/utils/component";
 import { views } from "../../views";
 
-// Create, Read, Update, Delete
+// 1. Update TextInput everywhere
+// 2. List Tests component
+// 3. Create, Read, Update, Delete
 
-// List Tests component
-
-// Complete testing Test
-
-// Get working on creating actual app components for real by fifth of Jan!
+// IMPORTANT. Get working on creating actual app components for real by 12th of Jan!
 
 export default function Component(
   props: RootNavigatorProps<"Test">
