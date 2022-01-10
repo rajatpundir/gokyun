@@ -1329,7 +1329,7 @@ function Other_Field(
         struct: Struct;
         variable: Variable;
         selected: boolean;
-        update_parent_values: (variable: Variable) => void;
+        update_parent_values: () => void;
       }) => JSX.Element,
       Record<
         string,
@@ -1337,7 +1337,7 @@ function Other_Field(
           struct: Struct;
           variable: Variable;
           selected: boolean;
-          update_parent_values: (variable: Variable) => void;
+          update_parent_values: () => void;
         }) => JSX.Element
       >
     ];
@@ -1461,7 +1461,7 @@ export function Field(props: {
               struct: Struct;
               variable: Variable;
               selected: boolean;
-              update_parent_values: (variable: Variable) => void;
+              update_parent_values: () => void;
             }) => JSX.Element,
             Record<
               string,
@@ -1469,7 +1469,7 @@ export function Field(props: {
                 struct: Struct;
                 variable: Variable;
                 selected: boolean;
-                update_parent_values: (variable: Variable) => void;
+                update_parent_values: () => void;
               }) => JSX.Element
             >
           ];

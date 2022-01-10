@@ -300,12 +300,14 @@ function CreateComponent(props: {
                   struct: Struct;
                   variable: Variable;
                   selected: boolean;
-                  update_parent_values: (variable: Variable) => void;
+                  update_parent_values: () => void;
                 }) => {
                   const render_jsx = (it: {
                     struct: Struct;
                     state: State;
                     dispatch: React.Dispatch<Action>;
+                    selected: boolean;
+                    update_parent_values: () => void;
                   }) => {
                     if (!props.variable.id.equals(-1) && props.selected) {
                       return (
@@ -391,9 +393,7 @@ function CreateComponent(props: {
                             <Field {...it} path={"product_count"} />
                           </View>
                           <Pressable
-                            onPress={() =>
-                              props.update_parent_values(props.variable)
-                            }
+                            onPress={it.update_parent_values}
                             style={{
                               alignSelf: "flex-end",
                               paddingVertical: 10,

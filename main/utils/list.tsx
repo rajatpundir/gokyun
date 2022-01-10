@@ -305,7 +305,7 @@ export function List(props: {
       struct: Struct;
       variable: Variable;
       selected: boolean;
-      update_parent_values: (variable: Variable) => void;
+      update_parent_values: () => void;
     }) => JSX.Element,
     Record<
       string,
@@ -313,7 +313,7 @@ export function List(props: {
         struct: Struct;
         variable: Variable;
         selected: boolean;
-        update_parent_values: (variable: Variable) => void;
+        update_parent_values: () => void;
       }) => JSX.Element
     >
   ];
@@ -423,7 +423,9 @@ export function List(props: {
               struct={state.struct}
               variable={list_item.item}
               selected={list_item.item.id.equals(props.selected)}
-              update_parent_values={props.update_parent_values}
+              update_parent_values={() =>
+                props.update_parent_values(list_item.item)
+              }
             />
           );
         }}

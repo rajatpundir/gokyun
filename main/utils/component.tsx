@@ -34,20 +34,24 @@ export function useComponent(props: {
     state: State;
     dispatch: React.Dispatch<Action>;
     selected: boolean;
+    update_parent_values: () => void;
   }) => JSX.Element;
   update: (props: {
     struct: Struct;
     state: State;
     dispatch: React.Dispatch<Action>;
     selected: boolean;
+    update_parent_values: () => void;
   }) => JSX.Element;
   show: (props: {
     struct: Struct;
     state: State;
     dispatch: React.Dispatch<Action>;
     selected: boolean;
+    update_parent_values: () => void;
   }) => JSX.Element;
   selected?: boolean;
+  update_parent_values?: () => void;
 }): [State, React.Dispatch<Action>, JSX.Element] {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.id),
@@ -121,6 +125,9 @@ export function useComponent(props: {
             state={state}
             dispatch={dispatch}
             selected={!!props.selected}
+            update_parent_values={
+              props.update_parent_values ? props.update_parent_values : () => {}
+            }
           />
         );
       } else {
@@ -130,6 +137,9 @@ export function useComponent(props: {
             state={state}
             dispatch={dispatch}
             selected={!!props.selected}
+            update_parent_values={
+              props.update_parent_values ? props.update_parent_values : () => {}
+            }
           />
         );
       }
@@ -140,6 +150,9 @@ export function useComponent(props: {
           state={state}
           dispatch={dispatch}
           selected={!!props.selected}
+          update_parent_values={
+            props.update_parent_values ? props.update_parent_values : () => {}
+          }
         />
       );
     }

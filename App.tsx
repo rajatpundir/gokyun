@@ -55,7 +55,7 @@ export type NavigatorParams = {
         struct: Struct;
         variable: Variable;
         selected: boolean;
-        update_parent_values: (variable: Variable) => void;
+        update_parent_values: () => void;
       }) => JSX.Element,
       Record<
         string,
@@ -63,7 +63,7 @@ export type NavigatorParams = {
           struct: Struct;
           variable: Variable;
           selected: boolean;
-          update_parent_values: (variable: Variable) => void;
+          update_parent_values: () => void;
         }) => JSX.Element
       >
     ];
