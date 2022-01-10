@@ -1343,6 +1343,7 @@ function Other_Field(
     ];
     limit: Decimal;
     render_custom_fields: (props: {
+      init_filter: Filter;
       filters: HashSet<Filter>;
       dispatch: React.Dispatch<ListAction>;
       show_views: (props: { element: JSX.Element }) => JSX.Element;
@@ -1475,6 +1476,7 @@ export function Field(props: {
           ];
           limit: Decimal;
           render_custom_fields: (props: {
+            init_filter: Filter;
             filters: HashSet<Filter>;
             dispatch: React.Dispatch<ListAction>;
             show_views: (props: { element: JSX.Element }) => JSX.Element;

@@ -319,6 +319,7 @@ export function List(props: {
   ];
   update_parent_values: (variable: Variable) => void;
   render_custom_fields: (props: {
+    init_filter: Filter;
     filters: HashSet<Filter>;
     dispatch: React.Dispatch<ListAction>;
     show_views: (props: { element: JSX.Element }) => JSX.Element;
@@ -395,6 +396,7 @@ export function List(props: {
       }}
     >
       {props.render_custom_fields({
+        init_filter: state.init_filter,
         filters: state.filters,
         dispatch: dispatch,
         show_views: ({ element }: { element: JSX.Element }) => (

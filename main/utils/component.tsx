@@ -225,6 +225,7 @@ export function OtherComponent(props: {
 }
 
 export function SearchBar(props: {
+  init_filter: Filter;
   filters: HashSet<Filter>;
   dispatch: React.Dispatch<ListAction>;
   show_views: (props: { element: JSX.Element }) => JSX.Element;
@@ -232,6 +233,9 @@ export function SearchBar(props: {
   show_filters: (props: { element: JSX.Element }) => JSX.Element;
   placeholder: string;
   path: PathString;
+  is_views_editable?: boolean;
+  is_sorting_editable?: boolean;
+  is_filters_editable?: boolean;
 }): JSX.Element {
   const filter = props.filters.findAny((x) => x.index === 0);
   if (filter.isSome()) {
@@ -271,95 +275,114 @@ export function SearchBar(props: {
             return "";
           })}
           onChangeText={(x) => {
-            props.dispatch([
-              "filters",
-              filter.get(),
-              "replace",
-              apply(
-                new FilterPath(
-                  "Nickname",
-                  props.path,
-                  ["str", ["like", x]],
-                  undefined
+            const result = props.init_filter.filter_paths.findAny((x) =>
+              compare_paths(x.path, props.path)
+            );
+            if (result.isSome()) {
+              props.dispatch([
+                "filters",
+                filter.get(),
+                "replace",
+                apply(
+                  new FilterPath(
+                    result.get().label,
+                    props.path,
+                    ["str", ["like", x]],
+                    undefined
+                  ),
+                  (it) => {
+                    it.active = true;
+                    return it;
+                  }
                 ),
-                (it) => {
-                  it.active = true;
-                  return it;
-                }
-              ),
-            ]);
+              ]);
+            }
           }}
           style={{
             flexGrow: 1,
           }}
         />
         <>
-          <View
-            style={{
-              alignSelf: "center",
-              paddingHorizontal: 0,
-              marginHorizontal: 0,
-            }}
-          >
-            <props.show_views
-              element={
-                <Feather
-                  name="layout"
-                  size={20}
-                  color={colors.tailwind.slate[400]}
-                  style={{
-                    alignSelf: "center",
-                    padding: 4,
-                    marginHorizontal: 0,
-                  }}
-                />
-              }
-            />
-          </View>
-          <View
-            style={{
-              alignSelf: "center",
-              paddingHorizontal: 0,
-              marginHorizontal: 0,
-            }}
-          >
-            <props.show_sorting
-              element={
-                <FontAwesome
-                  name="sort-alpha-asc"
-                  size={20}
-                  color={colors.tailwind.slate[400]}
-                  style={{
-                    alignSelf: "center",
-                    padding: 4,
-                    marginHorizontal: 0,
-                  }}
-                />
-              }
-            />
-          </View>
-          <View
-            style={{
-              alignSelf: "center",
-              paddingHorizontal: 0,
-              marginHorizontal: 0,
-            }}
-          >
-            <props.show_filters
-              element={
-                <Ionicons
-                  name="filter"
-                  size={20}
-                  color={colors.tailwind.slate[400]}
-                  style={{
-                    alignSelf: "center",
-                    padding: 3,
-                    marginHorizontal: 0,
-                  }}
-                />
-              }
-            />
-          </View>
+          {props.is_views_editable === undefined || props.is_views_editable ? (
+            <View
+              style={{
+                alignSelf: "center",
+                paddingHorizontal: 0,
+                marginHorizontal: 0,
+              }}
+            >
+              <props.show_views
+                element={
+                  <Feather
+                    name="layout"
+                    size={20}
+                    color={colors.tailwind.slate[400]}
+                    style={{
+                      alignSelf: "center",
+                      padding: 4,
+                      marginHorizontal: 0,
+                    }}
+                  />
+                }
+              />
+            </View>
+          ) : (
+            <></>
+          )}
+          {props.is_sorting_editable === undefined ||
+          props.is_sorting_editable ? (
+            <View
+              style={{
+                alignSelf: "center",
+                paddingHorizontal: 0,
+                marginHorizontal: 0,
+              }}
+            >
+              <props.show_sorting
+                element={
+                  <FontAwesome
+                    name="sort-alpha-asc"
+                    size={20}
+                    color={colors.tailwind.slate[400]}
+                    style={{
+                      alignSelf: "center",
+                      padding: 4,
+                      marginHorizontal: 0,
+                    }}
+                  />
+                }
+              />
+            </View>
+          ) : (
+            <></>
+          )}
+          {props.is_filters_editable === undefined ||
+          props.is_filters_editable === true ? (
+            <View
+              style={{
+                alignSelf: "center",
+                paddingHorizontal: 0,
+                marginHorizontal: 0,
+              }}
+            >
+              <props.show_filters
+                element={
+                  <Ionicons
+                    name="filter"
+                    size={20}
+                    color={colors.tailwind.slate[400]}
+                    style={{
+                      alignSelf: "center",
+                      padding: 3,
+                      marginHorizontal: 0,
+                    }}
+                  />
+                }
+              />
+            </View>
+          ) : (
+            <></>
+          )}
         </>
       </View>
     );

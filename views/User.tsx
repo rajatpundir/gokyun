@@ -17,6 +17,7 @@ export default {
             display: "flex",
             flexDirection: "column",
             borderRadius: 5,
+            borderWidth: 1,
             paddingHorizontal: 10,
             paddingVertical: 10,
             marginHorizontal: 10,
@@ -27,7 +28,6 @@ export default {
               }
               return colors.tailwind.slate[900];
             }),
-            borderWidth: 1,
           }}
         >
           <View>
