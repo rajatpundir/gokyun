@@ -7,18 +7,12 @@ import { State, Action, get_path } from "../../main/utils/commons";
 import { get_struct } from "../../main/utils/schema";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { Filter, FilterPath, replace_variable } from "../../main/utils/db";
-import {
-  compare_paths,
-  Path,
-  Struct,
-  Variable,
-} from "../../main/utils/variable";
+import { replace_variable } from "../../main/utils/db";
+import { Path, Struct, Variable } from "../../main/utils/variable";
 import { Label, Field, Check } from "../../main/utils/fields";
-import { apply, arrow, unwrap } from "../../main/utils/prelude";
-import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { arrow, unwrap } from "../../main/utils/prelude";
+import { FontAwesome } from "@expo/vector-icons";
 import { colors } from "../../main/themed/colors";
-import { ListAction } from "../../main/utils/list";
 import { useNavigation } from "@react-navigation/native";
 import {
   OtherComponent,
@@ -293,7 +287,11 @@ function CreateComponent(props: {
                 (props) => (
                   <OtherComponent {...props} view={views.User["Default"]} />
                 ),
-                {},
+                {
+                  CC: (props) => (
+                    <OtherComponent {...props} view={views.User["Default"]} />
+                  ),
+                },
               ],
               render_custom_fields: (props) => (
                 <SearchBar

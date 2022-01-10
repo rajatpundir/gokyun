@@ -1346,7 +1346,7 @@ function Other_Field(
       init_filter: Filter;
       filters: HashSet<Filter>;
       dispatch: React.Dispatch<ListAction>;
-      show_views: (props: { element: JSX.Element }) => JSX.Element;
+      show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
       show_sorting: (props: { element: JSX.Element }) => JSX.Element;
       show_filters: (props: { element: JSX.Element }) => JSX.Element;
     }) => JSX.Element;
@@ -1479,7 +1479,10 @@ export function Field(props: {
             init_filter: Filter;
             filters: HashSet<Filter>;
             dispatch: React.Dispatch<ListAction>;
-            show_views: (props: { element: JSX.Element }) => JSX.Element;
+            show_views: [
+              (props: { element: JSX.Element }) => JSX.Element,
+              boolean
+            ];
             show_sorting: (props: { element: JSX.Element }) => JSX.Element;
             show_filters: (props: { element: JSX.Element }) => JSX.Element;
           }) => JSX.Element;

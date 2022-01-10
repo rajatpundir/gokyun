@@ -228,7 +228,7 @@ export function SearchBar(props: {
   init_filter: Filter;
   filters: HashSet<Filter>;
   dispatch: React.Dispatch<ListAction>;
-  show_views: (props: { element: JSX.Element }) => JSX.Element;
+  show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
   show_sorting: (props: { element: JSX.Element }) => JSX.Element;
   show_filters: (props: { element: JSX.Element }) => JSX.Element;
   placeholder: string;
@@ -303,7 +303,8 @@ export function SearchBar(props: {
           }}
         />
         <>
-          {props.is_views_editable === undefined || props.is_views_editable ? (
+          {!props.show_views[1] &&
+          (props.is_views_editable === undefined || props.is_views_editable) ? (
             <View
               style={{
                 alignSelf: "center",
@@ -311,20 +312,22 @@ export function SearchBar(props: {
                 marginHorizontal: 0,
               }}
             >
-              <props.show_views
-                element={
-                  <Feather
-                    name="layout"
-                    size={20}
-                    color={colors.tailwind.slate[400]}
-                    style={{
-                      alignSelf: "center",
-                      padding: 4,
-                      marginHorizontal: 0,
-                    }}
-                  />
-                }
-              />
+              {apply(props.show_views[0], (ShowViews) => (
+                <ShowViews
+                  element={
+                    <Feather
+                      name="layout"
+                      size={20}
+                      color={colors.tailwind.slate[400]}
+                      style={{
+                        alignSelf: "center",
+                        padding: 4,
+                        marginHorizontal: 0,
+                      }}
+                    />
+                  }
+                />
+              ))}
             </View>
           ) : (
             <></>

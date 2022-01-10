@@ -3,7 +3,7 @@ import { Draft } from "immer";
 import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
-import { PathString, Struct, Variable } from "./variable";
+import { Struct, Variable } from "./variable";
 import { View, Text } from "../themed";
 import Decimal from "decimal.js";
 import { Pressable } from "react-native";
@@ -322,7 +322,7 @@ export function List(props: {
     init_filter: Filter;
     filters: HashSet<Filter>;
     dispatch: React.Dispatch<ListAction>;
-    show_views: (props: { element: JSX.Element }) => JSX.Element;
+    show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
     show_sorting: (props: { element: JSX.Element }) => JSX.Element;
     show_filters: (props: { element: JSX.Element }) => JSX.Element;
   }) => JSX.Element;
@@ -399,11 +399,14 @@ export function List(props: {
         init_filter: state.init_filter,
         filters: state.filters,
         dispatch: dispatch,
-        show_views: ({ element }: { element: JSX.Element }) => (
-          <Pressable onPress={() => bsm_view_ref.current?.present()}>
-            {element}
-          </Pressable>
-        ),
+        show_views: [
+          ({ element }: { element: JSX.Element }) => (
+            <Pressable onPress={() => bsm_view_ref.current?.present()}>
+              {element}
+            </Pressable>
+          ),
+          Object.keys(props.render_list_element[1]).length === 0,
+        ],
         show_sorting: ({ element }: { element: JSX.Element }) => (
           <Pressable onPress={() => bsm_sorting_ref.current?.present()}>
             {element}
