@@ -1,3 +1,4 @@
+import { registerRootComponent } from "expo";
 import React from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
@@ -85,7 +86,7 @@ export type NavigatorParams = {
   };
 };
 
-export default function App() {
+function Component() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
 
@@ -98,19 +99,6 @@ export default function App() {
           <BottomSheetModalProvider>
             <PortalProvider>
               <SafeAreaProvider>
-                {/* <TextInput
-                  mode="outlined"
-                  autoComplete={true}
-                  // style={styles.inputContainerStyle}
-                  label="Outlined input multiline"
-                  multiline
-                  placeholder="Type something"
-                  value={"outlinedMultiline"}
-                  onChangeText={
-                    (outlinedMultiline) => {}
-                    // inputActionHandler('outlinedMultiline', outlinedMultiline)
-                  }
-                /> */}
                 <NavigationContainer
                   theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
                 >
@@ -173,3 +161,5 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
   NativeStackScreenProps<NavigatorParams, Screen>;
 
 const Stack = createNativeStackNavigator<NavigatorParams>();
+
+registerRootComponent(Component);

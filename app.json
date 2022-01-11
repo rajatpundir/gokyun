@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint": "./src/navigation/main",
     "name": "gokyun",
     "slug": "gokyun",
     "version": "1.0.0",
