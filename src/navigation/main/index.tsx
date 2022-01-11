@@ -1,4 +1,6 @@
 import React from "react";
+import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider as PaperProvider } from "react-native-paper";
@@ -16,26 +18,20 @@ import {
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import useAssets from "./src/lib/hooks/useAssets";
-import useColorScheme from "./src/lib/hooks/useColorScheme";
+import { ListAction, SelectionModal } from "../../lib/utils/list";
+import { PathString, Struct, Variable } from "../../lib/utils/variable";
+import { Filter } from "../../lib/utils/db";
+import { colors } from "../../lib/themed/colors";
+
 import {
   Navigator,
   NavigatorParams as MainScreenNavigatorParams,
-} from "./src/navigation/main/tree";
+} from "./tree";
 
-import { SelectionModal } from "./src/lib/utils/list";
-import { ListAction } from "./src/lib/utils/list";
-
-import { PathString, Struct, Variable } from "./src/lib/utils/variable";
-
-import Test from "./src/navigation/test";
-import NotFoundScreen from "./src/navigation/not_found";
-
-import Decimal from "decimal.js";
-import { Filter } from "./src/lib/utils/db";
-
-import { HashSet } from "prelude-ts";
-import { colors } from "./src/lib/themed/colors";
+import NotFoundScreen from "../not_found";
+import Test from "../test";
+import useAssets from "../../lib/hooks/useAssets";
+import useColorScheme from "../../lib/hooks/useColorScheme";
 
 // Ignore react navigation error related to serializability of props passed
 
