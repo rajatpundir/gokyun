@@ -505,3 +505,7 @@ export function strong_enum_to_string(field: StrongEnum) {
     }
   }
 }
+
+export function get_path_string(path: Path): PathString {
+  return [path.path[0].map((x) => x[0]), path.path[1][0]];
+}

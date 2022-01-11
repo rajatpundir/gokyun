@@ -1,5 +1,9 @@
 import React from "react";
+import { HashSet } from "prelude-ts";
+import { useNavigation } from "@react-navigation/native";
 import { Pressable, ScrollView } from "react-native";
+import Decimal from "decimal.js";
+import { FontAwesome } from "@expo/vector-icons";
 import {
   ComponentViews,
   OtherComponent,
@@ -9,12 +13,8 @@ import { Label, Field, Check } from "../lib/utils/fields";
 import { View, Text } from "../lib/themed";
 import { colors } from "../lib/themed/colors";
 import { arrow, unwrap } from "../lib/utils/prelude";
-import { useNavigation } from "@react-navigation/native";
-import Decimal from "decimal.js";
-import { FontAwesome } from "@expo/vector-icons";
 import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
-import { HashSet } from "prelude-ts";
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
 
@@ -28,10 +28,14 @@ export default {
       const navigation = useNavigation();
       return (
         <ScrollView
-          style={{ flex: 1, backgroundColor: colors.custom.black[900] }}
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            backgroundColor: colors.custom.black[900],
+          }}
         >
-          <View>
-            <Label {...props} path={"str"} />
+          <View style={{ margin: 10 }}>
+            {/* <Label {...props} path={"str"} /> */}
             <Field {...props} path={"str"} />
           </View>
           <View>

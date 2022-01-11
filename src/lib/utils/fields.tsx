@@ -27,6 +27,7 @@ import {
 import {
   compare_paths,
   concat_path_strings,
+  get_path_string,
   Path,
   PathString,
   StrongEnum,
@@ -66,76 +67,76 @@ function Str(
   if (value.type === "str") {
     if (props.path.writeable && props.mode === "write") {
       return (
-        <View
-          style={{
-            paddingHorizontal: 0,
-          }}
-        >
-          <TextInput
-            style={[
-              arrow(() => {
-                if (has_errors) {
-                  return { color: colors.custom.blue[900] };
-                }
-                return {};
-              }),
-              ,
-              style,
-            ]}
-            {...otherProps}
-            defaultValue={local_val}
-            onChangeText={(x) => {
-              try {
-                set_local_val(x);
-                dispatch([
-                  "value",
-                  apply(props.path, (it) => {
-                    it.path[1][1] = {
-                      type: "str",
-                      value: x.substring(0, 256),
-                    };
-                    return it;
-                  }),
-                ]);
-                set_has_errors(false);
-              } catch (e) {
-                set_has_errors(true);
-              }
-            }}
-          />
-          {apply(default_value !== local_val, (it) => {
-            if (it) {
-              return (
-                <Pressable
-                  onPress={() => {
-                    set_local_val(default_value);
-                    dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "str",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
-                  }}
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 2,
-                  }}
-                >
-                  <MaterialIcons
-                    name="clear"
-                    size={24}
-                    color={colors.tailwind.slate[300]}
-                  />
-                </Pressable>
-              );
+        <PaperTextInput
+          // mode="outlined"
+          autoComplete={false}
+          label={get_label(props.state, get_path_string(props.path))}
+          // multiline
+          // placeholder="Type something"
+          value={local_val}
+          onChangeText={(x) => {
+            try {
+              set_local_val(x);
+              dispatch([
+                "value",
+                apply(props.path, (it) => {
+                  it.path[1][1] = {
+                    type: "str",
+                    value: x.substring(0, 256),
+                  };
+                  return it;
+                }),
+              ]);
+              set_has_errors(false);
+            } catch (e) {
+              set_has_errors(true);
             }
-            return <></>;
-          })}
-        </View>
+          }}
+          right={<PaperTextInput.Icon name="close" />}
+          style={[
+            arrow(() => {
+              if (has_errors) {
+                return { color: colors.custom.blue[900] };
+              }
+              return {};
+            }),
+            ,
+            { width: "100%" },
+            style,
+          ]}
+        />
+        // {apply(default_value !== local_val, (it) => {
+        //   if (it) {
+        //     return (
+        //       <Pressable
+        //         onPress={() => {
+        //           set_local_val(default_value);
+        //           dispatch([
+        //             "value",
+        //             apply(props.path, (it) => {
+        //               it.path[1][1] = {
+        //                 type: "str",
+        //                 value: default_value,
+        //               };
+        //               return it;
+        //             }),
+        //           ]);
+        //         }}
+        //         style={{
+        //           alignSelf: "center",
+        //           marginTop: 2,
+        //         }}
+        //       >
+        //         <MaterialIcons
+        //           name="clear"
+        //           size={24}
+        //           color={colors.tailwind.slate[300]}
+        //         />
+        //       </Pressable>
+        //     );
+        //   }
+        //   return <></>;
+        // })}
       );
     } else {
       return (

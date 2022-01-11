@@ -4,7 +4,10 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Provider as PaperProvider } from "react-native-paper";
+import {
+  Provider as PaperProvider,
+  DefaultTheme as PaperTheme,
+} from "react-native-paper";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -86,6 +89,21 @@ export type NavigatorParams = {
   };
 };
 
+const theme: ReactNativePaper.Theme = {
+  ...PaperTheme,
+  roundness: 5,
+  dark: true,
+  mode: "exact",
+  colors: {
+    ...PaperTheme.colors,
+    primary: colors.tailwind.gray[600],
+    accent: colors.custom.red[900],
+    background: colors.custom.black[900],
+    text: colors.tailwind.slate[300],
+    placeholder: colors.tailwind.slate[500],
+  },
+};
+
 function Component() {
   const isLoadingComplete = useAssets();
   const colorScheme = useColorScheme();
@@ -95,7 +113,7 @@ function Component() {
   } else {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <PaperProvider>
+        <PaperProvider theme={theme}>
           <BottomSheetModalProvider>
             <PortalProvider>
               <SafeAreaProvider>
