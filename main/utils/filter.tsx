@@ -319,7 +319,7 @@ export function FilterComponent(props: {
             >
               Fields
             </Text>
-            {/* <Pressable
+            <Pressable
               onPress={() => bottomSheetModalRef.current?.close()}
               style={{ paddingRight: 8 }}
             >
@@ -336,7 +336,7 @@ export function FilterComponent(props: {
               >
                 Close
               </Text>
-            </Pressable> */}
+            </Pressable>
           </View>
           <BottomSheetScrollView
             contentContainerStyle={{

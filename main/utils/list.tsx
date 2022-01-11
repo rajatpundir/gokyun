@@ -293,8 +293,6 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
   }
 }
 
-// TODO: [Bug] bottomSheetRef.current?.close() closes bottom sheet permanently
-// Also try using portal from React Native Paper instead
 export function List(props: {
   selected: Decimal;
   struct: Struct;
@@ -508,26 +506,24 @@ export function List(props: {
             >
               VIEW
             </Text>
-            {/* <View>
-              <Pressable
-                onPress={() => bsm_view_ref.current?.close()}
-                style={{ paddingRight: 8 }}
+            <Pressable
+              onPress={() => bsm_view_ref.current?.close()}
+              style={{ paddingRight: 8 }}
+            >
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: "700",
+                  textAlign: "center",
+                  paddingHorizontal: 5,
+                  paddingVertical: 2,
+                  borderRadius: 2,
+                  backgroundColor: colors.custom.red[900],
+                }}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "700",
-                    textAlign: "center",
-                    paddingHorizontal: 5,
-                    paddingVertical: 2,
-                    borderRadius: 2,
-                    backgroundColor: colors.custom.red[900],
-                  }}
-                >
-                  Close
-                </Text>
-              </Pressable>
-            </View> */}
+                Close
+              </Text>
+            </Pressable>
           </View>
           <BottomSheetScrollView
             contentContainerStyle={{
@@ -539,7 +535,7 @@ export function List(props: {
             <Pressable
               onPress={() => {
                 if (state.layout !== "") {
-                  // bsm_view_ref.current?.close();
+                  bsm_view_ref.current?.close();
                   dispatch(["layout", ""]);
                 }
               }}
@@ -562,7 +558,7 @@ export function List(props: {
               <Pressable
                 onPress={() => {
                   if (state.layout !== layout) {
-                    // bsm_view_ref.current?.close();
+                    bsm_view_ref.current?.close();
                     dispatch(["layout", layout]);
                   }
                 }}
@@ -632,7 +628,7 @@ export function List(props: {
                   Field++
                 </Text>
               </Pressable>
-              {/* <Pressable
+              <Pressable
                 onPress={() => bsm_sorting_ref.current?.close()}
                 style={{ paddingRight: 8 }}
               >
@@ -649,7 +645,7 @@ export function List(props: {
                 >
                   Close
                 </Text>
-              </Pressable> */}
+              </Pressable>
             </View>
           </View>
           <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
@@ -681,26 +677,24 @@ export function List(props: {
               >
                 Fields
               </Text>
-              {/* <View>
-                <Pressable
-                  onPress={() => bsm_sorting_fields_ref.current?.close()}
-                  style={{ paddingRight: 8 }}
+              <Pressable
+                onPress={() => bsm_sorting_fields_ref.current?.close()}
+                style={{ paddingRight: 8 }}
+              >
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: "700",
+                    textAlign: "center",
+                    paddingHorizontal: 5,
+                    paddingVertical: 2,
+                    borderRadius: 2,
+                    backgroundColor: colors.custom.red[900],
+                  }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "700",
-                      textAlign: "center",
-                      paddingHorizontal: 5,
-                      paddingVertical: 2,
-                      borderRadius: 2,
-                      backgroundColor: colors.custom.red[900],
-                    }}
-                  >
-                    Close
-                  </Text>
-                </Pressable>
-              </View> */}
+                  Close
+                </Text>
+              </Pressable>
             </View>
             <SortComponentFields
               init_filter={state.init_filter}
