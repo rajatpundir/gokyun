@@ -1,4 +1,11 @@
 import * as React from "react";
+import { useState } from "react";
+import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
+import { useNavigation } from "@react-navigation/native";
+import { Immutable } from "immer";
+import Checkbox, { CheckboxProps } from "expo-checkbox";
+import moment from "moment";
 import {
   Text as DefaultText,
   TextInput as DefaultTextInput,
@@ -6,13 +13,17 @@ import {
   Platform,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Decimal from "decimal.js";
-import moment from "moment";
+import { MaterialIcons } from "@expo/vector-icons";
 
 import { View, Text, TextInput } from "../themed";
 import { apply, unwrap, Result, arrow } from "./prelude";
-import { Action, get_labeled_permissions, State, get_path } from "./commons";
-import { useState } from "react";
+import {
+  Action,
+  get_labeled_permissions,
+  State,
+  get_path,
+  get_label,
+} from "./commons";
 import {
   compare_paths,
   concat_path_strings,
@@ -24,15 +35,12 @@ import {
   Variable,
 } from "./variable";
 import { get_struct } from "./schema";
-import { HashSet } from "prelude-ts";
 import { Filter, FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
-import { useNavigation } from "@react-navigation/native";
-import { Immutable } from "immer";
-import Checkbox, { CheckboxProps } from "expo-checkbox";
 import { colors } from "../themed/colors";
 import { ListAction } from "./list";
-import { MaterialIcons } from "@expo/vector-icons";
+
+import { TextInput as PaperTextInput } from "react-native-paper";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
 
@@ -1426,27 +1434,19 @@ export function Label(props: {
   state: State;
   path: PathString | string;
 }): JSX.Element {
-  const path_string: PathString = arrow(() => {
-    if (typeof props.path === "string") {
-      return [[], props.path];
-    } else {
-      return props.path;
-    }
-  });
-  return apply(get_path(props.state, path_string), (path) => {
-    if (unwrap(path)) {
-      return (
-        <Text
-          style={{
-            fontWeight: "600",
-          }}
-        >
-          {path.value.label}
-        </Text>
-      );
-    }
-    return <></>;
-  });
+  const label = get_label(props.state, props.path);
+  if (label !== "") {
+    return (
+      <Text
+        style={{
+          fontWeight: "600",
+        }}
+      >
+        {label}
+      </Text>
+    );
+  }
+  return <></>;
 }
 
 export function Field(props: {

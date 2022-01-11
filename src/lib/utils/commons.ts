@@ -989,3 +989,19 @@ export function get_path(state: State, path_string: PathString): Option<Path> {
   }
   return undefined;
 }
+
+export function get_label(state: State, path: PathString | string): string {
+  const path_string: PathString = arrow(() => {
+    if (typeof path === "string") {
+      return [[], path];
+    } else {
+      return path;
+    }
+  });
+  return apply(get_path(state, path_string), (it) => {
+    if (unwrap(it)) {
+      return it.value.label;
+    }
+    return "";
+  });
+}
