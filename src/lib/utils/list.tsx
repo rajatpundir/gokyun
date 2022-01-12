@@ -10,7 +10,7 @@ import { ListRenderItemInfo, Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { colors } from "../themed/colors";
-import { NavigatorProps as RootNavigatorProps } from "../../../App";
+import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
 import {
   BottomSheetFlatList,
   BottomSheetModal,
@@ -437,11 +437,11 @@ export function List(props: {
         marginVertical: 0,
       }}
     >
-      {props.render_custom_fields({
-        init_filter: state.init_filter,
-        filters: state.filters,
-        dispatch: dispatch,
-        show_views: [
+      <props.render_custom_fields
+        init_filter={state.init_filter}
+        filters={state.filters}
+        dispatch={dispatch}
+        show_views={[
           ({ element }: { element: JSX.Element }) => (
             <Pressable
               onPress={() => {
@@ -452,18 +452,18 @@ export function List(props: {
             </Pressable>
           ),
           Object.keys(props.render_list_element[1]).length === 0,
-        ],
-        show_sorting: ({ element }: { element: JSX.Element }) => (
+        ]}
+        show_sorting={({ element }: { element: JSX.Element }) => (
           <Pressable onPress={() => bsm_sorting_ref.current?.present()}>
             {element}
           </Pressable>
-        ),
-        show_filters: ({ element }: { element: JSX.Element }) => (
+        )}
+        show_filters={({ element }: { element: JSX.Element }) => (
           <Pressable onPress={() => bsm_filters_ref.current?.present()}>
             {element}
           </Pressable>
-        ),
-      })}
+        )}
+      />
 
       <FlatList
         data={state.variables}
@@ -483,8 +483,8 @@ export function List(props: {
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={{
-            backgroundColor: colors.custom.black[900],
-            borderColor: colors.tailwind.gray[500],
+            backgroundColor: colors.tailwind.slate[900],
+            borderColor: colors.tailwind.sky[600],
             borderWidth: 1,
           }}
         >
@@ -494,7 +494,6 @@ export function List(props: {
               marginHorizontal: 1,
               paddingHorizontal: 8,
               borderBottomWidth: 1,
-              backgroundColor: colors.custom.black[900],
             }}
           >
             <Text
@@ -518,7 +517,7 @@ export function List(props: {
                   paddingHorizontal: 5,
                   paddingVertical: 2,
                   borderRadius: 2,
-                  backgroundColor: colors.custom.red[900],
+                  backgroundColor: colors.tailwind.sky[600],
                 }}
               >
                 Close
@@ -586,8 +585,8 @@ export function List(props: {
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={{
-            backgroundColor: colors.custom.black[900],
-            borderColor: colors.tailwind.gray[500],
+            backgroundColor: colors.tailwind.slate[900],
+            borderColor: colors.tailwind.sky[600],
             borderWidth: 1,
           }}
         >
@@ -597,7 +596,6 @@ export function List(props: {
               marginHorizontal: 1,
               paddingHorizontal: 8,
               borderBottomWidth: 1,
-              backgroundColor: colors.custom.black[900],
             }}
           >
             <Text
@@ -622,7 +620,7 @@ export function List(props: {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.custom.red[900],
+                    backgroundColor: colors.tailwind.sky[600],
                   }}
                 >
                   Field++
@@ -640,7 +638,7 @@ export function List(props: {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.custom.red[900],
+                    backgroundColor: colors.tailwind.sky[600],
                   }}
                 >
                   Close
@@ -654,8 +652,8 @@ export function List(props: {
             snapPoints={["50%", "82%"]}
             index={0}
             backgroundStyle={{
-              backgroundColor: colors.custom.black[900],
-              borderColor: colors.tailwind.gray[500],
+              backgroundColor: colors.tailwind.slate[900],
+              borderColor: colors.tailwind.sky[600],
               borderWidth: 1,
             }}
           >
@@ -665,7 +663,6 @@ export function List(props: {
                 marginHorizontal: 1,
                 paddingHorizontal: 8,
                 borderBottomWidth: 1,
-                backgroundColor: colors.custom.black[900],
               }}
             >
               <Text
@@ -689,7 +686,7 @@ export function List(props: {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.custom.red[900],
+                    backgroundColor: colors.tailwind.sky[600],
                   }}
                 >
                   Close
@@ -708,8 +705,8 @@ export function List(props: {
           snapPoints={["50%", "82%"]}
           index={1}
           backgroundStyle={{
-            backgroundColor: colors.custom.black[900],
-            borderColor: colors.tailwind.gray[500],
+            backgroundColor: colors.tailwind.slate[900],
+            borderColor: colors.tailwind.sky[600],
             borderWidth: 1,
           }}
         >
@@ -717,8 +714,7 @@ export function List(props: {
             style={{
               flex: 1,
               flexDirection: "column",
-              backgroundColor: colors.custom.black[900],
-              borderColor: colors.tailwind.gray[500],
+              borderColor: colors.tailwind.sky[600],
               borderLeftWidth: 1,
               borderRightWidth: 1,
               paddingHorizontal: 0,
@@ -727,10 +723,8 @@ export function List(props: {
             <View
               style={{
                 borderBottomWidth: 1,
-                backgroundColor: colors.custom.black[900],
                 paddingHorizontal: 10,
                 paddingBottom: 5,
-                marginBottom: 5,
               }}
             >
               <Text
@@ -746,7 +740,6 @@ export function List(props: {
                 style={{
                   paddingHorizontal: 4,
                   paddingVertical: 4,
-                  backgroundColor: colors.custom.black[900],
                 }}
               >
                 <Pressable
@@ -759,7 +752,7 @@ export function List(props: {
                 <Checkbox
                   value={state.active}
                   onValueChange={() => dispatch(["active", !state.active])}
-                  color={state.active ? colors.custom.red[900] : undefined}
+                  color={state.active ? colors.tailwind.sky[600] : undefined}
                   style={{
                     alignSelf: "center",
                     marginHorizontal: 6,
@@ -772,7 +765,6 @@ export function List(props: {
                   paddingHorizontal: 4,
                   paddingVertical: 4,
                   marginBottom: 2,
-                  backgroundColor: colors.custom.black[900],
                 }}
               >
                 <Pressable
@@ -790,7 +782,7 @@ export function List(props: {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={!state.level ? colors.custom.red[900] : undefined}
+                  color={!state.level ? colors.tailwind.sky[600] : undefined}
                   style={{
                     alignSelf: "center",
                     marginHorizontal: 6,
@@ -805,7 +797,7 @@ export function List(props: {
               >
                 <Text
                   style={{
-                    backgroundColor: colors.custom.red[900],
+                    backgroundColor: colors.tailwind.blue[500],
                     alignSelf: "flex-end",
                     paddingHorizontal: 6,
                     paddingVertical: 2,
