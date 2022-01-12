@@ -10,15 +10,11 @@ import {
 } from "react-native-paper";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from "@react-navigation/native";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -35,7 +31,6 @@ import {
 import NotFoundScreen from "../not_found";
 import Test from "../test";
 import useAssets from "../../lib/hooks/useAssets";
-import useColorScheme from "../../lib/hooks/useColorScheme";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -96,18 +91,16 @@ const theme: ReactNativePaper.Theme = {
   mode: "exact",
   colors: {
     ...PaperTheme.colors,
-    primary: colors.tailwind.gray[600],
-    accent: colors.custom.red[900],
-    background: colors.custom.black[900],
-    text: colors.tailwind.slate[300],
-    placeholder: colors.tailwind.slate[500],
+    primary: colors.tailwind.red[600],
+    accent: colors.tailwind.blue[900],
+    background: colors.tailwind.zinc[900],
+    placeholder: colors.tailwind.zinc[300],
+    text: colors.tailwind.zinc[100],
   },
 };
 
 function Component() {
   const isLoadingComplete = useAssets();
-  const colorScheme = useColorScheme();
-
   if (!isLoadingComplete) {
     return null;
   } else {
@@ -117,49 +110,59 @@ function Component() {
           <BottomSheetModalProvider>
             <PortalProvider>
               <SafeAreaProvider>
-                <NavigationContainer
-                  theme={colorScheme !== "dark" ? DarkTheme : DefaultTheme}
-                >
-                  <Stack.Navigator>
-                    <Stack.Group>
-                      <Stack.Screen
-                        name="Main"
-                        component={Navigator}
-                        options={{ headerShown: false, animation: "none" }}
-                      />
-                    </Stack.Group>
-                    <Stack.Group screenOptions={{ presentation: "modal" }}>
-                      <Stack.Screen
-                        name="SelectionModal"
-                        component={SelectionModal}
-                        options={{
-                          title: "Select variable",
-                          headerStyle: {
-                            backgroundColor: colors.custom.black[900],
-                          },
-                          headerTintColor: colors.tailwind.slate[200],
-                        }}
-                      />
-                      <Stack.Screen
-                        name="Test"
-                        component={Test}
-                        options={{
-                          title: "Test",
-                          headerStyle: {
-                            backgroundColor: colors.custom.black[900],
-                          },
-                          headerTintColor: colors.tailwind.slate[200],
-                        }}
-                      />
-                      <Stack.Screen
-                        name="NotFound"
-                        component={NotFoundScreen}
-                        options={{ title: "Oops!" }}
-                      />
-                    </Stack.Group>
-                  </Stack.Navigator>
-                </NavigationContainer>
-                <StatusBar />
+                <SafeAreaView style={{ flex: 1 }}>
+                  <NavigationContainer
+                    theme={{
+                      dark: true,
+                      colors: {
+                        ...DarkTheme.colors,
+                        primary: colors.tailwind.red[600],
+                        background: colors.tailwind.zinc[900],
+                        card: colors.tailwind.zinc[900],
+                        border: colors.tailwind.zinc[800],
+                        text: colors.tailwind.zinc[300],
+                        notification: colors.tailwind.sky[600],
+                      },
+                    }}
+                  >
+                    <Stack.Navigator>
+                      <Stack.Group>
+                        <Stack.Screen
+                          name="Main"
+                          component={Navigator}
+                          options={{ headerShown: false, animation: "none" }}
+                        />
+                      </Stack.Group>
+                      <Stack.Group screenOptions={{ presentation: "modal" }}>
+                        <Stack.Screen
+                          name="SelectionModal"
+                          component={SelectionModal}
+                          options={{
+                            headerShown: false,
+                            animation: "none",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="Test"
+                          component={Test}
+                          options={{
+                            headerShown: false,
+                            animation: "none",
+                          }}
+                        />
+                        <Stack.Screen
+                          name="NotFound"
+                          component={NotFoundScreen}
+                          options={{
+                            headerShown: false,
+                            animation: "none",
+                          }}
+                        />
+                      </Stack.Group>
+                    </Stack.Navigator>
+                  </NavigationContainer>
+                  <StatusBar backgroundColor={colors.tailwind.zinc[900]} />
+                </SafeAreaView>
               </SafeAreaProvider>
             </PortalProvider>
           </BottomSheetModalProvider>

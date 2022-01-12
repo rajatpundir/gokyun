@@ -20,7 +20,6 @@ import Tags from "./tags";
 import Categories from "./categories";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { colors } from "../../../../../src/lib/themed/colors";
 
 export type NavigatorParams = {
   Countries: undefined;
@@ -40,55 +39,25 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
 
 const TopTab = createMaterialTopTabNavigator<NavigatorParams>();
 
-export function Navigator({ navigation }: ParentNavigatorProps<"System">) {
+export function Navigator(props: ParentNavigatorProps<"System">) {
   return (
     <TopTab.Navigator
       initialRouteName="Countries"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,
-        tabBarActiveTintColor: colors.custom.red[900],
-        tabBarInactiveTintColor: "#9b9baf",
         tabBarScrollEnabled: true,
+        tabBarItemStyle: { width: 100 },
         tabBarLabelStyle: {
           fontSize: 13,
           textTransform: "none",
         },
-        tabBarItemStyle: { width: 100 },
-        tabBarStyle: { backgroundColor: colors.custom.black[900] },
-        tabBarIndicatorStyle: {
-          backgroundColor: colors.custom.red[900],
-        },
       }}
     >
-      <TopTab.Screen
-        name="Countries"
-        component={Countries}
-        // options={({ navigation }: NavigatorProps<"Countries">) => ({
-        //   title: "Countries",
-        // })}
-      />
-      <TopTab.Screen
-        name="Languages"
-        component={Languages}
-        // options={({ navigation }: NavigatorProps<"Languages">) => ({
-        //   title: "Languages",
-        // })}
-      />
-      <TopTab.Screen
-        name="Tags"
-        component={Tags}
-        // options={({ navigation }: NavigatorProps<"Tags">) => ({
-        //   title: "Tags",
-        // })}
-      />
-      <TopTab.Screen
-        name="Categories"
-        component={Categories}
-        // options={({ navigation }: NavigatorProps<"Categories">) => ({
-        //   title: "Categories",
-        // })}
-      />
+      <TopTab.Screen name="Countries" component={Countries} />
+      <TopTab.Screen name="Languages" component={Languages} />
+      <TopTab.Screen name="Tags" component={Tags} />
+      <TopTab.Screen name="Categories" component={Categories} />
     </TopTab.Navigator>
   );
 }

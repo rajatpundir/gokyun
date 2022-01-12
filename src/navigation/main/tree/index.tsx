@@ -19,7 +19,6 @@ import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
-import { colors } from "../../../lib/themed/colors";
 
 export type NavigatorParams = {
   Clans: undefined;
@@ -43,34 +42,37 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
       initialRouteName="System"
       screenOptions={{
         lazy: true,
-        tabBarActiveTintColor: colors.tailwind.slate[400],
-        tabBarInactiveTintColor: "#9b9baf",
-        tabBarLabelStyle: { fontSize: 11 },
-        tabBarStyle: { backgroundColor: colors.custom.black[900] },
-        headerStyle: {
-          backgroundColor: colors.custom.black[900],
-          height: 55,
-        },
+        headerShown: false,
         tabBarHideOnKeyboard: true,
+        tabBarLabelStyle: { fontSize: 14 },
       }}
     >
       <BottomTab.Screen
         name="Clans"
         component={Clans}
-        options={({ navigation }: NavigatorProps<"Clans">) => ({
+        options={{
           title: "Clans",
           tabBarIcon: ({ color }) => (
-            <NavigatorItemIcon name="code" color={color} />
+            <FontAwesome
+              name="code"
+              size={30}
+              color={color}
+              style={{ margin: -3 }}
+            />
           ),
-        })}
+        }}
       />
       <BottomTab.Screen
         name="Alliances"
         component={Alliances}
         options={{
-          title: "Alliances",
           tabBarIcon: ({ color }) => (
-            <NavigatorItemIcon name="code" color={color} />
+            <FontAwesome
+              name="code"
+              size={30}
+              color={color}
+              style={{ margin: -3 }}
+            />
           ),
         }}
       />
@@ -78,9 +80,13 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
         name="Guilds"
         component={Guilds}
         options={{
-          title: "Guilds",
           tabBarIcon: ({ color }) => (
-            <NavigatorItemIcon name="code" color={color} />
+            <FontAwesome
+              name="code"
+              size={30}
+              color={color}
+              style={{ margin: -3 }}
+            />
           ),
         }}
       />
@@ -88,29 +94,30 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
         name="Users"
         component={Users}
         options={{
-          title: "Users",
           tabBarIcon: ({ color }) => (
-            <NavigatorItemIcon name="code" color={color} />
+            <FontAwesome
+              name="code"
+              size={30}
+              color={color}
+              style={{ margin: -3 }}
+            />
           ),
         }}
       />
       <BottomTab.Screen
         name="System"
         component={System}
-        options={({ navigation }: NavigatorProps<"System">) => ({
-          title: "System",
+        options={{
           tabBarIcon: ({ color }) => (
-            <NavigatorItemIcon name="code" color={color} />
+            <FontAwesome
+              name="code"
+              size={30}
+              color={color}
+              style={{ margin: -3 }}
+            />
           ),
-        })}
+        }}
       />
     </BottomTab.Navigator>
   );
-}
-
-function NavigatorItemIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

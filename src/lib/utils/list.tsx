@@ -430,7 +430,6 @@ export function List(props: {
         flex: 1,
         flexDirection: "column",
         flexGrow: 1,
-        backgroundColor: colors.custom.black[900],
         paddingHorizontal: 0,
         paddingVertical: 0,
         marginHorizontal: 0,

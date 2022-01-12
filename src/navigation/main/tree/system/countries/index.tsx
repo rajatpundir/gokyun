@@ -80,7 +80,6 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       style={{
         flexDirection: "column",
         flexGrow: 1,
-        backgroundColor: colors.custom.black[900],
       }}
     >
       {/* <A />

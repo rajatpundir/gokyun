@@ -31,7 +31,6 @@ export default {
           style={{
             flex: 1,
             flexDirection: "column",
-            backgroundColor: colors.custom.black[900],
           }}
         >
           <View style={{ margin: 10 }}>
