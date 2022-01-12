@@ -18,19 +18,18 @@ import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
+import {
+  Navigator,
+  NavigatorParams as MainScreenNavigatorParams,
+} from "./tree";
+import useAssets from "../../lib/hooks/useAssets";
+import { apply } from "../../lib/utils/prelude";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
 import { Filter } from "../../lib/utils/db";
 import { colors } from "../../lib/themed/colors";
 
-import {
-  Navigator,
-  NavigatorParams as MainScreenNavigatorParams,
-} from "./tree";
-
-import NotFoundScreen from "../not_found";
 import Test from "../test";
-import useAssets from "../../lib/hooks/useAssets";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -100,76 +99,64 @@ const theme: ReactNativePaper.Theme = {
 };
 
 function Component() {
-  const isLoadingComplete = useAssets();
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <PaperProvider theme={theme}>
-          <BottomSheetModalProvider>
-            <PortalProvider>
-              <SafeAreaProvider>
-                <SafeAreaView style={{ flex: 1 }}>
-                  <NavigationContainer
-                    theme={{
-                      dark: true,
-                      colors: {
-                        ...DarkTheme.colors,
-                        primary: colors.tailwind.red[600],
-                        background: colors.tailwind.zinc[900],
-                        card: colors.tailwind.zinc[900],
-                        border: colors.tailwind.zinc[800],
-                        text: colors.tailwind.zinc[300],
-                        notification: colors.tailwind.sky[600],
-                      },
-                    }}
-                  >
-                    <Stack.Navigator>
-                      <Stack.Group>
-                        <Stack.Screen
-                          name="Main"
-                          component={Navigator}
-                          options={{ headerShown: false, animation: "none" }}
-                        />
-                      </Stack.Group>
-                      <Stack.Group screenOptions={{ presentation: "modal" }}>
-                        <Stack.Screen
-                          name="SelectionModal"
-                          component={SelectionModal}
-                          options={{
+  return apply(useAssets(), (is_loading_complete) => {
+    if (is_loading_complete) {
+      return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <PaperProvider theme={theme}>
+            <BottomSheetModalProvider>
+              <PortalProvider>
+                <SafeAreaProvider>
+                  <SafeAreaView style={{ flex: 1 }}>
+                    <NavigationContainer
+                      theme={{
+                        dark: true,
+                        colors: {
+                          ...DarkTheme.colors,
+                          primary: colors.tailwind.red[600],
+                          background: colors.tailwind.zinc[900],
+                          card: colors.tailwind.zinc[900],
+                          border: colors.tailwind.zinc[800],
+                          text: colors.tailwind.zinc[300],
+                          notification: colors.tailwind.sky[600],
+                        },
+                      }}
+                    >
+                      <Stack.Navigator initialRouteName="Main">
+                        <Stack.Group
+                          screenOptions={{
                             headerShown: false,
                             animation: "none",
                           }}
-                        />
-                        <Stack.Screen
-                          name="Test"
-                          component={Test}
-                          options={{
-                            headerShown: false,
+                        >
+                          <Stack.Screen name="Main" component={Navigator} />
+                        </Stack.Group>
+                        <Stack.Group
+                          screenOptions={{
+                            presentation: "modal",
                             animation: "none",
-                          }}
-                        />
-                        <Stack.Screen
-                          name="NotFound"
-                          component={NotFoundScreen}
-                          options={{
                             headerShown: false,
-                            animation: "none",
                           }}
-                        />
-                      </Stack.Group>
-                    </Stack.Navigator>
-                  </NavigationContainer>
+                        >
+                          <Stack.Screen
+                            name="SelectionModal"
+                            component={SelectionModal}
+                          />
+                          <Stack.Screen name="Test" component={Test} />
+                        </Stack.Group>
+                      </Stack.Navigator>
+                    </NavigationContainer>
+                  </SafeAreaView>
                   <StatusBar backgroundColor={colors.tailwind.zinc[900]} />
-                </SafeAreaView>
-              </SafeAreaProvider>
-            </PortalProvider>
-          </BottomSheetModalProvider>
-        </PaperProvider>
-      </GestureHandlerRootView>
-    );
-  }
+                </SafeAreaProvider>
+              </PortalProvider>
+            </BottomSheetModalProvider>
+          </PaperProvider>
+        </GestureHandlerRootView>
+      );
+    }
+    return <></>;
+  });
 }
 
 declare global {

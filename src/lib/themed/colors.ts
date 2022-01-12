@@ -1,11 +1,4 @@
 export const colors = {
-  custom: {
-    red: { 900: "#CC0000" },
-    blue: { 900: "#3EA6FF" },
-    black: { 900: "#000000" },
-    white: { 900: "#FFFFFF" },
-    gray: { 900: "#181818" },
-  },
   // https://tailwindcss.com/docs/customizing-colors#default-color-palette
   tailwind: {
     slate: {

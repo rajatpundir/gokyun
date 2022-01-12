@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import { FontAwesome } from "@expo/vector-icons";
-
-import { CompositeScreenProps } from "@react-navigation/native";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {
-  BottomTabScreenProps,
   createBottomTabNavigator,
+  BottomTabScreenProps,
 } from "@react-navigation/bottom-tabs";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { CompositeScreenProps } from "@react-navigation/native";
+
+import { FontAwesome } from "@expo/vector-icons";
 
 import {
   NavigatorParams as ParentNavigatorParams,
@@ -27,14 +27,6 @@ export type NavigatorParams = {
   Users: undefined;
   System: undefined;
 };
-
-export type NavigatorProps<Screen extends keyof NavigatorParams> =
-  CompositeScreenProps<
-    BottomTabScreenProps<NavigatorParams, Screen>,
-    NativeStackScreenProps<ParentNavigatorParams>
-  >;
-
-const BottomTab = createBottomTabNavigator<NavigatorParams>();
 
 export function Navigator(props: ParentNavigatorProps<"Main">) {
   return (
@@ -121,3 +113,11 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
     </BottomTab.Navigator>
   );
 }
+
+export type NavigatorProps<Screen extends keyof NavigatorParams> =
+  CompositeScreenProps<
+    BottomTabScreenProps<NavigatorParams, Screen>,
+    NativeStackScreenProps<ParentNavigatorParams>
+  >;
+
+const BottomTab = createBottomTabNavigator<NavigatorParams>();

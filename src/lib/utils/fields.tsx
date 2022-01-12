@@ -96,7 +96,7 @@ function Str(
           style={[
             arrow(() => {
               if (has_errors) {
-                return { color: colors.custom.blue[900] };
+                return { color: colors.tailwind.sky[600] };
               }
               return {};
             }),
@@ -170,7 +170,7 @@ function Lstr(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -264,7 +264,7 @@ function Clob(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -358,7 +358,7 @@ function I_32(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -457,7 +457,7 @@ function U_32(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -555,7 +555,7 @@ function I_64(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -654,7 +654,7 @@ function U_64(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -753,7 +753,7 @@ function I_Double(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -848,7 +848,7 @@ function U_Double(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -943,7 +943,7 @@ function I_Decimal(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -1038,7 +1038,7 @@ function U_Decimal(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.custom.blue[900] };
+                  return { color: colors.tailwind.sky[600] };
                 }
                 return {};
               }),
@@ -1134,7 +1134,7 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element {
               }),
             ])
           }
-          color={value.value ? colors.custom.red[900] : undefined}
+          color={value.value ? colors.tailwind.red[600] : undefined}
         />
       );
     } else {
