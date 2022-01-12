@@ -129,7 +129,7 @@ export function SortComponent(props: {
                       alignSelf: "center",
                       borderWidth: 1,
                       borderRadius: 5,
-                      borderColor: colors.tailwind.slate[400],
+                      borderColor: colors.tailwind.sky[700],
                     }}
                   >
                     {arrow(() => {
@@ -138,7 +138,7 @@ export function SortComponent(props: {
                           <AntDesign
                             name="arrowdown"
                             size={24}
-                            color={colors.tailwind.slate[400]}
+                            color={colors.tailwind.sky[600]}
                           />
                         );
                       } else {
@@ -146,7 +146,7 @@ export function SortComponent(props: {
                           <AntDesign
                             name="arrowup"
                             size={24}
-                            color={colors.tailwind.slate[400]}
+                            color={colors.tailwind.sky[600]}
                           />
                         );
                       }
