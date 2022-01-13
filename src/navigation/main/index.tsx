@@ -23,6 +23,7 @@ import {
   NavigatorParams as MainScreenNavigatorParams,
 } from "./tree";
 import useAssets from "../../lib/hooks/useAssets";
+import { useDeviceContext } from "twrnc";
 import { apply } from "../../lib/utils/prelude";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
@@ -30,6 +31,7 @@ import { Filter } from "../../lib/utils/db";
 import { colors } from "../../lib/themed/colors";
 
 import Test from "../test";
+import tw from "../../lib/themed/tailwind";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -99,6 +101,7 @@ const theme: ReactNativePaper.Theme = {
 };
 
 function Component() {
+  useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
       return (
