@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createRef, useRef, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -269,6 +269,10 @@ function Lstr(
   return <></>;
 }
 
+// Also add Native Elements and Native Base
+// Try using TextInput from other libs as fallback
+// Multiple libraries would have to be used since no single is really reliable
+// Create robustness by using them and having fallbacks
 function Clob(
   props: ComponentProps & {
     direction?: "row" | "column" | "row-reverse" | "column-reverse";
@@ -296,6 +300,18 @@ function Clob(
         <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
           {label}
         </Subheading>
+        <PaperTextInput
+          placeholder={"LLLl"}
+          multiline={true}
+          autoComplete={true}
+          dense={true}
+          value={local_val}
+          error={has_errors}
+          onChangeText={(x) => {
+            console.log(x);
+            set_local_val(x);
+          }}
+        />
         {apply(props.path.writeable && props.mode === "write", (it) => {
           if (it) {
             return (
