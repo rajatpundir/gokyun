@@ -28,73 +28,26 @@ export default {
       const navigation = useNavigation();
       return (
         <ScrollView style={tw.style(["flex-1", "flex-col"])}>
-          <View style={{ margin: 10 }}>
-            {/* <Label {...props} path={"str"} /> */}
-            <Field {...props} path={"str"} />
-          </View>
+          <Field {...props} path={"str"} />
+          <Field {...props} path={[["z"], "str"]} />
+          <Field {...props} path={"lstr"} />
+          <Field {...props} path={"clob"} />
           <View>
-            <Label {...props} path={[["z"], "str"]} />
-            <Field {...props} path={[["z"], "str"]} />
-          </View>
-          <View>
-            <Label {...props} path={"lstr"} />
-            <Field {...props} path={"lstr"} />
-          </View>
-          <View>
-            <Label {...props} path={"clob"} />
-            <Field {...props} path={"clob"} />
-          </View>
-          <View>
-            <Label {...props} path={"u32"} />
             <Field {...props} path={"u32"} />
             <Check {...props} name="u32_is_even" message="U32 cannot be odd" />
           </View>
+          <Field {...props} path={"i32"} />
+          <Field {...props} path={"u64"} />
+          <Field {...props} path={"i64"} />
+          <Field {...props} path={"udouble"} />
+          <Field {...props} path={"idouble"} />
+          <Field {...props} path={"udecimal"} />
+          <Field {...props} path={"idecimal"} />
+          <Field {...props} path={"bool"} />
+          <Field {...props} path={"date"} />
+          <Field {...props} path={"time"} />
+          <Field {...props} path={"timestamp"} />
           <View>
-            <Label {...props} path={"i32"} />
-            <Field {...props} path={"i32"} />
-          </View>
-          <View>
-            <Label {...props} path={"u64"} />
-            <Field {...props} path={"u64"} />
-          </View>
-          <View>
-            <Label {...props} path={"i64"} />
-            <Field {...props} path={"i64"} />
-          </View>
-          <View>
-            <Label {...props} path={"udouble"} />
-            <Field {...props} path={"udouble"} />
-          </View>
-          <View>
-            <Label {...props} path={"idouble"} />
-            <Field {...props} path={"idouble"} />
-          </View>
-          <View>
-            <Label {...props} path={"udecimal"} />
-            <Field {...props} path={"udecimal"} />
-          </View>
-          <View>
-            <Label {...props} path={"idecimal"} />
-            <Field {...props} path={"idecimal"} />
-          </View>
-          <View>
-            <Label {...props} path={"bool"} />
-            <Field {...props} path={"bool"} />
-          </View>
-          <View>
-            <Label {...props} path={"date"} />
-            <Field {...props} path={"date"} />
-          </View>
-          <View>
-            <Label {...props} path={"time"} />
-            <Field {...props} path={"time"} />
-          </View>
-          <View>
-            <Label {...props} path={"timestamp"} />
-            <Field {...props} path={"timestamp"} />
-          </View>
-          <View>
-            <Label {...props} path={"user"} />
             <Field
               {...props}
               path={"user"}

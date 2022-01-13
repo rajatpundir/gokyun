@@ -9,8 +9,9 @@ import { views } from "../../views";
 import { ModalHeader, useComponent } from "../../lib/utils/component";
 
 // 1. Update TextInput everywhere
-// 2. List Tests component
-// 3. Create, Read, Update, Delete
+// 2. Finish styling
+// 3. List Tests component
+// 4. Create, Read, Update, Delete
 
 // IMPORTANT. Get working on creating actual app components for real by 12th of Jan!
 

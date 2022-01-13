@@ -96,6 +96,7 @@ const theme: ReactNativePaper.Theme = {
     background: colors.zinc[900],
     placeholder: colors.zinc[300],
     text: colors.zinc[100],
+    error: colors.sky[600],
   },
 };
 

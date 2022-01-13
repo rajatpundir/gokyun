@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -11,11 +10,12 @@ import {
   TextInput as DefaultTextInput,
   Pressable,
   Platform,
+  View,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { View, Text, TextInput } from "../themed";
+import { Text, TextInput } from "../themed";
 import { apply, unwrap, Result, arrow } from "./prelude";
 import {
   Action,
@@ -40,13 +40,56 @@ import { Filter, FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { ListAction } from "./list";
 
-import { TextInput as PaperTextInput } from "react-native-paper";
-import { colors } from "./tailwind";
+import { TextInput as PaperTextInput, Subheading } from "react-native-paper";
+import { colors, tw } from "./tailwind";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
 
 // In write mode, text input will contain labels
 // In read mode, labels will be beside their values
+
+export function get_direction(
+  direction?: "row" | "column" | "row-reverse" | "column-reverse"
+): "row" | "column" | "row-reverse" | "column-reverse" {
+  if (direction) {
+    return direction;
+  }
+  return "row";
+}
+
+export function get_flex_direction(
+  direction?: "row" | "column" | "row-reverse" | "column-reverse"
+): "flex-row" | "flex-row-reverse" | "flex-col" | "flex-col-reverse" {
+  switch (direction) {
+    case "row":
+      return "flex-row";
+    case "row-reverse":
+      return "flex-row-reverse";
+    case "column":
+      return "flex-col";
+    case "column-reverse":
+      return "flex-col-reverse";
+    default: {
+      return "flex-row";
+    }
+  }
+}
+
+export function get_items_aligment(
+  direction?: "row" | "column" | "row-reverse" | "column-reverse"
+): "self-center" | "self-start" {
+  switch (direction) {
+    case "row":
+    case "row-reverse":
+      return "self-center";
+    case "column":
+    case "column-reverse":
+      return "self-start";
+    default: {
+      return "self-center";
+    }
+  }
+}
 
 type ComponentProps = {
   mode: "read" | "write";
@@ -57,282 +100,255 @@ type ComponentProps = {
 };
 
 function Str(
-  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
+  props: ComponentProps & {
+    direction?: "row" | "column" | "row-reverse" | "column-reverse";
+    placeholder?: string;
+  }
 ): JSX.Element {
-  const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
+  const label = get_label(props.state, get_path_string(props.path));
   if (value.type === "str") {
-    if (props.path.writeable && props.mode === "write") {
-      return (
-        <PaperTextInput
-          // mode="outlined"
-          autoComplete={false}
-          label={get_label(props.state, get_path_string(props.path))}
-          // multiline
-          // placeholder="Type something"
-          value={local_val}
-          onChangeText={(x) => {
-            try {
-              set_local_val(x);
-              dispatch([
-                "value",
-                apply(props.path, (it) => {
-                  it.path[1][1] = {
-                    type: "str",
-                    value: x.substring(0, 256),
-                  };
-                  return it;
-                }),
-              ]);
-              set_has_errors(false);
-            } catch (e) {
-              set_has_errors(true);
-            }
-          }}
-          right={<PaperTextInput.Icon name="close" />}
-          style={[
-            arrow(() => {
-              if (has_errors) {
-                return { color: colors.sky[600] };
-              }
-              return {};
-            }),
-            ,
-            { width: "100%" },
-            style,
-          ]}
-        />
-        // {apply(default_value !== local_val, (it) => {
-        //   if (it) {
-        //     return (
-        //       <Pressable
-        //         onPress={() => {
-        //           set_local_val(default_value);
-        //           dispatch([
-        //             "value",
-        //             apply(props.path, (it) => {
-        //               it.path[1][1] = {
-        //                 type: "str",
-        //                 value: default_value,
-        //               };
-        //               return it;
-        //             }),
-        //           ]);
-        //         }}
-        //         style={{
-        //           alignSelf: "center",
-        //           marginTop: 2,
-        //         }}
-        //       >
-        //         <MaterialIcons
-        //           name="clear"
-        //           size={24}
-        //           color={colors.slate[300]}
-        //         />
-        //       </Pressable>
-        //     );
-        //   }
-        //   return <></>;
-        // })}
-      );
-    } else {
-      return (
-        <Text style={[{}, style]} {...otherProps}>
-          {value.value}
-        </Text>
-      );
-    }
+    return (
+      <View
+        style={tw.style(
+          [
+            "flex-1",
+            "content-between",
+            "justify-between",
+            get_flex_direction(props.direction),
+          ],
+          {}
+        )}
+      >
+        <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
+          {label}
+        </Subheading>
+        {apply(props.path.writeable && props.mode === "write", (it) => {
+          if (it) {
+            return (
+              <PaperTextInput
+                placeholder={props.placeholder ? props.placeholder : label}
+                maxLength={255}
+                autoComplete={true}
+                dense={true}
+                value={local_val}
+                error={has_errors}
+                onChangeText={(x) => {
+                  try {
+                    set_local_val(x);
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "str",
+                          value: x,
+                        };
+                        return it;
+                      }),
+                    ]);
+                    set_has_errors(false);
+                  } catch (e) {
+                    set_has_errors(true);
+                  }
+                }}
+                right={
+                  <PaperTextInput.Icon
+                    name="close"
+                    onPress={() => {
+                      set_local_val(default_value);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: "str",
+                            value: default_value,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    }}
+                  />
+                }
+              />
+            );
+          }
+          return <Subheading>{local_val}</Subheading>;
+        })}
+      </View>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
 }
 
 function Lstr(
-  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
+  props: ComponentProps & {
+    direction?: "row" | "column" | "row-reverse" | "column-reverse";
+    placeholder?: string;
+  }
 ): JSX.Element {
-  const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
+  const label = get_label(props.state, get_path_string(props.path));
   if (value.type === "lstr") {
-    if (props.path.writeable && props.mode === "write") {
-      return (
-        <View
-          style={{
-            paddingHorizontal: 0,
-          }}
-        >
-          <TextInput
-            style={[
-              arrow(() => {
-                if (has_errors) {
-                  return { color: colors.sky[600] };
-                }
-                return {};
-              }),
-              ,
-              style,
-            ]}
-            {...otherProps}
-            defaultValue={local_val}
-            onChangeText={(x) => {
-              try {
-                set_local_val(x);
-                dispatch([
-                  "value",
-                  apply(props.path, (it) => {
-                    it.path[1][1] = {
-                      type: "lstr",
-                      value: x.substring(0, 1024),
-                    };
-                    return it;
-                  }),
-                ]);
-                set_has_errors(false);
-              } catch (e) {
-                set_has_errors(true);
-              }
-            }}
-          />
-          {apply(default_value !== local_val, (it) => {
-            if (it) {
-              return (
-                <Pressable
-                  onPress={() => {
-                    set_local_val(default_value);
-                    dispatch([
+    return (
+      <View
+        style={tw.style(
+          [
+            "flex-1",
+            "content-between",
+            "justify-between",
+            get_flex_direction(props.direction),
+          ],
+          {}
+        )}
+      >
+        <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
+          {label}
+        </Subheading>
+        {apply(props.path.writeable && props.mode === "write", (it) => {
+          if (it) {
+            return (
+              <PaperTextInput
+                placeholder={props.placeholder ? props.placeholder : label}
+                maxLength={1023}
+                autoComplete={true}
+                dense={true}
+                value={local_val}
+                error={has_errors}
+                onChangeText={(x) => {
+                  try {
+                    set_local_val(x);
+                    props.dispatch([
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
                           type: "str",
-                          value: default_value,
+                          value: x,
                         };
                         return it;
                       }),
                     ]);
-                  }}
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 2,
-                  }}
-                >
-                  <MaterialIcons
-                    name="clear"
-                    size={24}
-                    color={colors.slate[300]}
+                    set_has_errors(false);
+                  } catch (e) {
+                    set_has_errors(true);
+                  }
+                }}
+                right={
+                  <PaperTextInput.Icon
+                    name="close"
+                    onPress={() => {
+                      set_local_val(default_value);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: "str",
+                            value: default_value,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    }}
                   />
-                </Pressable>
-              );
-            }
-            return <></>;
-          })}
-        </View>
-      );
-    } else {
-      return (
-        <Text style={[{}, style]} {...otherProps}>
-          {value.value}
-        </Text>
-      );
-    }
+                }
+              />
+            );
+          }
+          return <Subheading>{local_val}</Subheading>;
+        })}
+      </View>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
 }
 
 function Clob(
-  props: DefaultTextInput["props"] & DefaultText["props"] & ComponentProps
+  props: ComponentProps & {
+    direction?: "row" | "column" | "row-reverse" | "column-reverse";
+    placeholder?: string;
+  }
 ): JSX.Element {
-  const { state, dispatch, style, ...otherProps } = props;
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
+  const label = get_label(props.state, get_path_string(props.path));
   if (value.type === "clob") {
-    if (props.path.writeable && props.mode === "write") {
-      return (
-        <View
-          style={{
-            paddingHorizontal: 0,
-          }}
-        >
-          <TextInput
-            style={[
-              arrow(() => {
-                if (has_errors) {
-                  return { color: colors.sky[600] };
-                }
-                return {};
-              }),
-              ,
-              style,
-            ]}
-            {...otherProps}
-            defaultValue={local_val}
-            onChangeText={(x) => {
-              try {
-                set_local_val(x);
-                dispatch([
-                  "value",
-                  apply(props.path, (it) => {
-                    it.path[1][1] = {
-                      type: "clob",
-                      value: x,
-                    };
-                    return it;
-                  }),
-                ]);
-                set_has_errors(false);
-              } catch (e) {
-                set_has_errors(true);
-              }
-            }}
-          />
-          {apply(default_value !== local_val, (it) => {
-            if (it) {
-              return (
-                <Pressable
-                  onPress={() => {
-                    set_local_val(default_value);
-                    dispatch([
+    return (
+      <View
+        style={tw.style(
+          [
+            "flex-1",
+            "content-between",
+            "justify-between",
+            get_flex_direction(props.direction),
+          ],
+          {}
+        )}
+      >
+        <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
+          {label}
+        </Subheading>
+        {apply(props.path.writeable && props.mode === "write", (it) => {
+          if (it) {
+            return (
+              <PaperTextInput
+                placeholder={props.placeholder ? props.placeholder : label}
+                multiline={true}
+                autoComplete={true}
+                dense={true}
+                value={local_val}
+                error={has_errors}
+                onChangeText={(x) => {
+                  try {
+                    set_local_val(x);
+                    props.dispatch([
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
                           type: "str",
-                          value: default_value,
+                          value: x,
                         };
                         return it;
                       }),
                     ]);
-                  }}
-                  style={{
-                    alignSelf: "center",
-                    marginTop: 2,
-                  }}
-                >
-                  <MaterialIcons
-                    name="clear"
-                    size={24}
-                    color={colors.slate[300]}
+                    set_has_errors(false);
+                  } catch (e) {
+                    set_has_errors(true);
+                  }
+                }}
+                right={
+                  <PaperTextInput.Icon
+                    name="close"
+                    onPress={() => {
+                      set_local_val(default_value);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: "str",
+                            value: default_value,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    }}
                   />
-                </Pressable>
-              );
-            }
-            return <></>;
-          })}
-        </View>
-      );
-    } else {
-      return (
-        <Text style={[{}, style]} {...otherProps}>
-          {value.value}
-        </Text>
-      );
-    }
+                }
+              />
+            );
+          }
+          return <Subheading>{local_val}</Subheading>;
+        })}
+      </View>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
