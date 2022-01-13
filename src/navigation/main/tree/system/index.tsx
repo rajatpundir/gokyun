@@ -20,6 +20,7 @@ import Tags from "./tags";
 import Categories from "./categories";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import tw from "../../../../lib/themed/tailwind";
 
 export type NavigatorParams = {
   Countries: undefined;
@@ -47,11 +48,11 @@ export function Navigator(props: ParentNavigatorProps<"System">) {
       screenOptions={{
         lazy: true,
         tabBarScrollEnabled: true,
-        tabBarItemStyle: { width: 100 },
-        tabBarLabelStyle: {
+        tabBarItemStyle: tw.style([], { width: 100 }),
+        tabBarLabelStyle: tw.style([], {
           fontSize: 13,
           textTransform: "none",
-        },
+        }),
       }}
     >
       <TopTab.Screen name="Countries" component={Countries} />

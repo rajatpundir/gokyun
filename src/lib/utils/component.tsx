@@ -229,7 +229,7 @@ export function SearchBar(props: {
         style={{
           borderWidth: 1,
           borderRadius: 5,
-          borderColor: colors.tailwind.slate[500],
+          borderColor: colors.slate[500],
           paddingVertical: 2,
           paddingHorizontal: 10,
           marginHorizontal: 20,
@@ -239,7 +239,7 @@ export function SearchBar(props: {
         <Feather
           name="search"
           size={24}
-          color={colors.tailwind.slate[300]}
+          color={colors.slate[300]}
           style={{ alignSelf: "center" }}
         />
         <TextInput
@@ -302,7 +302,7 @@ export function SearchBar(props: {
                     <Feather
                       name="layout"
                       size={20}
-                      color={colors.tailwind.slate[400]}
+                      color={colors.slate[400]}
                       style={{
                         alignSelf: "center",
                         padding: 4,
@@ -330,7 +330,7 @@ export function SearchBar(props: {
                   <FontAwesome
                     name="sort-alpha-asc"
                     size={20}
-                    color={colors.tailwind.slate[400]}
+                    color={colors.slate[400]}
                     style={{
                       alignSelf: "center",
                       padding: 4,
@@ -357,7 +357,7 @@ export function SearchBar(props: {
                   <Ionicons
                     name="filter"
                     size={20}
-                    color={colors.tailwind.slate[400]}
+                    color={colors.slate[400]}
                     style={{
                       alignSelf: "center",
                       padding: 3,
@@ -417,11 +417,7 @@ export function ModalHeader(props: { title: string }): JSX.Element {
         paddingVertical: 10,
       }}
     >
-      <Ionicons
-        name="arrow-back-outline"
-        size={26}
-        color={colors.tailwind.zinc[200]}
-      />
+      <Ionicons name="arrow-back-outline" size={26} color={colors.zinc[200]} />
       <Text
         style={{
           fontSize: 20,

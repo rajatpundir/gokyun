@@ -20,6 +20,7 @@ import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
 import { AppHeader } from "../../../lib/utils/component";
+import tw from "../../../lib/themed/tailwind";
 
 export type NavigatorParams = {
   Clans: undefined;
@@ -52,7 +53,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
                 name="code"
                 size={30}
                 color={color}
-                style={{ margin: -3 }}
+                style={tw.style([], { margin: -3 })}
               />
             ),
           }}
@@ -66,7 +67,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
                 name="code"
                 size={30}
                 color={color}
-                style={{ margin: -3 }}
+                style={tw.style([], { margin: -3 })}
               />
             ),
           }}
@@ -80,7 +81,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
                 name="code"
                 size={30}
                 color={color}
-                style={{ margin: -3 }}
+                style={tw.style([], { margin: -3 })}
               />
             ),
           }}
@@ -94,7 +95,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
                 name="code"
                 size={30}
                 color={color}
-                style={{ margin: -3 }}
+                style={tw.style([], { margin: -3 })}
               />
             ),
           }}
@@ -108,7 +109,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
                 name="code"
                 size={30}
                 color={color}
-                style={{ margin: -3 }}
+                style={tw.style([], { margin: -3 })}
               />
             ),
           }}

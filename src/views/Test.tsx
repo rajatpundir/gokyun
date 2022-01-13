@@ -17,6 +17,7 @@ import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
+import tw from "../lib/themed/tailwind";
 
 const views = {
   User: UserViews,
@@ -27,12 +28,7 @@ export default {
     create: (props) => {
       const navigation = useNavigation();
       return (
-        <ScrollView
-          style={{
-            flex: 1,
-            flexDirection: "column",
-          }}
-        >
+        <ScrollView style={tw.style(["flex-1", "flex-col"])}>
           <View style={{ margin: 10 }}>
             {/* <Label {...props} path={"str"} /> */}
             <Field {...props} path={"str"} />
@@ -130,7 +126,7 @@ export default {
                                 <FontAwesome
                                   name="edit"
                                   size={24}
-                                  color={colors.tailwind.slate[400]}
+                                  color={colors.slate[400]}
                                 />
                               ) : (
                                 <></>
@@ -146,7 +142,7 @@ export default {
                                 <FontAwesome
                                   name="edit"
                                   size={24}
-                                  color={colors.tailwind.slate[400]}
+                                  color={colors.slate[400]}
                                 />
                               ) : (
                                 <></>
@@ -190,10 +186,10 @@ export default {
                 marginHorizontal: 5,
                 paddingVertical: 10,
                 paddingHorizontal: 10,
-                backgroundColor: colors.tailwind.slate[700],
+                backgroundColor: colors.slate[700],
                 borderRadius: 4,
                 borderWidth: 1,
-                borderColor: colors.tailwind.slate[600],
+                borderColor: colors.slate[600],
               }}
             >
               <Text
@@ -228,10 +224,10 @@ export default {
                 marginHorizontal: 5,
                 paddingVertical: 10,
                 paddingHorizontal: 10,
-                backgroundColor: colors.tailwind.slate[700],
+                backgroundColor: colors.slate[700],
                 borderRadius: 4,
                 borderWidth: 1,
-                borderColor: colors.tailwind.slate[600],
+                borderColor: colors.slate[600],
               }}
             >
               <Text

@@ -9,7 +9,6 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import { useNavigation } from "@react-navigation/core";
 
-import { colors } from "../../../../../lib/themed/colors";
 import { View, Text } from "../../../../../lib/themed";
 import { getState, subscribe } from "../../../../../lib/utils/store";
 import { get_structs } from "../../../../../lib/utils/schema";

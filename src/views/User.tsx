@@ -24,9 +24,9 @@ export default {
             marginBottom: 10,
             backgroundColor: arrow(() => {
               if (props.selected) {
-                return colors.tailwind.slate[800];
+                return colors.slate[800];
               }
-              return colors.tailwind.slate[900];
+              return colors.slate[900];
             }),
           }}
         >
@@ -63,7 +63,7 @@ export default {
                 >
                   <Text
                     style={{
-                      backgroundColor: colors.tailwind.slate[700],
+                      backgroundColor: colors.slate[700],
                       paddingHorizontal: 6,
                       paddingVertical: 2,
                       fontWeight: "bold",

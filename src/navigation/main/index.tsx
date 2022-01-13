@@ -17,13 +17,14 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import useAssets from "../../lib/hooks/useAssets";
 
 import {
   Navigator,
   NavigatorParams as MainScreenNavigatorParams,
 } from "./tree";
-import useAssets from "../../lib/hooks/useAssets";
 import { useDeviceContext } from "twrnc";
+import tw from "../../lib/themed/tailwind";
 import { apply } from "../../lib/utils/prelude";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
@@ -31,7 +32,6 @@ import { Filter } from "../../lib/utils/db";
 import { colors } from "../../lib/themed/colors";
 
 import Test from "../test";
-import tw from "../../lib/themed/tailwind";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -92,11 +92,11 @@ const theme: ReactNativePaper.Theme = {
   mode: "exact",
   colors: {
     ...PaperTheme.colors,
-    primary: colors.tailwind.red[600],
-    accent: colors.tailwind.blue[900],
-    background: colors.tailwind.zinc[900],
-    placeholder: colors.tailwind.zinc[300],
-    text: colors.tailwind.zinc[100],
+    primary: colors.red[600],
+    accent: colors.blue[900],
+    background: colors.zinc[900],
+    placeholder: colors.zinc[300],
+    text: colors.zinc[100],
   },
 };
 
@@ -105,23 +105,23 @@ function Component() {
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
       return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
+        <GestureHandlerRootView style={tw.style(["flex-1"])}>
           <PaperProvider theme={theme}>
             <BottomSheetModalProvider>
               <PortalProvider>
                 <SafeAreaProvider>
-                  <SafeAreaView style={{ flex: 1 }}>
+                  <SafeAreaView style={tw.style(["flex-1"])}>
                     <NavigationContainer
                       theme={{
                         dark: true,
                         colors: {
                           ...DarkTheme.colors,
-                          primary: colors.tailwind.red[600],
-                          background: colors.tailwind.zinc[900],
-                          card: colors.tailwind.zinc[900],
-                          border: colors.tailwind.zinc[800],
-                          text: colors.tailwind.zinc[300],
-                          notification: colors.tailwind.sky[600],
+                          primary: colors.red[600],
+                          background: colors.zinc[900],
+                          card: colors.zinc[900],
+                          border: colors.zinc[800],
+                          text: colors.zinc[300],
+                          notification: colors.sky[600],
                         },
                       }}
                     >
@@ -150,7 +150,7 @@ function Component() {
                       </Stack.Navigator>
                     </NavigationContainer>
                   </SafeAreaView>
-                  <StatusBar backgroundColor={colors.tailwind.zinc[900]} />
+                  <StatusBar backgroundColor={colors.zinc[900]} />
                 </SafeAreaProvider>
               </PortalProvider>
             </BottomSheetModalProvider>

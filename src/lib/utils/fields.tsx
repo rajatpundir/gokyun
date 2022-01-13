@@ -96,7 +96,7 @@ function Str(
           style={[
             arrow(() => {
               if (has_errors) {
-                return { color: colors.tailwind.sky[600] };
+                return { color: colors.sky[600] };
               }
               return {};
             }),
@@ -130,7 +130,7 @@ function Str(
         //         <MaterialIcons
         //           name="clear"
         //           size={24}
-        //           color={colors.tailwind.slate[300]}
+        //           color={colors.slate[300]}
         //         />
         //       </Pressable>
         //     );
@@ -170,7 +170,7 @@ function Lstr(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -223,7 +223,7 @@ function Lstr(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -264,7 +264,7 @@ function Clob(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -317,7 +317,7 @@ function Clob(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -358,7 +358,7 @@ function I_32(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -416,7 +416,7 @@ function I_32(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -457,7 +457,7 @@ function U_32(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -514,7 +514,7 @@ function U_32(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -555,7 +555,7 @@ function I_64(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -613,7 +613,7 @@ function I_64(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -654,7 +654,7 @@ function U_64(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -712,7 +712,7 @@ function U_64(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -753,7 +753,7 @@ function I_Double(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -807,7 +807,7 @@ function I_Double(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -848,7 +848,7 @@ function U_Double(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -902,7 +902,7 @@ function U_Double(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -943,7 +943,7 @@ function I_Decimal(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -997,7 +997,7 @@ function I_Decimal(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -1038,7 +1038,7 @@ function U_Decimal(
             style={[
               arrow(() => {
                 if (has_errors) {
-                  return { color: colors.tailwind.sky[600] };
+                  return { color: colors.sky[600] };
                 }
                 return {};
               }),
@@ -1091,7 +1091,7 @@ function U_Decimal(
                   <MaterialIcons
                     name="clear"
                     size={24}
-                    color={colors.tailwind.slate[300]}
+                    color={colors.slate[300]}
                   />
                 </Pressable>
               );
@@ -1134,7 +1134,7 @@ function Bool(props: CheckboxProps & ComponentProps): JSX.Element {
               }),
             ])
           }
-          color={value.value ? colors.tailwind.red[600] : undefined}
+          color={value.value ? colors.red[600] : undefined}
         />
       );
     } else {

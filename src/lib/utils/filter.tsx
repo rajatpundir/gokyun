@@ -37,7 +37,7 @@ function View(props: ViewProps) {
           paddingHorizontal: 3,
           marginBottom: 1,
           paddingVertical: 0,
-          borderColor: colors.tailwind.slate[600],
+          borderColor: colors.slate[600],
           // borderWidth: 1,
         },
         style,
@@ -96,7 +96,7 @@ export function SortComponent(props: {
                     <FontAwesome
                       name="sort-up"
                       size={24}
-                      color={colors.tailwind.slate[400]}
+                      color={colors.slate[400]}
                     />
                   </Pressable>
                   <Pressable
@@ -108,7 +108,7 @@ export function SortComponent(props: {
                     <FontAwesome
                       name="sort-down"
                       size={24}
-                      color={colors.tailwind.slate[400]}
+                      color={colors.slate[400]}
                     />
                   </Pressable>
                 </View>
@@ -129,7 +129,7 @@ export function SortComponent(props: {
                       alignSelf: "center",
                       borderWidth: 1,
                       borderRadius: 5,
-                      borderColor: colors.tailwind.sky[700],
+                      borderColor: colors.sky[700],
                     }}
                   >
                     {arrow(() => {
@@ -138,7 +138,7 @@ export function SortComponent(props: {
                           <AntDesign
                             name="arrowdown"
                             size={24}
-                            color={colors.tailwind.sky[600]}
+                            color={colors.sky[600]}
                           />
                         );
                       } else {
@@ -146,7 +146,7 @@ export function SortComponent(props: {
                           <AntDesign
                             name="arrowup"
                             size={24}
-                            color={colors.tailwind.sky[600]}
+                            color={colors.sky[600]}
                           />
                         );
                       }
@@ -217,13 +217,13 @@ export function SortComponentFields(props: {
                 <Ionicons
                   name="radio-button-on"
                   size={24}
-                  color={colors.tailwind.sky[600]}
+                  color={colors.sky[600]}
                 />
               ) : (
                 <Ionicons
                   name="radio-button-off"
                   size={24}
-                  color={colors.tailwind.sky[600]}
+                  color={colors.sky[600]}
                 />
               )}
               <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
@@ -269,7 +269,7 @@ export function FilterComponent(props: {
               padding: 3,
             }}
           >
-            <Entypo name="cross" size={24} color={colors.tailwind.slate[400]} />
+            <Entypo name="cross" size={24} color={colors.slate[400]} />
           </Pressable>
         </View>
         <Pressable
@@ -280,7 +280,7 @@ export function FilterComponent(props: {
         >
           <Text
             style={{
-              backgroundColor: colors.tailwind.sky[600],
+              backgroundColor: colors.sky[600],
               alignSelf: "flex-end",
               paddingHorizontal: 6,
               paddingVertical: 2,
@@ -299,8 +299,8 @@ export function FilterComponent(props: {
           snapPoints={["50%", "82%"]}
           index={1}
           backgroundStyle={{
-            backgroundColor: colors.tailwind.slate[900],
-            borderColor: colors.tailwind.sky[600],
+            backgroundColor: colors.slate[900],
+            borderColor: colors.sky[600],
             borderWidth: 1,
           }}
         >
@@ -333,7 +333,7 @@ export function FilterComponent(props: {
                   paddingHorizontal: 5,
                   paddingVertical: 2,
                   borderRadius: 2,
-                  backgroundColor: colors.tailwind.sky[600],
+                  backgroundColor: colors.sky[600],
                 }}
               >
                 Close
@@ -374,13 +374,13 @@ export function FilterComponent(props: {
                     <Ionicons
                       name="radio-button-on"
                       size={24}
-                      color={colors.tailwind.sky[600]}
+                      color={colors.sky[600]}
                     />
                   ) : (
                     <Ionicons
                       name="radio-button-off"
                       size={24}
-                      color={colors.tailwind.sky[600]}
+                      color={colors.sky[600]}
                     />
                   )}
                   <Text style={{ paddingLeft: 10 }}>Unique ID</Text>
@@ -417,13 +417,13 @@ export function FilterComponent(props: {
                     <Ionicons
                       name="radio-button-on"
                       size={24}
-                      color={colors.tailwind.sky[600]}
+                      color={colors.sky[600]}
                     />
                   ) : (
                     <Ionicons
                       name="radio-button-off"
                       size={24}
-                      color={colors.tailwind.sky[600]}
+                      color={colors.sky[600]}
                     />
                   )}
                   <Text style={{ paddingLeft: 10 }}>Created</Text>
@@ -460,13 +460,13 @@ export function FilterComponent(props: {
                     <Ionicons
                       name="radio-button-on"
                       size={24}
-                      color={colors.tailwind.sky[600]}
+                      color={colors.sky[600]}
                     />
                   ) : (
                     <Ionicons
                       name="radio-button-off"
                       size={24}
-                      color={colors.tailwind.sky[600]}
+                      color={colors.sky[600]}
                     />
                   )}
                   <Text style={{ paddingLeft: 10 }}>Updated</Text>
@@ -597,13 +597,13 @@ export function FilterComponent(props: {
                       <Ionicons
                         name="radio-button-on"
                         size={24}
-                        color={colors.tailwind.sky[600]}
+                        color={colors.sky[600]}
                       />
                     ) : (
                       <Ionicons
                         name="radio-button-off"
                         size={24}
-                        color={colors.tailwind.sky[600]}
+                        color={colors.sky[600]}
                       />
                     )}
                     <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
@@ -659,7 +659,7 @@ export function FilterComponent(props: {
                       <Checkbox
                         value={active}
                         onValueChange={() => toggle(!active)}
-                        color={active ? colors.tailwind.sky[600] : undefined}
+                        color={active ? colors.sky[600] : undefined}
                         style={{
                           alignSelf: "center",
                           marginRight: 6,
@@ -671,7 +671,7 @@ export function FilterComponent(props: {
                       >
                         <Text
                           style={{
-                            color: colors.tailwind.slate[400],
+                            color: colors.slate[400],
                           }}
                         >
                           Unique ID
@@ -774,10 +774,10 @@ export function FilterComponent(props: {
                                   }
                                   setSelectedOp(op);
                                 }}
-                                dropdownIconColor={colors.tailwind.slate[400]}
+                                dropdownIconColor={colors.slate[400]}
                                 style={{
                                   width: 185,
-                                  color: colors.tailwind.slate[400],
+                                  color: colors.slate[400],
                                 }}
                               >
                                 <Picker.Item label="equals" value="==" />
@@ -945,7 +945,7 @@ export function FilterComponent(props: {
                       <Checkbox
                         value={active}
                         onValueChange={() => toggle(!active)}
-                        color={active ? colors.tailwind.sky[600] : undefined}
+                        color={active ? colors.sky[600] : undefined}
                         style={{
                           alignSelf: "center",
                           marginRight: 6,
@@ -957,7 +957,7 @@ export function FilterComponent(props: {
                       >
                         <Text
                           style={{
-                            color: colors.tailwind.slate[400],
+                            color: colors.slate[400],
                           }}
                         >
                           Created
@@ -1060,10 +1060,10 @@ export function FilterComponent(props: {
                                   }
                                   setSelectedOp(op);
                                 }}
-                                dropdownIconColor={colors.tailwind.slate[400]}
+                                dropdownIconColor={colors.slate[400]}
                                 style={{
                                   width: 185,
-                                  color: colors.tailwind.slate[400],
+                                  color: colors.slate[400],
                                 }}
                               >
                                 <Picker.Item label="equals" value="==" />
@@ -1468,7 +1468,7 @@ export function FilterComponent(props: {
                       <Checkbox
                         value={active}
                         onValueChange={() => toggle(!active)}
-                        color={active ? colors.tailwind.sky[600] : undefined}
+                        color={active ? colors.sky[600] : undefined}
                         style={{
                           alignSelf: "center",
                           marginRight: 6,
@@ -1480,7 +1480,7 @@ export function FilterComponent(props: {
                       >
                         <Text
                           style={{
-                            color: colors.tailwind.slate[400],
+                            color: colors.slate[400],
                           }}
                         >
                           Updated
@@ -1583,10 +1583,10 @@ export function FilterComponent(props: {
                                   }
                                   setSelectedOp(op);
                                 }}
-                                dropdownIconColor={colors.tailwind.slate[400]}
+                                dropdownIconColor={colors.slate[400]}
                                 style={{
                                   width: 185,
-                                  color: colors.tailwind.slate[400],
+                                  color: colors.slate[400],
                                 }}
                               >
                                 <Picker.Item label="equals" value="==" />
@@ -2223,11 +2223,7 @@ function FilterPathComponent(props: {
                 <Checkbox
                   value={props.filter_path.active}
                   onValueChange={() => toggle(!props.filter_path.active)}
-                  color={
-                    props.filter_path.active
-                      ? colors.tailwind.sky[600]
-                      : undefined
-                  }
+                  color={props.filter_path.active ? colors.sky[600] : undefined}
                   style={{
                     alignSelf: "center",
                     marginRight: 6,
@@ -2239,7 +2235,7 @@ function FilterPathComponent(props: {
                 >
                   <Text
                     style={{
-                      color: colors.tailwind.slate[400],
+                      color: colors.slate[400],
                     }}
                   >
                     {props.filter_path.label}
@@ -2340,10 +2336,10 @@ function FilterPathComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                              dropdownIconColor={colors.slate[400]}
                               style={{
                                 width: 185,
-                                color: colors.tailwind.slate[400],
+                                color: colors.slate[400],
                               }}
                             >
                               <Picker.Item label="match" value="like" />
@@ -2456,10 +2452,10 @@ function FilterPathComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                              dropdownIconColor={colors.slate[400]}
                               style={{
                                 width: 185,
-                                color: colors.tailwind.slate[400],
+                                color: colors.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -2519,10 +2515,10 @@ function FilterPathComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                              dropdownIconColor={colors.slate[400]}
                               style={{
                                 width: 185,
-                                color: colors.tailwind.slate[400],
+                                color: colors.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -2613,10 +2609,10 @@ function FilterPathComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                              dropdownIconColor={colors.slate[400]}
                               style={{
                                 width: 185,
-                                color: colors.tailwind.slate[400],
+                                color: colors.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -2678,10 +2674,10 @@ function FilterPathComponent(props: {
                                 }
                                 setSelectedOp(op);
                               }}
-                              dropdownIconColor={colors.tailwind.slate[400]}
+                              dropdownIconColor={colors.slate[400]}
                               style={{
                                 width: 185,
-                                color: colors.tailwind.slate[400],
+                                color: colors.slate[400],
                               }}
                             >
                               <Picker.Item label="equals" value="==" />
@@ -2791,7 +2787,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -2804,8 +2800,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -2857,7 +2853,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -2878,7 +2874,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -2941,7 +2937,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -2955,17 +2951,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -3058,7 +3050,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -3071,8 +3063,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -3124,8 +3116,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -3146,8 +3137,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -3217,9 +3207,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -3333,7 +3321,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -3346,8 +3334,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -3399,8 +3387,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -3421,8 +3408,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -3492,9 +3478,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -3639,7 +3623,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -3652,8 +3636,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -3705,7 +3689,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -3726,7 +3710,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -3794,7 +3778,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -3808,17 +3792,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -3929,7 +3909,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -3942,8 +3922,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -3995,8 +3975,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -4017,8 +3996,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -4093,9 +4071,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -4227,7 +4203,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -4240,8 +4216,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -4293,8 +4269,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -4315,8 +4290,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -4391,9 +4365,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -4538,7 +4510,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -4551,8 +4523,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -4604,7 +4576,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -4625,7 +4597,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -4693,7 +4665,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -4707,17 +4679,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -4828,7 +4796,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -4841,8 +4809,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -4894,8 +4862,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -4916,8 +4883,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -4992,9 +4958,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -5126,7 +5090,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -5139,8 +5103,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -5192,8 +5156,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -5214,8 +5177,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -5290,9 +5252,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -5439,7 +5399,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -5452,8 +5412,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -5505,7 +5465,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -5526,7 +5486,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -5594,7 +5554,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -5608,17 +5568,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -5733,7 +5689,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -5746,8 +5702,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -5799,8 +5755,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -5821,8 +5776,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -5897,9 +5851,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -6035,7 +5987,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -6048,8 +6000,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -6101,8 +6053,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -6123,8 +6074,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -6199,9 +6149,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -6346,7 +6294,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -6359,8 +6307,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -6412,7 +6360,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -6433,7 +6381,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -6501,7 +6449,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -6515,17 +6463,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -6638,7 +6582,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -6702,8 +6646,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -6724,8 +6667,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -6800,9 +6742,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -6936,7 +6876,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -6949,8 +6889,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -7002,8 +6942,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -7024,8 +6963,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -7100,9 +7038,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -7241,7 +7177,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -7254,8 +7190,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -7307,7 +7243,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -7328,7 +7264,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -7396,7 +7332,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -7410,17 +7346,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -7525,7 +7457,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -7538,8 +7470,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -7591,8 +7523,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -7613,8 +7544,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -7689,9 +7619,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -7817,7 +7745,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -7830,8 +7758,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -7883,8 +7811,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -7905,8 +7832,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -7981,9 +7907,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -8122,7 +8046,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -8135,8 +8059,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -8188,7 +8112,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -8209,7 +8133,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -8277,7 +8201,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -8291,17 +8215,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -8406,7 +8326,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -8419,8 +8339,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -8472,8 +8392,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -8494,8 +8413,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -8570,9 +8488,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -8698,7 +8614,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -8711,8 +8627,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -8764,8 +8680,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -8786,8 +8701,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -8862,9 +8776,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -8950,9 +8862,7 @@ function FilterPathComponent(props: {
                                       }),
                                     ])
                                   }
-                                  color={
-                                    value ? colors.tailwind.sky[600] : undefined
-                                  }
+                                  color={value ? colors.sky[600] : undefined}
                                 />
                               );
                             } else {
@@ -8990,7 +8900,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -9003,8 +8913,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -9056,7 +8966,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -9077,7 +8987,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -9138,7 +9048,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -9152,17 +9062,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -9279,7 +9185,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -9292,8 +9198,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -9345,7 +9251,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -9366,7 +9272,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -9427,7 +9333,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -9441,17 +9347,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -9572,7 +9474,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -9585,8 +9487,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -9638,8 +9540,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -9660,8 +9561,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -9729,9 +9629,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -9873,7 +9771,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -9886,8 +9784,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -9939,8 +9837,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -9961,8 +9858,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -10030,9 +9926,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -10178,7 +10072,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -10191,8 +10085,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -10244,7 +10138,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -10265,7 +10159,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -10326,7 +10220,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -10340,17 +10234,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -10470,7 +10360,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -10483,8 +10373,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -10536,8 +10426,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -10558,8 +10447,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -10627,9 +10515,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -10770,7 +10656,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -10783,8 +10669,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -10836,8 +10722,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -10858,8 +10743,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -10927,9 +10811,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -11127,7 +11009,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -11140,8 +11022,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -11193,7 +11075,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -11214,7 +11096,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -11275,7 +11157,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -11289,17 +11171,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }
@@ -11471,7 +11349,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -11484,8 +11362,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -11537,8 +11415,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -11559,8 +11436,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -11628,9 +11504,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -11823,7 +11697,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.tailwind.slate[400]}
+                                      color={colors.slate[400]}
                                       style={{ paddingHorizontal: 4 }}
                                     />
                                   </Pressable>
@@ -11836,8 +11710,8 @@ function FilterPathComponent(props: {
                                   snapPoints={["50%", "82%"]}
                                   index={1}
                                   backgroundStyle={{
-                                    backgroundColor: colors.tailwind.slate[900],
-                                    borderColor: colors.tailwind.sky[600],
+                                    backgroundColor: colors.slate[900],
+                                    borderColor: colors.sky[600],
                                     borderWidth: 1,
                                   }}
                                 >
@@ -11889,8 +11763,7 @@ function FilterPathComponent(props: {
                                             textAlign: "center",
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                             borderRadius: 2,
                                           }}
                                         >
@@ -11911,8 +11784,7 @@ function FilterPathComponent(props: {
                                             paddingHorizontal: 5,
                                             paddingVertical: 2,
                                             borderRadius: 2,
-                                            backgroundColor:
-                                              colors.tailwind.sky[600],
+                                            backgroundColor: colors.sky[600],
                                           }}
                                         >
                                           Close
@@ -11980,9 +11852,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={
-                                                      colors.tailwind.sky[600]
-                                                    }
+                                                    color={colors.sky[600]}
                                                   />
                                                 );
                                               } else {
@@ -12114,7 +11984,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.tailwind.slate[400]}
+                                color={colors.slate[400]}
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -12127,8 +11997,8 @@ function FilterPathComponent(props: {
                             snapPoints={["50%", "82%"]}
                             index={1}
                             backgroundStyle={{
-                              backgroundColor: colors.tailwind.slate[900],
-                              borderColor: colors.tailwind.sky[600],
+                              backgroundColor: colors.slate[900],
+                              borderColor: colors.sky[600],
                               borderWidth: 1,
                             }}
                           >
@@ -12181,7 +12051,7 @@ function FilterPathComponent(props: {
                                       textAlign: "center",
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                       borderRadius: 2,
                                     }}
                                   >
@@ -12202,7 +12072,7 @@ function FilterPathComponent(props: {
                                       paddingHorizontal: 5,
                                       paddingVertical: 2,
                                       borderRadius: 2,
-                                      backgroundColor: colors.tailwind.sky[600],
+                                      backgroundColor: colors.sky[600],
                                     }}
                                   >
                                     Close
@@ -12269,7 +12139,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.tailwind.sky[600]}
+                                              color={colors.sky[600]}
                                             />
                                           );
                                         } else {
@@ -12283,17 +12153,13 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={
-                                                    colors.tailwind.sky[600]
-                                                  }
+                                                  color={colors.sky[600]}
                                                 />
                                               );
                                             }

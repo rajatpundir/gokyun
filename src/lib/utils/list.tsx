@@ -484,8 +484,8 @@ export function List(props: {
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={{
-            backgroundColor: colors.tailwind.slate[900],
-            borderColor: colors.tailwind.sky[600],
+            backgroundColor: colors.slate[900],
+            borderColor: colors.sky[600],
             borderWidth: 1,
           }}
         >
@@ -518,7 +518,7 @@ export function List(props: {
                   paddingHorizontal: 5,
                   paddingVertical: 2,
                   borderRadius: 2,
-                  backgroundColor: colors.tailwind.sky[600],
+                  backgroundColor: colors.sky[600],
                 }}
               >
                 Close
@@ -586,8 +586,8 @@ export function List(props: {
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={{
-            backgroundColor: colors.tailwind.slate[900],
-            borderColor: colors.tailwind.sky[600],
+            backgroundColor: colors.slate[900],
+            borderColor: colors.sky[600],
             borderWidth: 1,
           }}
         >
@@ -621,7 +621,7 @@ export function List(props: {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.tailwind.sky[600],
+                    backgroundColor: colors.sky[600],
                   }}
                 >
                   Field++
@@ -639,7 +639,7 @@ export function List(props: {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.tailwind.sky[600],
+                    backgroundColor: colors.sky[600],
                   }}
                 >
                   Close
@@ -653,8 +653,8 @@ export function List(props: {
             snapPoints={["50%", "82%"]}
             index={0}
             backgroundStyle={{
-              backgroundColor: colors.tailwind.slate[900],
-              borderColor: colors.tailwind.sky[600],
+              backgroundColor: colors.slate[900],
+              borderColor: colors.sky[600],
               borderWidth: 1,
             }}
           >
@@ -687,7 +687,7 @@ export function List(props: {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.tailwind.sky[600],
+                    backgroundColor: colors.sky[600],
                   }}
                 >
                   Close
@@ -706,8 +706,8 @@ export function List(props: {
           snapPoints={["50%", "82%"]}
           index={1}
           backgroundStyle={{
-            backgroundColor: colors.tailwind.slate[900],
-            borderColor: colors.tailwind.sky[600],
+            backgroundColor: colors.slate[900],
+            borderColor: colors.sky[600],
             borderWidth: 1,
           }}
         >
@@ -715,7 +715,7 @@ export function List(props: {
             style={{
               flex: 1,
               flexDirection: "column",
-              borderColor: colors.tailwind.sky[600],
+              borderColor: colors.sky[600],
               borderLeftWidth: 1,
               borderRightWidth: 1,
               paddingHorizontal: 0,
@@ -753,7 +753,7 @@ export function List(props: {
                 <Checkbox
                   value={state.active}
                   onValueChange={() => dispatch(["active", !state.active])}
-                  color={state.active ? colors.tailwind.sky[600] : undefined}
+                  color={state.active ? colors.sky[600] : undefined}
                   style={{
                     alignSelf: "center",
                     marginHorizontal: 6,
@@ -783,7 +783,7 @@ export function List(props: {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={!state.level ? colors.tailwind.sky[600] : undefined}
+                  color={!state.level ? colors.sky[600] : undefined}
                   style={{
                     alignSelf: "center",
                     marginHorizontal: 6,
@@ -798,7 +798,7 @@ export function List(props: {
               >
                 <Text
                   style={{
-                    backgroundColor: colors.tailwind.blue[500],
+                    backgroundColor: colors.blue[500],
                     alignSelf: "flex-end",
                     paddingHorizontal: 6,
                     paddingVertical: 2,
