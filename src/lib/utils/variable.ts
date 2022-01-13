@@ -2,7 +2,7 @@ import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { ErrMsg } from "./errors";
-import { apply, arrow } from "./prelude";
+import { arrow } from "./prelude";
 import { Immutable } from "immer";
 
 export type PathString = [ReadonlyArray<string>, string];

@@ -11,13 +11,12 @@ import {
 } from "../lib/utils/component";
 import { Label, Field, Check } from "../lib/utils/fields";
 import { View, Text } from "../lib/themed";
-import { colors } from "../lib/themed/colors";
 import { arrow, unwrap } from "../lib/utils/prelude";
 import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
-import tw from "../lib/themed/tailwind";
+import { tw, colors } from "../lib/themed/tailwind";
 
 const views = {
   User: UserViews,

@@ -9,7 +9,6 @@ import Decimal from "decimal.js";
 import { ListRenderItemInfo, Pressable } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
-import { colors } from "../themed/colors";
 import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
 import {
   BottomSheetFlatList,
@@ -21,6 +20,7 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import { ModalHeader } from "./component";
+import { colors } from "../themed/tailwind";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 

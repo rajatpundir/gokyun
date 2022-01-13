@@ -3,8 +3,8 @@ import { Pressable } from "react-native";
 import { ComponentViews } from "../lib/utils/component";
 import { Label, Field } from "../lib/utils/fields";
 import { View, Text } from "../lib/themed";
-import { colors } from "../lib/themed/colors";
 import { arrow } from "../lib/utils/prelude";
+import { colors } from "../lib/themed/tailwind";
 
 export default {
   Default: {

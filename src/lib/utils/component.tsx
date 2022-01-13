@@ -16,10 +16,10 @@ import {
 } from "./commons";
 import { ListAction } from "./list";
 import { View, Text, TextInput } from "../themed";
-import { colors } from "../themed/colors";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable } from "react-native";
+import { colors } from "../themed/tailwind";
 
 export type ComponentViews = Record<
   string,

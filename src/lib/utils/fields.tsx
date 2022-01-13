@@ -38,10 +38,10 @@ import {
 import { get_struct } from "./schema";
 import { Filter, FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
-import { colors } from "../themed/colors";
 import { ListAction } from "./list";
 
 import { TextInput as PaperTextInput } from "react-native-paper";
+import { colors } from "../themed/tailwind";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
 

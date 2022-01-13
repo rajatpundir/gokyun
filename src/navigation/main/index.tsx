@@ -24,14 +24,13 @@ import {
   NavigatorParams as MainScreenNavigatorParams,
 } from "./tree";
 import { useDeviceContext } from "twrnc";
-import tw from "../../lib/themed/tailwind";
 import { apply } from "../../lib/utils/prelude";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
 import { Filter } from "../../lib/utils/db";
-import { colors } from "../../lib/themed/colors";
 
 import Test from "../test";
+import { colors, tw } from "../../lib/themed/tailwind";
 
 // Ignore react navigation error related to serializability of props passed
 

@@ -16,7 +16,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "./variable";
-import { colors } from "../themed/colors";
+import { colors } from "../themed/tailwind";
 
 // For fields.tsx, test TextInput for long values of text
 // Also cross button should reset value to default for that key in case of text and decimal fields
@@ -3221,19 +3221,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -3492,19 +3486,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -4085,19 +4073,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -4379,19 +4361,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -4972,19 +4948,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -5266,19 +5236,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -5865,19 +5829,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -6163,19 +6121,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -6756,19 +6708,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -7052,19 +6998,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -7633,19 +7573,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -7921,19 +7855,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -8502,19 +8430,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -8790,19 +8712,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -9643,19 +9559,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -9940,19 +9850,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -10529,19 +10433,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -10825,19 +10723,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -11518,19 +11410,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }
@@ -11866,19 +11752,13 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={
-                                                          colors.tailwind
-                                                            .sky[600]
-                                                        }
+                                                        color={colors.sky[600]}
                                                       />
                                                     );
                                                   }

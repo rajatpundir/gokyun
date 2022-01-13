@@ -4,8 +4,7 @@ import {
   Text as DefaultText,
   TextInput as DefaultTextInput,
 } from "react-native";
-
-import { colors } from "./colors";
+import { colors } from "./tailwind";
 
 export type ViewProps = DefaultView["props"];
 
