@@ -15,9 +15,11 @@ import {
   compute_checks,
 } from "./commons";
 import { ListAction } from "./list";
-import { View, TextInput } from "../themed";
+import { View, Text, TextInput } from "../themed";
 import { colors } from "../themed/colors";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { Pressable } from "react-native";
 
 export type ComponentViews = Record<
   string,
@@ -385,4 +387,50 @@ export function SearchBar(props: {
     ]);
   }
   return <></>;
+}
+
+export function AppHeader(): JSX.Element {
+  return (
+    <Text
+      style={{
+        fontSize: 20,
+        fontWeight: "bold",
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+      }}
+    >
+      AppName
+    </Text>
+  );
+}
+
+export function ModalHeader(props: { title: string }): JSX.Element {
+  const navigation = useNavigation();
+  return (
+    <Pressable
+      onPress={navigation.goBack}
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+      }}
+    >
+      <Ionicons
+        name="arrow-back-outline"
+        size={26}
+        color={colors.tailwind.zinc[200]}
+      />
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          paddingHorizontal: 5,
+        }}
+      >
+        {props.title}
+      </Text>
+    </Pressable>
+  );
 }

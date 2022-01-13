@@ -1,12 +1,12 @@
-import React, { useEffect, useLayoutEffect } from "react";
+import React, { useLayoutEffect } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as RootNavigatorProps } from "../main";
 import { get_struct } from "../../lib/utils/schema";
-import { unwrap } from "../../lib/utils/prelude";
+import { apply, unwrap } from "../../lib/utils/prelude";
 import { views } from "../../views";
-import { useComponent } from "../../lib/utils/component";
+import { ModalHeader, useComponent } from "../../lib/utils/component";
 
 // 1. Update TextInput everywhere
 // 2. List Tests component
@@ -112,23 +112,22 @@ export default function Component(
 
     useLayoutEffect(() => dispatch2(["check_trigger"]), [state1.check_trigger]);
 
-    useEffect(() => {
-      const set_title = async (title: string) => {
-        props.navigation.setOptions({ headerTitle: title });
-      };
-      if (state1.mode === "write") {
-        if (state1.id.equals(-1)) {
-          set_title("Create Test");
-        } else {
-          set_title("Update Test");
-        }
-      } else {
-        set_title("Test");
-      }
-    }, []);
-
     return (
       <>
+        <ModalHeader
+          title={apply("", (it) => {
+            if (state1.mode === "write") {
+              if (state1.id.equals(-1)) {
+                return "Create Test";
+              } else {
+                return "Update Test";
+              }
+            } else {
+              return "Test";
+            }
+            return it;
+          })}
+        />
         {jsx1}
         {/* {jsx2} */}
       </>

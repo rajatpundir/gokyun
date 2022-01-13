@@ -20,6 +20,7 @@ import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
+import { ModalHeader } from "./component";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -843,19 +844,22 @@ export function SelectionModal(
     props.navigation.setOptions({ headerTitle: props.route.params.title });
   }, []);
   return (
-    <List
-      selected={props.route.params.selected}
-      struct={props.route.params.struct}
-      user_paths={props.route.params.user_paths}
-      borrows={props.route.params.borrows}
-      active={props.route.params.active}
-      level={props.route.params.level}
-      filters={props.route.params.filters}
-      limit={props.route.params.limit}
-      render_list_element={props.route.params.render_list_element}
-      update_parent_values={props.route.params.update_parent_values}
-      render_custom_fields={props.route.params.render_custom_fields}
-      horizontal={props.route.params.horizontal}
-    />
+    <>
+      <ModalHeader title={props.route.params.title} />
+      <List
+        selected={props.route.params.selected}
+        struct={props.route.params.struct}
+        user_paths={props.route.params.user_paths}
+        borrows={props.route.params.borrows}
+        active={props.route.params.active}
+        level={props.route.params.level}
+        filters={props.route.params.filters}
+        limit={props.route.params.limit}
+        render_list_element={props.route.params.render_list_element}
+        update_parent_values={props.route.params.update_parent_values}
+        render_custom_fields={props.route.params.render_custom_fields}
+        horizontal={props.route.params.horizontal}
+      />
+    </>
   );
 }
