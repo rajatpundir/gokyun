@@ -389,7 +389,7 @@ export function SearchBar(props: {
   return <></>;
 }
 
-export function AppHeader(): JSX.Element {
+export function AppHeader(props: { title?: string }): JSX.Element {
   return (
     <Text
       style={{
@@ -399,7 +399,7 @@ export function AppHeader(): JSX.Element {
         paddingHorizontal: 10,
       }}
     >
-      AppName
+      {props.title ? props.title : "AppName"}
     </Text>
   );
 }

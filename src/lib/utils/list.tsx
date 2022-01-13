@@ -475,6 +475,7 @@ export function List(props: {
         onEndReached={() => dispatch(["offset"])}
         ListFooterComponent={ListFooterComponent}
         horizontal={props.horizontal}
+        nestedScrollEnabled={true}
       />
 
       <Portal>
