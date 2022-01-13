@@ -4,7 +4,7 @@ import { ComponentViews } from "../lib/utils/component";
 import { Label, Field } from "../lib/utils/fields";
 import { View, Text } from "../lib/themed";
 import { arrow } from "../lib/utils/prelude";
-import { colors } from "../lib/themed/tailwind";
+import { colors } from "../lib/utils/tailwind";
 
 export default {
   Default: {

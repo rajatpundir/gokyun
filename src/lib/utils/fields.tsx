@@ -41,7 +41,7 @@ import { PathPermission, get_permissions } from "./permissions";
 import { ListAction } from "./list";
 
 import { TextInput as PaperTextInput } from "react-native-paper";
-import { colors } from "../themed/tailwind";
+import { colors } from "./tailwind";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
 

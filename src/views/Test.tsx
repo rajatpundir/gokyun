@@ -16,7 +16,7 @@ import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
-import { tw, colors } from "../lib/themed/tailwind";
+import { tw, colors } from "../lib/utils/tailwind";
 
 const views = {
   User: UserViews,

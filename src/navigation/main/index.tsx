@@ -30,7 +30,7 @@ import { PathString, Struct, Variable } from "../../lib/utils/variable";
 import { Filter } from "../../lib/utils/db";
 
 import Test from "../test";
-import { colors, tw } from "../../lib/themed/tailwind";
+import { colors, tw } from "../../lib/utils/tailwind";
 
 // Ignore react navigation error related to serializability of props passed
 

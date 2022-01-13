@@ -19,7 +19,7 @@ import { View, Text, TextInput } from "../themed";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable } from "react-native";
-import { colors } from "../themed/tailwind";
+import { colors } from "./tailwind";
 
 export type ComponentViews = Record<
   string,

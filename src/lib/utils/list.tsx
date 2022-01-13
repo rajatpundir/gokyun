@@ -20,7 +20,7 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import { ModalHeader } from "./component";
-import { colors } from "../themed/tailwind";
+import { colors } from "./tailwind";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
