@@ -18,10 +18,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import useAssets from "../../lib/hooks/useAssets";
 
-import {
-  Navigator,
-  NavigatorParams as MainScreenNavigatorParams,
-} from "./tree";
+import { Navigator, NavigatorParams as BottomTabNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
@@ -35,7 +32,7 @@ import Test from "../test";
 // Ignore react navigation error related to serializability of props passed
 
 export type NavigatorParams = {
-  Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
+  Main: NavigatorScreenParams<BottomTabNavigatorParams> | undefined;
   SelectionModal: {
     title: string;
     selected: Decimal;
