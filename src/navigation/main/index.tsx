@@ -1,17 +1,18 @@
 import React from "react";
-import { registerRootComponent } from "expo";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { PortalProvider } from "@gorhom/portal";
 import {
   Provider as PaperProvider,
   DefaultTheme as PaperTheme,
 } from "react-native-paper";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { PortalProvider } from "@gorhom/portal";
+import { extendTheme, NativeBaseProvider } from "native-base";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
+import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
@@ -21,6 +22,7 @@ import {
 } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
 import useAssets from "../../lib/hooks/useAssets";
 
 import {
@@ -35,7 +37,6 @@ import { Filter } from "../../lib/utils/db";
 
 import Test from "../test";
 import { colors, tw } from "../../lib/utils/tailwind";
-import { extendTheme, NativeBaseProvider } from "native-base";
 
 // Ignore react navigation error related to serializability of props passed
 
