@@ -5,21 +5,14 @@ import { HashSet } from "prelude-ts";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
-import {
-  Provider as PaperProvider,
-  DefaultTheme as PaperTheme,
-} from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
 import { extendTheme, NativeBaseProvider } from "native-base";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { registerRootComponent } from "expo";
 import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  DarkTheme,
-  NavigationContainer,
-  Theme as ReactNavigationTheme,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -30,19 +23,19 @@ import {
   NavigatorParams as MainScreenNavigatorParams,
 } from "./tree";
 import { useDeviceContext } from "twrnc";
+import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
+import { palette, theme_rn, theme_rnp } from "../../lib/utils/theme";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
 import { Filter } from "../../lib/utils/db";
 
 import Test from "../test";
-import { colors, tw } from "../../lib/utils/tailwind";
 
 // Ignore react navigation error related to serializability of props passed
 
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainScreenNavigatorParams> | undefined;
-  NotFound: undefined;
   SelectionModal: {
     title: string;
     selected: Decimal;
@@ -90,36 +83,6 @@ export type NavigatorParams = {
   };
 };
 
-const palette = {};
-
-const theme_rn: ReactNavigationTheme = {
-  dark: true,
-  colors: {
-    ...DarkTheme.colors,
-    primary: colors.red[600],
-    background: colors.zinc[900],
-    card: colors.zinc[900],
-    border: colors.zinc[800],
-    text: colors.zinc[300],
-    notification: colors.sky[600],
-  },
-};
-
-const theme_rnp: ReactNativePaper.Theme = {
-  ...PaperTheme,
-  dark: true,
-  roundness: 5,
-  colors: {
-    ...PaperTheme.colors,
-    primary: colors.red[600],
-    accent: colors.blue[900],
-    background: colors.zinc[900],
-    placeholder: colors.zinc[300],
-    text: colors.zinc[100],
-    error: colors.sky[600],
-  },
-};
-
 function Component() {
   const theme_nb = extendTheme({});
   useDeviceContext(tw);
@@ -138,7 +101,7 @@ function Component() {
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
-                              animation: "none",
+                              // animation: "none",
                             }}
                           >
                             <Stack.Screen name="Main" component={Navigator} />
@@ -157,7 +120,7 @@ function Component() {
                         </Stack.Navigator>
                       </NavigationContainer>
                     </SafeAreaView>
-                    <StatusBar backgroundColor={colors.zinc[900]} />
+                    <StatusBar backgroundColor={palette.background} />
                   </SafeAreaProvider>
                 </NativeBaseProvider>
               </PaperProvider>
