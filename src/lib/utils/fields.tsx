@@ -300,18 +300,6 @@ function Clob(
         <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
           {label}
         </Subheading>
-        <PaperTextInput
-          placeholder={"LLLl"}
-          multiline={true}
-          autoComplete={true}
-          dense={true}
-          value={local_val}
-          error={has_errors}
-          onChangeText={(x) => {
-            console.log(x);
-            set_local_val(x);
-          }}
-        />
         {apply(props.path.writeable && props.mode === "write", (it) => {
           if (it) {
             return (
