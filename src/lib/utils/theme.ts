@@ -3,6 +3,7 @@ import {
   Theme as ReactNavigationTheme,
 } from "@react-navigation/native";
 import { DefaultTheme as PaperTheme } from "react-native-paper";
+import { extendTheme } from "native-base";
 import { colors } from "./tailwind";
 
 export const palette = {
@@ -44,3 +45,9 @@ export const theme_rnp: ReactNativePaper.Theme = {
     error: palette.error,
   },
 };
+
+export const theme_nb = extendTheme({
+  config: {
+    initialColorMode: "dark",
+  },
+});

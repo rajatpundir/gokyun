@@ -6,7 +6,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
 import { Provider as PaperProvider } from "react-native-paper";
-import { extendTheme, NativeBaseProvider } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { registerRootComponent } from "expo";
@@ -22,7 +22,7 @@ import { Navigator, NavigatorParams as BottomTabNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
-import { palette, theme_rn, theme_rnp } from "../../lib/utils/theme";
+import { palette, theme_rn, theme_rnp, theme_nb } from "../../lib/utils/theme";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
 import { Filter } from "../../lib/utils/db";
@@ -81,7 +81,6 @@ export type NavigatorParams = {
 };
 
 function Component() {
-  const theme_nb = extendTheme({});
   useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
@@ -90,7 +89,7 @@ function Component() {
           <BottomSheetModalProvider>
             <PortalProvider>
               <PaperProvider theme={theme_rnp}>
-                <NativeBaseProvider>
+                <NativeBaseProvider theme={theme_nb}>
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
