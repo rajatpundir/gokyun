@@ -142,19 +142,17 @@ function Component() {
                             }}
                           >
                             <Stack.Screen name="Main" component={Navigator} />
-                          </Stack.Group>
-                          <Stack.Group
-                            screenOptions={{
-                              presentation: "modal",
-                              animation: "none",
-                              headerShown: false,
-                            }}
-                          >
-                            <Stack.Screen
-                              name="SelectionModal"
-                              component={SelectionModal}
-                            />
-                            <Stack.Screen name="Test" component={Test} />
+                            <Stack.Group
+                              screenOptions={{
+                                presentation: "modal",
+                              }}
+                            >
+                              <Stack.Screen
+                                name="SelectionModal"
+                                component={SelectionModal}
+                              />
+                              <Stack.Screen name="Test" component={Test} />
+                            </Stack.Group>
                           </Stack.Group>
                         </Stack.Navigator>
                       </NavigationContainer>
