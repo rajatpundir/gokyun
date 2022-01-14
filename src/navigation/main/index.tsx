@@ -1,5 +1,5 @@
-import { registerRootComponent } from "expo";
 import React from "react";
+import { registerRootComponent } from "expo";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
@@ -14,7 +14,11 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { StatusBar } from "expo-status-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+import {
+  DarkTheme,
+  NavigationContainer,
+  Theme as ReactNavigationTheme,
+} from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import useAssets from "../../lib/hooks/useAssets";
@@ -31,6 +35,7 @@ import { Filter } from "../../lib/utils/db";
 
 import Test from "../test";
 import { colors, tw } from "../../lib/utils/tailwind";
+import { extendTheme, NativeBaseProvider } from "native-base";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -84,11 +89,25 @@ export type NavigatorParams = {
   };
 };
 
-const theme: ReactNativePaper.Theme = {
-  ...PaperTheme,
-  roundness: 5,
+const palette = {};
+
+const theme_rn: ReactNavigationTheme = {
   dark: true,
-  mode: "exact",
+  colors: {
+    ...DarkTheme.colors,
+    primary: colors.red[600],
+    background: colors.zinc[900],
+    card: colors.zinc[900],
+    border: colors.zinc[800],
+    text: colors.zinc[300],
+    notification: colors.sky[600],
+  },
+};
+
+const theme_rnp: ReactNativePaper.Theme = {
+  ...PaperTheme,
+  dark: true,
+  roundness: 5,
   colors: {
     ...PaperTheme.colors,
     primary: colors.red[600],
@@ -101,60 +120,50 @@ const theme: ReactNativePaper.Theme = {
 };
 
 function Component() {
+  const theme_nb = extendTheme({});
   useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
       return (
         <GestureHandlerRootView style={tw.style(["flex-1"])}>
-          <PaperProvider theme={theme}>
-            <BottomSheetModalProvider>
-              <PortalProvider>
-                <SafeAreaProvider>
-                  <SafeAreaView style={tw.style(["flex-1"])}>
-                    <NavigationContainer
-                      theme={{
-                        dark: true,
-                        colors: {
-                          ...DarkTheme.colors,
-                          primary: colors.red[600],
-                          background: colors.zinc[900],
-                          card: colors.zinc[900],
-                          border: colors.zinc[800],
-                          text: colors.zinc[300],
-                          notification: colors.sky[600],
-                        },
-                      }}
-                    >
-                      <Stack.Navigator initialRouteName="Main">
-                        <Stack.Group
-                          screenOptions={{
-                            headerShown: false,
-                            animation: "none",
-                          }}
-                        >
-                          <Stack.Screen name="Main" component={Navigator} />
-                        </Stack.Group>
-                        <Stack.Group
-                          screenOptions={{
-                            presentation: "modal",
-                            animation: "none",
-                            headerShown: false,
-                          }}
-                        >
-                          <Stack.Screen
-                            name="SelectionModal"
-                            component={SelectionModal}
-                          />
-                          <Stack.Screen name="Test" component={Test} />
-                        </Stack.Group>
-                      </Stack.Navigator>
-                    </NavigationContainer>
-                  </SafeAreaView>
-                  <StatusBar backgroundColor={colors.zinc[900]} />
-                </SafeAreaProvider>
-              </PortalProvider>
-            </BottomSheetModalProvider>
-          </PaperProvider>
+          <BottomSheetModalProvider>
+            <PortalProvider>
+              <PaperProvider theme={theme_rnp}>
+                <NativeBaseProvider>
+                  <SafeAreaProvider>
+                    <SafeAreaView style={tw.style(["flex-1"])}>
+                      <NavigationContainer theme={theme_rn}>
+                        <Stack.Navigator initialRouteName="Main">
+                          <Stack.Group
+                            screenOptions={{
+                              headerShown: false,
+                              animation: "none",
+                            }}
+                          >
+                            <Stack.Screen name="Main" component={Navigator} />
+                          </Stack.Group>
+                          <Stack.Group
+                            screenOptions={{
+                              presentation: "modal",
+                              animation: "none",
+                              headerShown: false,
+                            }}
+                          >
+                            <Stack.Screen
+                              name="SelectionModal"
+                              component={SelectionModal}
+                            />
+                            <Stack.Screen name="Test" component={Test} />
+                          </Stack.Group>
+                        </Stack.Navigator>
+                      </NavigationContainer>
+                    </SafeAreaView>
+                    <StatusBar backgroundColor={colors.zinc[900]} />
+                  </SafeAreaProvider>
+                </NativeBaseProvider>
+              </PaperProvider>
+            </PortalProvider>
+          </BottomSheetModalProvider>
         </GestureHandlerRootView>
       );
     }
