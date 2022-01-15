@@ -31,7 +31,6 @@ import {
 } from "./variable";
 import { get_struct } from "./schema";
 import { ListAction } from "./list";
-
 import { theme } from "./theme";
 import { tw } from "./tailwind";
 
@@ -80,28 +79,32 @@ function Str(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value);
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "str",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value);
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "str",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -154,28 +157,32 @@ function Lstr(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                onPress={() => {
-                  set_local_val(default_value);
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "lstr",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-                style={tw.style(["px-2"], {})}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value ? (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value);
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "lstr",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={tw.style(["px-2"], {})}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -227,28 +234,32 @@ function Clob(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                onPress={() => {
-                  set_local_val(default_value);
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "clob",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-                style={tw.style(["px-2"], {})}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value ? (
+                <Pressable
+                  onPress={() => {
+                    set_local_val(default_value);
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "clob",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                  style={tw.style(["px-2"], {})}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -284,17 +295,18 @@ function I_32(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = Decimal.clamp(
+                  new Decimal(x || "0").truncated(),
+                  -2147483648,
+                  2147483648
+                );
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "i32",
-                      value: Decimal.clamp(
-                        new Decimal(x || "0").truncated(),
-                        -2147483648,
-                        2147483648
-                      ),
+                      value: val,
                     };
                     return it;
                   }),
@@ -305,28 +317,32 @@ function I_32(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "i32",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "i32",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -362,17 +378,18 @@ function U_32(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = Decimal.clamp(
+                  new Decimal(x || "0").truncated(),
+                  0,
+                  2147483648
+                );
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "u32",
-                      value: Decimal.clamp(
-                        new Decimal(x || "0").truncated(),
-                        0,
-                        2147483648
-                      ),
+                      value: val,
                     };
                     return it;
                   }),
@@ -383,28 +400,32 @@ function U_32(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "u32",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "u32",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -440,17 +461,18 @@ function I_64(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = Decimal.clamp(
+                  new Decimal(x || "0").truncated(),
+                  new Decimal("-9223372036854775807"),
+                  new Decimal("9223372036854775807")
+                );
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "i64",
-                      value: Decimal.clamp(
-                        new Decimal(x || "0").truncated(),
-                        new Decimal("-9223372036854775807"),
-                        new Decimal("9223372036854775807")
-                      ),
+                      value: val,
                     };
                     return it;
                   }),
@@ -461,28 +483,32 @@ function I_64(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "i64",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "i64",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -518,17 +544,18 @@ function U_64(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = Decimal.clamp(
+                  new Decimal(x || "0").truncated(),
+                  0,
+                  new Decimal("9223372036854775807")
+                );
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "u64",
-                      value: Decimal.clamp(
-                        new Decimal(x || "0").truncated(),
-                        0,
-                        new Decimal("9223372036854775807")
-                      ),
+                      value: val,
                     };
                     return it;
                   }),
@@ -539,28 +566,32 @@ function U_64(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "u64",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "u64",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -596,13 +627,14 @@ function I_Double(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = new Decimal(x || "0");
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "idouble",
-                      value: new Decimal(x || "0"),
+                      value: val,
                     };
                     return it;
                   }),
@@ -613,28 +645,32 @@ function I_Double(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "idouble",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "idouble",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -670,13 +706,14 @@ function U_Double(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = new Decimal(x || "0").abs();
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "udouble",
-                      value: new Decimal(x || "0").abs(),
+                      value: val,
                     };
                     return it;
                   }),
@@ -687,28 +724,32 @@ function U_Double(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "udouble",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "udouble",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -744,13 +785,14 @@ function I_Decimal(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = new Decimal(x || "0");
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "idecimal",
-                      value: new Decimal(x || "0"),
+                      value: val,
                     };
                     return it;
                   }),
@@ -761,28 +803,32 @@ function I_Decimal(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "idecimal",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "idecimal",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
@@ -818,13 +864,14 @@ function U_Decimal(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
-                set_local_val(x);
+                const val = new Decimal(x || "0").abs();
+                set_local_val(val.toString());
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
                       type: "udecimal",
-                      value: new Decimal(x || "0").abs(),
+                      value: val,
                     };
                     return it;
                   }),
@@ -835,28 +882,32 @@ function U_Decimal(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              <Pressable
-                style={tw.style(["px-2"], {})}
-                onPress={() => {
-                  set_local_val(default_value.toString());
-                  props.dispatch([
-                    "value",
-                    apply(props.path, (it) => {
-                      it.path[1][1] = {
-                        type: "udecimal",
-                        value: default_value,
-                      };
-                      return it;
-                    }),
-                  ]);
-                }}
-              >
-                <MaterialIcons
-                  name="clear"
-                  size={24}
-                  color={theme.placeholder}
-                />
-              </Pressable>
+              local_val !== default_value.toString() ? (
+                <Pressable
+                  style={tw.style(["px-2"], {})}
+                  onPress={() => {
+                    set_local_val(default_value.toString());
+                    props.dispatch([
+                      "value",
+                      apply(props.path, (it) => {
+                        it.path[1][1] = {
+                          type: "udecimal",
+                          value: default_value,
+                        };
+                        return it;
+                      }),
+                    ]);
+                  }}
+                >
+                  <MaterialIcons
+                    name="clear"
+                    size={24}
+                    color={theme.placeholder}
+                  />
+                </Pressable>
+              ) : (
+                <></>
+              )
             }
             style={style}
           />
