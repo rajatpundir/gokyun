@@ -300,7 +300,11 @@ function I_32(props: ComponentProps): JSX.Element {
                   -2147483648,
                   2147483648
                 );
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -383,7 +387,11 @@ function U_32(props: ComponentProps): JSX.Element {
                   0,
                   2147483648
                 );
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -466,7 +474,11 @@ function I_64(props: ComponentProps): JSX.Element {
                   new Decimal("-9223372036854775807"),
                   new Decimal("9223372036854775807")
                 );
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -549,7 +561,11 @@ function U_64(props: ComponentProps): JSX.Element {
                   0,
                   new Decimal("9223372036854775807")
                 );
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -628,7 +644,11 @@ function I_Double(props: ComponentProps): JSX.Element {
             onChangeText={(x) => {
               try {
                 const val = new Decimal(x || "0");
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -707,7 +727,11 @@ function U_Double(props: ComponentProps): JSX.Element {
             onChangeText={(x) => {
               try {
                 const val = new Decimal(x || "0").abs();
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -786,7 +810,11 @@ function I_Decimal(props: ComponentProps): JSX.Element {
             onChangeText={(x) => {
               try {
                 const val = new Decimal(x || "0");
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -865,7 +893,11 @@ function U_Decimal(props: ComponentProps): JSX.Element {
             onChangeText={(x) => {
               try {
                 const val = new Decimal(x || "0").abs();
-                set_local_val(val.toString());
+                if (x === "") {
+                  set_local_val("");
+                } else {
+                  set_local_val(val.toString());
+                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
