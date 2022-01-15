@@ -1,20 +1,20 @@
 import React from "react";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, ScrollView } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import Decimal from "decimal.js";
 import { FontAwesome } from "@expo/vector-icons";
+import { Text } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
   SearchBar,
 } from "../lib/utils/component";
 import { Label, Field, Check } from "../lib/utils/fields";
-import { View, Text } from "../lib/themed";
 import { apply, arrow, unwrap } from "../lib/utils/prelude";
 import { Path, PathString, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
-import { get_path } from "../lib/utils/commons";
+import { get_label, get_path } from "../lib/utils/commons";
 import UserViews from "./User";
 import { tw, colors } from "../lib/utils/tailwind";
 import { Row, Column } from "native-base";
@@ -27,7 +27,11 @@ export default {
   Default: {
     create: (props) => {
       const navigation = useNavigation();
-      const item = (path: string | PathString, checks?: JSX.Element) => {
+      const item = (
+        path: string | PathString,
+        placeholder?: string,
+        checks?: JSX.Element
+      ) => {
         return (
           <Row my={"2"}>
             <Column flex={1}>
@@ -40,7 +44,7 @@ export default {
                   flexDirection={"row"}
                   justifyContent={"flex-end"}
                 >
-                  <Field {...props} path={path} />
+                  <Field {...props} path={path} placeholder={placeholder} />
                 </Column>
               </Row>
               <Row mx={"2"}>
@@ -59,6 +63,7 @@ export default {
             {item("clob")}
             {item(
               "u32",
+              get_label(props.state, "u32"),
               <>
                 <Row>
                   <Check
@@ -123,7 +128,6 @@ export default {
                           return (
                             <View>
                               <Field {...props} path={[["user"], "nickname"]} />
-                              <Text> </Text>
                               {props.state.mode === "write" ? (
                                 <FontAwesome
                                   name="edit"
@@ -178,15 +182,7 @@ export default {
                 borderColor: colors.slate[600],
               }}
             >
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 15,
-                  paddingRight: 0,
-                }}
-              >
-                Cancel
-              </Text>
+              <Text>Cancel</Text>
             </Pressable>
             <Pressable
               onPress={async () => {
@@ -216,15 +212,7 @@ export default {
                 borderColor: colors.slate[600],
               }}
             >
-              <Text
-                style={{
-                  fontWeight: "bold",
-                  fontSize: 15,
-                  paddingRight: 0,
-                }}
-              >
-                SAVE
-              </Text>
+              <Text>SAVE</Text>
             </Pressable>
           </View>
         </ScrollView>

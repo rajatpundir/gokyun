@@ -110,11 +110,7 @@ function Str(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -188,11 +184,7 @@ function Lstr(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -265,11 +257,7 @@ function Clob(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -352,11 +340,7 @@ function I_32(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -439,11 +423,7 @@ function U_32(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -526,11 +506,7 @@ function I_64(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -613,11 +589,7 @@ function U_64(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -696,11 +668,7 @@ function I_Double(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -779,11 +747,7 @@ function U_Double(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -862,11 +826,7 @@ function I_Decimal(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -945,11 +905,7 @@ function U_Decimal(props: ComponentProps): JSX.Element {
           />
         );
       }
-      return (
-        <Text fontSize={"md"} style={style}>
-          {local_val}
-        </Text>
-      );
+      return <Text style={style}>{local_val}</Text>;
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -980,11 +936,7 @@ function Bool(props: ComponentProps): JSX.Element {
         />
       );
     } else {
-      return (
-        <Text fontSize={"md"} style={style}>
-          {value.value ? "Yes" : "No"}
-        </Text>
-      );
+      return <Text style={style}>{value.value ? "Yes" : "No"}</Text>;
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1000,7 +952,7 @@ function Date_Field(props: ComponentProps): JSX.Element {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text fontSize={"md"} style={style}>
+            <Text style={style}>
               {moment(value.value).format("Do MMM YYYY")}
             </Text>
           </Pressable>
@@ -1029,9 +981,7 @@ function Date_Field(props: ComponentProps): JSX.Element {
       );
     } else {
       return (
-        <Text fontSize={"md"} style={style}>
-          {moment(value.value).format("MMM Do YYYY")}
-        </Text>
+        <Text style={style}>{moment(value.value).format("MMM Do YYYY")}</Text>
       );
     }
   }
@@ -1048,9 +998,7 @@ function Time_Field(props: ComponentProps): JSX.Element {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text fontSize={"md"} style={style}>
-              {moment(value.value).format("h:mm A")}
-            </Text>
+            <Text style={style}>{moment(value.value).format("h:mm A")}</Text>
           </Pressable>
           <>
             {showPicker && (
@@ -1076,11 +1024,7 @@ function Time_Field(props: ComponentProps): JSX.Element {
         </>
       );
     } else {
-      return (
-        <Text fontSize={"md"} style={style}>
-          {moment(value.value).format("h:mm A")}
-        </Text>
-      );
+      return <Text style={style}>{moment(value.value).format("h:mm A")}</Text>;
     }
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1105,7 +1049,7 @@ function Timestamp_Field(props: ComponentProps): JSX.Element {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text fontSize={"md"} style={style}>
+            <Text style={style}>
               {moment(value.value).format("Do MMM YYYY, h:mm A")}
             </Text>
           </Pressable>
@@ -1162,7 +1106,7 @@ function Timestamp_Field(props: ComponentProps): JSX.Element {
       );
     } else {
       return (
-        <Text fontSize={"md"} style={style}>
+        <Text style={style}>
           {moment(value.value).format("Do MMM YYYY, h:mm A")}
         </Text>
       );
@@ -1983,7 +1927,7 @@ export function Check(props: {
     if (unwrap(result)) {
       if (!result.value) {
         return (
-          <Text fontSize={"sm"} color={"lightBlue.600"}>
+          <Text fontSize={"xs"} color={"lightBlue.600"}>
             {props.message}
           </Text>
         );
