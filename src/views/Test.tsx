@@ -11,12 +11,13 @@ import {
 } from "../lib/utils/component";
 import { Label, Field, Check } from "../lib/utils/fields";
 import { View, Text } from "../lib/themed";
-import { arrow, unwrap } from "../lib/utils/prelude";
-import { Path, Variable } from "../lib/utils/variable";
+import { apply, arrow, unwrap } from "../lib/utils/prelude";
+import { Path, PathString, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
 import { tw, colors } from "../lib/utils/tailwind";
+import { Row, Column } from "native-base";
 
 const views = {
   User: UserViews,
@@ -26,27 +27,60 @@ export default {
   Default: {
     create: (props) => {
       const navigation = useNavigation();
+      const item = (path: string | PathString, checks?: JSX.Element) => {
+        return (
+          <Row my={"2"}>
+            <Column flex={1}>
+              <Row alignItems={"center"}>
+                <Column w={"20"}>
+                  <Label {...props} path={path} />
+                </Column>
+                <Column
+                  flex={1}
+                  flexDirection={"row"}
+                  justifyContent={"flex-end"}
+                >
+                  <Field {...props} path={path} />
+                </Column>
+              </Row>
+              <Row mx={"2"}>
+                <Column flex={1}>{checks}</Column>
+              </Row>
+            </Column>
+          </Row>
+        );
+      };
       return (
         <ScrollView style={tw.style(["flex-1", "flex-col"])}>
-          <Field {...props} path={"str"} />
-          <Field {...props} path={[["z"], "str"]} />
-          <Field {...props} path={"lstr"} />
-          <Field {...props} path={"clob"} />
-          <View>
-            <Field {...props} path={"u32"} />
-            <Check {...props} name="u32_is_even" message="U32 cannot be odd" />
-          </View>
-          <Field {...props} path={"i32"} />
-          <Field {...props} path={"u64"} />
-          <Field {...props} path={"i64"} />
-          <Field {...props} path={"udouble"} />
-          <Field {...props} path={"idouble"} />
-          <Field {...props} path={"udecimal"} />
-          <Field {...props} path={"idecimal"} />
-          <Field {...props} path={"bool"} />
-          <Field {...props} path={"date"} />
-          <Field {...props} path={"time"} />
-          <Field {...props} path={"timestamp"} />
+          <Column px={"3"}>
+            {item("str")}
+            {item([["z"], "str"])}
+            {item("lstr")}
+            {item("clob")}
+            {item(
+              "u32",
+              <>
+                <Row>
+                  <Check
+                    {...props}
+                    name="u32_is_even"
+                    message="U32 cannot be odd"
+                  />
+                </Row>
+              </>
+            )}
+            {item("i32")}
+            {item("u64")}
+            {item("i64")}
+            {item("udouble")}
+            {item("idouble")}
+            {item("udecimal")}
+            {item("idecimal")}
+            {item("bool")}
+            {item("date")}
+            {item("time")}
+            {item("timestamp")}
+          </Column>
           <View>
             <Field
               {...props}
