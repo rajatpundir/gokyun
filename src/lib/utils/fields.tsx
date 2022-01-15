@@ -40,10 +40,9 @@ import { Filter, FilterPath } from "./db";
 import { PathPermission, get_permissions } from "./permissions";
 import { ListAction } from "./list";
 
-import { TextInput as PaperTextInput, Subheading } from "react-native-paper";
 import { colors, tw } from "./tailwind";
 
-import { Text, Input, TextArea } from "native-base";
+import { Text, Input, TextArea, Stack } from "native-base";
 import { theme } from "./theme";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
@@ -100,305 +99,228 @@ type ComponentProps = {
   state: State;
   dispatch: React.Dispatch<Action>;
   path: Path;
+  placeholder?: string;
 };
 
-function Str(
-  props: ComponentProps & {
-    direction?: "row" | "column" | "row-reverse" | "column-reverse";
-    placeholder?: string;
-  }
-): JSX.Element {
+function Str(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const label = get_label(props.state, get_path_string(props.path));
+  const style = tw.style([], {});
   if (value.type === "str") {
-    return (
-      <View
-        style={tw.style(
-          [
-            "flex-1",
-            "content-between",
-            "justify-between",
-            get_flex_direction(props.direction),
-            "m-1",
-          ],
-          {}
-        )}
-      >
-        <Text
-          style={tw.style(
-            [get_items_aligment(props.direction), "flex-grow"],
-            {}
-          )}
-          fontSize={"md"}
-        >
-          {label}
-        </Text>
-        {apply(props.path.writeable && props.mode === "write", (it) => {
-          if (it) {
-            return (
-              <Input
-                flex={1}
-                size={"md"}
-                maxLength={255}
-                placeholder={props.placeholder ? props.placeholder : label}
-                value={local_val}
-                isInvalid={has_errors}
-                onChangeText={(x) => {
-                  try {
-                    set_local_val(x);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "str",
-                          value: x,
-                        };
-                        return it;
-                      }),
-                    ]);
-                    set_has_errors(false);
-                  } catch (e) {
-                    set_has_errors(true);
-                  }
+    return apply(props.path.writeable && props.mode === "write", (it) => {
+      if (it) {
+        return (
+          <Input
+            flex={1}
+            size={"md"}
+            maxLength={255}
+            placeholder={props.placeholder ? props.placeholder : label}
+            value={local_val}
+            isInvalid={has_errors}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                props.dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "str",
+                      value: x,
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+            InputRightElement={
+              <Pressable
+                style={tw.style(["px-2"], {})}
+                onPress={() => {
+                  set_local_val(default_value);
+                  props.dispatch([
+                    "value",
+                    apply(props.path, (it) => {
+                      it.path[1][1] = {
+                        type: "str",
+                        value: default_value,
+                      };
+                      return it;
+                    }),
+                  ]);
                 }}
-                InputRightElement={
-                  <Pressable
-                    style={tw.style(["px-2"], {})}
-                    onPress={() => {
-                      set_local_val(default_value);
-                      props.dispatch([
-                        "value",
-                        apply(props.path, (it) => {
-                          it.path[1][1] = {
-                            type: "str",
-                            value: default_value,
-                          };
-                          return it;
-                        }),
-                      ]);
-                    }}
-                  >
-                    <MaterialIcons
-                      name="clear"
-                      size={24}
-                      color={theme.placeholder}
-                    />
-                  </Pressable>
-                }
-                maxWidth={"1/2"}
-                minWidth={"1/2"}
-                style={tw.style([], {})}
-              />
-            );
-          }
-          return <Text fontSize={"md"}>{local_val}</Text>;
-        })}
-      </View>
-    );
+              >
+                <MaterialIcons
+                  name="clear"
+                  size={24}
+                  color={theme.placeholder}
+                />
+              </Pressable>
+            }
+            style={style}
+          />
+        );
+      }
+      return (
+        <Text fontSize={"md"} style={style}>
+          {local_val}
+        </Text>
+      );
+    });
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
 }
 
-function Lstr(
-  props: ComponentProps & {
-    direction?: "row" | "column" | "row-reverse" | "column-reverse";
-    placeholder?: string;
-  }
-): JSX.Element {
+function Lstr(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const label = get_label(props.state, get_path_string(props.path));
+  const style = tw.style([], {});
   if (value.type === "lstr") {
-    return (
-      <View
-        style={tw.style(
-          [
-            "flex-1",
-            "content-between",
-            "justify-between",
-            get_flex_direction(props.direction),
-            "m-1",
-          ],
-          {}
-        )}
-      >
-        <Text
-          style={tw.style([get_items_aligment(props.direction), "flex-grow"], {
-            maxWidth: "50%",
-            maxHeight: "50%",
-          })}
-          fontSize={"md"}
-        >
-          {label}
-        </Text>
-        {apply(props.path.writeable && props.mode === "write", (it) => {
-          if (it) {
-            return (
-              <Input
-                flex={1}
-                size={"md"}
-                maxLength={255}
-                placeholder={props.placeholder ? props.placeholder : label}
-                value={local_val}
-                isInvalid={has_errors}
-                onChangeText={(x) => {
-                  try {
-                    set_local_val(x);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "lstr",
-                          value: x,
-                        };
-                        return it;
-                      }),
-                    ]);
-                    set_has_errors(false);
-                  } catch (e) {
-                    set_has_errors(true);
-                  }
+    return apply(props.path.writeable && props.mode === "write", (it) => {
+      if (it) {
+        return (
+          <Input
+            flex={1}
+            size={"md"}
+            maxLength={255}
+            placeholder={props.placeholder ? props.placeholder : label}
+            value={local_val}
+            isInvalid={has_errors}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                props.dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "lstr",
+                      value: x,
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+            InputRightElement={
+              <Pressable
+                onPress={() => {
+                  set_local_val(default_value);
+                  props.dispatch([
+                    "value",
+                    apply(props.path, (it) => {
+                      it.path[1][1] = {
+                        type: "lstr",
+                        value: default_value,
+                      };
+                      return it;
+                    }),
+                  ]);
                 }}
-                InputRightElement={
-                  <Pressable
-                    onPress={() => {
-                      set_local_val(default_value);
-                      props.dispatch([
-                        "value",
-                        apply(props.path, (it) => {
-                          it.path[1][1] = {
-                            type: "lstr",
-                            value: default_value,
-                          };
-                          return it;
-                        }),
-                      ]);
-                    }}
-                    style={tw.style(["px-2"], {})}
-                  >
-                    <MaterialIcons
-                      name="clear"
-                      size={24}
-                      color={theme.placeholder}
-                    />
-                  </Pressable>
-                }
-                maxWidth={"1/2"}
-                minWidth={"1/2"}
-                style={tw.style([], {})}
-              />
-            );
-          }
-          return <Text fontSize={"md"}>{local_val}</Text>;
-        })}
-      </View>
-    );
+                style={tw.style(["px-2"], {})}
+              >
+                <MaterialIcons
+                  name="clear"
+                  size={24}
+                  color={theme.placeholder}
+                />
+              </Pressable>
+            }
+            style={style}
+          />
+        );
+      }
+      return (
+        <Text fontSize={"md"} style={style}>
+          {local_val}
+        </Text>
+      );
+    });
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
 }
 
-function Clob(
-  props: ComponentProps & {
-    direction?: "row" | "column" | "row-reverse" | "column-reverse";
-    placeholder?: string;
-  }
-): JSX.Element {
+function Clob(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const label = get_label(props.state, get_path_string(props.path));
+  const style = tw.style([], {});
   if (value.type === "clob") {
-    return (
-      <View
-        style={tw.style(
-          [
-            "flex-1",
-            "content-between",
-            "justify-between",
-            get_flex_direction(props.direction),
-            "m-1",
-          ],
-          {}
-        )}
-      >
-        <Text
-          style={tw.style([get_items_aligment(props.direction), "flex-grow"], {
-            maxWidth: "50%",
-            maxHeight: "50%",
-          })}
-          fontSize={"md"}
-        >
-          {label}
-        </Text>
-        {apply(props.path.writeable && props.mode === "write", (it) => {
-          if (it) {
-            return (
-              <TextArea
-                flex={1}
-                size={"md"}
-                placeholder={props.placeholder ? props.placeholder : label}
-                value={local_val}
-                isInvalid={has_errors}
-                onChangeText={(x) => {
-                  try {
-                    set_local_val(x);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "clob",
-                          value: x,
-                        };
-                        return it;
-                      }),
-                    ]);
-                    set_has_errors(false);
-                  } catch (e) {
-                    set_has_errors(true);
-                  }
+    return apply(props.path.writeable && props.mode === "write", (it) => {
+      if (it) {
+        return (
+          <TextArea
+            flex={1}
+            size={"md"}
+            placeholder={props.placeholder ? props.placeholder : label}
+            value={local_val}
+            isInvalid={has_errors}
+            onChangeText={(x) => {
+              try {
+                set_local_val(x);
+                props.dispatch([
+                  "value",
+                  apply(props.path, (it) => {
+                    it.path[1][1] = {
+                      type: "clob",
+                      value: x,
+                    };
+                    return it;
+                  }),
+                ]);
+                set_has_errors(false);
+              } catch (e) {
+                set_has_errors(true);
+              }
+            }}
+            InputRightElement={
+              <Pressable
+                onPress={() => {
+                  set_local_val(default_value);
+                  props.dispatch([
+                    "value",
+                    apply(props.path, (it) => {
+                      it.path[1][1] = {
+                        type: "clob",
+                        value: default_value,
+                      };
+                      return it;
+                    }),
+                  ]);
                 }}
-                InputRightElement={
-                  <Pressable
-                    onPress={() => {
-                      set_local_val(default_value);
-                      props.dispatch([
-                        "value",
-                        apply(props.path, (it) => {
-                          it.path[1][1] = {
-                            type: "clob",
-                            value: default_value,
-                          };
-                          return it;
-                        }),
-                      ]);
-                    }}
-                    style={tw.style(["px-2"], {})}
-                  >
-                    <MaterialIcons
-                      name="clear"
-                      size={24}
-                      color={theme.placeholder}
-                    />
-                  </Pressable>
-                }
-                maxWidth={"1/2"}
-                minWidth={"1/2"}
-                style={tw.style([], {})}
-              />
-            );
-          }
-          return <Text fontSize={"md"}>{local_val}</Text>;
-        })}
-      </View>
-    );
+                style={tw.style(["px-2"], {})}
+              >
+                <MaterialIcons
+                  name="clear"
+                  size={24}
+                  color={theme.placeholder}
+                />
+              </Pressable>
+            }
+            style={style}
+          />
+        );
+      }
+      return (
+        <Text fontSize={"md"} style={style}>
+          {local_val}
+        </Text>
+      );
+    });
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
