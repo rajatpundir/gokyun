@@ -1928,7 +1928,7 @@ export function Check(props: {
       if (!result.value) {
         return (
           <Text fontSize={"xs"} color={"lightBlue.600"}>
-            {props.message}
+            * {props.message}
           </Text>
         );
       }
