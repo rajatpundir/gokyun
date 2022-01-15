@@ -30,7 +30,7 @@ export default {
       const item = (
         path: string | PathString,
         placeholder?: string,
-        checks?: JSX.Element
+        checks?: ReadonlyArray<JSX.Element>
       ) => {
         return (
           <Row my={"2"}>
@@ -51,7 +51,11 @@ export default {
                 if (checks) {
                   return (
                     <Row mx={"2"} my={"1"}>
-                      <Column flex={1}>{checks}</Column>
+                      <Column flex={1}>
+                        {checks.map((x) => (
+                          <Row>{x}</Row>
+                        ))}
+                      </Column>
                     </Row>
                   );
                 }
@@ -68,19 +72,13 @@ export default {
             {item([["z"], "str"])}
             {item("lstr")}
             {item("clob")}
-            {item(
-              "u32",
-              get_label(props.state, "u32"),
-              <>
-                <Row>
-                  <Check
-                    {...props}
-                    name="u32_is_even"
-                    message="U32 cannot be odd"
-                  />
-                </Row>
-              </>
-            )}
+            {item("u32", get_label(props.state, "u32"), [
+              <Check
+                {...props}
+                name="u32_is_even"
+                message="U32 cannot be odd"
+              />,
+            ])}
             {item("i32")}
             {item("u64")}
             {item("i64")}
