@@ -47,9 +47,16 @@ export default {
                   <Field {...props} path={path} placeholder={placeholder} />
                 </Column>
               </Row>
-              <Row mx={"2"}>
-                <Column flex={1}>{checks}</Column>
-              </Row>
+              {arrow(() => {
+                if (checks) {
+                  return (
+                    <Row mx={"2"} my={"1"}>
+                      <Column flex={1}>{checks}</Column>
+                    </Row>
+                  );
+                }
+                return <></>;
+              })}
             </Column>
           </Row>
         );
