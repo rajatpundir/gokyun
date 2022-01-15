@@ -6,7 +6,7 @@ import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { extendTheme } from "native-base";
 import { colors } from "./tailwind";
 
-export const palette = {
+export const theme = {
   primary: colors.red[600],
   accent: colors.sky[600],
   background: colors.zinc[900],
@@ -22,12 +22,12 @@ export const theme_rn: ReactNavigationTheme = {
   dark: true,
   colors: {
     ...DarkTheme.colors,
-    primary: palette.primary,
-    background: palette.background,
-    card: palette.card,
-    border: palette.border,
-    text: palette.text,
-    notification: palette.notification,
+    primary: theme.primary,
+    background: theme.background,
+    card: theme.card,
+    border: theme.border,
+    text: theme.text,
+    notification: theme.notification,
   },
 };
 
@@ -37,12 +37,12 @@ export const theme_rnp: ReactNativePaper.Theme = {
   roundness: 5,
   colors: {
     ...PaperTheme.colors,
-    primary: palette.primary,
-    accent: palette.accent,
-    background: palette.background,
-    placeholder: palette.placeholder,
-    text: palette.text,
-    error: palette.error,
+    primary: theme.primary,
+    accent: theme.accent,
+    background: theme.background,
+    placeholder: theme.placeholder,
+    text: theme.text,
+    error: theme.error,
   },
 };
 

@@ -1,4 +1,4 @@
-import React, { createRef, useRef, useState } from "react";
+import React, { useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -15,7 +15,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Text, TextInput } from "../themed";
+import { TextInput } from "../themed";
 import { apply, unwrap, Result, arrow } from "./prelude";
 import {
   Action,
@@ -42,6 +42,9 @@ import { ListAction } from "./list";
 
 import { TextInput as PaperTextInput, Subheading } from "react-native-paper";
 import { colors, tw } from "./tailwind";
+
+import { Text, Input, TextArea } from "native-base";
+import { theme } from "./theme";
 
 // TODO. Update all components to use TextInput from react-native-paper in write mode
 
@@ -119,23 +122,30 @@ function Str(
             "content-between",
             "justify-between",
             get_flex_direction(props.direction),
+            "m-1",
           ],
           {}
         )}
       >
-        <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
+        <Text
+          style={tw.style(
+            [get_items_aligment(props.direction), "flex-grow"],
+            {}
+          )}
+          fontSize={"md"}
+        >
           {label}
-        </Subheading>
+        </Text>
         {apply(props.path.writeable && props.mode === "write", (it) => {
           if (it) {
             return (
-              <PaperTextInput
-                placeholder={props.placeholder ? props.placeholder : label}
+              <Input
+                flex={1}
+                size={"md"}
                 maxLength={255}
-                autoComplete={true}
-                dense={true}
+                placeholder={props.placeholder ? props.placeholder : label}
                 value={local_val}
-                error={has_errors}
+                isInvalid={has_errors}
                 onChangeText={(x) => {
                   try {
                     set_local_val(x);
@@ -154,9 +164,9 @@ function Str(
                     set_has_errors(true);
                   }
                 }}
-                right={
-                  <PaperTextInput.Icon
-                    name="close"
+                InputRightElement={
+                  <Pressable
+                    style={tw.style(["px-2"], {})}
                     onPress={() => {
                       set_local_val(default_value);
                       props.dispatch([
@@ -170,12 +180,21 @@ function Str(
                         }),
                       ]);
                     }}
-                  />
+                  >
+                    <MaterialIcons
+                      name="clear"
+                      size={24}
+                      color={theme.placeholder}
+                    />
+                  </Pressable>
                 }
+                maxWidth={"1/2"}
+                minWidth={"1/2"}
+                style={tw.style([], {})}
               />
             );
           }
-          return <Subheading>{local_val}</Subheading>;
+          return <Text fontSize={"md"}>{local_val}</Text>;
         })}
       </View>
     );
@@ -204,23 +223,30 @@ function Lstr(
             "content-between",
             "justify-between",
             get_flex_direction(props.direction),
+            "m-1",
           ],
           {}
         )}
       >
-        <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
+        <Text
+          style={tw.style([get_items_aligment(props.direction), "flex-grow"], {
+            maxWidth: "50%",
+            maxHeight: "50%",
+          })}
+          fontSize={"md"}
+        >
           {label}
-        </Subheading>
+        </Text>
         {apply(props.path.writeable && props.mode === "write", (it) => {
           if (it) {
             return (
-              <PaperTextInput
+              <Input
+                flex={1}
+                size={"md"}
+                maxLength={255}
                 placeholder={props.placeholder ? props.placeholder : label}
-                maxLength={1023}
-                autoComplete={true}
-                dense={true}
                 value={local_val}
-                error={has_errors}
+                isInvalid={has_errors}
                 onChangeText={(x) => {
                   try {
                     set_local_val(x);
@@ -228,7 +254,7 @@ function Lstr(
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
-                          type: "str",
+                          type: "lstr",
                           value: x,
                         };
                         return it;
@@ -239,28 +265,37 @@ function Lstr(
                     set_has_errors(true);
                   }
                 }}
-                right={
-                  <PaperTextInput.Icon
-                    name="close"
+                InputRightElement={
+                  <Pressable
                     onPress={() => {
                       set_local_val(default_value);
                       props.dispatch([
                         "value",
                         apply(props.path, (it) => {
                           it.path[1][1] = {
-                            type: "str",
+                            type: "lstr",
                             value: default_value,
                           };
                           return it;
                         }),
                       ]);
                     }}
-                  />
+                    style={tw.style(["px-2"], {})}
+                  >
+                    <MaterialIcons
+                      name="clear"
+                      size={24}
+                      color={theme.placeholder}
+                    />
+                  </Pressable>
                 }
+                maxWidth={"1/2"}
+                minWidth={"1/2"}
+                style={tw.style([], {})}
               />
             );
           }
-          return <Subheading>{local_val}</Subheading>;
+          return <Text fontSize={"md"}>{local_val}</Text>;
         })}
       </View>
     );
@@ -269,10 +304,6 @@ function Lstr(
   return <></>;
 }
 
-// Also add Native Elements and Native Base
-// Try using TextInput from other libs as fallback
-// Multiple libraries would have to be used since no single is really reliable
-// Create robustness by using them and having fallbacks
 function Clob(
   props: ComponentProps & {
     direction?: "row" | "column" | "row-reverse" | "column-reverse";
@@ -293,23 +324,29 @@ function Clob(
             "content-between",
             "justify-between",
             get_flex_direction(props.direction),
+            "m-1",
           ],
           {}
         )}
       >
-        <Subheading style={tw.style([get_items_aligment(props.direction)], {})}>
+        <Text
+          style={tw.style([get_items_aligment(props.direction), "flex-grow"], {
+            maxWidth: "50%",
+            maxHeight: "50%",
+          })}
+          fontSize={"md"}
+        >
           {label}
-        </Subheading>
+        </Text>
         {apply(props.path.writeable && props.mode === "write", (it) => {
           if (it) {
             return (
-              <PaperTextInput
+              <TextArea
+                flex={1}
+                size={"md"}
                 placeholder={props.placeholder ? props.placeholder : label}
-                multiline={true}
-                autoComplete={true}
-                dense={true}
                 value={local_val}
-                error={has_errors}
+                isInvalid={has_errors}
                 onChangeText={(x) => {
                   try {
                     set_local_val(x);
@@ -317,7 +354,7 @@ function Clob(
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
-                          type: "str",
+                          type: "clob",
                           value: x,
                         };
                         return it;
@@ -328,28 +365,37 @@ function Clob(
                     set_has_errors(true);
                   }
                 }}
-                right={
-                  <PaperTextInput.Icon
-                    name="close"
+                InputRightElement={
+                  <Pressable
                     onPress={() => {
                       set_local_val(default_value);
                       props.dispatch([
                         "value",
                         apply(props.path, (it) => {
                           it.path[1][1] = {
-                            type: "str",
+                            type: "clob",
                             value: default_value,
                           };
                           return it;
                         }),
                       ]);
                     }}
-                  />
+                    style={tw.style(["px-2"], {})}
+                  >
+                    <MaterialIcons
+                      name="clear"
+                      size={24}
+                      color={theme.placeholder}
+                    />
+                  </Pressable>
                 }
+                maxWidth={"1/2"}
+                minWidth={"1/2"}
+                style={tw.style([], {})}
               />
             );
           }
-          return <Subheading>{local_val}</Subheading>;
+          return <Text fontSize={"md"}>{local_val}</Text>;
         })}
       </View>
     );

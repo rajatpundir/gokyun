@@ -22,7 +22,7 @@ import { Navigator, NavigatorParams as MainTabNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
-import { palette, theme_rn, theme_rnp, theme_nb } from "../../lib/utils/theme";
+import { theme, theme_rn, theme_rnp, theme_nb } from "../../lib/utils/theme";
 import { ListAction, SelectionModal } from "../../lib/utils/list";
 import { PathString, Struct, Variable } from "../../lib/utils/variable";
 import { Filter } from "../../lib/utils/db";
@@ -116,7 +116,7 @@ function Component() {
                         </Stack.Navigator>
                       </NavigationContainer>
                     </SafeAreaView>
-                    <StatusBar backgroundColor={palette.background} />
+                    <StatusBar backgroundColor={theme.background} />
                   </SafeAreaProvider>
                 </NativeBaseProvider>
               </PaperProvider>
