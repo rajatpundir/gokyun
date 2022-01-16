@@ -300,6 +300,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -389,6 +390,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"number-pad"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -478,6 +480,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -567,6 +570,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"number-pad"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -656,6 +660,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -741,6 +746,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -826,6 +832,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -911,6 +918,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors}
+            keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
                 set_local_val(x);

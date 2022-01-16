@@ -48,7 +48,7 @@ function Item(props: {
   const label: string = get_label(props.state, props.path);
   if (label !== "") {
     return (
-      <Row my={"2"}>
+      <Row my={"1"}>
         <Column flex={1}>
           <Row alignItems={"center"}>
             <Column w={"20"}>

@@ -29,7 +29,7 @@ export default {
     create: (props) => {
       const navigation = useNavigation();
       return (
-        <ScrollView m={"3"}>
+        <ScrollView m={"2"}>
           <SBS
             {...props}
             fields={[
@@ -196,7 +196,7 @@ export default {
                 backgroundColor: theme.primary,
               })}
             >
-              <Text fontWeight={"semibold"}>Save</Text>
+              <Text fontWeight={"bold"}>Save</Text>
             </Pressable>
           </Row>
         </ScrollView>
