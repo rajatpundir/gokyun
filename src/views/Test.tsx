@@ -12,9 +12,9 @@ import {
 } from "../lib/utils/component";
 import { Label, Field, Check } from "../lib/utils/fields";
 import { arrow, unwrap } from "../lib/utils/prelude";
-import { Path, PathString, Variable } from "../lib/utils/variable";
+import { Path, PathString, Struct, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
-import { get_label, get_path } from "../lib/utils/commons";
+import { Action, get_label, get_path, State } from "../lib/utils/commons";
 import UserViews from "./User";
 import { tw, colors } from "../lib/utils/tailwind";
 import { Row, Column } from "native-base";
@@ -23,71 +23,72 @@ const views = {
   User: UserViews,
 };
 
+const Item = (props: {
+  struct: Struct;
+  state: State;
+  dispatch: React.Dispatch<Action>;
+  path: string | PathString;
+  placeholder?: string;
+  checks?: ReadonlyArray<{ name: string; message: string }>;
+}): JSX.Element => (
+  <Row my={"2"}>
+    <Column flex={1}>
+      <Row alignItems={"center"}>
+        <Column w={"20"}>
+          <Label {...props} />
+        </Column>
+        <Column flex={1} flexDirection={"row"} justifyContent={"flex-end"}>
+          <Field {...props} />
+        </Column>
+      </Row>
+      {arrow(() => {
+        if (props.checks) {
+          return (
+            <Row mx={"2"} my={"1"}>
+              <Column flex={1}>
+                {props.checks.map((x) => (
+                  <Row>
+                    <Check {...props} name={x.name} message={x.message} />
+                  </Row>
+                ))}
+              </Column>
+            </Row>
+          );
+        }
+        return <></>;
+      })}
+    </Column>
+  </Row>
+);
+
 export default {
   Default: {
     create: (props) => {
       const navigation = useNavigation();
-      const Item = (
-        path: string | PathString,
-        placeholder?: string,
-        checks?: ReadonlyArray<JSX.Element>
-      ): JSX.Element => (
-        <Row my={"2"}>
-          <Column flex={1}>
-            <Row alignItems={"center"}>
-              <Column w={"20"}>
-                <Label {...props} path={path} />
-              </Column>
-              <Column
-                flex={1}
-                flexDirection={"row"}
-                justifyContent={"flex-end"}
-              >
-                <Field {...props} path={path} placeholder={placeholder} />
-              </Column>
-            </Row>
-            {arrow(() => {
-              if (checks) {
-                return (
-                  <Row mx={"2"} my={"1"}>
-                    <Column flex={1}>
-                      {checks.map((x) => (
-                        <Row>{x}</Row>
-                      ))}
-                    </Column>
-                  </Row>
-                );
-              }
-              return <></>;
-            })}
-          </Column>
-        </Row>
-      );
+
       return (
         <ScrollView style={tw.style(["flex-1", "flex-col"])}>
           <Column px={"3"}>
-            {Item("str")}
-            {Item([["z"], "str"])}
-            {Item("lstr")}
-            {Item("clob")}
-            {Item("u32", get_label(props.state, "u32"), [
-              <Check
-                {...props}
-                name="u32_is_even"
-                message="U32 cannot be odd"
-              />,
-            ])}
-            {Item("i32")}
-            {Item("u64")}
-            {Item("i64")}
-            {Item("udouble")}
-            {Item("idouble")}
-            {Item("udecimal")}
-            {Item("idecimal")}
-            {Item("bool")}
-            {Item("date")}
-            {Item("time")}
-            {Item("timestamp")}
+            <Item {...props} path={"str"} />
+            <Item {...props} path={[["z"], "str"]} />
+            <Item {...props} path={"lstr"} />
+            <Item {...props} path={"clob"} />
+            <Item
+              {...props}
+              path={"u32"}
+              checks={[{ name: "u32_is_even", message: "U32 cannot be odd" }]}
+            />
+            <Item {...props} path={"i32"} />
+            <Item {...props} path={"u64"} />
+            <Item {...props} path={"i64"} />
+            <Item {...props} path={"udouble"} />
+            <Item {...props} path={"idouble"} />
+            <Item {...props} path={"udecimal"} />
+            <Item {...props} path={"idecimal"} />
+            <Item {...props} path={"bool"} />
+            <Item {...props} path={"date"} />
+            <Item {...props} path={"time"} />
+            <Item {...props} path={"timestamp"} />
           </Column>
           <View>
             <Field
