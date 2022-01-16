@@ -146,7 +146,7 @@ export function OBA(props: {
   }>;
 }): JSX.Element {
   return (
-    <Row space={2}>
+    <Row space={2} my={"1"}>
       {props.fields
         .filter((x) => get_label(props.state, x.path) !== "")
         .map((field) => {
