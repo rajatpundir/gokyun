@@ -1,6 +1,4 @@
 import React from "react";
-import Decimal from "decimal.js";
-import { HashSet } from "prelude-ts";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -23,9 +21,7 @@ import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
 import { theme, theme_rn, theme_rnp, theme_nb } from "../../lib/utils/theme";
-import { ListAction, SelectionModal } from "../../lib/utils/list";
-import { PathString, Struct, Variable } from "../../lib/utils/variable";
-import { Filter } from "../../lib/utils/db";
+import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
 
 import Test from "../test";
 
@@ -33,48 +29,7 @@ import Test from "../test";
 
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainTabNavigatorParams> | undefined;
-  SelectionModal: {
-    title: string;
-    selected: Decimal;
-    struct: Struct;
-    user_paths: Array<PathString>;
-    borrows: Array<string>;
-    active: boolean;
-    level: Decimal | undefined;
-    filters: [Filter, HashSet<Filter>];
-    limit: Decimal;
-    render_list_element: [
-      (props: {
-        struct: Struct;
-        user_paths: Array<PathString>;
-        borrows: Array<string>;
-        variable: Variable;
-        selected: boolean;
-        update_parent_values: () => void;
-      }) => JSX.Element,
-      Record<
-        string,
-        (props: {
-          struct: Struct;
-          user_paths: Array<PathString>;
-          borrows: Array<string>;
-          variable: Variable;
-          selected: boolean;
-          update_parent_values: () => void;
-        }) => JSX.Element
-      >
-    ];
-    update_parent_values: (variable: Variable) => void;
-    render_custom_fields: (props: {
-      init_filter: Filter;
-      filters: HashSet<Filter>;
-      dispatch: React.Dispatch<ListAction>;
-      show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
-      show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-      show_filters: (props: { element: JSX.Element }) => JSX.Element;
-    }) => JSX.Element;
-    horizontal: boolean;
-  };
+  SelectionModal: SelectionModalProps;
   Test: {
     id: number;
   };

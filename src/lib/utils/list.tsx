@@ -294,37 +294,23 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
   }
 }
 
-export function List(props: {
-  selected: Decimal;
+type RenderListItemProps = {
   struct: Struct;
   user_paths: Array<PathString>;
   borrows: Array<string>;
-  active: boolean;
-  level: Decimal | undefined;
-  filters: [Filter, HashSet<Filter>];
+  variable: Variable;
+  selected: boolean;
+  update_parent_values: () => void;
+};
+
+export type CommonProps = {
+  user_paths: Array<PathString>;
+  borrows: Array<string>;
   limit: Decimal;
   render_list_element: [
-    (props: {
-      struct: Struct;
-      user_paths: Array<PathString>;
-      borrows: Array<string>;
-      variable: Variable;
-      selected: boolean;
-      update_parent_values: () => void;
-    }) => JSX.Element,
-    Record<
-      string,
-      (props: {
-        struct: Struct;
-        user_paths: Array<PathString>;
-        borrows: Array<string>;
-        variable: Variable;
-        selected: boolean;
-        update_parent_values: () => void;
-      }) => JSX.Element
-    >
+    (props: RenderListItemProps) => JSX.Element,
+    Record<string, (props: RenderListItemProps) => JSX.Element>
   ];
-  update_parent_values: (variable: Variable) => void;
   render_custom_fields: (props: {
     init_filter: Filter;
     filters: HashSet<Filter>;
@@ -334,7 +320,18 @@ export function List(props: {
     show_filters: (props: { element: JSX.Element }) => JSX.Element;
   }) => JSX.Element;
   horizontal?: boolean;
-}): JSX.Element {
+};
+
+type ListSpecificProps = CommonProps & {
+  selected: Decimal;
+  active: boolean;
+  struct: Struct;
+  level: Decimal | undefined;
+  filters: [Filter, HashSet<Filter>];
+  update_parent_values: (variable: Variable) => void;
+};
+
+export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
     active: props.active,
@@ -474,7 +471,7 @@ export function List(props: {
         onEndReachedThreshold={0.5}
         onEndReached={() => dispatch(["offset"])}
         ListFooterComponent={ListFooterComponent}
-        horizontal={props.horizontal}
+        horizontal={!!props.horizontal}
         nestedScrollEnabled={true}
       />
 
@@ -838,6 +835,12 @@ export function List(props: {
   );
 }
 
+export type ModalSpecificProps = {
+  title: string;
+};
+
+export type SelectionModalProps = ListSpecificProps & ModalSpecificProps;
+
 export function SelectionModal(
   props: RootNavigatorProps<"SelectionModal">
 ): JSX.Element {
@@ -849,15 +852,15 @@ export function SelectionModal(
       <ModalHeader title={props.route.params.title} />
       <List
         selected={props.route.params.selected}
-        struct={props.route.params.struct}
-        user_paths={props.route.params.user_paths}
-        borrows={props.route.params.borrows}
         active={props.route.params.active}
+        struct={props.route.params.struct}
         level={props.route.params.level}
         filters={props.route.params.filters}
+        update_parent_values={props.route.params.update_parent_values}
+        user_paths={props.route.params.user_paths}
+        borrows={props.route.params.borrows}
         limit={props.route.params.limit}
         render_list_element={props.route.params.render_list_element}
-        update_parent_values={props.route.params.update_parent_values}
         render_custom_fields={props.route.params.render_custom_fields}
         horizontal={props.route.params.horizontal}
       />

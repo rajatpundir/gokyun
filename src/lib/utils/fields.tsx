@@ -30,7 +30,7 @@ import {
   Variable,
 } from "./variable";
 import { get_struct } from "./schema";
-import { ListAction } from "./list";
+import { ListAction, CommonProps, ModalSpecificProps } from "./list";
 import { theme } from "./theme";
 import { tw } from "./tailwind";
 
@@ -1183,44 +1183,11 @@ function Timestamp_Field(
   return <></>;
 }
 
-export type OtherFieldProps = {
-  title: string;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
-  labels: Immutable<Array<[string, PathString]>>;
-  element: JSX.Element;
-  render_list_element: [
-    (props: {
-      struct: Struct;
-      user_paths: Array<PathString>;
-      borrows: Array<string>;
-      variable: Variable;
-      selected: boolean;
-      update_parent_values: () => void;
-    }) => JSX.Element,
-    Record<
-      string,
-      (props: {
-        struct: Struct;
-        user_paths: Array<PathString>;
-        borrows: Array<string>;
-        variable: Variable;
-        selected: boolean;
-        update_parent_values: () => void;
-      }) => JSX.Element
-    >
-  ];
-  limit: Decimal;
-  render_custom_fields: (props: {
-    init_filter: Filter;
-    filters: HashSet<Filter>;
-    dispatch: React.Dispatch<ListAction>;
-    show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
-    show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-    show_filters: (props: { element: JSX.Element }) => JSX.Element;
-  }) => JSX.Element;
-  horizontal?: boolean;
-};
+export type OtherFieldProps = CommonProps &
+  ModalSpecificProps & {
+    labels: Immutable<Array<[string, PathString]>>;
+    element: JSX.Element;
+  };
 
 function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const value = props.path.path[1][1];
@@ -1270,7 +1237,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                   navigation.goBack();
                 },
                 render_custom_fields: props.render_custom_fields,
-                horizontal: !!props.horizontal,
+                horizontal: props.horizontal,
               });
             }
           }}
