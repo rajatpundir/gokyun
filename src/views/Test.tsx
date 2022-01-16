@@ -1,8 +1,8 @@
 import React from "react";
+import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable, ScrollView, View } from "react-native";
-import Decimal from "decimal.js";
 import { FontAwesome } from "@expo/vector-icons";
 import { Text } from "native-base";
 import {
@@ -27,69 +27,67 @@ export default {
   Default: {
     create: (props) => {
       const navigation = useNavigation();
-      const item = (
+      const Item = (
         path: string | PathString,
         placeholder?: string,
         checks?: ReadonlyArray<JSX.Element>
-      ) => {
-        return (
-          <Row my={"2"}>
-            <Column flex={1}>
-              <Row alignItems={"center"}>
-                <Column w={"20"}>
-                  <Label {...props} path={path} />
-                </Column>
-                <Column
-                  flex={1}
-                  flexDirection={"row"}
-                  justifyContent={"flex-end"}
-                >
-                  <Field {...props} path={path} placeholder={placeholder} />
-                </Column>
-              </Row>
-              {arrow(() => {
-                if (checks) {
-                  return (
-                    <Row mx={"2"} my={"1"}>
-                      <Column flex={1}>
-                        {checks.map((x) => (
-                          <Row>{x}</Row>
-                        ))}
-                      </Column>
-                    </Row>
-                  );
-                }
-                return <></>;
-              })}
-            </Column>
-          </Row>
-        );
-      };
+      ): JSX.Element => (
+        <Row my={"2"}>
+          <Column flex={1}>
+            <Row alignItems={"center"}>
+              <Column w={"20"}>
+                <Label {...props} path={path} />
+              </Column>
+              <Column
+                flex={1}
+                flexDirection={"row"}
+                justifyContent={"flex-end"}
+              >
+                <Field {...props} path={path} placeholder={placeholder} />
+              </Column>
+            </Row>
+            {arrow(() => {
+              if (checks) {
+                return (
+                  <Row mx={"2"} my={"1"}>
+                    <Column flex={1}>
+                      {checks.map((x) => (
+                        <Row>{x}</Row>
+                      ))}
+                    </Column>
+                  </Row>
+                );
+              }
+              return <></>;
+            })}
+          </Column>
+        </Row>
+      );
       return (
         <ScrollView style={tw.style(["flex-1", "flex-col"])}>
           <Column px={"3"}>
-            {item("str")}
-            {item([["z"], "str"])}
-            {item("lstr")}
-            {item("clob")}
-            {item("u32", get_label(props.state, "u32"), [
+            {Item("str")}
+            {Item([["z"], "str"])}
+            {Item("lstr")}
+            {Item("clob")}
+            {Item("u32", get_label(props.state, "u32"), [
               <Check
                 {...props}
                 name="u32_is_even"
                 message="U32 cannot be odd"
               />,
             ])}
-            {item("i32")}
-            {item("u64")}
-            {item("i64")}
-            {item("udouble")}
-            {item("idouble")}
-            {item("udecimal")}
-            {item("idecimal")}
-            {item("bool")}
-            {item("date")}
-            {item("time")}
-            {item("timestamp")}
+            {Item("i32")}
+            {Item("u64")}
+            {Item("i64")}
+            {Item("udouble")}
+            {Item("idouble")}
+            {Item("udecimal")}
+            {Item("idecimal")}
+            {Item("bool")}
+            {Item("date")}
+            {Item("time")}
+            {Item("timestamp")}
           </Column>
           <View>
             <Field
