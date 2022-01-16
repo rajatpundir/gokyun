@@ -50,13 +50,11 @@ function Item(props: {
     return (
       <Row my={"1"}>
         <Column flex={1}>
-          <Row alignItems={"center"}>
-            <Column w={"20"}>
-              <Label {...props} />
-            </Column>
-            <Column flex={1} flexDirection={"row"} justifyContent={"flex-end"}>
-              <Field {...props} />
-            </Column>
+          <Row>
+            <Label {...props} />
+          </Row>
+          <Row mt={"1"}>
+            <Field {...props} />
           </Row>
           {arrow(() => {
             if (props.checks) {

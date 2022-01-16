@@ -51,7 +51,7 @@ function Item(props: {
       <Row my={"1"}>
         <Column flex={1}>
           <Row alignItems={"center"}>
-            <Column w={"20"}>
+            <Column w={"24"}>
               <Label {...props} />
             </Column>
             <Column flex={1} flexDirection={"row"} justifyContent={"flex-end"}>

@@ -1266,15 +1266,7 @@ export function Label(props: {
 }): JSX.Element {
   const label = get_label(props.state, props.path);
   if (label !== "") {
-    return (
-      <Text
-        style={{
-          fontWeight: "600",
-        }}
-      >
-        {label}
-      </Text>
-    );
+    return <Text color={theme.placeholder}>{label}</Text>;
   }
   return <></>;
 }

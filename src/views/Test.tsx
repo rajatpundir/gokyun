@@ -19,6 +19,7 @@ import { tw } from "../lib/utils/tailwind";
 import { theme } from "../lib/utils/theme";
 import { SBS } from "../templates/SBS";
 import UserViews from "./User";
+import { OAA } from "../templates/OAA";
 
 const views = {
   User: UserViews,
