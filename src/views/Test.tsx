@@ -4,7 +4,7 @@ import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Pressable } from "react-native";
-import { Row, ScrollView, Text } from "native-base";
+import { ScrollView, Row, Text } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
