@@ -15,11 +15,11 @@ import { arrow, unwrap } from "../lib/utils/prelude";
 import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
-import UserViews from "./User";
-import { tw, colors } from "../lib/utils/tailwind";
-import { Row, Column } from "native-base";
+import { tw } from "../lib/utils/tailwind";
+import { Row } from "native-base";
 import { theme } from "../lib/utils/theme";
 import { SBS } from "../templates/SBS";
+import UserViews from "./User";
 
 const views = {
   User: UserViews,
