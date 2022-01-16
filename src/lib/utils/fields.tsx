@@ -1183,7 +1183,7 @@ function Timestamp_Field(
   return <></>;
 }
 
-export type OtherFieldProps = CommonProps &
+type OtherFieldProps = CommonProps &
   ModalSpecificProps & {
     labels: Immutable<Array<[string, PathString]>>;
     element: JSX.Element;
@@ -1271,6 +1271,24 @@ export function Label(props: {
   return <></>;
 }
 
+export type FieldOptions =
+  | ["str", StrFieldProps]
+  | ["lstr", LstrFieldProps]
+  | ["clob", ClobFieldProps]
+  | ["u32", U32FieldProps]
+  | ["i32", I32FieldProps]
+  | ["u64", U32FieldProps]
+  | ["i64", I64FieldProps]
+  | ["udouble", UDoubleFieldProps]
+  | ["idouble", IDoubleFieldProps]
+  | ["udecimal", UDecimalFieldProps]
+  | ["idecimal", IDecimalFieldProps]
+  | ["bool", BoolFieldProps]
+  | ["date", DateFieldProps]
+  | ["time", TimeFieldProps]
+  | ["timestamp", TimestampFieldProps]
+  | ["other", OtherFieldProps];
+
 export function Field(props: {
   struct: Struct;
   state: State;
@@ -1278,23 +1296,7 @@ export function Field(props: {
   path: PathString | string;
   mode?: "read";
   placeholder?: string;
-  options?:
-    | ["str", StrFieldProps]
-    | ["lstr", LstrFieldProps]
-    | ["clob", ClobFieldProps]
-    | ["u32", U32FieldProps]
-    | ["i32", I32FieldProps]
-    | ["u64", U32FieldProps]
-    | ["i64", I64FieldProps]
-    | ["udouble", UDoubleFieldProps]
-    | ["idouble", IDoubleFieldProps]
-    | ["udecimal", UDecimalFieldProps]
-    | ["idecimal", IDecimalFieldProps]
-    | ["bool", BoolFieldProps]
-    | ["date", DateFieldProps]
-    | ["time", TimeFieldProps]
-    | ["timestamp", TimestampFieldProps]
-    | ["other", OtherFieldProps];
+  options?: FieldOptions;
 }): JSX.Element {
   const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
