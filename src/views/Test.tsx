@@ -17,9 +17,8 @@ import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import { tw } from "../lib/utils/tailwind";
 import { theme } from "../lib/utils/theme";
-import { SBS } from "../templates/SBS";
 import UserViews from "./User";
-import { OAA } from "../templates/OAA";
+import { SBS, OAA, OBA } from "../lib/utils/templates";
 
 const views = {
   User: UserViews,
@@ -31,7 +30,7 @@ export default {
       const navigation = useNavigation();
       return (
         <ScrollView m={"2"}>
-          <SBS
+          <OAA
             {...props}
             fields={[
               {
@@ -46,6 +45,11 @@ export default {
               {
                 path: "clob",
               },
+            ]}
+          />
+          <SBS
+            {...props}
+            fields={[
               {
                 path: "u32",
                 checks: [{ name: "u32_is_even", message: "U32 cannot be odd" }],
@@ -71,18 +75,33 @@ export default {
               {
                 path: "idecimal",
               },
+            ]}
+          />
+          <OBA
+            {...props}
+            fields={[
               {
                 path: "bool",
               },
               {
                 path: "date",
               },
+            ]}
+          />
+          <OBA
+            {...props}
+            fields={[
               {
                 path: "time",
               },
               {
                 path: "timestamp",
               },
+            ]}
+          />
+          <OAA
+            {...props}
+            fields={[
               {
                 path: "user",
                 options: [
