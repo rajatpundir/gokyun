@@ -51,29 +51,29 @@ export default {
             {...props}
             fields={[
               {
-                path: "u32",
-                checks: [{ name: "u32_is_even", message: "U32 cannot be odd" }],
-              },
-              {
                 path: "i32",
               },
               {
-                path: "u64",
+                path: "u32",
+                checks: [{ name: "u32_is_even", message: "U32 cannot be odd" }],
               },
               {
                 path: "i64",
               },
               {
-                path: "udouble",
+                path: "u64",
               },
               {
                 path: "idouble",
               },
               {
-                path: "udecimal",
+                path: "udouble",
               },
               {
                 path: "idecimal",
+              },
+              {
+                path: "udecimal",
               },
             ]}
           />
