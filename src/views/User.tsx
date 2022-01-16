@@ -1,10 +1,11 @@
 import React from "react";
 import { Pressable } from "react-native";
 import { ComponentViews } from "../lib/utils/component";
-import { Label, Field } from "../lib/utils/fields";
-import { View, Text } from "../lib/themed";
 import { arrow } from "../lib/utils/prelude";
-import { colors } from "../lib/utils/tailwind";
+import { colors, tw } from "../lib/utils/tailwind";
+import { Column, Row, Text } from "native-base";
+import { SBS } from "../lib/utils/templates";
+import { theme } from "../lib/utils/theme";
 
 export default {
   Default: {
@@ -12,71 +13,64 @@ export default {
     update: () => <></>,
     show: (props) => {
       return (
-        <View
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            borderRadius: 5,
-            borderWidth: 1,
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            marginHorizontal: 10,
-            marginBottom: 10,
-            backgroundColor: arrow(() => {
-              if (props.selected) {
-                return colors.slate[800];
-              }
-              return colors.slate[900];
-            }),
-          }}
-        >
-          <View>
-            <Text>Unique ID</Text>
-            <Text>{props.state.id.toString()}</Text>
-          </View>
-          <View>
-            <Label {...props} path={"nickname"} />
-            <Field {...props} path={"nickname"} />
-          </View>
-          <View>
-            <Label {...props} path={"knows_english"} />
-            <Field {...props} path={"knows_english"} />
-          </View>
-          <View>
-            <Label {...props} path={"mobile"} />
-            <Field {...props} path={"mobile"} />
-          </View>
-          <View>
-            <Label {...props} path={"product_count"} />
-            <Field {...props} path={"product_count"} />
-          </View>
-          {arrow(() => {
-            if (!props.selected) {
-              return (
-                <Pressable
-                  onPress={props.update_parent_values}
-                  style={{
-                    alignSelf: "flex-end",
-                    paddingVertical: 10,
-                    paddingRight: 5,
-                  }}
-                >
-                  <Text
-                    style={{
-                      backgroundColor: colors.slate[700],
-                      paddingHorizontal: 6,
-                      paddingVertical: 2,
-                      fontWeight: "bold",
-                      borderRadius: 2,
-                    }}
-                  >
-                    OK
-                  </Text>
-                </Pressable>
-              );
+        <Column
+          p={"2"}
+          m={"1"}
+          borderWidth={"1"}
+          borderRadius={"md"}
+          borderColor={colors.slate[600]}
+          backgroundColor={arrow(() => {
+            if (props.selected) {
+              return colors.slate[800];
             }
+            return colors.slate[900];
           })}
-        </View>
+        >
+          <Row justifyContent={"space-between"}>
+            <Column>
+              <Text>Unique ID</Text>
+            </Column>
+            <Column>
+              <Text>{props.state.id.toString()}</Text>
+            </Column>
+          </Row>
+          <SBS
+            {...props}
+            fields={[
+              {
+                path: "nickname",
+              },
+              {
+                path: "knows_english",
+              },
+              {
+                path: "mobile",
+              },
+              {
+                path: "product_count",
+              },
+            ]}
+          />
+          <Row justifyContent={"flex-end"}>
+            {arrow(() => {
+              if (!props.selected) {
+                return (
+                  <Pressable
+                    onPress={props.update_parent_values}
+                    style={tw.style(
+                      ["px-4", "py-2", "rounded", "border", "mx-2"],
+                      {
+                        borderColor: theme.placeholder,
+                      }
+                    )}
+                  >
+                    <Text fontWeight={"bold"}>OK</Text>
+                  </Pressable>
+                );
+              }
+            })}
+          </Row>
+        </Column>
       );
     },
   },
