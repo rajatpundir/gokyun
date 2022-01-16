@@ -43,7 +43,9 @@ type ComponentProps = {
   placeholder: string;
 };
 
-function Str(props: ComponentProps): JSX.Element {
+type StrFieldProps = {};
+
+function Str(props: ComponentProps & StrFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -118,7 +120,9 @@ function Str(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Lstr(props: ComponentProps): JSX.Element {
+type LstrFieldProps = {};
+
+function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -193,7 +197,9 @@ function Lstr(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Clob(props: ComponentProps): JSX.Element {
+type ClobFieldProps = {};
+
+function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -267,7 +273,9 @@ function Clob(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function I_32(props: ComponentProps): JSX.Element {
+type I32FieldProps = {};
+
+function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -354,7 +362,9 @@ function I_32(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function U_32(props: ComponentProps): JSX.Element {
+type U32FieldProps = {};
+
+function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -441,7 +451,9 @@ function U_32(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function I_64(props: ComponentProps): JSX.Element {
+type I64FieldProps = {};
+
+function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -528,7 +540,9 @@ function I_64(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function U_64(props: ComponentProps): JSX.Element {
+type U64FieldProps = {};
+
+function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -615,7 +629,9 @@ function U_64(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function I_Double(props: ComponentProps): JSX.Element {
+type IDoubleFieldProps = {};
+
+function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -698,7 +714,9 @@ function I_Double(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function U_Double(props: ComponentProps): JSX.Element {
+type UDoubleFieldProps = {};
+
+function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -781,7 +799,9 @@ function U_Double(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function I_Decimal(props: ComponentProps): JSX.Element {
+type IDecimalFieldProps = {};
+
+function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -864,7 +884,9 @@ function I_Decimal(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function U_Decimal(props: ComponentProps): JSX.Element {
+type UDecimalFieldProps = {};
+
+function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -947,7 +969,9 @@ function U_Decimal(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Bool(props: ComponentProps): JSX.Element {
+type BoolFieldProps = {};
+
+function Bool(props: ComponentProps & BoolFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const style = tw.style([], {});
@@ -978,7 +1002,9 @@ function Bool(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Date_Field(props: ComponentProps): JSX.Element {
+type DateFieldProps = {};
+
+function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
@@ -1024,7 +1050,9 @@ function Date_Field(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Time_Field(props: ComponentProps): JSX.Element {
+type TimeFieldProps = {};
+
+function Time_Field(props: ComponentProps & TimeFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
@@ -1066,7 +1094,11 @@ function Time_Field(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Timestamp_Field(props: ComponentProps): JSX.Element {
+type TimestampFieldProps = {};
+
+function Timestamp_Field(
+  props: ComponentProps & TimestampFieldProps
+): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
@@ -1151,14 +1183,23 @@ function Timestamp_Field(props: ComponentProps): JSX.Element {
   return <></>;
 }
 
-function Other_Field(
-  props: ComponentProps & {
-    title: string;
-    user_paths: Array<PathString>;
-    borrows: Array<string>;
-    labels: Immutable<Array<[string, PathString]>>;
-    element: JSX.Element;
-    render_list_element: [
+export type OtherFieldProps = {
+  title: string;
+  user_paths: Array<PathString>;
+  borrows: Array<string>;
+  labels: Immutable<Array<[string, PathString]>>;
+  element: JSX.Element;
+  render_list_element: [
+    (props: {
+      struct: Struct;
+      user_paths: Array<PathString>;
+      borrows: Array<string>;
+      variable: Variable;
+      selected: boolean;
+      update_parent_values: () => void;
+    }) => JSX.Element,
+    Record<
+      string,
       (props: {
         struct: Struct;
         user_paths: Array<PathString>;
@@ -1166,31 +1207,22 @@ function Other_Field(
         variable: Variable;
         selected: boolean;
         update_parent_values: () => void;
-      }) => JSX.Element,
-      Record<
-        string,
-        (props: {
-          struct: Struct;
-          user_paths: Array<PathString>;
-          borrows: Array<string>;
-          variable: Variable;
-          selected: boolean;
-          update_parent_values: () => void;
-        }) => JSX.Element
-      >
-    ];
-    limit: Decimal;
-    render_custom_fields: (props: {
-      init_filter: Filter;
-      filters: HashSet<Filter>;
-      dispatch: React.Dispatch<ListAction>;
-      show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
-      show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-      show_filters: (props: { element: JSX.Element }) => JSX.Element;
-    }) => JSX.Element;
-    horizontal?: boolean;
-  }
-): JSX.Element {
+      }) => JSX.Element
+    >
+  ];
+  limit: Decimal;
+  render_custom_fields: (props: {
+    init_filter: Filter;
+    filters: HashSet<Filter>;
+    dispatch: React.Dispatch<ListAction>;
+    show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
+    show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+    show_filters: (props: { element: JSX.Element }) => JSX.Element;
+  }) => JSX.Element;
+  horizontal?: boolean;
+};
+
+function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const navigation = useNavigation();
@@ -1280,65 +1312,22 @@ export function Field(props: {
   mode?: "read";
   placeholder?: string;
   options?:
-    | ["str", {}]
-    | ["lstr", {}]
-    | ["clob", {}]
-    | ["u32", {}]
-    | ["i32", {}]
-    | ["u64", {}]
-    | ["i64", {}]
-    | ["udouble", {}]
-    | ["idouble", {}]
-    | ["udecimal", {}]
-    | ["idecimal", {}]
-    | ["bool", {}]
-    | ["date", {}]
-    | ["time", {}]
-    | ["timestamp", {}]
-    | [
-        "other",
-        {
-          title: string;
-          user_paths: Array<PathString>;
-          borrows: Array<string>;
-          labels: Immutable<Array<[string, PathString]>>;
-          element: JSX.Element;
-          render_list_element: [
-            (props: {
-              struct: Struct;
-              user_paths: Array<PathString>;
-              borrows: Array<string>;
-              variable: Variable;
-              selected: boolean;
-              update_parent_values: () => void;
-            }) => JSX.Element,
-            Record<
-              string,
-              (props: {
-                struct: Struct;
-                user_paths: Array<PathString>;
-                borrows: Array<string>;
-                variable: Variable;
-                selected: boolean;
-                update_parent_values: () => void;
-              }) => JSX.Element
-            >
-          ];
-          limit: Decimal;
-          render_custom_fields: (props: {
-            init_filter: Filter;
-            filters: HashSet<Filter>;
-            dispatch: React.Dispatch<ListAction>;
-            show_views: [
-              (props: { element: JSX.Element }) => JSX.Element,
-              boolean
-            ];
-            show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-            show_filters: (props: { element: JSX.Element }) => JSX.Element;
-          }) => JSX.Element;
-          horizontal?: boolean;
-        }
-      ];
+    | ["str", StrFieldProps]
+    | ["lstr", LstrFieldProps]
+    | ["clob", ClobFieldProps]
+    | ["u32", U32FieldProps]
+    | ["i32", I32FieldProps]
+    | ["u64", U32FieldProps]
+    | ["i64", I64FieldProps]
+    | ["udouble", UDoubleFieldProps]
+    | ["idouble", IDoubleFieldProps]
+    | ["udecimal", UDecimalFieldProps]
+    | ["idecimal", IDecimalFieldProps]
+    | ["bool", BoolFieldProps]
+    | ["date", DateFieldProps]
+    | ["time", TimeFieldProps]
+    | ["timestamp", TimestampFieldProps]
+    | ["other", OtherFieldProps];
 }): JSX.Element {
   const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
@@ -1927,15 +1916,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                title={props.options[1].title}
-                user_paths={props.options[1].user_paths}
-                borrows={props.options[1].borrows}
-                labels={props.options[1].labels}
-                element={props.options[1].element}
-                render_list_element={props.options[1].render_list_element}
-                limit={props.options[1].limit}
-                render_custom_fields={props.options[1].render_custom_fields}
-                horizontal={props.options[1].horizontal}
+                {...props.options[1]}
               />
             );
           }
