@@ -30,7 +30,7 @@ import {
   Variable,
 } from "./variable";
 import { get_struct } from "./schema";
-import { ListAction, CommonProps, ModalSpecificProps } from "./list";
+import { CommonProps, ModalSpecificProps } from "./list";
 import { theme } from "./theme";
 import { tw } from "./tailwind";
 

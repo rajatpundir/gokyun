@@ -11,7 +11,7 @@ import {
   SearchBar,
 } from "../lib/utils/component";
 import { Label, Field, Check } from "../lib/utils/fields";
-import { apply, arrow, unwrap } from "../lib/utils/prelude";
+import { arrow, unwrap } from "../lib/utils/prelude";
 import { Path, PathString, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_label, get_path } from "../lib/utils/commons";
