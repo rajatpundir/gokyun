@@ -2,9 +2,9 @@ import React from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, ScrollView } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import { Text } from "native-base";
+import { Pressable } from "react-native";
+import { Row, ScrollView, Text } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
@@ -16,7 +16,6 @@ import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import { tw } from "../lib/utils/tailwind";
-import { Row } from "native-base";
 import { theme } from "../lib/utils/theme";
 import { SBS } from "../templates/SBS";
 import UserViews from "./User";
@@ -30,7 +29,7 @@ export default {
     create: (props) => {
       const navigation = useNavigation();
       return (
-        <ScrollView style={tw.style(["flex-1", "flex-col", "m-3"])}>
+        <ScrollView m={"3"}>
           <SBS
             {...props}
             fields={[
@@ -167,10 +166,10 @@ export default {
               },
             ]}
           />
-          <Row justifyContent={"flex-end"} mt={"2"}>
+          <Row justifyContent={"flex-end"} my={"2"}>
             <Pressable
               onPress={() => navigation.goBack()}
-              style={tw.style(["px-3", "py-1", "m-1", "rounded", "border"], {
+              style={tw.style(["px-4", "py-2", "rounded", "border", "mx-2"], {
                 borderColor: theme.primary,
               })}
             >
@@ -193,7 +192,7 @@ export default {
                   navigation.goBack();
                 } catch (e) {}
               }}
-              style={tw.style(["px-3", "py-1", "m-1", "rounded"], {
+              style={tw.style(["px-4", "py-2", "rounded"], {
                 backgroundColor: theme.primary,
               })}
             >
