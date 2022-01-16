@@ -5,7 +5,7 @@ import { get_flattened_path, PathString, Struct } from "../lib/utils/variable";
 import { Action, get_label, State } from "../lib/utils/commons";
 import { Row, Column } from "native-base";
 
-// Side-By-Side
+// Side By Side
 export function SBS(props: {
   struct: Struct;
   state: State;
