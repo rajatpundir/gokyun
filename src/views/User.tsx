@@ -1,9 +1,9 @@
 import React from "react";
 import { Pressable } from "react-native";
+import { Column, Row, Text } from "native-base";
 import { ComponentViews } from "../lib/utils/component";
 import { arrow } from "../lib/utils/prelude";
 import { colors, tw } from "../lib/utils/tailwind";
-import { Column, Row, Text } from "native-base";
 import { SBS } from "../lib/utils/templates";
 import { theme } from "../lib/utils/theme";
 
@@ -57,12 +57,9 @@ export default {
                 return (
                   <Pressable
                     onPress={props.update_parent_values}
-                    style={tw.style(
-                      ["px-4", "py-2", "rounded", "border", "mx-2"],
-                      {
-                        borderColor: theme.placeholder,
-                      }
-                    )}
+                    style={tw.style(["px-2", "py-1", "rounded", "border"], {
+                      borderColor: theme.placeholder,
+                    })}
                   >
                     <Text fontWeight={"bold"}>OK</Text>
                   </Pressable>
