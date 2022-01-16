@@ -45,13 +45,14 @@ type ComponentProps = {
 
 function Str(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "str") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -119,13 +120,14 @@ function Str(props: ComponentProps): JSX.Element {
 
 function Lstr(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "lstr") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -193,13 +195,14 @@ function Lstr(props: ComponentProps): JSX.Element {
 
 function Clob(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "clob") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <TextArea
             flex={1}
@@ -266,13 +269,21 @@ function Clob(props: ComponentProps): JSX.Element {
 
 function I_32(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "i32") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -283,16 +294,12 @@ function I_32(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = Decimal.clamp(
                   new Decimal(x || "0").truncated(),
                   -2147483648,
                   2147483648
                 );
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -309,7 +316,7 @@ function I_32(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -349,13 +356,21 @@ function I_32(props: ComponentProps): JSX.Element {
 
 function U_32(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "u32") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -366,16 +381,12 @@ function U_32(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = Decimal.clamp(
                   new Decimal(x || "0").truncated(),
                   0,
                   2147483648
                 );
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -392,7 +403,7 @@ function U_32(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -432,13 +443,21 @@ function U_32(props: ComponentProps): JSX.Element {
 
 function I_64(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "i64") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -449,16 +468,12 @@ function I_64(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = Decimal.clamp(
                   new Decimal(x || "0").truncated(),
                   new Decimal("-9223372036854775807"),
                   new Decimal("9223372036854775807")
                 );
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -475,7 +490,7 @@ function I_64(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -515,13 +530,21 @@ function I_64(props: ComponentProps): JSX.Element {
 
 function U_64(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "u64") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -532,16 +555,12 @@ function U_64(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = Decimal.clamp(
                   new Decimal(x || "0").truncated(),
                   0,
                   new Decimal("9223372036854775807")
                 );
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -558,7 +577,7 @@ function U_64(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -598,13 +617,21 @@ function U_64(props: ComponentProps): JSX.Element {
 
 function I_Double(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "idouble") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -615,12 +642,8 @@ function I_Double(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = new Decimal(x || "0");
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -637,7 +660,7 @@ function I_Double(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -677,13 +700,21 @@ function I_Double(props: ComponentProps): JSX.Element {
 
 function U_Double(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "udouble") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -694,12 +725,8 @@ function U_Double(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = new Decimal(x || "0").abs();
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -716,7 +743,7 @@ function U_Double(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -756,13 +783,21 @@ function U_Double(props: ComponentProps): JSX.Element {
 
 function I_Decimal(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "idecimal") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -773,12 +808,8 @@ function I_Decimal(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = new Decimal(x || "0");
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -795,7 +826,7 @@ function I_Decimal(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -835,13 +866,21 @@ function I_Decimal(props: ComponentProps): JSX.Element {
 
 function U_Decimal(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
-  const [local_val, set_local_val] = useState(strong_enum_to_string(value));
+  const is_writeable = props.path.writeable && props.mode === "write";
+  const [local_val, set_local_val] = useState(
+    apply(strong_enum_to_string(value), (it) => {
+      if (is_writeable && it === "0") {
+        return "";
+      }
+      return it;
+    })
+  );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "udecimal") {
-    return apply(props.path.writeable && props.mode === "write", (it) => {
-      if (it) {
+    return arrow(() => {
+      if (is_writeable) {
         return (
           <Input
             flex={1}
@@ -852,12 +891,8 @@ function U_Decimal(props: ComponentProps): JSX.Element {
             isInvalid={has_errors}
             onChangeText={(x) => {
               try {
+                set_local_val(x);
                 const val = new Decimal(x || "0").abs();
-                if (x === "") {
-                  set_local_val("");
-                } else {
-                  set_local_val(val.toString());
-                }
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -874,7 +909,7 @@ function U_Decimal(props: ComponentProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() ? (
+              local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
@@ -914,9 +949,10 @@ function U_Decimal(props: ComponentProps): JSX.Element {
 
 function Bool(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const style = tw.style([], {});
   if (value.type === "bool") {
-    if (props.path.writeable && props.mode === "write") {
+    if (is_writeable) {
       return (
         <Switch
           value={value.value}
@@ -935,9 +971,8 @@ function Bool(props: ComponentProps): JSX.Element {
           color={value.value ? theme.primary : undefined}
         />
       );
-    } else {
-      return <Text style={style}>{value.value ? "Yes" : "No"}</Text>;
     }
+    return <Text style={style}>{value.value ? "Yes" : "No"}</Text>;
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -945,10 +980,11 @@ function Bool(props: ComponentProps): JSX.Element {
 
 function Date_Field(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
   const style = tw.style([], {});
   if (value.type === "date") {
-    if (props.path.writeable && props.mode === "write") {
+    if (is_writeable) {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
@@ -979,11 +1015,10 @@ function Date_Field(props: ComponentProps): JSX.Element {
           </>
         </>
       );
-    } else {
-      return (
-        <Text style={style}>{moment(value.value).format("MMM Do YYYY")}</Text>
-      );
     }
+    return (
+      <Text style={style}>{moment(value.value).format("MMM Do YYYY")}</Text>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -991,10 +1026,11 @@ function Date_Field(props: ComponentProps): JSX.Element {
 
 function Time_Field(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
   const style = tw.style([], {});
   if (value.type === "time") {
-    if (props.path.writeable && props.mode === "write") {
+    if (is_writeable) {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
@@ -1023,9 +1059,8 @@ function Time_Field(props: ComponentProps): JSX.Element {
           </>
         </>
       );
-    } else {
-      return <Text style={style}>{moment(value.value).format("h:mm A")}</Text>;
     }
+    return <Text style={style}>{moment(value.value).format("h:mm A")}</Text>;
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -1033,6 +1068,7 @@ function Time_Field(props: ComponentProps): JSX.Element {
 
 function Timestamp_Field(props: ComponentProps): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
   const [mode, setMode] = useState("date");
   let [date, setDate] = useState(
@@ -1045,7 +1081,7 @@ function Timestamp_Field(props: ComponentProps): JSX.Element {
   );
   const style = tw.style([], {});
   if (value.type === "timestamp") {
-    if (props.path.writeable && props.mode === "write") {
+    if (is_writeable) {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
@@ -1104,13 +1140,12 @@ function Timestamp_Field(props: ComponentProps): JSX.Element {
           </>
         </>
       );
-    } else {
-      return (
-        <Text style={style}>
-          {moment(value.value).format("Do MMM YYYY, h:mm A")}
-        </Text>
-      );
     }
+    return (
+      <Text style={style}>
+        {moment(value.value).format("Do MMM YYYY, h:mm A")}
+      </Text>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -1157,9 +1192,10 @@ function Other_Field(
   }
 ): JSX.Element {
   const value = props.path.path[1][1];
+  const is_writeable = props.path.writeable && props.mode === "write";
   const navigation = useNavigation();
   if (value.type === "other") {
-    if (props.path.writeable && props.mode === "write") {
+    if (is_writeable) {
       return (
         <Pressable
           onPress={() => {
@@ -1210,9 +1246,8 @@ function Other_Field(
           {props.element}
         </Pressable>
       );
-    } else {
-      return props.element;
     }
+    return props.element;
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
