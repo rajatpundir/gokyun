@@ -2,9 +2,9 @@ import React from "react";
 import { Pressable } from "react-native";
 import { Column, Row, Text } from "native-base";
 import { ComponentViews } from "../lib/utils/component";
+import { Template } from "../lib/utils/templates";
 import { arrow } from "../lib/utils/prelude";
 import { colors, tw } from "../lib/utils/tailwind";
-import { SBS } from "../lib/utils/templates";
 import { theme } from "../lib/utils/theme";
 
 export default {
@@ -34,22 +34,10 @@ export default {
               <Text>{props.state.id.toString()}</Text>
             </Column>
           </Row>
-          <SBS
+          <Template
+            type={"CLB"}
             {...props}
-            fields={[
-              {
-                path: "nickname",
-              },
-              {
-                path: "knows_english",
-              },
-              {
-                path: "mobile",
-              },
-              {
-                path: "product_count",
-              },
-            ]}
+            fields={["nickname", "knows_english", "mobile", "product_count"]}
           />
           <Row justifyContent={"flex-end"}>
             {arrow(() => {

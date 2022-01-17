@@ -11,6 +11,7 @@ import {
   SearchBar,
 } from "../lib/utils/component";
 import { Field } from "../lib/utils/fields";
+import { Template } from "../lib/utils/templates";
 import { arrow, unwrap } from "../lib/utils/prelude";
 import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
@@ -18,7 +19,6 @@ import { get_path } from "../lib/utils/commons";
 import { tw } from "../lib/utils/tailwind";
 import { theme } from "../lib/utils/theme";
 import UserViews from "./User";
-import { SBS, OAA, OBA } from "../lib/utils/templates";
 
 const views = {
   User: UserViews,
@@ -30,76 +30,32 @@ export default {
       const navigation = useNavigation();
       return (
         <ScrollView m={"2"}>
-          <OAA
+          <Template
+            type={"CLA"}
             {...props}
-            fields={[
-              {
-                path: "str",
-              },
-              {
-                path: [["z"], "str"],
-              },
-              {
-                path: "lstr",
-              },
-              {
-                path: "clob",
-              },
-            ]}
+            fields={["str", [["z"], "str"], "lstr", "clob"]}
           />
-          <SBS
+          <Template
+            type={"CLB"}
             {...props}
             fields={[
-              {
-                path: "i32",
-              },
+              "i32",
               {
                 path: "u32",
                 checks: [{ name: "u32_is_even", message: "U32 cannot be odd" }],
               },
-              {
-                path: "i64",
-              },
-              {
-                path: "u64",
-              },
-              {
-                path: "idouble",
-              },
-              {
-                path: "udouble",
-              },
-              {
-                path: "idecimal",
-              },
-              {
-                path: "udecimal",
-              },
+              "i64",
+              "u64",
+              "idouble",
+              "udouble",
+              "idecimal",
+              "udecimal",
             ]}
           />
-          <OBA
-            {...props}
-            fields={[
-              {
-                path: "bool",
-              },
-              {
-                path: "date",
-              },
-            ]}
-          />
-          <OBA
-            {...props}
-            fields={[
-              {
-                path: "time",
-              },
-              {
-                path: "timestamp",
-              },
-            ]}
-          />
-          <OAA
+          <Template type={"RLA"} {...props} fields={["bool", "date"]} />
+          <Template type={"RLA"} {...props} fields={["time", "timestamp"]} />
+          <Template
+            type={"CLA"}
             {...props}
             fields={[
               {

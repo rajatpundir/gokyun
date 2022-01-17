@@ -5,21 +5,38 @@ import { get_flattened_path, PathString, Struct } from "./variable";
 import { Action, get_label, State } from "./commons";
 import { Row, Column } from "native-base";
 
-// Side By Side
-export function SBS(props: {
+type CommonProps = {
   struct: Struct;
   state: State;
   dispatch: React.Dispatch<Action>;
-  fields: ReadonlyArray<{
-    path: string | PathString;
-    placeholder?: string;
-    checks?: ReadonlyArray<{ name: string; message: string }>;
-    options?: FieldOptions;
-  }>;
-}): JSX.Element {
+  fields: ReadonlyArray<
+    | string
+    | PathString
+    | {
+        path: string | PathString;
+        placeholder?: string;
+        checks?: ReadonlyArray<{ name: string; message: string }>;
+        options?: FieldOptions;
+      }
+  >;
+};
+
+type CLBProps = CommonProps;
+
+// Column - Label Beside
+function CLB(props: CLBProps): JSX.Element {
   return (
     <Column>
       {props.fields
+        .map((x) => {
+          if (typeof x === "string") {
+            return { path: x };
+          } else if (Array.isArray(x)) {
+            return { path: x };
+          } else {
+            return x;
+          }
+        })
         .filter((x) => get_label(props.state, x.path) !== "")
         .map((field) => {
           const key = apply(field.path, (it) => {
@@ -78,21 +95,22 @@ export function SBS(props: {
   );
 }
 
-// One Above Another
-export function OAA(props: {
-  struct: Struct;
-  state: State;
-  dispatch: React.Dispatch<Action>;
-  fields: ReadonlyArray<{
-    path: string | PathString;
-    placeholder?: string;
-    checks?: ReadonlyArray<{ name: string; message: string }>;
-    options?: FieldOptions;
-  }>;
-}): JSX.Element {
+type CLAProps = CommonProps;
+
+// Column - Label Above
+function CLA(props: CLAProps): JSX.Element {
   return (
     <Column>
       {props.fields
+        .map((x) => {
+          if (typeof x === "string") {
+            return { path: x };
+          } else if (Array.isArray(x)) {
+            return { path: x };
+          } else {
+            return x;
+          }
+        })
         .filter((x) => get_label(props.state, x.path) !== "")
         .map((field) => {
           const key = apply(field.path, (it) => {
@@ -143,21 +161,22 @@ export function OAA(props: {
   );
 }
 
-// One Beside Another
-export function OBA(props: {
-  struct: Struct;
-  state: State;
-  dispatch: React.Dispatch<Action>;
-  fields: ReadonlyArray<{
-    path: string | PathString;
-    placeholder?: string;
-    checks?: ReadonlyArray<{ name: string; message: string }>;
-    options?: FieldOptions;
-  }>;
-}): JSX.Element {
+type RLAProps = CommonProps;
+
+// Row - Label Above
+function RLA(props: RLAProps): JSX.Element {
   return (
     <Row space={2} my={"1"}>
       {props.fields
+        .map((x) => {
+          if (typeof x === "string") {
+            return { path: x };
+          } else if (Array.isArray(x)) {
+            return { path: x };
+          } else {
+            return x;
+          }
+        })
         .filter((x) => get_label(props.state, x.path) !== "")
         .map((field) => {
           const key = apply(field.path, (it) => {
@@ -204,4 +223,26 @@ export function OBA(props: {
         })}
     </Row>
   );
+}
+
+type TemplateProps = CommonProps & {
+  type: "CLB" | "CLA" | "RLA";
+};
+
+export function Template(props: TemplateProps): JSX.Element {
+  switch (props.type) {
+    case "CLA": {
+      return <CLA {...props} />;
+    }
+    case "CLB": {
+      return <CLB {...props} />;
+    }
+    case "RLA": {
+      return <RLA {...props} />;
+    }
+    default: {
+      const _exhaustiveCheck: never = props.type;
+      return _exhaustiveCheck;
+    }
+  }
 }
