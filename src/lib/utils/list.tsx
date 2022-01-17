@@ -4,9 +4,9 @@ import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
 import { PathString, Struct, Variable } from "./variable";
-import { View, Text } from "../themed";
+// import { View, Text } from "../themed";
 import Decimal from "decimal.js";
-import { ListRenderItemInfo, Pressable } from "react-native";
+import { ListRenderItemInfo, View } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
@@ -20,7 +20,9 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import { ModalHeader } from "./component";
-import { colors } from "./tailwind";
+import { colors, tw } from "./tailwind";
+import { Column, Row, Text, Pressable } from "native-base";
+import { bs_theme } from "./theme";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -423,17 +425,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   }, [state.reached_end]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        flexGrow: 1,
-        paddingHorizontal: 0,
-        paddingVertical: 0,
-        marginHorizontal: 0,
-        marginVertical: 0,
-      }}
-    >
+    <Column>
       <props.render_custom_fields
         init_filter={state.init_filter}
         filters={state.filters}
@@ -480,100 +472,91 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           ref={bsm_view_ref}
           snapPoints={["50%", "82%"]}
           index={0}
-          backgroundStyle={{
-            backgroundColor: colors.slate[900],
-            borderColor: colors.sky[600],
-            borderWidth: 1,
-          }}
+          backgroundStyle={tw.style(["border"], {
+            backgroundColor: bs_theme.background,
+            borderColor: bs_theme.primary,
+          })}
         >
-          <View
-            style={{
-              paddingBottom: 10,
-              marginHorizontal: 1,
-              paddingHorizontal: 8,
-              borderBottomWidth: 1,
-            }}
+          <Row
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            borderBottomColor={bs_theme.primary}
+            borderBottomWidth={"1"}
+            px={"3"}
+            pb={"2"}
           >
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              VIEW
-            </Text>
+            <Text bold>VIEW</Text>
             <Pressable
               onPress={() => bsm_view_ref.current?.close()}
-              style={{ paddingRight: 8 }}
+              borderColor={bs_theme.primary}
+              borderWidth={"1"}
+              borderRadius={"xs"}
+              px={"2"}
+              py={"0.5"}
             >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "700",
-                  textAlign: "center",
-                  paddingHorizontal: 5,
-                  paddingVertical: 2,
-                  borderRadius: 2,
-                  backgroundColor: colors.sky[600],
-                }}
-              >
-                Close
-              </Text>
+              <Text>Close</Text>
             </Pressable>
-          </View>
-          <BottomSheetScrollView
-            contentContainerStyle={{
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              margin: 5,
-            }}
-          >
-            <Pressable
-              onPress={() => {
-                if (state.layout !== "") {
-                  bsm_view_ref.current?.close();
-                  dispatch(["layout", ""]);
-                }
-              }}
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                marginHorizontal: 5,
-                marginVertical: 5,
-              }}
-            >
-              {state.layout === "" ? (
-                <Ionicons name="radio-button-on" size={24} color="red" />
-              ) : (
-                <Ionicons name="radio-button-off" size={24} color="red" />
-              )}
-              <Text style={{ paddingLeft: 10 }}>Default</Text>
-            </Pressable>
-            {Object.keys(props.render_list_element[1]).map((layout) => (
+          </Row>
+          <BottomSheetScrollView contentContainerStyle={tw.style(["m-1"], {})}>
+            <Row>
               <Pressable
                 onPress={() => {
-                  if (state.layout !== layout) {
+                  if (state.layout !== "") {
                     bsm_view_ref.current?.close();
-                    dispatch(["layout", layout]);
+                    dispatch(["layout", ""]);
                   }
                 }}
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  marginHorizontal: 5,
-                  marginVertical: 5,
-                }}
+                flex={1}
+                py={"0.5"}
               >
-                {state.layout === layout ? (
-                  <Ionicons name="radio-button-on" size={24} color="red" />
-                ) : (
-                  <Ionicons name="radio-button-off" size={24} color="red" />
-                )}
-                <Text style={{ paddingLeft: 10 }}>{layout}</Text>
+                <Row>
+                  {state.layout === "" ? (
+                    <Ionicons
+                      name="radio-button-on"
+                      size={24}
+                      color={bs_theme.primary}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="radio-button-off"
+                      size={24}
+                      color={bs_theme.primary}
+                    />
+                  )}
+                  <Text style={tw.style(["pl-2"], {})}>Default</Text>
+                </Row>
               </Pressable>
+            </Row>
+            {Object.keys(props.render_list_element[1]).map((layout) => (
+              <Row>
+                <Pressable
+                  onPress={() => {
+                    if (state.layout !== layout) {
+                      bsm_view_ref.current?.close();
+                      dispatch(["layout", layout]);
+                    }
+                  }}
+                  flex={1}
+                  py={"0.5"}
+                >
+                  <Row>
+                    {state.layout === layout ? (
+                      <Ionicons
+                        name="radio-button-on"
+                        size={24}
+                        color={bs_theme.primary}
+                      />
+                    ) : (
+                      <Ionicons
+                        name="radio-button-off"
+                        size={24}
+                        color={bs_theme.primary}
+                      />
+                    )}
+                    <Text style={tw.style(["pl-2"], {})}>{layout}</Text>
+                  </Row>
+                </Pressable>
+              </Row>
             ))}
           </BottomSheetScrollView>
         </BottomSheetModal>
@@ -582,11 +565,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           ref={bsm_sorting_ref}
           snapPoints={["50%", "82%"]}
           index={0}
-          backgroundStyle={{
-            backgroundColor: colors.slate[900],
-            borderColor: colors.sky[600],
-            borderWidth: 1,
-          }}
+          backgroundStyle={tw.style(["border"], {
+            backgroundColor: bs_theme.background,
+            borderColor: bs_theme.primary,
+          })}
         >
           <View
             style={{
@@ -618,7 +600,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.sky[600],
+                    backgroundColor: bs_theme.primary,
                   }}
                 >
                   Field++
@@ -636,7 +618,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.sky[600],
+                    backgroundColor: bs_theme.primary,
                   }}
                 >
                   Close
@@ -649,11 +631,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             ref={bsm_sorting_fields_ref}
             snapPoints={["50%", "82%"]}
             index={0}
-            backgroundStyle={{
-              backgroundColor: colors.slate[900],
-              borderColor: colors.sky[600],
-              borderWidth: 1,
-            }}
+            backgroundStyle={tw.style(["border"], {
+              backgroundColor: bs_theme.background,
+              borderColor: bs_theme.primary,
+            })}
           >
             <View
               style={{
@@ -684,7 +665,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                     paddingHorizontal: 5,
                     paddingVertical: 2,
                     borderRadius: 2,
-                    backgroundColor: colors.sky[600],
+                    backgroundColor: bs_theme.primary,
                   }}
                 >
                   Close
@@ -702,17 +683,16 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           ref={bsm_filters_ref}
           snapPoints={["50%", "82%"]}
           index={1}
-          backgroundStyle={{
-            backgroundColor: colors.slate[900],
-            borderColor: colors.sky[600],
-            borderWidth: 1,
-          }}
+          backgroundStyle={tw.style(["border"], {
+            backgroundColor: bs_theme.background,
+            borderColor: bs_theme.primary,
+          })}
         >
           <View
             style={{
               flex: 1,
               flexDirection: "column",
-              borderColor: colors.sky[600],
+              borderColor: bs_theme.primary,
               borderLeftWidth: 1,
               borderRightWidth: 1,
               paddingHorizontal: 0,
@@ -750,7 +730,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Checkbox
                   value={state.active}
                   onValueChange={() => dispatch(["active", !state.active])}
-                  color={state.active ? colors.sky[600] : undefined}
+                  color={state.active ? bs_theme.primary : undefined}
                   style={{
                     alignSelf: "center",
                     marginHorizontal: 6,
@@ -780,7 +760,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                   onValueChange={(x) =>
                     dispatch(["level", x ? undefined : new Decimal(0)])
                   }
-                  color={!state.level ? colors.sky[600] : undefined}
+                  color={!state.level ? bs_theme.primary : undefined}
                   style={{
                     alignSelf: "center",
                     marginHorizontal: 6,
@@ -831,7 +811,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           </View>
         </BottomSheetModal>
       </Portal>
-    </View>
+    </Column>
   );
 }
 

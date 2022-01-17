@@ -18,6 +18,11 @@ export const theme = {
   notification: colors.sky[600],
 };
 
+export const bs_theme = {
+  primary: colors.sky[600],
+  background: colors.slate[900],
+};
+
 export const theme_rn: ReactNavigationTheme = {
   dark: true,
   colors: {

@@ -41,10 +41,10 @@ function Component() {
     if (is_loading_complete) {
       return (
         <GestureHandlerRootView style={tw.style(["flex-1"])}>
-          <BottomSheetModalProvider>
-            <PortalProvider>
-              <PaperProvider theme={theme_rnp}>
-                <NativeBaseProvider theme={theme_nb}>
+          <PaperProvider theme={theme_rnp}>
+            <NativeBaseProvider theme={theme_nb}>
+              <BottomSheetModalProvider>
+                <PortalProvider>
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
@@ -73,10 +73,10 @@ function Component() {
                     </SafeAreaView>
                     <StatusBar backgroundColor={theme.background} />
                   </SafeAreaProvider>
-                </NativeBaseProvider>
-              </PaperProvider>
-            </PortalProvider>
-          </BottomSheetModalProvider>
+                </PortalProvider>
+              </BottomSheetModalProvider>
+            </NativeBaseProvider>
+          </PaperProvider>
         </GestureHandlerRootView>
       );
     }

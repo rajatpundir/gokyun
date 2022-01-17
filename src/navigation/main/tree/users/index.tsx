@@ -54,7 +54,14 @@ export default function Component(
             (props) => (
               <OtherComponent {...props} view={views.User["Default"]} />
             ),
-            {},
+            {
+              ABC: (props) => (
+                <OtherComponent {...props} view={views.User["Default"]} />
+              ),
+              DEF: (props) => (
+                <OtherComponent {...props} view={views.User["Default"]} />
+              ),
+            },
           ]}
           render_custom_fields={(props) => (
             <SearchBar

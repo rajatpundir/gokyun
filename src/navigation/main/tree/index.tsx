@@ -35,7 +35,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
     <>
       <AppHeader />
       <BottomTab.Navigator
-        initialRouteName="System"
+        initialRouteName="Users"
         screenOptions={{
           lazy: true,
           headerShown: false,
