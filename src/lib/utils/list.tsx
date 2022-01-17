@@ -4,7 +4,6 @@ import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
 import { PathString, Struct, Variable } from "./variable";
-// import { View, Text } from "../themed";
 import Decimal from "decimal.js";
 import { ListRenderItemInfo, View } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
@@ -19,9 +18,9 @@ import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
-import { ModalHeader } from "./component";
-import { colors, tw } from "./tailwind";
 import { Column, Row, Text, Pressable } from "native-base";
+import { ModalHeader } from "./component";
+import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
@@ -642,127 +641,80 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             borderColor: bs_theme.primary,
           })}
         >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              borderColor: bs_theme.primary,
-              borderLeftWidth: 1,
-              borderRightWidth: 1,
-              paddingHorizontal: 0,
-            }}
+          <Row
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            borderBottomColor={bs_theme.primary}
+            borderBottomWidth={"1"}
+            px={"3"}
+            pb={"2"}
           >
-            <View
-              style={{
-                borderBottomWidth: 1,
-                paddingHorizontal: 10,
-                paddingBottom: 5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                FILTERS
-              </Text>
-              <View
-                style={{
-                  paddingHorizontal: 4,
-                  paddingVertical: 4,
-                }}
-              >
-                <Pressable
-                  onPress={() => {
-                    dispatch(["active", !state.active]);
-                  }}
-                >
-                  <Text>Active</Text>
-                </Pressable>
-                <Checkbox
-                  value={state.active}
-                  onValueChange={() => dispatch(["active", !state.active])}
-                  color={state.active ? bs_theme.primary : undefined}
-                  style={{
-                    alignSelf: "center",
-                    marginHorizontal: 6,
-                  }}
-                />
-              </View>
-
-              <View
-                style={{
-                  paddingHorizontal: 4,
-                  paddingVertical: 4,
-                  marginBottom: 2,
-                }}
-              >
-                <Pressable
-                  onPress={() =>
-                    dispatch([
-                      "level",
-                      !!state.level ? undefined : new Decimal(0),
-                    ])
-                  }
-                >
-                  <Text>Unsaved</Text>
-                </Pressable>
-                <Checkbox
-                  value={!state.level ? true : false}
-                  onValueChange={(x) =>
-                    dispatch(["level", x ? undefined : new Decimal(0)])
-                  }
-                  color={!state.level ? bs_theme.primary : undefined}
-                  style={{
-                    alignSelf: "center",
-                    marginHorizontal: 6,
-                  }}
-                />
-              </View>
+            <Text bold>FILTERS</Text>
+            <Row>
               <Pressable
-                onPress={() => dispatch(["filter", "add"])}
-                style={{
-                  alignSelf: "center",
+                onPress={() => {
+                  dispatch(["active", !state.active]);
                 }}
               >
-                <Text
-                  style={{
-                    backgroundColor: colors.blue[500],
-                    alignSelf: "flex-end",
-                    paddingHorizontal: 6,
-                    paddingVertical: 2,
-                    fontWeight: "bold",
-                    marginRight: 4,
-                    color: "white",
-                    borderRadius: 2,
-                  }}
-                >
-                  Filter++
-                </Text>
+                <Text>Active</Text>
               </Pressable>
-            </View>
+              <Checkbox
+                value={state.active}
+                onValueChange={() => dispatch(["active", !state.active])}
+                color={state.active ? bs_theme.primary : undefined}
+                style={tw.style(["mx-1"], {})}
+              />
+            </Row>
 
-            <BottomSheetFlatList
-              data={state.filters
-                .toArray()
-                .sort((a, b) =>
-                  a.index > b.index ? 1 : a.index < b.index ? -1 : 0
-                )}
-              keyExtractor={(list_item) => list_item.index.toString()}
-              renderItem={(list_item) => {
-                return (
-                  <FilterComponent
-                    key={list_item.item.index}
-                    init_filter={state.init_filter}
-                    filter={list_item.item}
-                    dispatch={dispatch}
-                  />
-                );
-              }}
-            />
-          </View>
+            <Row>
+              <Pressable
+                onPress={() =>
+                  dispatch([
+                    "level",
+                    !!state.level ? undefined : new Decimal(0),
+                  ])
+                }
+              >
+                <Text>Unsaved</Text>
+              </Pressable>
+              <Checkbox
+                value={!state.level ? true : false}
+                onValueChange={(x) =>
+                  dispatch(["level", x ? undefined : new Decimal(0)])
+                }
+                color={!state.level ? bs_theme.primary : undefined}
+                style={tw.style(["mx-1"], {})}
+              />
+            </Row>
+            <Pressable
+              onPress={() => dispatch(["filter", "add"])}
+              backgroundColor={bs_theme.highlight}
+              borderRadius={"xs"}
+              px={"2"}
+              py={"0.5"}
+            >
+              <Text bold>Filter++</Text>
+            </Pressable>
+          </Row>
+
+          <BottomSheetFlatList
+            data={state.filters
+              .toArray()
+              .sort((a, b) =>
+                a.index > b.index ? 1 : a.index < b.index ? -1 : 0
+              )}
+            keyExtractor={(list_item) => list_item.index.toString()}
+            renderItem={(list_item) => {
+              return (
+                <FilterComponent
+                  key={list_item.item.index}
+                  init_filter={state.init_filter}
+                  filter={list_item.item}
+                  dispatch={dispatch}
+                />
+              );
+            }}
+          />
         </BottomSheetModal>
       </Portal>
     </Column>
