@@ -1,12 +1,12 @@
 import React, { useRef, useState } from "react";
 import { Filter, FilterPath } from "./db";
-import { View as DefaultView, ViewProps, Text, TextInput } from "../themed";
+import { View as DefaultView, ViewProps, TextInput } from "../themed";
 import Decimal from "decimal.js";
-import { Platform, Pressable } from "react-native";
+import { Platform } from "react-native";
 import { apply, arrow, is_decimal } from "./prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AntDesign, Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Entypo, Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { ListAction } from "./list";
 import {
@@ -16,7 +16,9 @@ import {
 } from "@gorhom/bottom-sheet";
 import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "./variable";
-import { colors } from "./tailwind";
+import { colors, tw } from "./tailwind";
+import { Column, Pressable, Row, Text } from "native-base";
+import { bs_theme } from "./theme";
 
 // For fields.tsx, test TextInput for long values of text
 // Also cross button should reset value to default for that key in case of text and decimal fields
@@ -52,13 +54,7 @@ export function SortComponent(props: {
   dispatch: React.Dispatch<ListAction>;
 }) {
   return (
-    <BottomSheetScrollView
-      contentContainerStyle={{
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        margin: 5,
-      }}
-    >
+    <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
       {props.init_filter.filter_paths
         .toArray()
         .filter((x) => x.ordering !== undefined)
@@ -76,61 +72,44 @@ export function SortComponent(props: {
           const ordering = filter_path.ordering;
           if (ordering !== undefined) {
             return (
-              <View
-                key={index}
-                style={{
-                  justifyContent: "flex-start",
-                  marginHorizontal: 5,
-                  marginVertical: 10,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "column",
-                  }}
-                >
+              <Row key={index} py={"0.5"}>
+                <Column>
                   <Pressable
                     onPress={() => props.dispatch(["sort", "up", filter_path])}
-                    style={{ marginBottom: -4 }}
                   >
-                    <FontAwesome
-                      name="sort-up"
-                      size={24}
-                      color={colors.slate[400]}
-                    />
+                    <AntDesign name="up" size={24} color={bs_theme.primary} />
                   </Pressable>
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "down", filter_path])
                     }
-                    style={{ marginTop: -4 }}
                   >
-                    <FontAwesome
-                      name="sort-down"
-                      size={24}
-                      color={colors.slate[400]}
-                    />
+                    <AntDesign name="down" size={24} color={bs_theme.primary} />
                   </Pressable>
-                </View>
-                <View style={{ flexGrow: 1 }}>
+                </Column>
+                <Row
+                  flex={1}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  px={"2"}
+                >
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "toggle", filter_path])
                     }
-                    style={{ paddingLeft: 10 }}
+                    flex={1}
+                    flexDirection={"row"}
+                    alignItems={"center"}
                   >
-                    <Text>{filter_path.label}</Text>
+                    <Text py={"1"}>{filter_path.label}</Text>
                   </Pressable>
                   <Pressable
                     onPress={() =>
                       props.dispatch(["sort", "toggle", filter_path])
                     }
-                    style={{
-                      alignSelf: "center",
-                      borderWidth: 1,
-                      borderRadius: 5,
-                      borderColor: colors.sky[700],
-                    }}
+                    borderColor={bs_theme.primary}
+                    borderWidth={"1"}
+                    borderRadius={"sm"}
                   >
                     {arrow(() => {
                       if (ordering[1]) {
@@ -138,7 +117,7 @@ export function SortComponent(props: {
                           <AntDesign
                             name="arrowdown"
                             size={24}
-                            color={colors.sky[600]}
+                            color={bs_theme.primary}
                           />
                         );
                       } else {
@@ -146,14 +125,14 @@ export function SortComponent(props: {
                           <AntDesign
                             name="arrowup"
                             size={24}
-                            color={colors.sky[600]}
+                            color={bs_theme.primary}
                           />
                         );
                       }
                     })}
                   </Pressable>
-                </View>
-              </View>
+                </Row>
+              </Row>
             );
           }
           return <></>;
@@ -167,13 +146,7 @@ export function SortComponentFields(props: {
   dispatch: React.Dispatch<ListAction>;
 }) {
   return (
-    <BottomSheetScrollView
-      contentContainerStyle={{
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        margin: 5,
-      }}
-    >
+    <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
       {props.init_filter.filter_paths
         .toArray()
         .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
@@ -205,28 +178,24 @@ export function SortComponentFields(props: {
             <Pressable
               key={index}
               onPress={() => toggle(!active)}
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                marginHorizontal: 5,
-                marginVertical: 5,
-              }}
+              flex={1}
+              flexDirection={"row"}
+              py={"0.5"}
             >
               {active ? (
                 <Ionicons
                   name="radio-button-on"
                   size={24}
-                  color={colors.sky[600]}
+                  color={bs_theme.primary}
                 />
               ) : (
                 <Ionicons
                   name="radio-button-off"
                   size={24}
-                  color={colors.sky[600]}
+                  color={bs_theme.primary}
                 />
               )}
-              <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
+              <Text style={tw.style(["pl-2"], {})}>{filter_path.label}</Text>
             </Pressable>
           );
         })}

@@ -498,65 +498,59 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             </Pressable>
           </Row>
           <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
-            <Row>
+            <Pressable
+              onPress={() => {
+                if (state.layout !== "") {
+                  bsm_view_ref.current?.close();
+                  dispatch(["layout", ""]);
+                }
+              }}
+              flex={1}
+              flexDirection={"row"}
+              py={"0.5"}
+            >
+              {state.layout === "" ? (
+                <Ionicons
+                  name="radio-button-on"
+                  size={24}
+                  color={bs_theme.primary}
+                />
+              ) : (
+                <Ionicons
+                  name="radio-button-off"
+                  size={24}
+                  color={bs_theme.primary}
+                />
+              )}
+              <Text style={tw.style(["pl-2"], {})}>Default</Text>
+            </Pressable>
+            {Object.keys(props.render_list_element[1]).map((layout) => (
               <Pressable
                 onPress={() => {
-                  if (state.layout !== "") {
+                  if (state.layout !== layout) {
                     bsm_view_ref.current?.close();
-                    dispatch(["layout", ""]);
+                    dispatch(["layout", layout]);
                   }
                 }}
                 flex={1}
+                flexDirection={"row"}
                 py={"0.5"}
               >
-                <Row>
-                  {state.layout === "" ? (
-                    <Ionicons
-                      name="radio-button-on"
-                      size={24}
-                      color={bs_theme.primary}
-                    />
-                  ) : (
-                    <Ionicons
-                      name="radio-button-off"
-                      size={24}
-                      color={bs_theme.primary}
-                    />
-                  )}
-                  <Text style={tw.style(["pl-2"], {})}>Default</Text>
-                </Row>
+                {state.layout === layout ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                ) : (
+                  <Ionicons
+                    name="radio-button-off"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                )}
+                <Text style={tw.style(["pl-2"], {})}>{layout}</Text>
               </Pressable>
-            </Row>
-            {Object.keys(props.render_list_element[1]).map((layout) => (
-              <Row>
-                <Pressable
-                  onPress={() => {
-                    if (state.layout !== layout) {
-                      bsm_view_ref.current?.close();
-                      dispatch(["layout", layout]);
-                    }
-                  }}
-                  flex={1}
-                  py={"0.5"}
-                >
-                  <Row>
-                    {state.layout === layout ? (
-                      <Ionicons
-                        name="radio-button-on"
-                        size={24}
-                        color={bs_theme.primary}
-                      />
-                    ) : (
-                      <Ionicons
-                        name="radio-button-off"
-                        size={24}
-                        color={bs_theme.primary}
-                      />
-                    )}
-                    <Text style={tw.style(["pl-2"], {})}>{layout}</Text>
-                  </Row>
-                </Pressable>
-              </Row>
             ))}
           </BottomSheetScrollView>
         </BottomSheetModal>
@@ -570,62 +564,38 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             borderColor: bs_theme.primary,
           })}
         >
-          <View
-            style={{
-              paddingBottom: 10,
-              marginHorizontal: 1,
-              paddingHorizontal: 8,
-              borderBottomWidth: 1,
-            }}
+          <Row
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            borderBottomColor={bs_theme.primary}
+            borderBottomWidth={"1"}
+            px={"3"}
+            pb={"2"}
           >
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              SORT
-            </Text>
-            <View>
+            <Text bold>SORT</Text>
+            <Row>
               <Pressable
                 onPress={() => bsm_sorting_fields_ref.current?.present()}
-                style={{ paddingRight: 8 }}
+                backgroundColor={bs_theme.primary}
+                borderRadius={"xs"}
+                px={"2"}
+                py={"0.5"}
+                mx={"1"}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "700",
-                    textAlign: "center",
-                    paddingHorizontal: 5,
-                    paddingVertical: 2,
-                    borderRadius: 2,
-                    backgroundColor: bs_theme.primary,
-                  }}
-                >
-                  Field++
-                </Text>
+                <Text bold>Field++</Text>
               </Pressable>
               <Pressable
                 onPress={() => bsm_sorting_ref.current?.close()}
-                style={{ paddingRight: 8 }}
+                borderColor={bs_theme.primary}
+                borderWidth={"1"}
+                borderRadius={"xs"}
+                px={"2"}
+                py={"0.5"}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "700",
-                    textAlign: "center",
-                    paddingHorizontal: 5,
-                    paddingVertical: 2,
-                    borderRadius: 2,
-                    backgroundColor: bs_theme.primary,
-                  }}
-                >
-                  Close
-                </Text>
+                <Text>Close</Text>
               </Pressable>
-            </View>
-          </View>
+            </Row>
+          </Row>
           <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
           <BottomSheetModal
             ref={bsm_sorting_fields_ref}
@@ -636,42 +606,26 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               borderColor: bs_theme.primary,
             })}
           >
-            <View
-              style={{
-                paddingBottom: 10,
-                marginHorizontal: 1,
-                paddingHorizontal: 8,
-                borderBottomWidth: 1,
-              }}
+            <Row
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              borderBottomColor={bs_theme.primary}
+              borderBottomWidth={"1"}
+              px={"3"}
+              pb={"2"}
             >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                Fields
-              </Text>
+              <Text bold>Fields</Text>
               <Pressable
                 onPress={() => bsm_sorting_fields_ref.current?.close()}
-                style={{ paddingRight: 8 }}
+                borderColor={bs_theme.primary}
+                borderWidth={"1"}
+                borderRadius={"xs"}
+                px={"2"}
+                py={"0.5"}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "700",
-                    textAlign: "center",
-                    paddingHorizontal: 5,
-                    paddingVertical: 2,
-                    borderRadius: 2,
-                    backgroundColor: bs_theme.primary,
-                  }}
-                >
-                  Close
-                </Text>
+                <Text>Close</Text>
               </Pressable>
-            </View>
+            </Row>
             <SortComponentFields
               init_filter={state.init_filter}
               dispatch={dispatch}
