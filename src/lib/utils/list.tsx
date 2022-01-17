@@ -497,7 +497,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               <Text>Close</Text>
             </Pressable>
           </Row>
-          <BottomSheetScrollView contentContainerStyle={tw.style(["m-1"], {})}>
+          <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
             <Row>
               <Pressable
                 onPress={() => {
