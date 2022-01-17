@@ -210,378 +210,26 @@ export function FilterComponent(props: {
 }): JSX.Element {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        paddingHorizontal: 0,
-        paddingTop: 5,
-      }}
-    >
-      <View>
-        <View
-          style={{
-            justifyContent: "flex-start",
-            paddingHorizontal: 5,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: "200",
-            }}
-          >
-            Filter {props.filter.index + 1}
-          </Text>
+    <Column p={"3"}>
+      <Row justifyContent={"space-between"} alignItems={"center"}>
+        <Row>
+          <Text>Filter {props.filter.index + 1}</Text>
           <Pressable
             onPress={() => props.dispatch(["filter", "remove", props.filter])}
-            style={{
-              padding: 3,
-            }}
           >
             <Entypo name="cross" size={24} color={colors.slate[400]} />
           </Pressable>
-        </View>
+        </Row>
         <Pressable
           onPress={() => bottomSheetModalRef.current?.present()}
-          style={{
-            padding: 3,
-          }}
+          backgroundColor={bs_theme.primary}
+          borderRadius={"xs"}
+          px={"2"}
+          py={"0.5"}
         >
-          <Text
-            style={{
-              backgroundColor: colors.sky[600],
-              alignSelf: "flex-end",
-              paddingHorizontal: 6,
-              paddingVertical: 2,
-              fontWeight: "bold",
-              marginRight: 4,
-              color: "white",
-              borderRadius: 2,
-            }}
-          >
-            Field++
-          </Text>
+          <Text>Field++</Text>
         </Pressable>
-
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          snapPoints={["50%", "82%"]}
-          index={1}
-          backgroundStyle={{
-            backgroundColor: colors.slate[900],
-            borderColor: colors.sky[600],
-            borderWidth: 1,
-          }}
-        >
-          <View
-            style={{
-              paddingBottom: 10,
-              marginHorizontal: 1,
-              paddingHorizontal: 8,
-              borderBottomWidth: 1,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              Fields
-            </Text>
-            <Pressable
-              onPress={() => bottomSheetModalRef.current?.close()}
-              style={{ paddingRight: 8 }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "700",
-                  textAlign: "center",
-                  paddingHorizontal: 5,
-                  paddingVertical: 2,
-                  borderRadius: 2,
-                  backgroundColor: colors.sky[600],
-                }}
-              >
-                Close
-              </Text>
-            </Pressable>
-          </View>
-          <BottomSheetScrollView
-            contentContainerStyle={{
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              margin: 5,
-            }}
-          >
-            {arrow(() => {
-              const active = props.filter.id[1] !== undefined;
-              const toggle = (x: boolean) => {
-                props.dispatch([
-                  "filter",
-                  "replace",
-                  apply(props.filter, (it) => {
-                    it.id = [false, x ? ["==", new Decimal(0)] : undefined];
-                    return it;
-                  }),
-                ]);
-              };
-              return (
-                <Pressable
-                  onPress={() => toggle(!active)}
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    marginHorizontal: 5,
-                    marginVertical: 5,
-                  }}
-                >
-                  {active ? (
-                    <Ionicons
-                      name="radio-button-on"
-                      size={24}
-                      color={colors.sky[600]}
-                    />
-                  ) : (
-                    <Ionicons
-                      name="radio-button-off"
-                      size={24}
-                      color={colors.sky[600]}
-                    />
-                  )}
-                  <Text style={{ paddingLeft: 10 }}>Unique ID</Text>
-                </Pressable>
-              );
-            })}
-            {arrow(() => {
-              const active = props.filter.created_at[1] !== undefined;
-              const toggle = (x: boolean) => {
-                props.dispatch([
-                  "filter",
-                  "replace",
-                  apply(props.filter, (it) => {
-                    it.created_at = [
-                      false,
-                      x ? ["between", [new Date(), new Date()]] : undefined,
-                    ];
-                    return it;
-                  }),
-                ]);
-              };
-              return (
-                <Pressable
-                  onPress={() => toggle(!active)}
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    marginHorizontal: 5,
-                    marginVertical: 5,
-                  }}
-                >
-                  {active ? (
-                    <Ionicons
-                      name="radio-button-on"
-                      size={24}
-                      color={colors.sky[600]}
-                    />
-                  ) : (
-                    <Ionicons
-                      name="radio-button-off"
-                      size={24}
-                      color={colors.sky[600]}
-                    />
-                  )}
-                  <Text style={{ paddingLeft: 10 }}>Created</Text>
-                </Pressable>
-              );
-            })}
-            {arrow(() => {
-              const active = props.filter.updated_at[1] !== undefined;
-              const toggle = (x: boolean) => {
-                props.dispatch([
-                  "filter",
-                  "replace",
-                  apply(props.filter, (it) => {
-                    it.updated_at = [
-                      false,
-                      x ? ["between", [new Date(), new Date()]] : undefined,
-                    ];
-                    return it;
-                  }),
-                ]);
-              };
-              return (
-                <Pressable
-                  onPress={() => toggle(!active)}
-                  style={{
-                    flex: 1,
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    marginHorizontal: 5,
-                    marginVertical: 5,
-                  }}
-                >
-                  {active ? (
-                    <Ionicons
-                      name="radio-button-on"
-                      size={24}
-                      color={colors.sky[600]}
-                    />
-                  ) : (
-                    <Ionicons
-                      name="radio-button-off"
-                      size={24}
-                      color={colors.sky[600]}
-                    />
-                  )}
-                  <Text style={{ paddingLeft: 10 }}>Updated</Text>
-                </Pressable>
-              );
-            })}
-            {props.init_filter.filter_paths
-              .toArray()
-              .sort((a, b) =>
-                a.label > b.label ? 1 : a.label < b.label ? -1 : 0
-              )
-              .map((filter_path, index) => {
-                const field_struct_type = filter_path.value[0];
-                const active = props.filter.filter_paths.anyMatch(
-                  (x) => x.equals(filter_path) && x.value[1] !== undefined
-                );
-                const toggle = (x: boolean) => {
-                  switch (field_struct_type) {
-                    case "str":
-                    case "lstr":
-                    case "clob": {
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "replace",
-                        new FilterPath(
-                          filter_path.label,
-                          filter_path.path,
-                          [field_struct_type, x ? ["like", ""] : undefined],
-                          undefined
-                        ),
-                      ]);
-                      break;
-                    }
-                    case "i32":
-                    case "u32":
-                    case "i64":
-                    case "u64":
-                    case "idouble":
-                    case "udouble":
-                    case "idecimal":
-                    case "udecimal": {
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "replace",
-                        new FilterPath(
-                          filter_path.label,
-                          filter_path.path,
-                          [
-                            field_struct_type,
-                            x ? ["==", new Decimal(0)] : undefined,
-                          ],
-                          undefined
-                        ),
-                      ]);
-                      break;
-                    }
-                    case "bool": {
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "replace",
-                        new FilterPath(
-                          filter_path.label,
-                          filter_path.path,
-                          [field_struct_type, x ? ["==", true] : undefined],
-                          undefined
-                        ),
-                      ]);
-                      break;
-                    }
-                    case "date":
-                    case "time":
-                    case "timestamp": {
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "replace",
-                        new FilterPath(
-                          filter_path.label,
-                          filter_path.path,
-                          [
-                            field_struct_type,
-                            x
-                              ? ["between", [new Date(), new Date()]]
-                              : undefined,
-                          ],
-                          undefined
-                        ),
-                      ]);
-                      break;
-                    }
-                    case "other": {
-                      const other_struct = filter_path.value[2];
-                      props.dispatch([
-                        "filters",
-                        props.filter,
-                        "replace",
-                        new FilterPath(
-                          filter_path.label,
-                          filter_path.path,
-                          [
-                            field_struct_type,
-                            x ? ["==", new Decimal(-1)] : undefined,
-                            other_struct,
-                          ],
-                          undefined
-                        ),
-                      ]);
-                      break;
-                    }
-                  }
-                };
-                return (
-                  <Pressable
-                    key={index}
-                    onPress={() => toggle(!active)}
-                    style={{
-                      flex: 1,
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      marginHorizontal: 5,
-                      marginVertical: 5,
-                    }}
-                  >
-                    {active ? (
-                      <Ionicons
-                        name="radio-button-on"
-                        size={24}
-                        color={colors.sky[600]}
-                      />
-                    ) : (
-                      <Ionicons
-                        name="radio-button-off"
-                        size={24}
-                        color={colors.sky[600]}
-                      />
-                    )}
-                    <Text style={{ paddingLeft: 10 }}>{filter_path.label}</Text>
-                  </Pressable>
-                );
-              })}
-          </BottomSheetScrollView>
-        </BottomSheetModal>
-      </View>
+      </Row>
       <View
         style={{
           flex: 1,
@@ -1943,7 +1591,286 @@ export function FilterComponent(props: {
             })}
         </View>
       </View>
-    </View>
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        snapPoints={["50%", "82%"]}
+        index={1}
+        backgroundStyle={tw.style(["border"], {
+          backgroundColor: bs_theme.background,
+          borderColor: bs_theme.primary,
+        })}
+      >
+        <Row
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          borderBottomColor={bs_theme.border}
+          borderBottomWidth={"1"}
+          px={"3"}
+          pb={"2"}
+        >
+          <Text bold>Fields</Text>
+          <Pressable
+            onPress={() => bottomSheetModalRef.current?.close()}
+            borderColor={bs_theme.primary}
+            borderWidth={"1"}
+            borderRadius={"xs"}
+            px={"2"}
+            py={"0.5"}
+          >
+            <Text>Close</Text>
+          </Pressable>
+        </Row>
+        <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
+          {arrow(() => {
+            const active = props.filter.id[1] !== undefined;
+            const toggle = (x: boolean) => {
+              props.dispatch([
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.id = [false, x ? ["==", new Decimal(0)] : undefined];
+                  return it;
+                }),
+              ]);
+            };
+            return (
+              <Pressable
+                onPress={() => toggle(!active)}
+                flex={1}
+                flexDirection={"row"}
+                py={"0.5"}
+              >
+                {active ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                ) : (
+                  <Ionicons
+                    name="radio-button-off"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                )}
+                <Text style={tw.style(["pl-2"], {})}>Unique ID</Text>
+              </Pressable>
+            );
+          })}
+          {arrow(() => {
+            const active = props.filter.created_at[1] !== undefined;
+            const toggle = (x: boolean) => {
+              props.dispatch([
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.created_at = [
+                    false,
+                    x ? ["between", [new Date(), new Date()]] : undefined,
+                  ];
+                  return it;
+                }),
+              ]);
+            };
+            return (
+              <Pressable
+                onPress={() => toggle(!active)}
+                flex={1}
+                flexDirection={"row"}
+                py={"0.5"}
+              >
+                {active ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                ) : (
+                  <Ionicons
+                    name="radio-button-off"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                )}
+                <Text style={tw.style(["pl-2"], {})}>Created</Text>
+              </Pressable>
+            );
+          })}
+          {arrow(() => {
+            const active = props.filter.updated_at[1] !== undefined;
+            const toggle = (x: boolean) => {
+              props.dispatch([
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.updated_at = [
+                    false,
+                    x ? ["between", [new Date(), new Date()]] : undefined,
+                  ];
+                  return it;
+                }),
+              ]);
+            };
+            return (
+              <Pressable
+                onPress={() => toggle(!active)}
+                flex={1}
+                flexDirection={"row"}
+                py={"0.5"}
+              >
+                {active ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                ) : (
+                  <Ionicons
+                    name="radio-button-off"
+                    size={24}
+                    color={bs_theme.primary}
+                  />
+                )}
+                <Text style={tw.style(["pl-2"], {})}>Updated</Text>
+              </Pressable>
+            );
+          })}
+          {props.init_filter.filter_paths
+            .toArray()
+            .sort((a, b) =>
+              a.label > b.label ? 1 : a.label < b.label ? -1 : 0
+            )
+            .map((filter_path, index) => {
+              const field_struct_type = filter_path.value[0];
+              const active = props.filter.filter_paths.anyMatch(
+                (x) => x.equals(filter_path) && x.value[1] !== undefined
+              );
+              const toggle = (x: boolean) => {
+                switch (field_struct_type) {
+                  case "str":
+                  case "lstr":
+                  case "clob": {
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [field_struct_type, x ? ["like", ""] : undefined],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "i32":
+                  case "u32":
+                  case "i64":
+                  case "u64":
+                  case "idouble":
+                  case "udouble":
+                  case "idecimal":
+                  case "udecimal": {
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [
+                          field_struct_type,
+                          x ? ["==", new Decimal(0)] : undefined,
+                        ],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "bool": {
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [field_struct_type, x ? ["==", true] : undefined],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "date":
+                  case "time":
+                  case "timestamp": {
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [
+                          field_struct_type,
+                          x ? ["between", [new Date(), new Date()]] : undefined,
+                        ],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                  case "other": {
+                    const other_struct = filter_path.value[2];
+                    props.dispatch([
+                      "filters",
+                      props.filter,
+                      "replace",
+                      new FilterPath(
+                        filter_path.label,
+                        filter_path.path,
+                        [
+                          field_struct_type,
+                          x ? ["==", new Decimal(-1)] : undefined,
+                          other_struct,
+                        ],
+                        undefined
+                      ),
+                    ]);
+                    break;
+                  }
+                }
+              };
+              return (
+                <Pressable
+                  key={index}
+                  onPress={() => toggle(!active)}
+                  flex={1}
+                  flexDirection={"row"}
+                  py={"0.5"}
+                >
+                  {active ? (
+                    <Ionicons
+                      name="radio-button-on"
+                      size={24}
+                      color={bs_theme.primary}
+                    />
+                  ) : (
+                    <Ionicons
+                      name="radio-button-off"
+                      size={24}
+                      color={bs_theme.primary}
+                    />
+                  )}
+                  <Text style={tw.style(["pl-2"], {})}>
+                    {filter_path.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+        </BottomSheetScrollView>
+      </BottomSheetModal>
+    </Column>
   );
 }
 
@@ -2906,7 +2833,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -2920,20 +2847,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -3176,7 +3103,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -3190,20 +3117,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -3441,7 +3370,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -3455,20 +3384,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -3735,7 +3666,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -3749,20 +3680,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -4028,7 +3959,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -4042,20 +3973,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -4316,7 +4249,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -4330,20 +4263,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -4610,7 +4545,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -4624,20 +4559,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -4903,7 +4838,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -4917,20 +4852,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -5191,7 +5128,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -5205,20 +5142,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -5487,7 +5426,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -5501,20 +5440,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -5784,7 +5723,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -5798,20 +5737,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -6076,7 +6017,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -6090,20 +6031,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -6370,7 +6313,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -6384,20 +6327,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -6663,7 +6606,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -6677,20 +6620,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -6953,7 +6898,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -6967,20 +6912,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -7241,7 +7188,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -7255,20 +7202,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -7528,7 +7475,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -7542,20 +7489,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -7810,7 +7759,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -7824,20 +7773,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -8098,7 +8049,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -8112,20 +8063,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -8385,7 +8336,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -8399,20 +8350,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -8667,7 +8620,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -8681,20 +8634,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -8933,7 +8888,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -8947,20 +8902,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -9218,7 +9173,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -9232,20 +9187,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -9514,7 +9469,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -9528,20 +9483,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -9805,7 +9762,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -9819,20 +9776,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -10093,7 +10052,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -10107,20 +10066,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -10388,7 +10347,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -10402,20 +10361,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -10678,7 +10639,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -10692,20 +10653,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -11018,7 +10981,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -11032,20 +10995,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
@@ -11365,7 +11328,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -11379,20 +11342,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -11707,7 +11672,7 @@ function FilterPathComponent(props: {
                                                   <Ionicons
                                                     name="radio-button-off"
                                                     size={24}
-                                                    color={colors.sky[600]}
+                                                    color={bs_theme.primary}
                                                   />
                                                 );
                                               } else {
@@ -11721,20 +11686,22 @@ function FilterPathComponent(props: {
                                                       <Ionicons
                                                         name="radio-button-on"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     ) : (
                                                       <Ionicons
                                                         name="radio-button-off"
                                                         size={24}
-                                                        color={colors.sky[600]}
+                                                        color={bs_theme.primary}
                                                       />
                                                     );
                                                   }
                                                 );
                                               }
                                             })}
-                                            <Text style={{ paddingLeft: 10 }}>
+                                            <Text
+                                              style={tw.style(["pl-2"], {})}
+                                            >
                                               {list_item.item.label}
                                             </Text>
                                           </View>
@@ -11988,7 +11955,7 @@ function FilterPathComponent(props: {
                                             <Ionicons
                                               name="radio-button-off"
                                               size={24}
-                                              color={colors.sky[600]}
+                                              color={bs_theme.primary}
                                             />
                                           );
                                         } else {
@@ -12002,20 +11969,20 @@ function FilterPathComponent(props: {
                                                 <Ionicons
                                                   name="radio-button-on"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               ) : (
                                                 <Ionicons
                                                   name="radio-button-off"
                                                   size={24}
-                                                  color={colors.sky[600]}
+                                                  color={bs_theme.primary}
                                                 />
                                               );
                                             }
                                           );
                                         }
                                       })}
-                                      <Text style={{ paddingLeft: 10 }}>
+                                      <Text style={tw.style(["pl-2"], {})}>
                                         {list_item.item.label}
                                       </Text>
                                     </View>
