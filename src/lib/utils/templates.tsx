@@ -41,7 +41,13 @@ export function SBS(props: {
                     flexDirection={"row"}
                     justifyContent={"flex-end"}
                   >
-                    <Field {...props} {...field} />
+                    <Field
+                      {...props}
+                      {...field}
+                      checks={
+                        field.checks ? field.checks.map((x) => x.name) : []
+                      }
+                    />
                   </Column>
                 </Row>
                 {arrow(() => {
@@ -103,7 +109,11 @@ export function OAA(props: {
                   <Label {...props} {...field} />
                 </Row>
                 <Row mt={"1"}>
-                  <Field {...props} {...field} />
+                  <Field
+                    {...props}
+                    {...field}
+                    checks={field.checks ? field.checks.map((x) => x.name) : []}
+                  />
                 </Row>
                 {arrow(() => {
                   if (field.checks) {
@@ -163,7 +173,11 @@ export function OBA(props: {
                 <Label {...props} {...field} />
               </Row>
               <Row mt={"1"}>
-                <Field {...props} {...field} />
+                <Field
+                  {...props}
+                  {...field}
+                  checks={field.checks ? field.checks.map((x) => x.name) : []}
+                />
               </Row>
               {arrow(() => {
                 if (field.checks) {
