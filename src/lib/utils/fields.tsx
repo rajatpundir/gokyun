@@ -41,7 +41,7 @@ type ComponentProps = {
   dispatch: React.Dispatch<Action>;
   path: Path;
   placeholder: string;
-  checks: ReadonlyArray<string>;
+  violates_checks: boolean;
 };
 
 type StrFieldProps = {};
@@ -51,19 +51,6 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "str") {
@@ -76,7 +63,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -142,19 +129,6 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "lstr") {
@@ -167,7 +141,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -233,19 +207,6 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "clob") {
@@ -257,7 +218,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
             size={"md"}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
@@ -330,19 +291,6 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "i32") {
@@ -355,7 +303,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
@@ -434,19 +382,6 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "u32") {
@@ -459,7 +394,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"number-pad"}
             onChangeText={(x) => {
               try {
@@ -538,19 +473,6 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "i64") {
@@ -563,7 +485,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
@@ -642,19 +564,6 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "u64") {
@@ -667,7 +576,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"number-pad"}
             onChangeText={(x) => {
               try {
@@ -746,19 +655,6 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "idouble") {
@@ -771,7 +667,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
@@ -846,19 +742,6 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "udouble") {
@@ -871,7 +754,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
@@ -946,19 +829,6 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "idecimal") {
@@ -971,7 +841,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
@@ -1046,19 +916,6 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const comply_with_checks = fold(
-    true,
-    props.checks.map((x) => {
-      if (x in props.state.checks) {
-        const result = props.state.checks[x] as Result<boolean>;
-        if (unwrap(result)) {
-          return result.value;
-        }
-      }
-      return true;
-    }),
-    (acc, val) => acc && val
-  );
   const default_value = new Decimal(0);
   const style = tw.style([], {});
   if (value.type === "udecimal") {
@@ -1071,7 +928,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
             maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
-            isInvalid={has_errors || !comply_with_checks}
+            isInvalid={has_errors || props.violates_checks}
             keyboardType={"numbers-and-punctuation"}
             onChangeText={(x) => {
               try {
@@ -1464,6 +1321,19 @@ export function Field(props: {
   const placeholder = props.placeholder
     ? props.placeholder
     : get_label(props.state, path_string);
+  const comply_with_checks = fold(
+    true,
+    (props.checks ? props.checks : []).map((x) => {
+      if (x in props.state.checks) {
+        const result = props.state.checks[x] as Result<boolean>;
+        if (unwrap(result)) {
+          return result.value;
+        }
+      }
+      return true;
+    }),
+    (acc, val) => acc && val
+  );
   return apply(get_path(props.state, path_string), (path) => {
     if (unwrap(path)) {
       const field_struct_name = path.value.path[1][1].type;
@@ -1486,7 +1356,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1503,7 +1373,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1525,7 +1395,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1542,7 +1412,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1564,7 +1434,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1580,7 +1450,7 @@ export function Field(props: {
               }
               {...props}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
               path={path.value}
             />
           );
@@ -1603,7 +1473,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1620,7 +1490,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1642,7 +1512,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1659,7 +1529,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1681,7 +1551,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1697,7 +1567,7 @@ export function Field(props: {
               }
               {...props}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
               path={path.value}
             />
           );
@@ -1720,7 +1590,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1737,7 +1607,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1759,7 +1629,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1776,7 +1646,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1798,7 +1668,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1815,7 +1685,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1837,7 +1707,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1854,7 +1724,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1876,7 +1746,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1893,7 +1763,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1915,7 +1785,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1932,7 +1802,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1954,7 +1824,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -1971,7 +1841,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -1993,7 +1863,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -2010,7 +1880,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -2032,7 +1902,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
@@ -2049,7 +1919,7 @@ export function Field(props: {
               {...props}
               path={path.value}
               placeholder={placeholder}
-              checks={props.checks ? props.checks : []}
+              violates_checks={!comply_with_checks}
             />
           );
         }
@@ -2071,7 +1941,7 @@ export function Field(props: {
                 {...props}
                 path={path.value}
                 placeholder={placeholder}
-                checks={props.checks ? props.checks : []}
+                violates_checks={!comply_with_checks}
                 {...props.options[1]}
               />
             );
