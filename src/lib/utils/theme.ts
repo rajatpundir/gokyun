@@ -21,6 +21,7 @@ export const theme = {
 export const bs_theme = {
   primary: colors.sky[600],
   background: colors.slate[900],
+  border: colors.slate[600],
   highlight: colors.blue[500],
 };
 

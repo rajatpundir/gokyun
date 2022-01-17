@@ -479,7 +479,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.primary}
+            borderBottomColor={bs_theme.border}
             borderBottomWidth={"1"}
             px={"3"}
             pb={"2"}
@@ -566,7 +566,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.primary}
+            borderBottomColor={bs_theme.border}
             borderBottomWidth={"1"}
             px={"3"}
             pb={"2"}
@@ -608,7 +608,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Row
               justifyContent={"space-between"}
               alignItems={"center"}
-              borderBottomColor={bs_theme.primary}
+              borderBottomColor={bs_theme.border}
               borderBottomWidth={"1"}
               px={"3"}
               pb={"2"}
@@ -644,7 +644,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.primary}
+            borderBottomColor={bs_theme.border}
             borderBottomWidth={"1"}
             px={"3"}
             pb={"2"}
