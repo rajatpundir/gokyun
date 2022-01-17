@@ -87,6 +87,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value);
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -163,6 +164,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
                 <Pressable
                   onPress={() => {
                     set_local_val(default_value);
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -239,6 +241,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
                 <Pressable
                   onPress={() => {
                     set_local_val(default_value);
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -330,6 +333,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -420,6 +424,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -510,6 +515,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -600,6 +606,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -686,6 +693,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -772,6 +780,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -858,6 +867,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
@@ -944,6 +954,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
                   style={tw.style(["px-2"], {})}
                   onPress={() => {
                     set_local_val(default_value.toString());
+                    set_has_errors(false);
                     props.dispatch([
                       "value",
                       apply(props.path, (it) => {
