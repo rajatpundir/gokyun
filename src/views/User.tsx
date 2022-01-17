@@ -7,6 +7,8 @@ import { arrow } from "../lib/utils/prelude";
 import { colors, tw } from "../lib/utils/tailwind";
 import { theme } from "../lib/utils/theme";
 
+const views = {};
+
 const common_default_component: ComponentViews[string]["show"] = (props) => {
   return (
     <Column
