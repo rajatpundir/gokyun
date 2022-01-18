@@ -479,7 +479,8 @@ export function FilterComponent(props: {
                       return (
                         <Menu
                           shouldOverlapWithTrigger={true}
-                          bgColor={bs_theme.background}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
                           trigger={(menu_props) => (
                             <Pressable
                               {...menu_props}
@@ -950,7 +951,8 @@ export function FilterComponent(props: {
                       return (
                         <Menu
                           shouldOverlapWithTrigger={true}
-                          bgColor={bs_theme.background}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
                           trigger={(menu_props) => (
                             <Pressable
                               {...menu_props}
@@ -1439,7 +1441,8 @@ export function FilterComponent(props: {
                       return (
                         <Menu
                           shouldOverlapWithTrigger={true}
-                          bgColor={bs_theme.background}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
                           trigger={(menu_props) => (
                             <Pressable
                               {...menu_props}
