@@ -67,6 +67,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
             onChangeText={(x) => {
               try {
                 set_local_val(x);
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -77,7 +78,6 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -138,13 +138,14 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
+            maxLength={1023}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -155,7 +156,6 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -222,6 +222,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
             onChangeText={(x) => {
               try {
                 set_local_val(x);
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -232,7 +233,6 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -300,7 +300,6 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -313,6 +312,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
                   -2147483648,
                   2147483648
                 );
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -323,7 +323,6 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -391,7 +390,6 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -404,6 +402,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
                   0,
                   2147483648
                 );
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -414,7 +413,6 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -482,7 +480,6 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -495,6 +492,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
                   new Decimal("-9223372036854775807"),
                   new Decimal("9223372036854775807")
                 );
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -505,7 +503,6 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -573,7 +570,6 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -586,6 +582,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
                   0,
                   new Decimal("9223372036854775807")
                 );
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -596,7 +593,6 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -664,7 +660,6 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -673,6 +668,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
               try {
                 set_local_val(x);
                 const val = new Decimal(x || "0");
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -683,7 +679,6 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -751,7 +746,6 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -760,6 +754,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
               try {
                 set_local_val(x);
                 const val = new Decimal(x || "0").abs();
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -770,7 +765,6 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -838,7 +832,6 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -847,6 +840,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
               try {
                 set_local_val(x);
                 const val = new Decimal(x || "0");
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -857,7 +851,6 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
@@ -925,7 +918,6 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
           <Input
             flex={1}
             size={"md"}
-            maxLength={255}
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
@@ -934,6 +926,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
               try {
                 set_local_val(x);
                 const val = new Decimal(x || "0").abs();
+                set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
@@ -944,7 +937,6 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
                     return it;
                   }),
                 ]);
-                set_has_errors(false);
               } catch (e) {
                 set_has_errors(true);
               }
