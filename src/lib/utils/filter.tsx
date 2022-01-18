@@ -20,7 +20,6 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "./variable";
 import { colors, tw } from "./tailwind";
 import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
@@ -74,9 +73,9 @@ function op_to_string(op: string): string {
     case "not_between":
       return "not between";
     case "like":
-      return "like";
+      return "match";
     case "glob":
-      return "glob";
+      return "match (case sensitive)";
   }
   return "";
 }
@@ -2254,29 +2253,29 @@ function FilterPathComponent(props: {
   );
   const bottomSheetModalRef1 = useRef<BottomSheetModal>(null);
   const bottomSheetModalRef2 = useRef<BottomSheetModal>(null);
+  const [selectedOp, setSelectedOp] = useState(
+    apply("==", (it) => {
+      if (props.filter_path.value[1]) {
+        return props.filter_path.value[1][0];
+      }
+      switch (props.filter_path.value[0]) {
+        case "str":
+        case "lstr":
+        case "clob": {
+          return "like";
+        }
+        case "date":
+        case "time":
+        case "timestamp": {
+          return "between";
+        }
+      }
+      return it;
+    })
+  );
   return (
-    <View style={{ flexDirection: "column", paddingHorizontal: 0 }}>
+    <Column my={"1"}>
       {arrow(() => {
-        const [selectedOp, setSelectedOp] = useState(
-          apply("==", (it) => {
-            if (props.filter_path.value[1]) {
-              return props.filter_path.value[1][0];
-            }
-            switch (props.filter_path.value[0]) {
-              case "str":
-              case "lstr":
-              case "clob": {
-                return "like";
-              }
-              case "date":
-              case "time":
-              case "timestamp": {
-                return "between";
-              }
-            }
-            return it;
-          })
-        );
         if (props.filter_path.value[1] !== undefined) {
           const toggle = (x: boolean) => {
             props.dispatch([
@@ -2290,500 +2289,557 @@ function FilterPathComponent(props: {
             ]);
           };
           return (
-            <View
-              style={{
-                justifyContent: "space-between",
-              }}
+            <Row
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              my={"1"}
             >
-              <View style={{ flexShrink: 1 }}>
+              <Row>
                 <Checkbox
                   value={props.filter_path.active}
                   onValueChange={() => toggle(!props.filter_path.active)}
                   color={
                     props.filter_path.active ? bs_theme.primary : undefined
                   }
-                  style={{
-                    alignSelf: "center",
-                    marginRight: 6,
-                  }}
+                  style={tw.style(["mr-1"], {})}
                 />
-                <Pressable
-                  onPress={() => toggle(!props.filter_path.active)}
-                  style={{ alignSelf: "center" }}
-                >
-                  <Text
-                    style={{
-                      color: colors.slate[400],
-                    }}
-                  >
-                    {props.filter_path.label}
-                  </Text>
+                <Pressable onPress={() => toggle(!props.filter_path.active)}>
+                  <Text color={bs_theme.text}>{props.filter_path.label}</Text>
                 </Pressable>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row-reverse",
-                  flexGrow: 1,
-                  alignSelf: "center",
-                }}
-              >
-                {arrow(() => {
-                  const field_struct_name = props.filter_path.value[0];
-                  switch (field_struct_name) {
-                    case "str":
-                    case "lstr":
-                    case "clob": {
-                      if (props.filter_path.value[1] !== undefined) {
-                        const value = props.filter_path.value[1];
-                        const [v1, v2] = arrow(() => {
-                          const op = value[0];
-                          switch (op) {
-                            case "==":
-                            case "!=":
-                            case ">=":
-                            case "<=":
-                            case ">":
-                            case "<":
-                            case "like":
-                            case "glob": {
-                              return [value[1], value[1]];
-                            }
-                            case "between":
-                            case "not_between": {
-                              return value[1];
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = op;
-                              return _exhaustiveCheck;
-                            }
+              </Row>
+              {arrow(() => {
+                const field_struct_name = props.filter_path.value[0];
+                switch (field_struct_name) {
+                  case "str":
+                  case "lstr":
+                  case "clob": {
+                    if (props.filter_path.value[1] !== undefined) {
+                      const value = props.filter_path.value[1];
+                      const [v1, v2] = arrow(() => {
+                        const op = value[0];
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<":
+                          case "like":
+                          case "glob": {
+                            return [value[1], value[1]];
                           }
-                        });
-                        return (
-                          <View
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              paddingHorizontal: 0,
-                              paddingVertical: 0,
-                              marginHorizontal: 0,
-                              marginVertical: 0,
-                            }}
-                          >
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<":
-                                  case "like":
-                                  case "glob": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, v1],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, [v1, v2]],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.slate[400]}
-                              style={{
-                                width: 185,
-                                color: colors.slate[400],
-                              }}
-                            >
-                              <Picker.Item label="match" value="like" />
-                              <Picker.Item
-                                label="match(case sensitive)"
-                                value="glob"
-                              />
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
-                              />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
-                          </View>
-                        );
-                      }
-                      return <></>;
-                    }
-                    case "i32":
-                    case "u32":
-                    case "i64":
-                    case "u64":
-                    case "idouble":
-                    case "udouble":
-                    case "idecimal":
-                    case "udecimal": {
-                      if (props.filter_path.value[1] !== undefined) {
-                        const value = props.filter_path.value[1];
-                        const [v1, v2] = arrow(() => {
-                          const op = value[0];
-                          switch (op) {
-                            case "==":
-                            case "!=":
-                            case ">=":
-                            case "<=":
-                            case ">":
-                            case "<": {
-                              return [value[1], value[1]];
-                            }
-                            case "between":
-                            case "not_between": {
-                              return value[1];
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = op;
-                              return _exhaustiveCheck;
-                            }
+                          case "between":
+                          case "not_between": {
+                            return value[1];
                           }
-                        });
-                        return (
-                          <View
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              paddingHorizontal: 0,
-                              paddingVertical: 0,
-                              marginHorizontal: 0,
-                              marginVertical: 0,
-                            }}
-                          >
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, v1],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, [v1, v2]],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.slate[400]}
-                              style={{
-                                width: 185,
-                                color: colors.slate[400],
-                              }}
-                            >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
-                              />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
-                          </View>
-                        );
-                      }
-                      return <></>;
-                    }
-                    case "bool": {
-                      if (props.filter_path.value[1] !== undefined) {
-                        const value = props.filter_path.value[1];
-                        return (
-                          <View
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              paddingHorizontal: 0,
-                              paddingVertical: 0,
-                              marginHorizontal: 0,
-                              marginVertical: 0,
-                            }}
-                          >
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, value[1]],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.slate[400]}
-                              style={{
-                                width: 185,
-                                color: colors.slate[400],
-                              }}
-                            >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                            </Picker>
-                          </View>
-                        );
-                      }
-                      return <></>;
-                    }
-                    case "date":
-                    case "time":
-                    case "timestamp": {
-                      if (props.filter_path.value[1] !== undefined) {
-                        const value = props.filter_path.value[1];
-                        const [v1, v2] = arrow(() => {
-                          const op = value[0];
-                          switch (op) {
-                            case "==":
-                            case "!=":
-                            case ">=":
-                            case "<=":
-                            case ">":
-                            case "<": {
-                              return [value[1], value[1]];
-                            }
-                            case "between":
-                            case "not_between": {
-                              return value[1];
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = op;
-                              return _exhaustiveCheck;
-                            }
+                          default: {
+                            const _exhaustiveCheck: never = op;
+                            return _exhaustiveCheck;
                           }
-                        });
-                        return (
-                          <View
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              paddingHorizontal: 0,
-                              paddingVertical: 0,
-                              marginHorizontal: 0,
-                              marginVertical: 0,
-                            }}
-                          >
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, v1],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, [v1, v2]],
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.slate[400]}
-                              style={{
-                                width: 185,
-                                color: colors.slate[400],
-                              }}
+                        }
+                      });
+                      // set_local_val_1 and set_local_val_2 for text and numeric types
+                      const dispatch_op = (
+                        op: Exclude<
+                          (FilterPath["value"] & ["str", unknown])[1],
+                          undefined
+                        >[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<":
+                          case "like":
+                          case "glob": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, v1]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                          case "between":
+                          case "not_between": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, [v1, v2]]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
+                      return (
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
                             >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
                               />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
-                          </View>
-                        );
-                      }
-                      return <></>;
+                            </Pressable>
+                          )}
+                        >
+                          <Menu.Item onPress={() => dispatch_op("like")}>
+                            {op_to_string("like")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("glob")}>
+                            {op_to_string("glob")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">=")}>
+                            {op_to_string(">=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<=")}>
+                            {op_to_string("<=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">")}>
+                            {op_to_string(">")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<")}>
+                            {op_to_string("<")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("between")}>
+                            {op_to_string("between")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("not_between")}>
+                            {op_to_string("not_between")}
+                          </Menu.Item>
+                        </Menu>
+                      );
                     }
-                    case "other": {
-                      if (props.filter_path.value[1] !== undefined) {
-                        const value = props.filter_path.value[1];
-                        const other_struct = props.filter_path.value[2];
-                        return (
-                          <View
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              paddingHorizontal: 0,
-                              paddingVertical: 0,
-                              marginHorizontal: 0,
-                              marginVertical: 0,
-                            }}
-                          >
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=": {
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, value[1]],
-                                          other_struct,
-                                        ];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.slate[400]}
-                              style={{
-                                width: 185,
-                                color: colors.slate[400],
-                              }}
-                            >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                            </Picker>
-                          </View>
-                        );
-                      }
-                      return <></>;
-                    }
-                    default: {
-                      const _exhaustiveCheck: never = field_struct_name;
-                      return _exhaustiveCheck;
-                    }
+                    return <></>;
                   }
-                })}
-              </View>
-            </View>
+                  case "i32":
+                  case "u32":
+                  case "i64":
+                  case "u64":
+                  case "idouble":
+                  case "udouble":
+                  case "idecimal":
+                  case "udecimal": {
+                    if (props.filter_path.value[1] !== undefined) {
+                      const value = props.filter_path.value[1];
+                      const [v1, v2] = arrow(() => {
+                        const op = value[0];
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            return [value[1], value[1]];
+                          }
+                          case "between":
+                          case "not_between": {
+                            return value[1];
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = op;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      });
+                      // set_local_val_1 and set_local_val_2 for text and numeric types
+                      const dispatch_op = (
+                        op: Exclude<
+                          (FilterPath["value"] & ["i32", unknown])[1],
+                          undefined
+                        >[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, v1]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                          case "between":
+                          case "not_between": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, [v1, v2]]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
+                      return (
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
+                            >
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
+                              />
+                            </Pressable>
+                          )}
+                        >
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">=")}>
+                            {op_to_string(">=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<=")}>
+                            {op_to_string("<=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">")}>
+                            {op_to_string(">")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<")}>
+                            {op_to_string("<")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("between")}>
+                            {op_to_string("between")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("not_between")}>
+                            {op_to_string("not_between")}
+                          </Menu.Item>
+                        </Menu>
+                      );
+                    }
+                    return <></>;
+                  }
+                  case "bool": {
+                    if (props.filter_path.value[1] !== undefined) {
+                      const value = props.filter_path.value[1];
+                      const dispatch_op = (
+                        op: Exclude<
+                          (FilterPath["value"] & ["bool", unknown])[1],
+                          undefined
+                        >[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, value[1]]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
+                      return (
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
+                            >
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
+                              />
+                            </Pressable>
+                          )}
+                        >
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                        </Menu>
+                      );
+                    }
+                    return <></>;
+                  }
+                  case "date":
+                  case "time":
+                  case "timestamp": {
+                    if (props.filter_path.value[1] !== undefined) {
+                      const value = props.filter_path.value[1];
+                      const [v1, v2] = arrow(() => {
+                        const op = value[0];
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            return [value[1], value[1]];
+                          }
+                          case "between":
+                          case "not_between": {
+                            return value[1];
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = op;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      });
+                      const dispatch_op = (
+                        op: Exclude<
+                          (FilterPath["value"] & ["date", unknown])[1],
+                          undefined
+                        >[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, v1]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                          case "between":
+                          case "not_between": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [field_struct_name, [op, [v1, v2]]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
+                      return (
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
+                            >
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
+                              />
+                            </Pressable>
+                          )}
+                        >
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">=")}>
+                            {op_to_string(">=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<=")}>
+                            {op_to_string("<=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">")}>
+                            {op_to_string(">")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<")}>
+                            {op_to_string("<")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("between")}>
+                            {op_to_string("between")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("not_between")}>
+                            {op_to_string("not_between")}
+                          </Menu.Item>
+                        </Menu>
+                      );
+                    }
+                    return <></>;
+                  }
+                  case "other": {
+                    if (props.filter_path.value[1] !== undefined) {
+                      const value = props.filter_path.value[1];
+                      const other_struct = props.filter_path.value[2];
+                      const dispatch_op = (
+                        op: Exclude<
+                          (FilterPath["value"] &
+                            ["other", unknown, unknown])[1],
+                          undefined
+                        >[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=": {
+                            props.dispatch([
+                              "filters",
+                              props.filter,
+                              "replace",
+                              apply(props.filter_path, (it) => {
+                                it.value = [
+                                  field_struct_name,
+                                  [op, value[1]],
+                                  other_struct,
+                                ];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
+                      return (
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          backgroundColor={bs_theme.background}
+                          borderColor={bs_theme.border}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
+                            >
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
+                              />
+                            </Pressable>
+                          )}
+                        >
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                        </Menu>
+                      );
+                    }
+                    return <></>;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = field_struct_name;
+                    return _exhaustiveCheck;
+                  }
+                }
+              })}
+            </Row>
           );
         }
         return null;
       })}
-      <View
-        style={{
-          justifyContent: "space-between",
-          paddingLeft: 32,
-        }}
-      >
+
+      <Row flex={1} justifyContent={"space-between"} my={"1"}>
         {arrow(() => {
           if (props.filter_path.value[1] !== undefined) {
             const field_struct_name = props.filter_path.value[0];
@@ -12192,7 +12248,7 @@ function FilterPathComponent(props: {
           }
           return null;
         })}
-      </View>
-    </View>
+      </Row>
+    </Column>
   );
 }
