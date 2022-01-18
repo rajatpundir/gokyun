@@ -242,8 +242,13 @@ export function FilterComponent(props: {
 }): JSX.Element {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   return (
-    <Column p={"3"}>
-      <Row justifyContent={"space-between"} alignItems={"center"}>
+    <Column px={"3"} borderBottomWidth={"1"} borderColor={bs_theme.border}>
+      <Row
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        mt={"2"}
+        mb={"0.5"}
+      >
         <Row>
           <Text>Filter {props.filter.index + 1}</Text>
           <Pressable
@@ -344,7 +349,7 @@ export function FilterComponent(props: {
           );
           if (value !== undefined) {
             return (
-              <Column my={"2"}>
+              <Column my={"1"}>
                 <Row
                   justifyContent={"space-between"}
                   alignItems={"center"}
@@ -527,7 +532,7 @@ export function FilterComponent(props: {
                     return <></>;
                   })}
                 </Row>
-                <Row flex={1} my={"1"}>
+                <Row flex={1} justifyContent={"space-between"} my={"1"}>
                   {arrow(() => {
                     const op = value[0];
                     switch (op) {
@@ -770,253 +775,235 @@ export function FilterComponent(props: {
           return <></>;
         })}
 
-        <View
-          style={{
-            flexDirection: "column",
-          }}
-        >
-          {arrow(() => {
-            const [selectedOp, setSelectedOp] = useState(
-              props.filter.created_at[1]
-                ? props.filter.created_at[1][0]
-                : "between"
-            );
-            const [active, value] = props.filter.created_at;
-            const toggle = (x: boolean) => {
-              props.dispatch([
-                "filter",
-                "replace",
-                apply(props.filter, (it) => {
-                  it.created_at[0] = x;
-                  return it;
-                }),
-              ]);
-            };
-            if (value !== undefined) {
-              return (
-                <View
-                  style={{
-                    justifyContent: "space-between",
-                  }}
+        {arrow(() => {
+          const [selectedOp, setSelectedOp] = useState(
+            props.filter.created_at[1]
+              ? props.filter.created_at[1][0]
+              : "between"
+          );
+          const [active, value] = props.filter.created_at;
+          const toggle = (x: boolean) => {
+            props.dispatch([
+              "filter",
+              "replace",
+              apply(props.filter, (it) => {
+                it.created_at[0] = x;
+                return it;
+              }),
+            ]);
+          };
+          const [showPicker1, setPicker1] = useState(false);
+          const [mode1, setMode1] = useState("date");
+          let [date1, setDate1] = useState(
+            apply(new Date(), (it) => {
+              if (value !== undefined) {
+                const op = value[0];
+                switch (op) {
+                  case "==":
+                  case "!=":
+                  case ">=":
+                  case "<=":
+                  case ">":
+                  case "<": {
+                    return new Date(value[1].getTime());
+                  }
+                  case "between":
+                  case "not_between": {
+                    return new Date(value[1][0].getTime());
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = op;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }
+              return it;
+            })
+          );
+          const [showPicker2, setPicker2] = useState(false);
+          const [mode2, setMode2] = useState("date");
+          let [date2, setDate2] = useState(
+            apply(new Date(), (it) => {
+              if (value !== undefined) {
+                const op = value[0];
+                switch (op) {
+                  case "==":
+                  case "!=":
+                  case ">=":
+                  case "<=":
+                  case ">":
+                  case "<": {
+                    return it;
+                  }
+                  case "between":
+                  case "not_between": {
+                    return new Date(value[1][1].getTime());
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = op;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }
+              return it;
+            })
+          );
+          if (value !== undefined) {
+            return (
+              <Column my={"1"}>
+                <Row
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  my={"1"}
                 >
-                  <View>
+                  <Row>
                     <Checkbox
                       value={active}
                       onValueChange={() => toggle(!active)}
                       color={active ? bs_theme.primary : undefined}
-                      style={{
-                        alignSelf: "center",
-                        marginRight: 6,
-                      }}
+                      style={tw.style(["mr-1"], {})}
                     />
-                    <Pressable
-                      onPress={() => toggle(!active)}
-                      style={{ alignSelf: "center" }}
-                    >
-                      <Text
-                        style={{
-                          color: colors.slate[400],
-                        }}
-                      >
-                        Created
-                      </Text>
+                    <Pressable onPress={() => toggle(!active)}>
+                      <Text color={bs_theme.text}>Created</Text>
                     </Pressable>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row-reverse",
-                      flexGrow: 1,
-                      alignSelf: "center",
-                    }}
-                  >
-                    {arrow(() => {
-                      const value = props.filter.created_at[1];
-                      if (value !== undefined) {
-                        const v1 = apply(value[0], () => {
-                          switch (value[0]) {
-                            case "==":
-                            case "!=":
-                            case ">=":
-                            case "<=":
-                            case ">":
-                            case "<": {
-                              return value[1];
-                            }
-                            case "between":
-                            case "not_between": {
-                              return value[1][0];
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = value[0];
-                              return _exhaustiveCheck;
-                            }
+                  </Row>
+                  {arrow(() => {
+                    if (value !== undefined) {
+                      const v1 = apply(value[0], () => {
+                        switch (value[0]) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            return value[1];
                           }
-                        });
-                        const v2 = apply(value[0], () => {
-                          switch (value[0]) {
-                            case "==":
-                            case "!=":
-                            case ">=":
-                            case "<=":
-                            case ">":
-                            case "<": {
-                              return value[1];
-                            }
-                            case "between":
-                            case "not_between": {
-                              return value[1][1];
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = value[0];
-                              return _exhaustiveCheck;
-                            }
+                          case "between":
+                          case "not_between": {
+                            return value[1][0];
                           }
-                        });
-                        return (
-                          <View
-                            style={{
-                              borderWidth: 1,
-                              borderRadius: 5,
-                              paddingHorizontal: 0,
-                              paddingVertical: 0,
-                              marginHorizontal: 0,
-                              marginVertical: 0,
-                            }}
-                          >
-                            <Picker
-                              selectedValue={selectedOp}
-                              onValueChange={(op, _) => {
-                                switch (op) {
-                                  case "==":
-                                  case "!=":
-                                  case ">=":
-                                  case "<=":
-                                  case ">":
-                                  case "<": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.created_at[1] = [op, v1];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                  case "between":
-                                  case "not_between": {
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.created_at[1] = [op, [v1, v2]];
-                                        return it;
-                                      }),
-                                    ]);
-                                    break;
-                                  }
-                                }
-                                setSelectedOp(op);
-                              }}
-                              dropdownIconColor={colors.slate[400]}
-                              style={{
-                                width: 185,
-                                color: colors.slate[400],
-                              }}
+                          default: {
+                            const _exhaustiveCheck: never = value[0];
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      });
+                      const v2 = apply(value[0], () => {
+                        switch (value[0]) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            return value[1];
+                          }
+                          case "between":
+                          case "not_between": {
+                            return value[1][1];
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = value[0];
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      });
+                      const dispatch_op = (
+                        op: Exclude<
+                          typeof props.filter.created_at[1],
+                          undefined
+                        >[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            props.dispatch([
+                              "filter",
+                              "replace",
+                              apply(props.filter, (it) => {
+                                it.created_at[1] = [op, v1];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                          case "between":
+                          case "not_between": {
+                            props.dispatch([
+                              "filter",
+                              "replace",
+                              apply(props.filter, (it) => {
+                                it.created_at[1] = [op, [v1, v2]];
+                                return it;
+                              }),
+                            ]);
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
+                      return (
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          bgColor={bs_theme.background}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
                             >
-                              <Picker.Item label="equals" value="==" />
-                              <Picker.Item label="not equals" value="!=" />
-                              <Picker.Item
-                                label="greater or equals"
-                                value=">="
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
                               />
-                              <Picker.Item label="less or equals" value="<=" />
-                              <Picker.Item label="greater than" value=">" />
-                              <Picker.Item label="less than" value="<" />
-                              <Picker.Item label="between" value="between" />
-                              <Picker.Item
-                                label="not between"
-                                value="not_between"
-                              />
-                            </Picker>
-                          </View>
-                        );
-                      }
-                      return <></>;
-                    })}
-                  </View>
-                </View>
-              );
-            }
-            return null;
-          })}
-          {arrow(() => {
-            const value = props.filter.created_at[1];
-            const [showPicker1, setPicker1] = useState(false);
-            const [mode1, setMode1] = useState("date");
-            let [date1, setDate1] = useState(
-              apply(new Date(), (it) => {
-                if (value !== undefined) {
-                  const op = value[0];
-                  switch (op) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                    case ">":
-                    case "<": {
-                      return new Date(value[1].getTime());
+                            </Pressable>
+                          )}
+                        >
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">=")}>
+                            {op_to_string(">=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<=")}>
+                            {op_to_string("<=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">")}>
+                            {op_to_string(">")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<")}>
+                            {op_to_string("<")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("between")}>
+                            {op_to_string("between")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("not_between")}>
+                            {op_to_string("not_between")}
+                          </Menu.Item>
+                        </Menu>
+                      );
                     }
-                    case "between":
-                    case "not_between": {
-                      return new Date(value[1][0].getTime());
-                    }
-                    default: {
-                      const _exhaustiveCheck: never = op;
-                      return _exhaustiveCheck;
-                    }
-                  }
-                }
-                return it;
-              })
-            );
-            const [showPicker2, setPicker2] = useState(false);
-            const [mode2, setMode2] = useState("date");
-            let [date2, setDate2] = useState(
-              apply(new Date(), (it) => {
-                if (value !== undefined) {
-                  const op = value[0];
-                  switch (op) {
-                    case "==":
-                    case "!=":
-                    case ">=":
-                    case "<=":
-                    case ">":
-                    case "<": {
-                      return it;
-                    }
-                    case "between":
-                    case "not_between": {
-                      return new Date(value[1][1].getTime());
-                    }
-                    default: {
-                      const _exhaustiveCheck: never = op;
-                      return _exhaustiveCheck;
-                    }
-                  }
-                }
-                return it;
-              })
-            );
-            if (value !== undefined) {
-              return (
-                <View
-                  style={{
-                    justifyContent: "space-between",
-                    flexShrink: 1,
-                    paddingVertical: 10,
-                  }}
-                >
+                    return <></>;
+                  })}
+                </Row>
+                <Row flex={1} justifyContent={"space-between"} my={"1"}>
                   {arrow(() => {
                     const op = value[0];
                     switch (op) {
@@ -1027,13 +1014,9 @@ export function FilterComponent(props: {
                       case ">":
                       case "<": {
                         return (
-                          <>
-                            <Pressable onPress={() => setPicker1(true)}>
-                              <Text>
-                                {moment(value[1]).format("Do MMM YYYY, h:mm A")}
-                              </Text>
-                            </Pressable>
-                            <>
+                          <Pressable onPress={() => setPicker1(true)}>
+                            <Text>
+                              {moment(value[1]).format("Do MMM YYYY, h:mm A")}
                               {showPicker1 && (
                                 <DateTimePicker
                                   mode={mode1 as "date" | "time"}
@@ -1097,8 +1080,8 @@ export function FilterComponent(props: {
                                   }}
                                 />
                               )}
-                            </>
-                          </>
+                            </Text>
+                          </Pressable>
                         );
                       }
                       case "between":
@@ -1113,77 +1096,78 @@ export function FilterComponent(props: {
                                 {moment(value[1][0]).format(
                                   "Do MMM YYYY, h:mm A"
                                 )}
-                              </Text>
-                            </Pressable>
-                            <>
-                              {showPicker1 && (
-                                <DateTimePicker
-                                  mode={mode1 as "date" | "time"}
-                                  value={value[1][0]}
-                                  onChange={(
-                                    _temp: any,
-                                    selectedValue: Date | undefined
-                                  ) => {
-                                    setPicker1(Platform.OS === "ios");
-                                    if (selectedValue !== undefined) {
-                                      if (mode1 === "date") {
-                                        setDate1(
-                                          apply(date1, (it) => {
-                                            it.setFullYear(
-                                              selectedValue.getFullYear()
-                                            );
-                                            it.setMonth(
-                                              selectedValue.getMonth()
-                                            );
-                                            it.setDate(selectedValue.getDate());
-                                            return it;
-                                          })
-                                        );
-                                        setMode1("time");
-                                        setPicker1(Platform.OS !== "ios");
+                                {showPicker1 && (
+                                  <DateTimePicker
+                                    mode={mode1 as "date" | "time"}
+                                    value={value[1][0]}
+                                    onChange={(
+                                      _temp: any,
+                                      selectedValue: Date | undefined
+                                    ) => {
+                                      setPicker1(Platform.OS === "ios");
+                                      if (selectedValue !== undefined) {
+                                        if (mode1 === "date") {
+                                          setDate1(
+                                            apply(date1, (it) => {
+                                              it.setFullYear(
+                                                selectedValue.getFullYear()
+                                              );
+                                              it.setMonth(
+                                                selectedValue.getMonth()
+                                              );
+                                              it.setDate(
+                                                selectedValue.getDate()
+                                              );
+                                              return it;
+                                            })
+                                          );
+                                          setMode1("time");
+                                          setPicker1(Platform.OS !== "ios");
+                                        } else {
+                                          setDate1(
+                                            apply(date1, (it) => {
+                                              it.setHours(
+                                                selectedValue.getHours()
+                                              );
+                                              it.setMinutes(
+                                                selectedValue.getMinutes()
+                                              );
+                                              it.setSeconds(
+                                                selectedValue.getSeconds()
+                                              );
+                                              it.setMilliseconds(
+                                                selectedValue.getMilliseconds()
+                                              );
+                                              return it;
+                                            })
+                                          );
+                                          props.dispatch([
+                                            "filter",
+                                            "replace",
+                                            apply(props.filter, (it) => {
+                                              it.created_at[1] = [
+                                                op,
+                                                [
+                                                  date1 || new Date(),
+                                                  value[1][1],
+                                                ],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          setMode1("date");
+                                        }
                                       } else {
                                         setDate1(
-                                          apply(date1, (it) => {
-                                            it.setHours(
-                                              selectedValue.getHours()
-                                            );
-                                            it.setMinutes(
-                                              selectedValue.getMinutes()
-                                            );
-                                            it.setSeconds(
-                                              selectedValue.getSeconds()
-                                            );
-                                            it.setMilliseconds(
-                                              selectedValue.getMilliseconds()
-                                            );
-                                            return it;
-                                          })
+                                          new Date(value[1][0].getTime())
                                         );
-
-                                        props.dispatch([
-                                          "filter",
-                                          "replace",
-                                          apply(props.filter, (it) => {
-                                            it.created_at[1] = [
-                                              op,
-                                              [
-                                                date1 || new Date(),
-                                                value[1][1],
-                                              ],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
                                         setMode1("date");
                                       }
-                                    } else {
-                                      setDate1(new Date(value[1][0].getTime()));
-                                      setMode1("date");
-                                    }
-                                  }}
-                                />
-                              )}
-                            </>
+                                    }}
+                                  />
+                                )}
+                              </Text>
+                            </Pressable>
                             <Pressable
                               onPress={() => setPicker2(true)}
                               style={{ flexShrink: 1 }}
@@ -1192,76 +1176,78 @@ export function FilterComponent(props: {
                                 {moment(value[1][1]).format(
                                   "Do MMM YYYY, h:mm A"
                                 )}
-                              </Text>
-                            </Pressable>
-                            <>
-                              {showPicker2 && (
-                                <DateTimePicker
-                                  mode={mode2 as "date" | "time"}
-                                  value={value[1][1]}
-                                  onChange={(
-                                    _temp: any,
-                                    selectedValue: Date | undefined
-                                  ) => {
-                                    setPicker2(Platform.OS === "ios");
-                                    if (selectedValue !== undefined) {
-                                      if (mode2 === "date") {
-                                        setDate2(
-                                          apply(date2, (it) => {
-                                            it.setFullYear(
-                                              selectedValue.getFullYear()
-                                            );
-                                            it.setMonth(
-                                              selectedValue.getMonth()
-                                            );
-                                            it.setDate(selectedValue.getDate());
-                                            return it;
-                                          })
-                                        );
-                                        setMode2("time");
-                                        setPicker2(Platform.OS !== "ios");
+                                {showPicker2 && (
+                                  <DateTimePicker
+                                    mode={mode2 as "date" | "time"}
+                                    value={value[1][1]}
+                                    onChange={(
+                                      _temp: any,
+                                      selectedValue: Date | undefined
+                                    ) => {
+                                      setPicker2(Platform.OS === "ios");
+                                      if (selectedValue !== undefined) {
+                                        if (mode2 === "date") {
+                                          setDate2(
+                                            apply(date2, (it) => {
+                                              it.setFullYear(
+                                                selectedValue.getFullYear()
+                                              );
+                                              it.setMonth(
+                                                selectedValue.getMonth()
+                                              );
+                                              it.setDate(
+                                                selectedValue.getDate()
+                                              );
+                                              return it;
+                                            })
+                                          );
+                                          setMode2("time");
+                                          setPicker2(Platform.OS !== "ios");
+                                        } else {
+                                          setDate2(
+                                            apply(date2, (it) => {
+                                              it.setHours(
+                                                selectedValue.getHours()
+                                              );
+                                              it.setMinutes(
+                                                selectedValue.getMinutes()
+                                              );
+                                              it.setSeconds(
+                                                selectedValue.getSeconds()
+                                              );
+                                              it.setMilliseconds(
+                                                selectedValue.getMilliseconds()
+                                              );
+                                              return it;
+                                            })
+                                          );
+                                          props.dispatch([
+                                            "filter",
+                                            "replace",
+                                            apply(props.filter, (it) => {
+                                              it.created_at[1] = [
+                                                op,
+                                                [
+                                                  value[1][0],
+                                                  date2 || new Date(),
+                                                ],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                          setMode2("date");
+                                        }
                                       } else {
                                         setDate2(
-                                          apply(date2, (it) => {
-                                            it.setHours(
-                                              selectedValue.getHours()
-                                            );
-                                            it.setMinutes(
-                                              selectedValue.getMinutes()
-                                            );
-                                            it.setSeconds(
-                                              selectedValue.getSeconds()
-                                            );
-                                            it.setMilliseconds(
-                                              selectedValue.getMilliseconds()
-                                            );
-                                            return it;
-                                          })
+                                          new Date(value[1][1].getTime())
                                         );
-                                        props.dispatch([
-                                          "filter",
-                                          "replace",
-                                          apply(props.filter, (it) => {
-                                            it.created_at[1] = [
-                                              op,
-                                              [
-                                                value[1][0],
-                                                date2 || new Date(),
-                                              ],
-                                            ];
-                                            return it;
-                                          }),
-                                        ]);
                                         setMode2("date");
                                       }
-                                    } else {
-                                      setDate2(new Date(value[1][1].getTime()));
-                                      setMode2("date");
-                                    }
-                                  }}
-                                />
-                              )}
-                            </>
+                                    }}
+                                  />
+                                )}
+                              </Text>
+                            </Pressable>
                           </>
                         );
                       }
@@ -1271,12 +1257,12 @@ export function FilterComponent(props: {
                       }
                     }
                   })}
-                </View>
-              );
-            }
-            return null;
-          })}
-        </View>
+                </Row>
+              </Column>
+            );
+          }
+          return <></>;
+        })}
 
         <View
           style={{
