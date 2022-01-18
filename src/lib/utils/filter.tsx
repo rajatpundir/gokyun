@@ -278,10 +278,8 @@ export function FilterComponent(props: {
               }),
             ]);
           };
-          // const value = props.filter.id[1];
           const default_value_1 = new Decimal(0);
           const [has_errors_1, set_has_errors_1] = useState(false);
-          // refresh local_val_1 and local_val_2 on change in op (above)
           const [local_val_1, set_local_val_1] = useState(
             apply(
               arrow(() => {
@@ -771,100 +769,6 @@ export function FilterComponent(props: {
           }
           return <></>;
         })}
-        {/* <Column my={"2"}>
-          {arrow(() => {
-            const [selectedOp, setSelectedOp] = useState(
-              props.filter.id[1] ? props.filter.id[1][0] : "=="
-            );
-            const [active, value] = props.filter.id;
-            const toggle = (x: boolean) => {
-              props.dispatch([
-                "filter",
-                "replace",
-                apply(props.filter, (it) => {
-                  it.id[0] = x;
-                  return it;
-                }),
-              ]);
-            };
-            if (value !== undefined) {
-              return <></>;
-            }
-            return null;
-          })}
-          {arrow(() => {
-            const value = props.filter.id[1];
-            const default_value_1 = new Decimal(0);
-            const [has_errors_1, set_has_errors_1] = useState(false);
-            // refresh local_val_1 and local_val_2 on change in op (above)
-            const [local_val_1, set_local_val_1] = useState(
-              apply(
-                arrow(() => {
-                  if (value !== undefined) {
-                    const op = value[0];
-                    switch (op) {
-                      case "==":
-                      case "!=":
-                      case ">=":
-                      case "<=":
-                      case ">":
-                      case "<": {
-                        return value[1].toString();
-                      }
-                      case "between":
-                      case "not_between": {
-                        return value[1][0].toString();
-                      }
-                    }
-                  }
-                  return default_value_1.toString();
-                }),
-                (it) => {
-                  if (it === "0") {
-                    return "";
-                  }
-                  return it;
-                }
-              )
-            );
-            const default_value_2 = new Decimal(0);
-            const [has_errors_2, set_has_errors_2] = useState(false);
-            const [local_val_2, set_local_val_2] = useState(
-              apply(
-                arrow(() => {
-                  if (value !== undefined) {
-                    const op = value[0];
-                    switch (op) {
-                      case "==":
-                      case "!=":
-                      case ">=":
-                      case "<=":
-                      case ">":
-                      case "<": {
-                        return default_value_1.toString();
-                      }
-                      case "between":
-                      case "not_between": {
-                        return value[1][1].toString();
-                      }
-                    }
-                  }
-                  return default_value_1.toString();
-                }),
-                (it) => {
-                  if (it === "0") {
-                    return "";
-                  }
-                  return it;
-                }
-              )
-            );
-            if (value !== undefined) {
-              return <></>;
-            }
-            return null;
-          })}
-        </Column> */}
 
         <View
           style={{
