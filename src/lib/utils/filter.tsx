@@ -6,7 +6,13 @@ import { Platform } from "react-native";
 import { apply, arrow, is_decimal } from "./prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { AntDesign, Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  AntDesign,
+  Entypo,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { ListAction } from "./list";
 import {
@@ -17,7 +23,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { compare_paths } from "./variable";
 import { colors, tw } from "./tailwind";
-import { Column, Pressable, Row, Text, Input } from "native-base";
+import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
 import { bs_theme } from "./theme";
 
 // For fields.tsx, test TextInput for long values of text
@@ -47,6 +53,32 @@ function View(props: ViewProps) {
       {...otherProps}
     />
   );
+}
+
+function op_to_string(op: string): string {
+  switch (op) {
+    case "==":
+      return "equals";
+    case "!=":
+      return "not equals";
+    case ">=":
+      return "greater or equals";
+    case "<=":
+      return "less or equals";
+    case ">":
+      return "greater than";
+    case "<":
+      return "less than";
+    case "between":
+      return "between";
+    case "not_between":
+      return "not between";
+    case "like":
+      return "like";
+    case "glob":
+      return "glob";
+  }
+  return "";
 }
 
 export function SortComponent(props: {
@@ -231,24 +263,90 @@ export function FilterComponent(props: {
         </Pressable>
       </Row>
       <Column>
-        <Column my={"2"}>
-          {arrow(() => {
-            const [selectedOp, setSelectedOp] = useState(
-              props.filter.id[1] ? props.filter.id[1][0] : "=="
-            );
-            const [active, value] = props.filter.id;
-            const toggle = (x: boolean) => {
-              props.dispatch([
-                "filter",
-                "replace",
-                apply(props.filter, (it) => {
-                  it.id[0] = x;
-                  return it;
-                }),
-              ]);
-            };
-            if (value !== undefined) {
-              return (
+        {arrow(() => {
+          const [selectedOp, setSelectedOp] = useState(
+            props.filter.id[1] ? props.filter.id[1][0] : "=="
+          );
+          const [active, value] = props.filter.id;
+          const toggle = (x: boolean) => {
+            props.dispatch([
+              "filter",
+              "replace",
+              apply(props.filter, (it) => {
+                it.id[0] = x;
+                return it;
+              }),
+            ]);
+          };
+          // const value = props.filter.id[1];
+          const default_value_1 = new Decimal(0);
+          const [has_errors_1, set_has_errors_1] = useState(false);
+          // refresh local_val_1 and local_val_2 on change in op (above)
+          const [local_val_1, set_local_val_1] = useState(
+            apply(
+              arrow(() => {
+                if (value !== undefined) {
+                  const op = value[0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return value[1].toString();
+                    }
+                    case "between":
+                    case "not_between": {
+                      return value[1][0].toString();
+                    }
+                  }
+                }
+                return default_value_1.toString();
+              }),
+              (it) => {
+                if (it === "0") {
+                  return "";
+                }
+                return it;
+              }
+            )
+          );
+          const default_value_2 = new Decimal(0);
+          const [has_errors_2, set_has_errors_2] = useState(false);
+          const [local_val_2, set_local_val_2] = useState(
+            apply(
+              arrow(() => {
+                if (value !== undefined) {
+                  const op = value[0];
+                  switch (op) {
+                    case "==":
+                    case "!=":
+                    case ">=":
+                    case "<=":
+                    case ">":
+                    case "<": {
+                      return default_value_1.toString();
+                    }
+                    case "between":
+                    case "not_between": {
+                      return value[1][1].toString();
+                    }
+                  }
+                }
+                return default_value_1.toString();
+              }),
+              (it) => {
+                if (it === "0") {
+                  return "";
+                }
+                return it;
+              }
+            )
+          );
+          if (value !== undefined) {
+            return (
+              <Column my={"2"}>
                 <Row
                   justifyContent={"space-between"}
                   alignItems={"center"}
@@ -308,72 +406,389 @@ export function FilterComponent(props: {
                           }
                         }
                       });
+                      const dispatch_op = (
+                        op: Exclude<typeof props.filter.id[1], undefined>[0]
+                      ) => {
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<": {
+                            props.dispatch([
+                              "filter",
+                              "replace",
+                              apply(props.filter, (it) => {
+                                it.id[1] = [op, v1];
+                                return it;
+                              }),
+                            ]);
+                            set_local_val_1(
+                              apply(v1.toString(), (it) => {
+                                if (it === "0") {
+                                  return "";
+                                }
+                                return it;
+                              })
+                            );
+                            set_local_val_2(
+                              apply(v1.toString(), (it) => {
+                                if (it === "0") {
+                                  return "";
+                                }
+                                return it;
+                              })
+                            );
+                            break;
+                          }
+                          case "between":
+                          case "not_between": {
+                            props.dispatch([
+                              "filter",
+                              "replace",
+                              apply(props.filter, (it) => {
+                                it.id[1] = [op, [v1, v2]];
+                                return it;
+                              }),
+                            ]);
+                            set_local_val_1(
+                              apply(v1.toString(), (it) => {
+                                if (it === "0") {
+                                  return "";
+                                }
+                                return it;
+                              })
+                            );
+                            set_local_val_2(
+                              apply(v2.toString(), (it) => {
+                                if (it === "0") {
+                                  return "";
+                                }
+                                return it;
+                              })
+                            );
+                            break;
+                          }
+                        }
+                        setSelectedOp(op);
+                      };
                       return (
-                        <Row
-                          borderColor={bs_theme.border}
-                          borderWidth={"1"}
-                          borderRadius={"md"}
+                        <Menu
+                          shouldOverlapWithTrigger={true}
+                          bgColor={bs_theme.background}
+                          trigger={(menu_props) => (
+                            <Pressable
+                              {...menu_props}
+                              flexDirection={"row"}
+                              alignItems={"center"}
+                              borderColor={bs_theme.border}
+                              borderWidth={"1"}
+                              borderRadius={"sm"}
+                              px={"1.5"}
+                              py={"0.5"}
+                            >
+                              <Text color={bs_theme.text}>
+                                {op_to_string(selectedOp)}
+                              </Text>
+                              <MaterialCommunityIcons
+                                name="menu-down"
+                                size={20}
+                                color={bs_theme.text}
+                              />
+                            </Pressable>
+                          )}
                         >
-                          <Picker
-                            selectedValue={selectedOp}
-                            onValueChange={(op, _) => {
-                              switch (op) {
-                                case "==":
-                                case "!=":
-                                case ">=":
-                                case "<=":
-                                case ">":
-                                case "<": {
-                                  props.dispatch([
-                                    "filter",
-                                    "replace",
-                                    apply(props.filter, (it) => {
-                                      it.id[1] = [op, v1];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                                case "between":
-                                case "not_between": {
-                                  props.dispatch([
-                                    "filter",
-                                    "replace",
-                                    apply(props.filter, (it) => {
-                                      it.id[1] = [op, [v1, v2]];
-                                      return it;
-                                    }),
-                                  ]);
-                                  break;
-                                }
-                              }
-                              setSelectedOp(op);
-                            }}
-                            dropdownIconColor={bs_theme.text}
-                            style={tw.style([], {
-                              width: 185,
-                              color: bs_theme.text,
-                            })}
-                          >
-                            <Picker.Item label="equals" value="==" />
-                            <Picker.Item label="not equals" value="!=" />
-                            <Picker.Item label="greater or equals" value=">=" />
-                            <Picker.Item label="less or equals" value="<=" />
-                            <Picker.Item label="greater than" value=">" />
-                            <Picker.Item label="less than" value="<" />
-                            <Picker.Item label="between" value="between" />
-                            <Picker.Item
-                              label="not between"
-                              value="not_between"
-                            />
-                          </Picker>
-                        </Row>
+                          <Menu.Item onPress={() => dispatch_op("==")}>
+                            {op_to_string("==")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("!=")}>
+                            {op_to_string("!=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">=")}>
+                            {op_to_string(">=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<=")}>
+                            {op_to_string("<=")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op(">")}>
+                            {op_to_string(">")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("<")}>
+                            {op_to_string("<")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("between")}>
+                            {op_to_string("between")}
+                          </Menu.Item>
+                          <Menu.Item onPress={() => dispatch_op("not_between")}>
+                            {op_to_string("not_between")}
+                          </Menu.Item>
+                        </Menu>
                       );
                     }
                     return <></>;
                   })}
                 </Row>
-              );
+                <Row flex={1} my={"1"}>
+                  {arrow(() => {
+                    const op = value[0];
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        return (
+                          <Input
+                            flex={1}
+                            ml={"2"}
+                            size={"md"}
+                            placeholder={"Unique ID"}
+                            value={local_val_1}
+                            isInvalid={has_errors_1}
+                            keyboardType={"number-pad"}
+                            onChangeText={(x) => {
+                              try {
+                                set_local_val_1(x);
+                                const val = new Decimal(x || "0")
+                                  .truncated()
+                                  .abs();
+                                set_has_errors_1(false);
+                                props.dispatch([
+                                  "filter",
+                                  "replace",
+                                  apply(props.filter, (it) => {
+                                    it.id[1] = [op, val];
+                                    return it;
+                                  }),
+                                ]);
+                              } catch (e) {
+                                set_has_errors_1(true);
+                              }
+                            }}
+                            InputRightElement={
+                              local_val_1 !== default_value_1.toString() &&
+                              local_val_1 !== "" ? (
+                                <Pressable
+                                  style={tw.style(["px-2"], {})}
+                                  onPress={() => {
+                                    set_local_val_1(
+                                      apply(
+                                        default_value_1.toString(),
+                                        (it) => {
+                                          if (it === "0") {
+                                            return "";
+                                          }
+                                          return it;
+                                        }
+                                      )
+                                    );
+                                    set_has_errors_1(false);
+                                    props.dispatch([
+                                      "filter",
+                                      "replace",
+                                      apply(props.filter, (it) => {
+                                        it.id[1] = [op, default_value_1];
+                                        return it;
+                                      }),
+                                    ]);
+                                  }}
+                                >
+                                  <MaterialIcons
+                                    name="clear"
+                                    size={24}
+                                    color={bs_theme.placeholder}
+                                  />
+                                </Pressable>
+                              ) : (
+                                <></>
+                              )
+                            }
+                            borderColor={bs_theme.placeholder}
+                            placeholderTextColor={bs_theme.placeholder}
+                          />
+                        );
+                      }
+                      case "between":
+                      case "not_between": {
+                        return (
+                          <>
+                            <Input
+                              flex={1}
+                              ml={"2"}
+                              size={"md"}
+                              placeholder={"Unique ID"}
+                              value={local_val_1}
+                              isInvalid={has_errors_1}
+                              keyboardType={"number-pad"}
+                              onChangeText={(x) => {
+                                try {
+                                  set_local_val_1(x);
+                                  const val = new Decimal(x || "0")
+                                    .truncated()
+                                    .abs();
+                                  set_has_errors_1(false);
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.id[1] = [op, [val, value[1][1]]];
+                                      return it;
+                                    }),
+                                  ]);
+                                } catch (e) {
+                                  set_has_errors_1(true);
+                                }
+                              }}
+                              InputRightElement={
+                                local_val_1 !== default_value_1.toString() &&
+                                local_val_1 !== "" ? (
+                                  <Pressable
+                                    style={tw.style(["px-2"], {})}
+                                    onPress={() => {
+                                      set_local_val_1(
+                                        apply(
+                                          default_value_1.toString(),
+                                          (it) => {
+                                            if (it === "0") {
+                                              return "";
+                                            }
+                                            return it;
+                                          }
+                                        )
+                                      );
+                                      set_has_errors_1(false);
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.id[1] = [
+                                            op,
+                                            [default_value_1, value[1][1]],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    }}
+                                  >
+                                    <MaterialIcons
+                                      name="clear"
+                                      size={24}
+                                      color={bs_theme.placeholder}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )
+                              }
+                              borderColor={bs_theme.border}
+                              placeholderTextColor={bs_theme.placeholder}
+                            />
+                            <Input
+                              flex={1}
+                              ml={"2"}
+                              size={"md"}
+                              placeholder={"Unique ID"}
+                              value={local_val_2}
+                              isInvalid={has_errors_2}
+                              keyboardType={"number-pad"}
+                              onChangeText={(x) => {
+                                try {
+                                  set_local_val_2(x);
+                                  const val = new Decimal(x || "0")
+                                    .truncated()
+                                    .abs();
+                                  set_has_errors_2(false);
+                                  props.dispatch([
+                                    "filter",
+                                    "replace",
+                                    apply(props.filter, (it) => {
+                                      it.id[1] = [op, [value[1][0], val]];
+                                      return it;
+                                    }),
+                                  ]);
+                                } catch (e) {
+                                  set_has_errors_2(true);
+                                }
+                              }}
+                              InputRightElement={
+                                local_val_2 !== default_value_2.toString() &&
+                                local_val_2 !== "" ? (
+                                  <Pressable
+                                    style={tw.style(["px-2"], {})}
+                                    onPress={() => {
+                                      set_local_val_2(
+                                        apply(
+                                          default_value_2.toString(),
+                                          (it) => {
+                                            if (it === "0") {
+                                              return "";
+                                            }
+                                            return it;
+                                          }
+                                        )
+                                      );
+                                      set_has_errors_2(false);
+                                      props.dispatch([
+                                        "filter",
+                                        "replace",
+                                        apply(props.filter, (it) => {
+                                          it.id[1] = [
+                                            op,
+                                            [value[1][0], default_value_2],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    }}
+                                  >
+                                    <MaterialIcons
+                                      name="clear"
+                                      size={24}
+                                      color={bs_theme.placeholder}
+                                    />
+                                  </Pressable>
+                                ) : (
+                                  <></>
+                                )
+                              }
+                              borderColor={bs_theme.border}
+                              placeholderTextColor={bs_theme.placeholder}
+                            />
+                          </>
+                        );
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = op;
+                        return _exhaustiveCheck;
+                      }
+                    }
+                  })}
+                </Row>
+              </Column>
+            );
+          }
+          return <></>;
+        })}
+        {/* <Column my={"2"}>
+          {arrow(() => {
+            const [selectedOp, setSelectedOp] = useState(
+              props.filter.id[1] ? props.filter.id[1][0] : "=="
+            );
+            const [active, value] = props.filter.id;
+            const toggle = (x: boolean) => {
+              props.dispatch([
+                "filter",
+                "replace",
+                apply(props.filter, (it) => {
+                  it.id[0] = x;
+                  return it;
+                }),
+              ]);
+            };
+            if (value !== undefined) {
+              return <></>;
             }
             return null;
           })}
@@ -382,7 +797,6 @@ export function FilterComponent(props: {
             const default_value_1 = new Decimal(0);
             const [has_errors_1, set_has_errors_1] = useState(false);
             // refresh local_val_1 and local_val_2 on change in op (above)
-            // replace picker with menu
             const [local_val_1, set_local_val_1] = useState(
               apply(
                 arrow(() => {
@@ -446,220 +860,11 @@ export function FilterComponent(props: {
               )
             );
             if (value !== undefined) {
-              return (
-                <Row flex={1} my={"1"}>
-                  {arrow(() => {
-                    const op = value[0];
-                    switch (op) {
-                      case "==":
-                      case "!=":
-                      case ">=":
-                      case "<=":
-                      case ">":
-                      case "<": {
-                        return (
-                          <Input
-                            flex={1}
-                            maxWidth={"1/2"}
-                            ml={"2"}
-                            size={"md"}
-                            placeholder={"Unique ID"}
-                            value={local_val_1}
-                            isInvalid={has_errors_1}
-                            keyboardType={"number-pad"}
-                            onChangeText={(x) => {
-                              try {
-                                set_local_val_1(x);
-                                const val = new Decimal(x || "0")
-                                  .truncated()
-                                  .abs();
-                                set_has_errors_1(false);
-                                props.dispatch([
-                                  "filter",
-                                  "replace",
-                                  apply(props.filter, (it) => {
-                                    it.id[1] = [op, val];
-                                    return it;
-                                  }),
-                                ]);
-                              } catch (e) {
-                                set_has_errors_1(true);
-                              }
-                            }}
-                            InputRightElement={
-                              local_val_1 !== default_value_1.toString() &&
-                              local_val_1 !== "" ? (
-                                <Pressable
-                                  style={tw.style(["px-2"], {})}
-                                  onPress={() => {
-                                    set_local_val_1(default_value_1.toString());
-                                    set_has_errors_1(false);
-                                    props.dispatch([
-                                      "filter",
-                                      "replace",
-                                      apply(props.filter, (it) => {
-                                        it.id[1] = [op, default_value_1];
-                                        return it;
-                                      }),
-                                    ]);
-                                  }}
-                                >
-                                  <MaterialIcons
-                                    name="clear"
-                                    size={24}
-                                    color={bs_theme.placeholder}
-                                  />
-                                </Pressable>
-                              ) : (
-                                <></>
-                              )
-                            }
-                          />
-                        );
-                      }
-                      case "between":
-                      case "not_between": {
-                        return (
-                          <>
-                            <Input
-                              flex={1}
-                              maxWidth={"1/2"}
-                              ml={"2"}
-                              size={"md"}
-                              placeholder={"Unique ID"}
-                              value={local_val_1}
-                              isInvalid={has_errors_1}
-                              keyboardType={"number-pad"}
-                              onChangeText={(x) => {
-                                try {
-                                  set_local_val_1(x);
-                                  const val = new Decimal(x || "0")
-                                    .truncated()
-                                    .abs();
-                                  set_has_errors_1(false);
-                                  props.dispatch([
-                                    "filter",
-                                    "replace",
-                                    apply(props.filter, (it) => {
-                                      it.id[1] = [op, [val, value[1][1]]];
-                                      return it;
-                                    }),
-                                  ]);
-                                } catch (e) {
-                                  set_has_errors_1(true);
-                                }
-                              }}
-                              InputRightElement={
-                                local_val_1 !== default_value_1.toString() &&
-                                local_val_1 !== "" ? (
-                                  <Pressable
-                                    style={tw.style(["px-2"], {})}
-                                    onPress={() => {
-                                      set_local_val_1(
-                                        default_value_1.toString()
-                                      );
-                                      set_has_errors_1(false);
-                                      props.dispatch([
-                                        "filter",
-                                        "replace",
-                                        apply(props.filter, (it) => {
-                                          it.id[1] = [
-                                            op,
-                                            [default_value_1, value[1][1]],
-                                          ];
-                                          return it;
-                                        }),
-                                      ]);
-                                    }}
-                                  >
-                                    <MaterialIcons
-                                      name="clear"
-                                      size={24}
-                                      color={bs_theme.placeholder}
-                                    />
-                                  </Pressable>
-                                ) : (
-                                  <></>
-                                )
-                              }
-                            />
-                            <Input
-                              flex={1}
-                              maxWidth={"1/2"}
-                              ml={"2"}
-                              size={"md"}
-                              placeholder={"Unique ID"}
-                              value={local_val_2}
-                              isInvalid={has_errors_2}
-                              keyboardType={"number-pad"}
-                              onChangeText={(x) => {
-                                try {
-                                  set_local_val_2(x);
-                                  const val = new Decimal(x || "0")
-                                    .truncated()
-                                    .abs();
-                                  set_has_errors_2(false);
-                                  props.dispatch([
-                                    "filter",
-                                    "replace",
-                                    apply(props.filter, (it) => {
-                                      it.id[1] = [op, [value[1][0], val]];
-                                      return it;
-                                    }),
-                                  ]);
-                                } catch (e) {
-                                  set_has_errors_2(true);
-                                }
-                              }}
-                              InputRightElement={
-                                local_val_2 !== default_value_2.toString() &&
-                                local_val_2 !== "" ? (
-                                  <Pressable
-                                    style={tw.style(["px-2"], {})}
-                                    onPress={() => {
-                                      set_local_val_2(
-                                        default_value_2.toString()
-                                      );
-                                      set_has_errors_2(false);
-                                      props.dispatch([
-                                        "filter",
-                                        "replace",
-                                        apply(props.filter, (it) => {
-                                          it.id[1] = [
-                                            op,
-                                            [value[1][0], default_value_2],
-                                          ];
-                                          return it;
-                                        }),
-                                      ]);
-                                    }}
-                                  >
-                                    <MaterialIcons
-                                      name="clear"
-                                      size={24}
-                                      color={bs_theme.placeholder}
-                                    />
-                                  </Pressable>
-                                ) : (
-                                  <></>
-                                )
-                              }
-                            />
-                          </>
-                        );
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = op;
-                        return _exhaustiveCheck;
-                      }
-                    }
-                  })}
-                </Row>
-              );
+              return <></>;
             }
             return null;
           })}
-        </Column>
+        </Column> */}
 
         <View
           style={{
