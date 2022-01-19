@@ -226,7 +226,7 @@ export function SortComponentFields(props: {
                   color={bs_theme.primary}
                 />
               )}
-              <Text style={tw.style(["pl-2"], {})}>{filter_path.label}</Text>
+              <Text pl={1}>{filter_path.label}</Text>
             </Pressable>
           );
         })}
@@ -492,7 +492,8 @@ export function FilterComponent(props: {
                               borderColor={bs_theme.border}
                               borderWidth={"1"}
                               borderRadius={"sm"}
-                              px={"1.5"}
+                              pl={"1.5"}
+                              pr={"0"}
                               py={"0.5"}
                             >
                               <Text color={bs_theme.text}>
@@ -964,7 +965,8 @@ export function FilterComponent(props: {
                               borderColor={bs_theme.border}
                               borderWidth={"1"}
                               borderRadius={"sm"}
-                              px={"1.5"}
+                              pl={"1.5"}
+                              pr={"0"}
                               py={"0.5"}
                             >
                               <Text color={bs_theme.text}>
@@ -1454,7 +1456,8 @@ export function FilterComponent(props: {
                               borderColor={bs_theme.border}
                               borderWidth={"1"}
                               borderRadius={"sm"}
-                              px={"1.5"}
+                              pl={"1.5"}
+                              pr={"0"}
                               py={"0.5"}
                             >
                               <Text color={bs_theme.text}>
@@ -1836,7 +1839,7 @@ export function FilterComponent(props: {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text style={tw.style(["pl-2"], {})}>Unique ID</Text>
+                <Text pl={1}>Unique ID</Text>
               </Pressable>
             );
           })}
@@ -1875,7 +1878,7 @@ export function FilterComponent(props: {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text style={tw.style(["pl-2"], {})}>Created</Text>
+                <Text pl={1}>Created</Text>
               </Pressable>
             );
           })}
@@ -1914,7 +1917,7 @@ export function FilterComponent(props: {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text style={tw.style(["pl-2"], {})}>Updated</Text>
+                <Text pl={1}>Updated</Text>
               </Pressable>
             );
           })}
@@ -2045,9 +2048,7 @@ export function FilterComponent(props: {
                       color={bs_theme.primary}
                     />
                   )}
-                  <Text style={tw.style(["pl-2"], {})}>
-                    {filter_path.label}
-                  </Text>
+                  <Text pl={1}>{filter_path.label}</Text>
                 </Pressable>
               );
             })}
@@ -2647,7 +2648,8 @@ function FilterPathComponent(props: {
                           borderColor={bs_theme.border}
                           borderWidth={"1"}
                           borderRadius={"sm"}
-                          px={"1.5"}
+                          pl={"1.5"}
+                          pr={"0"}
                           py={"0.5"}
                         >
                           <Text color={bs_theme.text}>
@@ -2840,7 +2842,8 @@ function FilterPathComponent(props: {
                           borderColor={bs_theme.border}
                           borderWidth={"1"}
                           borderRadius={"sm"}
-                          px={"1.5"}
+                          pl={"1.5"}
+                          pr={"0"}
                           py={"0.5"}
                         >
                           <Text color={bs_theme.text}>
@@ -2922,7 +2925,8 @@ function FilterPathComponent(props: {
                           borderColor={bs_theme.border}
                           borderWidth={"1"}
                           borderRadius={"sm"}
-                          px={"1.5"}
+                          pl={"1.5"}
+                          pr={"0"}
                           py={"0.5"}
                         >
                           <Text color={bs_theme.text}>
@@ -3026,7 +3030,8 @@ function FilterPathComponent(props: {
                           borderColor={bs_theme.border}
                           borderWidth={"1"}
                           borderRadius={"sm"}
-                          px={"1.5"}
+                          pl={"1.5"}
+                          pr={"0"}
                           py={"0.5"}
                         >
                           <Text color={bs_theme.text}>
@@ -3113,7 +3118,8 @@ function FilterPathComponent(props: {
                           borderColor={bs_theme.border}
                           borderWidth={"1"}
                           borderRadius={"sm"}
-                          px={"1.5"}
+                          pl={"1.5"}
+                          pr={"0"}
                           py={"0.5"}
                         >
                           <Text color={bs_theme.text}>
@@ -3165,11 +3171,12 @@ function FilterPathComponent(props: {
                     case "glob": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <Row flex={1} justifyContent={"space-between"}>
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -3213,6 +3220,8 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         px={1}
                                         onPress={() => {
+                                          set_local_val_1(default_value_1);
+                                          set_has_errors_1(false);
                                           props.dispatch([
                                             "filters",
                                             props.filter,
@@ -3279,35 +3288,21 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -3324,45 +3319,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -3383,6 +3363,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -3405,49 +3388,40 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (typeof value === "string") {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (typeof value === "string") {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      } else {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
@@ -3542,11 +3516,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -3809,11 +3782,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -4107,11 +4079,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -4277,9 +4248,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -4393,11 +4362,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -4683,11 +4651,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -4986,11 +4953,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -5156,9 +5122,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -5272,11 +5236,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -5562,11 +5525,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -5867,11 +5829,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -6037,9 +5998,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -6157,11 +6116,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -6451,11 +6409,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -6754,11 +6711,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -6924,9 +6880,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -7042,9 +6996,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -7332,11 +7287,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -7629,11 +7583,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -7799,9 +7752,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -7909,11 +7860,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -8193,11 +8143,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -8490,11 +8439,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -8660,9 +8608,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -8770,11 +8716,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -9054,11 +8999,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -9336,11 +9280,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -9499,9 +9442,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -9621,11 +9562,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -9784,9 +9724,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -9910,11 +9848,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -10203,11 +10140,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -10500,11 +10436,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -10663,9 +10598,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -10788,11 +10721,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -11080,11 +11012,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -11429,11 +11360,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -11592,9 +11522,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
@@ -11769,11 +11697,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -12113,11 +12040,10 @@ function FilterPathComponent(props: {
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
                                   index={1}
-                                  backgroundStyle={{
-                                    backgroundColor: colors.slate[900],
-                                    borderColor: colors.sky[600],
-                                    borderWidth: 1,
-                                  }}
+                                  backgroundStyle={tw.style(["border"], {
+                                    backgroundColor: bs_theme.background,
+                                    borderColor: bs_theme.primary,
+                                  })}
                                 >
                                   <View
                                     style={{
@@ -12396,11 +12322,10 @@ function FilterPathComponent(props: {
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
                             index={1}
-                            backgroundStyle={{
-                              backgroundColor: colors.slate[900],
-                              borderColor: colors.sky[600],
-                              borderWidth: 1,
-                            }}
+                            backgroundStyle={tw.style(["border"], {
+                              backgroundColor: bs_theme.background,
+                              borderColor: bs_theme.primary,
+                            })}
                           >
                             <View
                               style={{
@@ -12566,9 +12491,7 @@ function FilterPathComponent(props: {
                                           );
                                         }
                                       })}
-                                      <Text style={tw.style(["pl-2"], {})}>
-                                        {list_item.item.label}
-                                      </Text>
+                                      <Text pl={1}>{list_item.item.label}</Text>
                                     </View>
                                   </Pressable>
                                 );
