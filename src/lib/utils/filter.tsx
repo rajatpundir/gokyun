@@ -434,6 +434,7 @@ export function FilterComponent(props: {
                                 return it;
                               })
                             );
+                            set_has_errors_1(false);
                             set_local_val_2(
                               apply(v1.toString(), (it) => {
                                 if (it === "0") {
@@ -442,6 +443,7 @@ export function FilterComponent(props: {
                                 return it;
                               })
                             );
+                            set_has_errors_2(false);
                             break;
                           }
                           case "between":
@@ -462,6 +464,7 @@ export function FilterComponent(props: {
                                 return it;
                               })
                             );
+                            set_has_errors_1(false);
                             set_local_val_2(
                               apply(v2.toString(), (it) => {
                                 if (it === "0") {
@@ -470,6 +473,7 @@ export function FilterComponent(props: {
                                 return it;
                               })
                             );
+                            set_has_errors_2(false);
                             break;
                           }
                         }
@@ -2398,7 +2402,7 @@ function FilterPathComponent(props: {
             }
           }
         }
-        return "";
+        return default_value_1;
       })
     );
 
@@ -2499,7 +2503,7 @@ function FilterPathComponent(props: {
             }
           }
         }
-        return "";
+        return default_value_2;
       })
     );
 
@@ -2548,7 +2552,6 @@ function FilterPathComponent(props: {
                       }
                     }
                   });
-                  // TODO. set_local_val_1 and set_local_val_2 for text and numeric types
                   const dispatch_op = (
                     op: Exclude<
                       (FilterPath["value"] & ["str", unknown])[1],
@@ -2573,6 +2576,26 @@ function FilterPathComponent(props: {
                             return it;
                           }),
                         ]);
+                        set_local_val_1(
+                          apply(v1, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return it;
+                            }
+                          })
+                        );
+                        set_has_errors_1(false);
+                        set_local_val_2(
+                          apply(v1, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return it;
+                            }
+                          })
+                        );
+                        set_has_errors_2(false);
                         break;
                       }
                       case "between":
@@ -2586,6 +2609,26 @@ function FilterPathComponent(props: {
                             return it;
                           }),
                         ]);
+                        set_local_val_1(
+                          apply(v1, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return it;
+                            }
+                          })
+                        );
+                        set_has_errors_1(false);
+                        set_local_val_2(
+                          apply(v2, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return it;
+                            }
+                          })
+                        );
+                        set_has_errors_2(false);
                         break;
                       }
                     }
@@ -2684,7 +2727,6 @@ function FilterPathComponent(props: {
                       }
                     }
                   });
-                  // TODO. set_local_val_1 and set_local_val_2 for text and numeric types
                   const dispatch_op = (
                     op: Exclude<
                       (FilterPath["value"] & ["i32", unknown])[1],
@@ -2707,6 +2749,36 @@ function FilterPathComponent(props: {
                             return it;
                           }),
                         ]);
+                        set_local_val_1(
+                          apply(v1, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return apply(it.toString(), (x) => {
+                                if (x === "0") {
+                                  return "";
+                                }
+                                return x;
+                              });
+                            }
+                          })
+                        );
+                        set_has_errors_1(false);
+                        set_local_val_2(
+                          apply(v1, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return apply(it.toString(), (x) => {
+                                if (x === "0") {
+                                  return "";
+                                }
+                                return x;
+                              });
+                            }
+                          })
+                        );
+                        set_has_errors_2(false);
                         break;
                       }
                       case "between":
@@ -2720,6 +2792,36 @@ function FilterPathComponent(props: {
                             return it;
                           }),
                         ]);
+                        set_local_val_1(
+                          apply(v1, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return apply(it.toString(), (x) => {
+                                if (x === "0") {
+                                  return "";
+                                }
+                                return x;
+                              });
+                            }
+                          })
+                        );
+                        set_has_errors_1(false);
+                        set_local_val_2(
+                          apply(v2, (it) => {
+                            if (Array.isArray(it)) {
+                              return it[0];
+                            } else {
+                              return apply(it.toString(), (x) => {
+                                if (x === "0") {
+                                  return "";
+                                }
+                                return x;
+                              });
+                            }
+                          })
+                        );
+                        set_has_errors_2(false);
                         break;
                       }
                     }
