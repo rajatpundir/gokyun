@@ -2273,576 +2273,561 @@ function FilterPathComponent(props: {
       return it;
     })
   );
-  return (
-    <Column my={"1"}>
-      {arrow(() => {
-        if (props.filter_path.value[1] !== undefined) {
-          const toggle = (x: boolean) => {
-            props.dispatch([
-              "filters",
-              props.filter,
-              "replace",
-              apply(props.filter_path, (it) => {
-                it.active = x;
-                return it;
-              }),
-            ]);
-          };
-          return (
-            <Row
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              my={"1"}
-            >
-              <Row>
-                <Checkbox
-                  value={props.filter_path.active}
-                  onValueChange={() => toggle(!props.filter_path.active)}
-                  color={
-                    props.filter_path.active ? bs_theme.primary : undefined
-                  }
-                  style={tw.style(["mr-1"], {})}
-                />
-                <Pressable onPress={() => toggle(!props.filter_path.active)}>
-                  <Text color={bs_theme.text}>{props.filter_path.label}</Text>
-                </Pressable>
-              </Row>
-              {arrow(() => {
-                const field_struct_name = props.filter_path.value[0];
-                switch (field_struct_name) {
-                  case "str":
-                  case "lstr":
-                  case "clob": {
-                    if (props.filter_path.value[1] !== undefined) {
-                      const value = props.filter_path.value[1];
-                      const [v1, v2] = arrow(() => {
-                        const op = value[0];
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<":
-                          case "like":
-                          case "glob": {
-                            return [value[1], value[1]];
-                          }
-                          case "between":
-                          case "not_between": {
-                            return value[1];
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = op;
-                            return _exhaustiveCheck;
-                          }
-                        }
-                      });
-                      // set_local_val_1 and set_local_val_2 for text and numeric types
-                      const dispatch_op = (
-                        op: Exclude<
-                          (FilterPath["value"] & ["str", unknown])[1],
-                          undefined
-                        >[0]
-                      ) => {
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<":
-                          case "like":
-                          case "glob": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, v1]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                          case "between":
-                          case "not_between": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, [v1, v2]]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                        }
-                        setSelectedOp(op);
-                      };
-                      return (
-                        <Menu
-                          shouldOverlapWithTrigger={true}
-                          backgroundColor={bs_theme.background}
-                          borderColor={bs_theme.border}
-                          trigger={(menu_props) => (
-                            <Pressable
-                              {...menu_props}
-                              flexDirection={"row"}
-                              alignItems={"center"}
-                              borderColor={bs_theme.border}
-                              borderWidth={"1"}
-                              borderRadius={"sm"}
-                              px={"1.5"}
-                              py={"0.5"}
-                            >
-                              <Text color={bs_theme.text}>
-                                {op_to_string(selectedOp)}
-                              </Text>
-                              <MaterialCommunityIcons
-                                name="menu-down"
-                                size={20}
-                                color={bs_theme.text}
-                              />
-                            </Pressable>
-                          )}
-                        >
-                          <Menu.Item onPress={() => dispatch_op("like")}>
-                            {op_to_string("like")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("glob")}>
-                            {op_to_string("glob")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op(">=")}>
-                            {op_to_string(">=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("<=")}>
-                            {op_to_string("<=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op(">")}>
-                            {op_to_string(">")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("<")}>
-                            {op_to_string("<")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("between")}>
-                            {op_to_string("between")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("not_between")}>
-                            {op_to_string("not_between")}
-                          </Menu.Item>
-                        </Menu>
-                      );
+  if (props.filter_path.value[1] !== undefined) {
+    const toggle = (x: boolean) => {
+      props.dispatch([
+        "filters",
+        props.filter,
+        "replace",
+        apply(props.filter_path, (it) => {
+          it.active = x;
+          return it;
+        }),
+      ]);
+    };
+    const field_struct_name = props.filter_path.value[0];
+    return (
+      <Column my={"1"}>
+        <Row justifyContent={"space-between"} alignItems={"center"} my={"1"}>
+          <Row>
+            <Checkbox
+              value={props.filter_path.active}
+              onValueChange={() => toggle(!props.filter_path.active)}
+              color={props.filter_path.active ? bs_theme.primary : undefined}
+              style={tw.style(["mr-1"], {})}
+            />
+            <Pressable onPress={() => toggle(!props.filter_path.active)}>
+              <Text color={bs_theme.text}>{props.filter_path.label}</Text>
+            </Pressable>
+          </Row>
+          {arrow(() => {
+            switch (field_struct_name) {
+              case "str":
+              case "lstr":
+              case "clob": {
+                if (props.filter_path.value[1] !== undefined) {
+                  const value = props.filter_path.value[1];
+                  const [v1, v2] = arrow(() => {
+                    const op = value[0];
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<":
+                      case "like":
+                      case "glob": {
+                        return [value[1], value[1]];
+                      }
+                      case "between":
+                      case "not_between": {
+                        return value[1];
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = op;
+                        return _exhaustiveCheck;
+                      }
                     }
-                    return <></>;
-                  }
-                  case "i32":
-                  case "u32":
-                  case "i64":
-                  case "u64":
-                  case "idouble":
-                  case "udouble":
-                  case "idecimal":
-                  case "udecimal": {
-                    if (props.filter_path.value[1] !== undefined) {
-                      const value = props.filter_path.value[1];
-                      const [v1, v2] = arrow(() => {
-                        const op = value[0];
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<": {
-                            return [value[1], value[1]];
-                          }
-                          case "between":
-                          case "not_between": {
-                            return value[1];
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = op;
-                            return _exhaustiveCheck;
-                          }
-                        }
-                      });
-                      // set_local_val_1 and set_local_val_2 for text and numeric types
-                      const dispatch_op = (
-                        op: Exclude<
-                          (FilterPath["value"] & ["i32", unknown])[1],
-                          undefined
-                        >[0]
-                      ) => {
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, v1]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                          case "between":
-                          case "not_between": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, [v1, v2]]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                        }
-                        setSelectedOp(op);
-                      };
-                      return (
-                        <Menu
-                          shouldOverlapWithTrigger={true}
-                          backgroundColor={bs_theme.background}
-                          borderColor={bs_theme.border}
-                          trigger={(menu_props) => (
-                            <Pressable
-                              {...menu_props}
-                              flexDirection={"row"}
-                              alignItems={"center"}
-                              borderColor={bs_theme.border}
-                              borderWidth={"1"}
-                              borderRadius={"sm"}
-                              px={"1.5"}
-                              py={"0.5"}
-                            >
-                              <Text color={bs_theme.text}>
-                                {op_to_string(selectedOp)}
-                              </Text>
-                              <MaterialCommunityIcons
-                                name="menu-down"
-                                size={20}
-                                color={bs_theme.text}
-                              />
-                            </Pressable>
-                          )}
-                        >
-                          <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op(">=")}>
-                            {op_to_string(">=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("<=")}>
-                            {op_to_string("<=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op(">")}>
-                            {op_to_string(">")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("<")}>
-                            {op_to_string("<")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("between")}>
-                            {op_to_string("between")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("not_between")}>
-                            {op_to_string("not_between")}
-                          </Menu.Item>
-                        </Menu>
-                      );
+                  });
+                  // TODO. set_local_val_1 and set_local_val_2 for text and numeric types
+                  const dispatch_op = (
+                    op: Exclude<
+                      (FilterPath["value"] & ["str", unknown])[1],
+                      undefined
+                    >[0]
+                  ) => {
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<":
+                      case "like":
+                      case "glob": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, v1]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                      case "between":
+                      case "not_between": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, [v1, v2]]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
                     }
-                    return <></>;
-                  }
-                  case "bool": {
-                    if (props.filter_path.value[1] !== undefined) {
-                      const value = props.filter_path.value[1];
-                      const dispatch_op = (
-                        op: Exclude<
-                          (FilterPath["value"] & ["bool", unknown])[1],
-                          undefined
-                        >[0]
-                      ) => {
-                        switch (op) {
-                          case "==":
-                          case "!=": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, value[1]]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                        }
-                        setSelectedOp(op);
-                      };
-                      return (
-                        <Menu
-                          shouldOverlapWithTrigger={true}
-                          backgroundColor={bs_theme.background}
+                    setSelectedOp(op);
+                  };
+                  return (
+                    <Menu
+                      shouldOverlapWithTrigger={true}
+                      backgroundColor={bs_theme.background}
+                      borderColor={bs_theme.border}
+                      trigger={(menu_props) => (
+                        <Pressable
+                          {...menu_props}
+                          flexDirection={"row"}
+                          alignItems={"center"}
                           borderColor={bs_theme.border}
-                          trigger={(menu_props) => (
-                            <Pressable
-                              {...menu_props}
-                              flexDirection={"row"}
-                              alignItems={"center"}
-                              borderColor={bs_theme.border}
-                              borderWidth={"1"}
-                              borderRadius={"sm"}
-                              px={"1.5"}
-                              py={"0.5"}
-                            >
-                              <Text color={bs_theme.text}>
-                                {op_to_string(selectedOp)}
-                              </Text>
-                              <MaterialCommunityIcons
-                                name="menu-down"
-                                size={20}
-                                color={bs_theme.text}
-                              />
-                            </Pressable>
-                          )}
+                          borderWidth={"1"}
+                          borderRadius={"sm"}
+                          px={"1.5"}
+                          py={"0.5"}
                         >
-                          <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
-                          </Menu.Item>
-                        </Menu>
-                      );
-                    }
-                    return <></>;
-                  }
-                  case "date":
-                  case "time":
-                  case "timestamp": {
-                    if (props.filter_path.value[1] !== undefined) {
-                      const value = props.filter_path.value[1];
-                      const [v1, v2] = arrow(() => {
-                        const op = value[0];
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<": {
-                            return [value[1], value[1]];
-                          }
-                          case "between":
-                          case "not_between": {
-                            return value[1];
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = op;
-                            return _exhaustiveCheck;
-                          }
-                        }
-                      });
-                      const dispatch_op = (
-                        op: Exclude<
-                          (FilterPath["value"] & ["date", unknown])[1],
-                          undefined
-                        >[0]
-                      ) => {
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, v1]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                          case "between":
-                          case "not_between": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [field_struct_name, [op, [v1, v2]]];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                        }
-                        setSelectedOp(op);
-                      };
-                      return (
-                        <Menu
-                          shouldOverlapWithTrigger={true}
-                          backgroundColor={bs_theme.background}
-                          borderColor={bs_theme.border}
-                          trigger={(menu_props) => (
-                            <Pressable
-                              {...menu_props}
-                              flexDirection={"row"}
-                              alignItems={"center"}
-                              borderColor={bs_theme.border}
-                              borderWidth={"1"}
-                              borderRadius={"sm"}
-                              px={"1.5"}
-                              py={"0.5"}
-                            >
-                              <Text color={bs_theme.text}>
-                                {op_to_string(selectedOp)}
-                              </Text>
-                              <MaterialCommunityIcons
-                                name="menu-down"
-                                size={20}
-                                color={bs_theme.text}
-                              />
-                            </Pressable>
-                          )}
-                        >
-                          <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op(">=")}>
-                            {op_to_string(">=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("<=")}>
-                            {op_to_string("<=")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op(">")}>
-                            {op_to_string(">")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("<")}>
-                            {op_to_string("<")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("between")}>
-                            {op_to_string("between")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("not_between")}>
-                            {op_to_string("not_between")}
-                          </Menu.Item>
-                        </Menu>
-                      );
-                    }
-                    return <></>;
-                  }
-                  case "other": {
-                    if (props.filter_path.value[1] !== undefined) {
-                      const value = props.filter_path.value[1];
-                      const other_struct = props.filter_path.value[2];
-                      const dispatch_op = (
-                        op: Exclude<
-                          (FilterPath["value"] &
-                            ["other", unknown, unknown])[1],
-                          undefined
-                        >[0]
-                      ) => {
-                        switch (op) {
-                          case "==":
-                          case "!=": {
-                            props.dispatch([
-                              "filters",
-                              props.filter,
-                              "replace",
-                              apply(props.filter_path, (it) => {
-                                it.value = [
-                                  field_struct_name,
-                                  [op, value[1]],
-                                  other_struct,
-                                ];
-                                return it;
-                              }),
-                            ]);
-                            break;
-                          }
-                        }
-                        setSelectedOp(op);
-                      };
-                      return (
-                        <Menu
-                          shouldOverlapWithTrigger={true}
-                          backgroundColor={bs_theme.background}
-                          borderColor={bs_theme.border}
-                          trigger={(menu_props) => (
-                            <Pressable
-                              {...menu_props}
-                              flexDirection={"row"}
-                              alignItems={"center"}
-                              borderColor={bs_theme.border}
-                              borderWidth={"1"}
-                              borderRadius={"sm"}
-                              px={"1.5"}
-                              py={"0.5"}
-                            >
-                              <Text color={bs_theme.text}>
-                                {op_to_string(selectedOp)}
-                              </Text>
-                              <MaterialCommunityIcons
-                                name="menu-down"
-                                size={20}
-                                color={bs_theme.text}
-                              />
-                            </Pressable>
-                          )}
-                        >
-                          <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
-                          </Menu.Item>
-                          <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
-                          </Menu.Item>
-                        </Menu>
-                      );
-                    }
-                    return <></>;
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = field_struct_name;
-                    return _exhaustiveCheck;
-                  }
+                          <Text color={bs_theme.text}>
+                            {op_to_string(selectedOp)}
+                          </Text>
+                          <MaterialCommunityIcons
+                            name="menu-down"
+                            size={20}
+                            color={bs_theme.text}
+                          />
+                        </Pressable>
+                      )}
+                    >
+                      <Menu.Item onPress={() => dispatch_op("like")}>
+                        {op_to_string("like")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("glob")}>
+                        {op_to_string("glob")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("==")}>
+                        {op_to_string("==")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("!=")}>
+                        {op_to_string("!=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op(">=")}>
+                        {op_to_string(">=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("<=")}>
+                        {op_to_string("<=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op(">")}>
+                        {op_to_string(">")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("<")}>
+                        {op_to_string("<")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("between")}>
+                        {op_to_string("between")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("not_between")}>
+                        {op_to_string("not_between")}
+                      </Menu.Item>
+                    </Menu>
+                  );
                 }
-              })}
-            </Row>
-          );
-        }
-        return null;
-      })}
+                return <></>;
+              }
+              case "i32":
+              case "u32":
+              case "i64":
+              case "u64":
+              case "idouble":
+              case "udouble":
+              case "idecimal":
+              case "udecimal": {
+                if (props.filter_path.value[1] !== undefined) {
+                  const value = props.filter_path.value[1];
+                  const [v1, v2] = arrow(() => {
+                    const op = value[0];
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        return [value[1], value[1]];
+                      }
+                      case "between":
+                      case "not_between": {
+                        return value[1];
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = op;
+                        return _exhaustiveCheck;
+                      }
+                    }
+                  });
+                  // TODO. set_local_val_1 and set_local_val_2 for text and numeric types
+                  const dispatch_op = (
+                    op: Exclude<
+                      (FilterPath["value"] & ["i32", unknown])[1],
+                      undefined
+                    >[0]
+                  ) => {
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, v1]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                      case "between":
+                      case "not_between": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, [v1, v2]]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                    }
+                    setSelectedOp(op);
+                  };
+                  return (
+                    <Menu
+                      shouldOverlapWithTrigger={true}
+                      backgroundColor={bs_theme.background}
+                      borderColor={bs_theme.border}
+                      trigger={(menu_props) => (
+                        <Pressable
+                          {...menu_props}
+                          flexDirection={"row"}
+                          alignItems={"center"}
+                          borderColor={bs_theme.border}
+                          borderWidth={"1"}
+                          borderRadius={"sm"}
+                          px={"1.5"}
+                          py={"0.5"}
+                        >
+                          <Text color={bs_theme.text}>
+                            {op_to_string(selectedOp)}
+                          </Text>
+                          <MaterialCommunityIcons
+                            name="menu-down"
+                            size={20}
+                            color={bs_theme.text}
+                          />
+                        </Pressable>
+                      )}
+                    >
+                      <Menu.Item onPress={() => dispatch_op("==")}>
+                        {op_to_string("==")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("!=")}>
+                        {op_to_string("!=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op(">=")}>
+                        {op_to_string(">=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("<=")}>
+                        {op_to_string("<=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op(">")}>
+                        {op_to_string(">")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("<")}>
+                        {op_to_string("<")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("between")}>
+                        {op_to_string("between")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("not_between")}>
+                        {op_to_string("not_between")}
+                      </Menu.Item>
+                    </Menu>
+                  );
+                }
+                return <></>;
+              }
+              case "bool": {
+                if (props.filter_path.value[1] !== undefined) {
+                  const value = props.filter_path.value[1];
+                  const dispatch_op = (
+                    op: Exclude<
+                      (FilterPath["value"] & ["bool", unknown])[1],
+                      undefined
+                    >[0]
+                  ) => {
+                    switch (op) {
+                      case "==":
+                      case "!=": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, value[1]]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                    }
+                    setSelectedOp(op);
+                  };
+                  return (
+                    <Menu
+                      shouldOverlapWithTrigger={true}
+                      backgroundColor={bs_theme.background}
+                      borderColor={bs_theme.border}
+                      trigger={(menu_props) => (
+                        <Pressable
+                          {...menu_props}
+                          flexDirection={"row"}
+                          alignItems={"center"}
+                          borderColor={bs_theme.border}
+                          borderWidth={"1"}
+                          borderRadius={"sm"}
+                          px={"1.5"}
+                          py={"0.5"}
+                        >
+                          <Text color={bs_theme.text}>
+                            {op_to_string(selectedOp)}
+                          </Text>
+                          <MaterialCommunityIcons
+                            name="menu-down"
+                            size={20}
+                            color={bs_theme.text}
+                          />
+                        </Pressable>
+                      )}
+                    >
+                      <Menu.Item onPress={() => dispatch_op("==")}>
+                        {op_to_string("==")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("!=")}>
+                        {op_to_string("!=")}
+                      </Menu.Item>
+                    </Menu>
+                  );
+                }
+                return <></>;
+              }
+              case "date":
+              case "time":
+              case "timestamp": {
+                if (props.filter_path.value[1] !== undefined) {
+                  const value = props.filter_path.value[1];
+                  const [v1, v2] = arrow(() => {
+                    const op = value[0];
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        return [value[1], value[1]];
+                      }
+                      case "between":
+                      case "not_between": {
+                        return value[1];
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = op;
+                        return _exhaustiveCheck;
+                      }
+                    }
+                  });
+                  const dispatch_op = (
+                    op: Exclude<
+                      (FilterPath["value"] & ["date", unknown])[1],
+                      undefined
+                    >[0]
+                  ) => {
+                    switch (op) {
+                      case "==":
+                      case "!=":
+                      case ">=":
+                      case "<=":
+                      case ">":
+                      case "<": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, v1]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                      case "between":
+                      case "not_between": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [field_struct_name, [op, [v1, v2]]];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                    }
+                    setSelectedOp(op);
+                  };
+                  return (
+                    <Menu
+                      shouldOverlapWithTrigger={true}
+                      backgroundColor={bs_theme.background}
+                      borderColor={bs_theme.border}
+                      trigger={(menu_props) => (
+                        <Pressable
+                          {...menu_props}
+                          flexDirection={"row"}
+                          alignItems={"center"}
+                          borderColor={bs_theme.border}
+                          borderWidth={"1"}
+                          borderRadius={"sm"}
+                          px={"1.5"}
+                          py={"0.5"}
+                        >
+                          <Text color={bs_theme.text}>
+                            {op_to_string(selectedOp)}
+                          </Text>
+                          <MaterialCommunityIcons
+                            name="menu-down"
+                            size={20}
+                            color={bs_theme.text}
+                          />
+                        </Pressable>
+                      )}
+                    >
+                      <Menu.Item onPress={() => dispatch_op("==")}>
+                        {op_to_string("==")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("!=")}>
+                        {op_to_string("!=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op(">=")}>
+                        {op_to_string(">=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("<=")}>
+                        {op_to_string("<=")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op(">")}>
+                        {op_to_string(">")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("<")}>
+                        {op_to_string("<")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("between")}>
+                        {op_to_string("between")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("not_between")}>
+                        {op_to_string("not_between")}
+                      </Menu.Item>
+                    </Menu>
+                  );
+                }
+                return <></>;
+              }
+              case "other": {
+                if (props.filter_path.value[1] !== undefined) {
+                  const value = props.filter_path.value[1];
+                  const other_struct = props.filter_path.value[2];
+                  const dispatch_op = (
+                    op: Exclude<
+                      (FilterPath["value"] & ["other", unknown, unknown])[1],
+                      undefined
+                    >[0]
+                  ) => {
+                    switch (op) {
+                      case "==":
+                      case "!=": {
+                        props.dispatch([
+                          "filters",
+                          props.filter,
+                          "replace",
+                          apply(props.filter_path, (it) => {
+                            it.value = [
+                              field_struct_name,
+                              [op, value[1]],
+                              other_struct,
+                            ];
+                            return it;
+                          }),
+                        ]);
+                        break;
+                      }
+                    }
+                    setSelectedOp(op);
+                  };
+                  return (
+                    <Menu
+                      shouldOverlapWithTrigger={true}
+                      backgroundColor={bs_theme.background}
+                      borderColor={bs_theme.border}
+                      trigger={(menu_props) => (
+                        <Pressable
+                          {...menu_props}
+                          flexDirection={"row"}
+                          alignItems={"center"}
+                          borderColor={bs_theme.border}
+                          borderWidth={"1"}
+                          borderRadius={"sm"}
+                          px={"1.5"}
+                          py={"0.5"}
+                        >
+                          <Text color={bs_theme.text}>
+                            {op_to_string(selectedOp)}
+                          </Text>
+                          <MaterialCommunityIcons
+                            name="menu-down"
+                            size={20}
+                            color={bs_theme.text}
+                          />
+                        </Pressable>
+                      )}
+                    >
+                      <Menu.Item onPress={() => dispatch_op("==")}>
+                        {op_to_string("==")}
+                      </Menu.Item>
+                      <Menu.Item onPress={() => dispatch_op("!=")}>
+                        {op_to_string("!=")}
+                      </Menu.Item>
+                    </Menu>
+                  );
+                }
+                return <></>;
+              }
+              default: {
+                const _exhaustiveCheck: never = field_struct_name;
+                return _exhaustiveCheck;
+              }
+            }
+          })}
+        </Row>
 
-      <Row flex={1} justifyContent={"space-between"} my={"1"}>
-        {arrow(() => {
-          if (props.filter_path.value[1] !== undefined) {
-            const field_struct_name = props.filter_path.value[0];
+        <Row flex={1} justifyContent={"space-between"} my={"1"}>
+          {arrow(() => {
             switch (field_struct_name) {
               case "str":
               case "lstr":
@@ -12245,10 +12230,10 @@ function FilterPathComponent(props: {
                 return _exhaustiveCheck;
               }
             }
-          }
-          return null;
-        })}
-      </Row>
-    </Column>
-  );
+          })}
+        </Row>
+      </Column>
+    );
+  }
+  return <></>;
 }
