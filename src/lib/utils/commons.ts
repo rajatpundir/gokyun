@@ -1,3 +1,4 @@
+import { Dimensions } from "react-native";
 import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
@@ -34,6 +35,12 @@ import {
   compare_paths,
   concat_path_strings,
 } from "./variable";
+
+export const dimensions = {
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+  isSmallDevice: Dimensions.get("window").width < 375,
+};
 
 export type State = Immutable<{
   id: Decimal;

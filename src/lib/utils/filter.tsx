@@ -2832,6 +2832,37 @@ function FilterPathComponent(props: {
               case "str":
               case "lstr":
               case "clob": {
+                const default_value_1 = "";
+                const [has_errors_1, set_has_errors_1] = useState(false);
+                const [local_val_1, set_local_val_1] = useState();
+                // apply(
+                //   arrow(() => {
+                //     if (value !== undefined) {
+                //       const op = value[0];
+                //       switch (op) {
+                //         case "==":
+                //         case "!=":
+                //         case ">=":
+                //         case "<=":
+                //         case ">":
+                //         case "<": {
+                //           return value[1].toString();
+                //         }
+                //         case "between":
+                //         case "not_between": {
+                //           return value[1][0].toString();
+                //         }
+                //       }
+                //     }
+                //     return default_value_1.toString();
+                //   }),
+                //   (it) => {
+                //     if (it === "0") {
+                //       return "";
+                //     }
+                //     return it;
+                //   }
+                // )
                 if (props.filter_path.value[1] !== undefined) {
                   const op = props.filter_path.value[1][0];
                   switch (op) {
@@ -2845,14 +2876,19 @@ function FilterPathComponent(props: {
                     case "glob": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row>
                           {arrow(() => {
-                            if (typeof value === "string") {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <TextInput
                                   defaultValue={value}
@@ -2868,16 +2904,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -3092,7 +3118,7 @@ function FilterPathComponent(props: {
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
