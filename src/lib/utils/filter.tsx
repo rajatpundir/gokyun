@@ -481,6 +481,7 @@ export function FilterComponent(props: {
                       };
                       return (
                         <Menu
+                          mx={"3"}
                           shouldOverlapWithTrigger={true}
                           backgroundColor={bs_theme.background}
                           borderColor={bs_theme.border}
@@ -954,6 +955,7 @@ export function FilterComponent(props: {
                       };
                       return (
                         <Menu
+                          mx={"3"}
                           shouldOverlapWithTrigger={true}
                           backgroundColor={bs_theme.background}
                           borderColor={bs_theme.border}
@@ -1445,6 +1447,7 @@ export function FilterComponent(props: {
                       };
                       return (
                         <Menu
+                          mx={"3"}
                           shouldOverlapWithTrigger={true}
                           backgroundColor={bs_theme.background}
                           borderColor={bs_theme.border}
@@ -2637,6 +2640,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
+                      mx={"3"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -2831,6 +2835,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
+                      mx={"3"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -2914,6 +2919,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
+                      mx={"3"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -3019,6 +3025,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
+                      mx={"3"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -3107,6 +3114,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
+                      mx={"3"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
