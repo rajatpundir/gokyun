@@ -20,7 +20,7 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { compare_paths } from "./variable";
+import { compare_paths, PathString } from "./variable";
 import { colors, tw } from "./tailwind";
 import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
 import { bs_theme } from "./theme";
@@ -2832,37 +2832,91 @@ function FilterPathComponent(props: {
               case "str":
               case "lstr":
               case "clob": {
+                // Move local_vals out, above return
+                const val = props.filter_path.value[1];
                 const default_value_1 = "";
                 const [has_errors_1, set_has_errors_1] = useState(false);
-                const [local_val_1, set_local_val_1] = useState();
-                // apply(
-                //   arrow(() => {
-                //     if (value !== undefined) {
-                //       const op = value[0];
-                //       switch (op) {
-                //         case "==":
-                //         case "!=":
-                //         case ">=":
-                //         case "<=":
-                //         case ">":
-                //         case "<": {
-                //           return value[1].toString();
-                //         }
-                //         case "between":
-                //         case "not_between": {
-                //           return value[1][0].toString();
-                //         }
-                //       }
-                //     }
-                //     return default_value_1.toString();
-                //   }),
-                //   (it) => {
-                //     if (it === "0") {
-                //       return "";
-                //     }
-                //     return it;
-                //   }
-                // )
+                const [local_val_1, set_local_val_1] = useState(
+                  apply(
+                    arrow(() => {
+                      if (val !== undefined) {
+                        const op = val[0];
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<":
+                          case "like":
+                          case "glob": {
+                            const value = val[1];
+                            if (Array.isArray(value)) {
+                              return value[0];
+                            } else {
+                              return value;
+                            }
+                          }
+                          case "between":
+                          case "not_between": {
+                            const value = val[1][0];
+                            if (Array.isArray(value)) {
+                              return value[0];
+                            } else {
+                              return value;
+                            }
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = op;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      }
+                    }),
+                    (it) => {
+                      return it;
+                    }
+                  )
+                );
+                const default_value_2 = "";
+                const [has_errors_2, set_has_errors_2] = useState(false);
+                const [local_val_2, set_local_val_2] = useState(
+                  apply(
+                    arrow(() => {
+                      if (val !== undefined) {
+                        const op = val[0];
+                        switch (op) {
+                          case "==":
+                          case "!=":
+                          case ">=":
+                          case "<=":
+                          case ">":
+                          case "<":
+                          case "like":
+                          case "glob": {
+                            return "";
+                          }
+                          case "between":
+                          case "not_between": {
+                            const value = val[1][1];
+                            if (Array.isArray(value)) {
+                              return value[0];
+                            } else {
+                              return value;
+                            }
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = op;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      }
+                    }),
+                    (it) => {
+                      return it;
+                    }
+                  )
+                );
                 if (props.filter_path.value[1] !== undefined) {
                   const op = props.filter_path.value[1][0];
                   switch (op) {
