@@ -2285,6 +2285,224 @@ function FilterPathComponent(props: {
         }),
       ]);
     };
+
+    const default_value_1 = arrow(() => {
+      switch (field_struct_name) {
+        case "str":
+        case "lstr":
+        case "clob": {
+          return "";
+        }
+        case "i32":
+        case "u32":
+        case "i64":
+        case "u64":
+        case "idouble":
+        case "udouble":
+        case "idecimal":
+        case "udecimal": {
+          return new Decimal(0).toString();
+        }
+      }
+      return "";
+    });
+    const [has_errors_1, set_has_errors_1] = useState(false);
+    const [local_val_1, set_local_val_1] = useState(
+      arrow(() => {
+        if (props.filter_path.value[1] !== undefined) {
+          switch (props.filter_path.value[0]) {
+            case "str":
+            case "lstr":
+            case "clob": {
+              const val = props.filter_path.value[1];
+              const op = val[0];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<":
+                case "like":
+                case "glob": {
+                  const value = val[1];
+                  if (Array.isArray(value)) {
+                    return value[0];
+                  } else {
+                    return value;
+                  }
+                }
+                case "between":
+                case "not_between": {
+                  const value = val[1][0];
+                  if (Array.isArray(value)) {
+                    return value[0];
+                  } else {
+                    return value;
+                  }
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+            }
+            case "i32":
+            case "u32":
+            case "i64":
+            case "u64":
+            case "idouble":
+            case "udouble":
+            case "idecimal":
+            case "udecimal": {
+              const val = props.filter_path.value[1];
+              const op = val[0];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<": {
+                  const value = val[1];
+                  if (Array.isArray(value)) {
+                    return value[0];
+                  } else {
+                    return apply(value.toString(), (it) => {
+                      if (it === "0") {
+                        return "";
+                      }
+                      return it;
+                    });
+                  }
+                }
+                case "between":
+                case "not_between": {
+                  const value = val[1][0];
+                  if (Array.isArray(value)) {
+                    return value[0];
+                  } else {
+                    return apply(value.toString(), (it) => {
+                      if (it === "0") {
+                        return "";
+                      }
+                      return it;
+                    });
+                  }
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+            }
+          }
+        }
+        return "";
+      })
+    );
+
+    const default_value_2 = arrow(() => {
+      switch (field_struct_name) {
+        case "str":
+        case "lstr":
+        case "clob": {
+          return "";
+        }
+        case "i32":
+        case "u32":
+        case "i64":
+        case "u64":
+        case "idouble":
+        case "udouble":
+        case "idecimal":
+        case "udecimal": {
+          return new Decimal(0).toString();
+        }
+      }
+      return "";
+    });
+    const [has_errors_2, set_has_errors_2] = useState(false);
+    const [local_val_2, set_local_val_2] = useState(
+      arrow(() => {
+        if (props.filter_path.value[1] !== undefined) {
+          switch (props.filter_path.value[0]) {
+            case "str":
+            case "lstr":
+            case "clob": {
+              const val = props.filter_path.value[1];
+              const op = val[0];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<":
+                case "like":
+                case "glob": {
+                  return "";
+                }
+                case "between":
+                case "not_between": {
+                  const value = val[1][1];
+                  if (Array.isArray(value)) {
+                    return value[0];
+                  } else {
+                    return value;
+                  }
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+            }
+            case "i32":
+            case "u32":
+            case "i64":
+            case "u64":
+            case "idouble":
+            case "udouble":
+            case "idecimal":
+            case "udecimal": {
+              const val = props.filter_path.value[1];
+              const op = val[0];
+              switch (op) {
+                case "==":
+                case "!=":
+                case ">=":
+                case "<=":
+                case ">":
+                case "<": {
+                  return "";
+                }
+                case "between":
+                case "not_between": {
+                  const value = val[1][1];
+                  if (Array.isArray(value)) {
+                    return value[0];
+                  } else {
+                    return apply(value.toString(), (it) => {
+                      if (it === "0") {
+                        return "";
+                      }
+                      return it;
+                    });
+                  }
+                }
+                default: {
+                  const _exhaustiveCheck: never = op;
+                  return _exhaustiveCheck;
+                }
+              }
+            }
+          }
+        }
+        return "";
+      })
+    );
+
     const field_struct_name = props.filter_path.value[0];
     return (
       <Column my={"1"}>
@@ -2832,91 +3050,6 @@ function FilterPathComponent(props: {
               case "str":
               case "lstr":
               case "clob": {
-                // Move local_vals out, above return
-                const val = props.filter_path.value[1];
-                const default_value_1 = "";
-                const [has_errors_1, set_has_errors_1] = useState(false);
-                const [local_val_1, set_local_val_1] = useState(
-                  apply(
-                    arrow(() => {
-                      if (val !== undefined) {
-                        const op = val[0];
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<":
-                          case "like":
-                          case "glob": {
-                            const value = val[1];
-                            if (Array.isArray(value)) {
-                              return value[0];
-                            } else {
-                              return value;
-                            }
-                          }
-                          case "between":
-                          case "not_between": {
-                            const value = val[1][0];
-                            if (Array.isArray(value)) {
-                              return value[0];
-                            } else {
-                              return value;
-                            }
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = op;
-                            return _exhaustiveCheck;
-                          }
-                        }
-                      }
-                    }),
-                    (it) => {
-                      return it;
-                    }
-                  )
-                );
-                const default_value_2 = "";
-                const [has_errors_2, set_has_errors_2] = useState(false);
-                const [local_val_2, set_local_val_2] = useState(
-                  apply(
-                    arrow(() => {
-                      if (val !== undefined) {
-                        const op = val[0];
-                        switch (op) {
-                          case "==":
-                          case "!=":
-                          case ">=":
-                          case "<=":
-                          case ">":
-                          case "<":
-                          case "like":
-                          case "glob": {
-                            return "";
-                          }
-                          case "between":
-                          case "not_between": {
-                            const value = val[1][1];
-                            if (Array.isArray(value)) {
-                              return value[0];
-                            } else {
-                              return value;
-                            }
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = op;
-                            return _exhaustiveCheck;
-                          }
-                        }
-                      }
-                    }),
-                    (it) => {
-                      return it;
-                    }
-                  )
-                );
                 if (props.filter_path.value[1] !== undefined) {
                   const op = props.filter_path.value[1][0];
                   switch (op) {
