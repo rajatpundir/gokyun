@@ -4,9 +4,9 @@ import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
 import moment from "moment";
-import { Pressable, Platform } from "react-native";
+import { Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Text, Input, TextArea, Switch } from "native-base";
+import { Text, Input, TextArea, Switch, Pressable } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { PathPermission, get_permissions } from "./permissions";
@@ -83,9 +83,9 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value);
                     set_has_errors(false);
@@ -161,7 +161,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   onPress={() => {
                     set_local_val(default_value);
@@ -177,7 +177,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
                       }),
                     ]);
                   }}
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                 >
                   <MaterialIcons
                     name="clear"
@@ -238,7 +238,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   onPress={() => {
                     set_local_val(default_value);
@@ -254,7 +254,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
                       }),
                     ]);
                   }}
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                 >
                   <MaterialIcons
                     name="clear"
@@ -330,7 +330,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -420,7 +420,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -510,7 +510,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -600,7 +600,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -686,7 +686,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -772,7 +772,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -858,7 +858,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);
@@ -944,7 +944,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
             InputRightElement={
               local_val !== default_value.toString() && local_val !== "" ? (
                 <Pressable
-                  style={tw.style(["px-2"], {})}
+                  px={1}
                   onPress={() => {
                     set_local_val(default_value.toString());
                     set_has_errors(false);

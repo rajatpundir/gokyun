@@ -578,7 +578,7 @@ export function FilterComponent(props: {
                               local_val_1 !== default_value_1.toString() &&
                               local_val_1 !== "" ? (
                                 <Pressable
-                                  style={tw.style(["px-2"], {})}
+                                  px={1}
                                   onPress={() => {
                                     set_local_val_1(
                                       apply(
@@ -652,7 +652,7 @@ export function FilterComponent(props: {
                                 local_val_1 !== default_value_1.toString() &&
                                 local_val_1 !== "" ? (
                                   <Pressable
-                                    style={tw.style(["px-2"], {})}
+                                    px={1}
                                     onPress={() => {
                                       set_local_val_1(
                                         apply(
@@ -723,7 +723,7 @@ export function FilterComponent(props: {
                                 local_val_2 !== default_value_2.toString() &&
                                 local_val_2 !== "" ? (
                                   <Pressable
-                                    style={tw.style(["px-2"], {})}
+                                    px={1}
                                     onPress={() => {
                                       set_local_val_2(
                                         apply(
@@ -3165,7 +3165,7 @@ function FilterPathComponent(props: {
                     case "glob": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <Row>
+                        <Row flex={1} justifyContent={"space-between"}>
                           {arrow(() => {
                             if (Array.isArray(value)) {
                               return (
@@ -3179,19 +3179,66 @@ function FilterPathComponent(props: {
                               );
                             } else {
                               return (
-                                <TextInput
-                                  defaultValue={value}
-                                  onChangeText={(x) =>
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [field_struct_name, [op, x]];
-                                        return it;
-                                      }),
-                                    ])
+                                <Input
+                                  flex={1}
+                                  ml={"2"}
+                                  size={"md"}
+                                  placeholder={props.filter_path.label}
+                                  value={local_val_1}
+                                  isInvalid={has_errors_1}
+                                  onChangeText={(x) => {
+                                    try {
+                                      set_local_val_1(x);
+                                      set_has_errors_1(false);
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [op, x],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    } catch (e) {
+                                      set_has_errors_1(true);
+                                    }
+                                  }}
+                                  InputRightElement={
+                                    local_val_1 !==
+                                      default_value_1.toString() &&
+                                    local_val_1 !== "" ? (
+                                      <Pressable
+                                        px={1}
+                                        onPress={() => {
+                                          props.dispatch([
+                                            "filters",
+                                            props.filter,
+                                            "replace",
+                                            apply(props.filter_path, (it) => {
+                                              it.value = [
+                                                field_struct_name,
+                                                [op, default_value_1],
+                                              ];
+                                              return it;
+                                            }),
+                                          ]);
+                                        }}
+                                      >
+                                        <MaterialIcons
+                                          name="clear"
+                                          size={24}
+                                          color={bs_theme.placeholder}
+                                        />
+                                      </Pressable>
+                                    ) : (
+                                      <></>
+                                    )
                                   }
+                                  borderColor={bs_theme.placeholder}
+                                  placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
                             }
@@ -3211,12 +3258,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
