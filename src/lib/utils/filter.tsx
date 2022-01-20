@@ -1,11 +1,10 @@
 import React, { useRef, useState } from "react";
-import { Filter, FilterPath } from "./db";
-import { View as DefaultView, ViewProps, TextInput } from "../themed";
 import Decimal from "decimal.js";
-import { Platform } from "react-native";
-import { apply, arrow, is_decimal } from "./prelude";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Filter, FilterPath } from "./db";
+import { Platform } from "react-native";
+import { apply, arrow, is_decimal } from "./prelude";
 import {
   AntDesign,
   Entypo,
@@ -20,10 +19,11 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { compare_paths, PathString } from "./variable";
+import { compare_paths } from "./variable";
 import { colors, tw } from "./tailwind";
 import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
 import { bs_theme } from "./theme";
+import { TextInput } from "../themed";
 
 // For fields.tsx, test TextInput for long values of text
 // Also cross button should reset value to default for that key in case of text and decimal fields
@@ -31,28 +31,6 @@ import { bs_theme } from "./theme";
 // TODO. To resolve deciaml exception, do below.
 // Store value in internal state and show it, try to dispatch on change
 // Copy changes for text and numeric fields over from fields.tsx
-
-function View(props: ViewProps) {
-  const { style, ...otherProps } = props;
-  return (
-    <DefaultView
-      style={[
-        {
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingHorizontal: 3,
-          marginBottom: 1,
-          paddingVertical: 0,
-          borderColor: colors.slate[600],
-          // borderWidth: 1,
-        },
-        style,
-      ]}
-      {...otherProps}
-    />
-  );
-}
 
 function op_to_string(op: string): string {
   switch (op) {
@@ -3285,6 +3263,7 @@ function FilterPathComponent(props: {
                                 name="edit"
                                 size={16}
                                 color={colors.slate[400]}
+                                // TODO. Update this
                                 style={{ paddingHorizontal: 4 }}
                               />
                             </Pressable>
@@ -3397,15 +3376,7 @@ function FilterPathComponent(props: {
                                     }}
                                   >
                                     {arrow(() => {
-                                      if (typeof value === "string") {
-                                        return (
-                                          <Ionicons
-                                            name="radio-button-off"
-                                            size={24}
-                                            color={bs_theme.primary}
-                                          />
-                                        );
-                                      } else {
+                                      if (Array.isArray(value)) {
                                         return apply(
                                           compare_paths(
                                             value[1],
@@ -3427,6 +3398,14 @@ function FilterPathComponent(props: {
                                             );
                                           }
                                         );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
                                       }
                                     })}
                                     <Text pl={1}>{list_item.item.label}</Text>
@@ -3446,42 +3425,97 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (typeof value === "string") {
-                                    return (
-                                      <TextInput
-                                        defaultValue={value}
-                                        onChangeText={(x) =>
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [op, [x, value2]],
-                                              ];
-                                              return it;
-                                            }),
-                                          ])
-                                        }
-                                      />
-                                    );
-                                  } else {
+                                  if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
                                       >
                                         <Text>{value[0]}</Text>
                                       </Pressable>
+                                    );
+                                  } else {
+                                    return (
+                                      <Input
+                                        flex={1}
+                                        ml={"2"}
+                                        size={"md"}
+                                        placeholder={props.filter_path.label}
+                                        value={local_val_1}
+                                        isInvalid={has_errors_1}
+                                        onChangeText={(x) => {
+                                          try {
+                                            set_local_val_1(x);
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, [x, value2]],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {
+                                            set_has_errors_1(true);
+                                          }
+                                        }}
+                                        InputRightElement={
+                                          local_val_1 !==
+                                            default_value_1.toString() &&
+                                          local_val_1 !== "" ? (
+                                            <Pressable
+                                              px={1}
+                                              onPress={() => {
+                                                set_local_val_1(
+                                                  default_value_1
+                                                );
+                                                set_has_errors_1(false);
+                                                props.dispatch([
+                                                  "filters",
+                                                  props.filter,
+                                                  "replace",
+                                                  apply(
+                                                    props.filter_path,
+                                                    (it) => {
+                                                      it.value = [
+                                                        field_struct_name,
+                                                        [
+                                                          op,
+                                                          [
+                                                            default_value_1,
+                                                            value2,
+                                                          ],
+                                                        ],
+                                                      ];
+                                                      return it;
+                                                    }
+                                                  ),
+                                                ]);
+                                              }}
+                                            >
+                                              <MaterialIcons
+                                                name="clear"
+                                                size={24}
+                                                color={bs_theme.placeholder}
+                                              />
+                                            </Pressable>
+                                          ) : (
+                                            <></>
+                                          )
+                                        }
+                                        borderColor={bs_theme.placeholder}
+                                        placeholderTextColor={
+                                          bs_theme.placeholder
+                                        }
+                                      />
                                     );
                                   }
                                 })}
@@ -3502,12 +3536,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -3529,29 +3562,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -3568,45 +3588,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -3631,6 +3639,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -3656,68 +3667,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (typeof value === "string") {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (typeof value === "string") {
                                     return (
@@ -3768,12 +3765,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -3795,29 +3791,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -3834,45 +3817,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -3897,6 +3868,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -3922,57 +3896,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (typeof value === "string") {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -3998,12 +3963,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -4065,12 +4025,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -4092,29 +4051,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -4131,45 +4077,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -4195,6 +4126,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -4217,53 +4151,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -4274,12 +4201,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -4348,12 +4270,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -4375,29 +4296,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -4414,45 +4322,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -4482,6 +4378,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -4507,68 +4406,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -4637,12 +4522,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -4664,29 +4548,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -4703,45 +4574,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -4771,6 +4630,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -4796,57 +4658,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -4872,12 +4725,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -4939,12 +4787,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -4966,29 +4813,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -5005,45 +4839,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -5069,6 +4888,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -5091,53 +4913,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -5148,12 +4963,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -5222,12 +5032,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -5249,29 +5058,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -5288,45 +5084,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -5356,6 +5140,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -5381,68 +5168,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -5511,12 +5284,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -5538,29 +5310,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -5577,45 +5336,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -5645,6 +5392,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -5670,57 +5420,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -5746,12 +5487,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -5815,12 +5551,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -5842,29 +5577,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -5881,45 +5603,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -5945,6 +5652,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -5967,53 +5677,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -6024,12 +5727,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -6102,12 +5800,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -6129,29 +5826,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -6168,45 +5852,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -6236,6 +5908,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -6261,68 +5936,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -6395,12 +6056,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -6422,29 +6082,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -6461,45 +6108,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -6529,6 +6164,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -6554,57 +6192,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -6630,12 +6259,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -6697,12 +6321,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -6724,29 +6347,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -6763,45 +6373,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -6827,6 +6422,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -6849,53 +6447,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -6906,12 +6497,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -6982,12 +6568,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -7009,29 +6594,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -7048,45 +6620,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -7116,6 +6676,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -7141,68 +6704,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -7273,12 +6822,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -7300,29 +6848,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -7339,45 +6874,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -7407,6 +6930,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -7432,57 +6958,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -7509,12 +7026,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -7569,12 +7081,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -7596,29 +7107,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -7635,45 +7133,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -7699,6 +7182,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -7721,53 +7207,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -7778,12 +7257,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -7846,12 +7320,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -7873,29 +7346,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -7912,45 +7372,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -7980,6 +7428,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -8005,68 +7456,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -8129,12 +7566,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -8156,29 +7592,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -8195,45 +7618,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -8263,6 +7674,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -8288,57 +7702,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -8365,12 +7770,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -8425,12 +7825,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -8452,29 +7851,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -8491,45 +7877,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -8555,6 +7926,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -8577,53 +7951,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -8634,12 +8001,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -8702,12 +8064,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -8729,29 +8090,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -8768,45 +8116,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -8836,6 +8172,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -8861,68 +8200,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
@@ -8985,12 +8310,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -9012,29 +8336,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -9051,45 +8362,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -9119,6 +8418,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -9144,57 +8446,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (is_decimal(value)) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -9216,12 +8509,7 @@ function FilterPathComponent(props: {
                     case "!=": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (typeof value === "boolean") {
                               return (
@@ -9266,12 +8554,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -9293,29 +8580,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -9332,45 +8606,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -9389,6 +8648,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -9411,53 +8673,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (typeof value === "boolean") {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     default: {
@@ -9480,12 +8735,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (value instanceof Date) {
                               return (
@@ -9548,12 +8798,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -9575,29 +8824,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -9614,45 +8850,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -9671,6 +8892,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -9693,53 +8917,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (value instanceof Date) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -9749,12 +8966,7 @@ function FilterPathComponent(props: {
                         <>
                           {arrow(() => {
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (value1 instanceof Date) {
                                     return (
@@ -9834,12 +9046,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -9861,29 +9072,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -9900,45 +9098,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -9961,6 +9147,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -9986,67 +9175,53 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (value1 instanceof Date) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value1[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value1)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value1[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (value2 instanceof Date) {
                                     return (
@@ -10126,12 +9301,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -10153,29 +9327,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -10192,45 +9353,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -10253,6 +9402,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -10278,57 +9430,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (value2 instanceof Date) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value2[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value2)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value2[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -10354,12 +9497,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (value instanceof Date) {
                               return (
@@ -10422,12 +9560,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -10449,29 +9586,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -10488,45 +9612,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -10545,6 +9654,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -10567,53 +9679,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (value instanceof Date) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -10624,12 +9729,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (value instanceof Date) {
                                     return (
@@ -10707,12 +9807,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -10734,29 +9833,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -10773,45 +9859,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -10834,6 +9908,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -10859,68 +9936,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (value instanceof Date) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (value instanceof Date) {
                                     return (
@@ -10998,12 +10061,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -11025,29 +10087,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -11064,45 +10113,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -11125,6 +10162,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -11150,57 +10190,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (value instanceof Date) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -11226,12 +10257,7 @@ function FilterPathComponent(props: {
                     case "<": {
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (value instanceof Date) {
                               return (
@@ -11346,12 +10372,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -11373,29 +10398,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -11412,45 +10424,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -11469,6 +10466,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -11491,53 +10491,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (value instanceof Date) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     case "between":
@@ -11548,12 +10541,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             const value = value1;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (value instanceof Date) {
                                     return (
@@ -11683,12 +10671,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef1.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -11710,29 +10697,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -11749,45 +10723,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef1.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -11810,6 +10772,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -11835,68 +10800,54 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef1.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (value instanceof Date) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                           {arrow(() => {
                             const value = value2;
                             return (
-                              <View
-                                style={{
-                                  padding: 0,
-                                  margin: 0,
-                                }}
-                              >
+                              <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
                                   if (value instanceof Date) {
                                     return (
@@ -12026,12 +10977,11 @@ function FilterPathComponent(props: {
                                   }
                                 ) ? (
                                   <Pressable
+                                    flexDirection={"row"}
+                                    alignItems={"center"}
                                     onPress={() =>
                                       bottomSheetModalRef2.current?.present()
                                     }
-                                    style={{
-                                      alignSelf: "center",
-                                    }}
                                   >
                                     <Entypo
                                       name="edit"
@@ -12053,29 +11003,16 @@ function FilterPathComponent(props: {
                                     borderColor: bs_theme.primary,
                                   })}
                                 >
-                                  <View
-                                    style={{
-                                      paddingBottom: 10,
-                                      marginHorizontal: 1,
-                                      paddingHorizontal: 8,
-                                      borderBottomWidth: 1,
-                                    }}
+                                  <Row
+                                    justifyContent={"space-between"}
+                                    alignItems={"center"}
+                                    borderBottomColor={bs_theme.border}
+                                    borderBottomWidth={"1"}
+                                    px={"3"}
+                                    pb={"2"}
                                   >
-                                    <Text
-                                      style={{
-                                        fontSize: 15,
-                                        fontWeight: "bold",
-                                        textAlign: "center",
-                                      }}
-                                    >
-                                      Fields
-                                    </Text>
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-end",
-                                        paddingHorizontal: 0,
-                                      }}
-                                    >
+                                    <Text bold>Fields</Text>
+                                    <Row>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -12092,45 +11029,33 @@ function FilterPathComponent(props: {
                                           ]);
                                           bottomSheetModalRef2.current?.close();
                                         }}
-                                        style={{ paddingRight: 8 }}
+                                        backgroundColor={bs_theme.primary}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
+                                        mx={"1"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "bold",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            backgroundColor: colors.sky[600],
-                                            borderRadius: 2,
-                                          }}
-                                        >
-                                          Clear
-                                        </Text>
+                                        <Text>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.close()
                                         }
-                                        style={{ paddingRight: 8 }}
+                                        borderColor={bs_theme.primary}
+                                        borderWidth={"1"}
+                                        borderRadius={"xs"}
+                                        px={"2"}
+                                        py={"0.5"}
                                       >
-                                        <Text
-                                          style={{
-                                            fontSize: 15,
-                                            fontWeight: "700",
-                                            textAlign: "center",
-                                            paddingHorizontal: 5,
-                                            paddingVertical: 2,
-                                            borderRadius: 2,
-                                            backgroundColor: colors.sky[600],
-                                          }}
-                                        >
-                                          Close
-                                        </Text>
+                                        <Text>Close</Text>
                                       </Pressable>
-                                    </View>
-                                  </View>
+                                    </Row>
+                                  </Row>
                                   <BottomSheetFlatList
+                                    contentContainerStyle={tw.style(
+                                      ["m-2"],
+                                      {}
+                                    )}
                                     data={props.init_filter.filter_paths
                                       .toArray()
                                       .filter((filter_path) => {
@@ -12153,6 +11078,9 @@ function FilterPathComponent(props: {
                                     renderItem={(list_item) => {
                                       return (
                                         <Pressable
+                                          flex={1}
+                                          flexDirection={"row"}
+                                          py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
                                               "filters",
@@ -12178,57 +11106,48 @@ function FilterPathComponent(props: {
                                             bottomSheetModalRef2.current?.close();
                                           }}
                                         >
-                                          <View
-                                            style={{
-                                              justifyContent: "flex-start",
-                                              margin: 10,
-                                            }}
-                                          >
-                                            {arrow(() => {
-                                              if (value instanceof Date) {
-                                                return (
-                                                  <Ionicons
-                                                    name="radio-button-off"
-                                                    size={24}
-                                                    color={bs_theme.primary}
-                                                  />
-                                                );
-                                              } else {
-                                                return apply(
-                                                  compare_paths(
-                                                    value[1],
-                                                    list_item.item.path
-                                                  ),
-                                                  (active) => {
-                                                    return active ? (
-                                                      <Ionicons
-                                                        name="radio-button-on"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    ) : (
-                                                      <Ionicons
-                                                        name="radio-button-off"
-                                                        size={24}
-                                                        color={bs_theme.primary}
-                                                      />
-                                                    );
-                                                  }
-                                                );
-                                              }
-                                            })}
-                                            <Text
-                                              style={tw.style(["pl-2"], {})}
-                                            >
-                                              {list_item.item.label}
-                                            </Text>
-                                          </View>
+                                          {arrow(() => {
+                                            if (Array.isArray(value)) {
+                                              return apply(
+                                                compare_paths(
+                                                  value[1],
+                                                  list_item.item.path
+                                                ),
+                                                (active) => {
+                                                  return active ? (
+                                                    <Ionicons
+                                                      name="radio-button-on"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  ) : (
+                                                    <Ionicons
+                                                      name="radio-button-off"
+                                                      size={24}
+                                                      color={bs_theme.primary}
+                                                    />
+                                                  );
+                                                }
+                                              );
+                                            } else {
+                                              return (
+                                                <Ionicons
+                                                  name="radio-button-off"
+                                                  size={24}
+                                                  color={bs_theme.primary}
+                                                />
+                                              );
+                                            }
+                                          })}
+                                          <Text pl={1}>
+                                            {list_item.item.label}
+                                          </Text>
                                         </Pressable>
                                       );
                                     }}
                                   />
                                 </BottomSheetModal>
-                              </View>
+                              </Row>
                             );
                           })}
                         </>
@@ -12251,12 +11170,7 @@ function FilterPathComponent(props: {
                       const other_struct = props.filter_path.value[2];
                       const value = props.filter_path.value[1][1];
                       return (
-                        <View
-                          style={{
-                            padding: 0,
-                            margin: 0,
-                          }}
-                        >
+                        <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
@@ -12308,12 +11222,11 @@ function FilterPathComponent(props: {
                             }
                           ) ? (
                             <Pressable
+                              flexDirection={"row"}
+                              alignItems={"center"}
                               onPress={() =>
                                 bottomSheetModalRef1.current?.present()
                               }
-                              style={{
-                                alignSelf: "center",
-                              }}
                             >
                               <Entypo
                                 name="edit"
@@ -12335,29 +11248,16 @@ function FilterPathComponent(props: {
                               borderColor: bs_theme.primary,
                             })}
                           >
-                            <View
-                              style={{
-                                paddingBottom: 10,
-                                marginHorizontal: 1,
-                                paddingHorizontal: 8,
-                                borderBottomWidth: 1,
-                              }}
+                            <Row
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                              borderBottomColor={bs_theme.border}
+                              borderBottomWidth={"1"}
+                              px={"3"}
+                              pb={"2"}
                             >
-                              <Text
-                                style={{
-                                  fontSize: 15,
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Fields
-                              </Text>
-                              <View
-                                style={{
-                                  justifyContent: "flex-end",
-                                  paddingHorizontal: 0,
-                                }}
-                              >
+                              <Text bold>Fields</Text>
+                              <Row>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -12375,45 +11275,30 @@ function FilterPathComponent(props: {
                                     ]);
                                     bottomSheetModalRef1.current?.close();
                                   }}
-                                  style={{ paddingRight: 8 }}
+                                  backgroundColor={bs_theme.primary}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
+                                  mx={"1"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "bold",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      backgroundColor: colors.sky[600],
-                                      borderRadius: 2,
-                                    }}
-                                  >
-                                    Clear
-                                  </Text>
+                                  <Text>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.close()
                                   }
-                                  style={{ paddingRight: 8 }}
+                                  borderColor={bs_theme.primary}
+                                  borderWidth={"1"}
+                                  borderRadius={"xs"}
+                                  px={"2"}
+                                  py={"0.5"}
                                 >
-                                  <Text
-                                    style={{
-                                      fontSize: 15,
-                                      fontWeight: "700",
-                                      textAlign: "center",
-                                      paddingHorizontal: 5,
-                                      paddingVertical: 2,
-                                      borderRadius: 2,
-                                      backgroundColor: colors.sky[600],
-                                    }}
-                                  >
-                                    Close
-                                  </Text>
+                                  <Text>Close</Text>
                                 </Pressable>
-                              </View>
-                            </View>
+                              </Row>
+                            </Row>
                             <BottomSheetFlatList
+                              contentContainerStyle={tw.style(["m-2"], {})}
                               data={props.init_filter.filter_paths
                                 .toArray()
                                 .filter((filter_path) => {
@@ -12437,6 +11322,9 @@ function FilterPathComponent(props: {
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
+                                    flex={1}
+                                    flexDirection={"row"}
+                                    py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
                                         "filters",
@@ -12460,53 +11348,46 @@ function FilterPathComponent(props: {
                                       bottomSheetModalRef1.current?.close();
                                     }}
                                   >
-                                    <View
-                                      style={{
-                                        justifyContent: "flex-start",
-                                        margin: 10,
-                                      }}
-                                    >
-                                      {arrow(() => {
-                                        if (is_decimal(value)) {
-                                          return (
-                                            <Ionicons
-                                              name="radio-button-off"
-                                              size={24}
-                                              color={bs_theme.primary}
-                                            />
-                                          );
-                                        } else {
-                                          return apply(
-                                            compare_paths(
-                                              value[1],
-                                              list_item.item.path
-                                            ),
-                                            (active) => {
-                                              return active ? (
-                                                <Ionicons
-                                                  name="radio-button-on"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              ) : (
-                                                <Ionicons
-                                                  name="radio-button-off"
-                                                  size={24}
-                                                  color={bs_theme.primary}
-                                                />
-                                              );
-                                            }
-                                          );
-                                        }
-                                      })}
-                                      <Text pl={1}>{list_item.item.label}</Text>
-                                    </View>
+                                    {arrow(() => {
+                                      if (Array.isArray(value)) {
+                                        return apply(
+                                          compare_paths(
+                                            value[1],
+                                            list_item.item.path
+                                          ),
+                                          (active) => {
+                                            return active ? (
+                                              <Ionicons
+                                                name="radio-button-on"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            ) : (
+                                              <Ionicons
+                                                name="radio-button-off"
+                                                size={24}
+                                                color={bs_theme.primary}
+                                              />
+                                            );
+                                          }
+                                        );
+                                      } else {
+                                        return (
+                                          <Ionicons
+                                            name="radio-button-off"
+                                            size={24}
+                                            color={bs_theme.primary}
+                                          />
+                                        );
+                                      }
+                                    })}
+                                    <Text pl={1}>{list_item.item.label}</Text>
                                   </Pressable>
                                 );
                               }}
                             />
                           </BottomSheetModal>
-                        </View>
+                        </Row>
                       );
                     }
                     default: {
