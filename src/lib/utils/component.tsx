@@ -15,11 +15,11 @@ import {
   compute_checks,
 } from "./commons";
 import { ListAction } from "./list";
-import { View, Text, TextInput } from "../themed";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Pressable } from "react-native";
 import { colors } from "./tailwind";
+import { Row, Text, Input } from "native-base";
 
 export type ComponentViews = Record<
   string,
@@ -225,24 +225,15 @@ export function SearchBar(props: {
   const filter = props.filters.findAny((x) => x.index === 0);
   if (filter.isSome()) {
     return (
-      <View
-        style={{
-          borderWidth: 1,
-          borderRadius: 5,
-          borderColor: colors.slate[500],
-          paddingVertical: 2,
-          paddingHorizontal: 10,
-          marginHorizontal: 20,
-          marginBottom: 10,
-        }}
-      >
+      <Row>
         <Feather
           name="search"
           size={24}
           color={colors.slate[300]}
           style={{ alignSelf: "center" }}
         />
-        <TextInput
+        <Input
+          flex={1}
           placeholder={props.placeholder}
           value={arrow(() => {
             const result = filter
@@ -282,20 +273,11 @@ export function SearchBar(props: {
               ]);
             }
           }}
-          style={{
-            flexGrow: 1,
-          }}
         />
         <>
           {!props.show_views[1] &&
           (props.is_views_editable === undefined || props.is_views_editable) ? (
-            <View
-              style={{
-                alignSelf: "center",
-                paddingHorizontal: 0,
-                marginHorizontal: 0,
-              }}
-            >
+            <Row>
               {apply(props.show_views[0], (ShowViews) => (
                 <ShowViews
                   element={
@@ -312,19 +294,13 @@ export function SearchBar(props: {
                   }
                 />
               ))}
-            </View>
+            </Row>
           ) : (
             <></>
           )}
           {props.is_sorting_editable === undefined ||
           props.is_sorting_editable ? (
-            <View
-              style={{
-                alignSelf: "center",
-                paddingHorizontal: 0,
-                marginHorizontal: 0,
-              }}
-            >
+            <Row>
               <props.show_sorting
                 element={
                   <FontAwesome
@@ -339,19 +315,13 @@ export function SearchBar(props: {
                   />
                 }
               />
-            </View>
+            </Row>
           ) : (
             <></>
           )}
           {props.is_filters_editable === undefined ||
           props.is_filters_editable === true ? (
-            <View
-              style={{
-                alignSelf: "center",
-                paddingHorizontal: 0,
-                marginHorizontal: 0,
-              }}
-            >
+            <Row>
               <props.show_filters
                 element={
                   <Ionicons
@@ -366,12 +336,12 @@ export function SearchBar(props: {
                   />
                 }
               />
-            </View>
+            </Row>
           ) : (
             <></>
           )}
         </>
-      </View>
+      </Row>
     );
   } else {
     props.dispatch([

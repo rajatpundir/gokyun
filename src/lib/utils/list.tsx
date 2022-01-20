@@ -420,7 +420,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     if (!state.reached_end) {
       return <Text style={{ textAlign: "center" }}>Loading...</Text>;
     }
-    return <View style={{ marginTop: 5 }} />;
+    return <Text mt={"2"} />;
   }, [state.reached_end]);
 
   return (

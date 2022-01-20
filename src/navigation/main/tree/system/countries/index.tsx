@@ -9,10 +9,10 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import { useNavigation } from "@react-navigation/core";
 
-import { View, Text } from "../../../../../lib/themed";
 import { getState, subscribe } from "../../../../../lib/utils/store";
 import { get_structs } from "../../../../../lib/utils/schema";
 import { Struct } from "../../../../../lib/utils/variable";
+import { Column, Text } from "native-base";
 
 // Add a ContainerH and ContainerV components
 // Move StatusBar with default style into above
@@ -75,12 +75,7 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
   // }
 
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        flexGrow: 1,
-      }}
-    >
+    <Column>
       {/* <A />
       <B />
       <A /> */}
@@ -93,7 +88,7 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       >
         <SimpleLineIcons name="plus" size={36} color="white" />
       </Pressable>
-    </View>
+    </Column>
   );
 }
 

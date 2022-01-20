@@ -23,9 +23,8 @@ import { compare_paths } from "./variable";
 import { colors, tw } from "./tailwind";
 import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
 import { bs_theme } from "./theme";
-import { TextInput } from "../themed";
 
-// For fields.tsx, test TextInput for long values of text
+// For fields.tsx, test Input for long values of text
 // Also cross button should reset value to default for that key in case of text and decimal fields
 
 // TODO. To resolve deciaml exception, do below.
@@ -3718,7 +3717,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (typeof value === "string") {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value}
                                         onChangeText={(x) =>
                                           props.dispatch([
@@ -3967,7 +3966,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
@@ -4205,7 +4204,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -4457,7 +4456,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -4729,7 +4728,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
@@ -4967,7 +4966,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -5219,7 +5218,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -5491,7 +5490,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
@@ -5731,7 +5730,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -5987,7 +5986,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -6263,7 +6262,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
@@ -6501,7 +6500,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -6755,7 +6754,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -7030,7 +7029,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
@@ -7261,7 +7260,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -7507,7 +7506,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -7774,7 +7773,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
@@ -8005,7 +8004,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -8251,7 +8250,7 @@ function FilterPathComponent(props: {
                                 {arrow(() => {
                                   if (is_decimal(value)) {
                                     return (
-                                      <TextInput
+                                      <Input
                                         defaultValue={value.toString()}
                                         keyboardType={"number-pad"}
                                         onChangeText={(x) =>
@@ -11174,7 +11173,7 @@ function FilterPathComponent(props: {
                           {arrow(() => {
                             if (is_decimal(value)) {
                               return (
-                                <TextInput
+                                <Input
                                   defaultValue={value.toString()}
                                   keyboardType={"number-pad"}
                                   onChangeText={(x) =>
