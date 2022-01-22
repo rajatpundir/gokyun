@@ -8855,7 +8855,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (value instanceof Date) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <>
                                   <Pressable onPress={() => setPicker1(true)}>
@@ -8890,16 +8900,6 @@ function FilterPathComponent(props: {
                                     )}
                                   </>
                                 </>
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -9086,7 +9086,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (value1 instanceof Date) {
+                                  if (Array.isArray(value1)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value1[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <>
                                         <Pressable
@@ -9136,16 +9146,6 @@ function FilterPathComponent(props: {
                                           )}
                                         </>
                                       </>
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value1[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -9341,7 +9341,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (value2 instanceof Date) {
+                                  if (Array.isArray(value2)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value2[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <>
                                         <Pressable
@@ -9391,16 +9401,6 @@ function FilterPathComponent(props: {
                                           )}
                                         </>
                                       </>
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value2[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -9617,7 +9617,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (value instanceof Date) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <>
                                   <Pressable onPress={() => setPicker1(true)}>
@@ -9652,16 +9662,6 @@ function FilterPathComponent(props: {
                                     )}
                                   </>
                                 </>
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -9849,7 +9849,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (value instanceof Date) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <>
                                         <Pressable
@@ -9897,16 +9907,6 @@ function FilterPathComponent(props: {
                                           )}
                                         </>
                                       </>
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -10103,7 +10103,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (value instanceof Date) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <>
                                         <Pressable
@@ -10151,16 +10161,6 @@ function FilterPathComponent(props: {
                                           )}
                                         </>
                                       </>
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -10377,7 +10377,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (value instanceof Date) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <>
                                   <Pressable onPress={() => setPicker1(true)}>
@@ -10464,16 +10474,6 @@ function FilterPathComponent(props: {
                                     )}
                                   </>
                                 </>
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -10661,7 +10661,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (value instanceof Date) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <>
                                         <Pressable
@@ -10761,16 +10771,6 @@ function FilterPathComponent(props: {
                                           )}
                                         </>
                                       </>
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -10967,7 +10967,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (value instanceof Date) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <>
                                         <Pressable
@@ -11067,16 +11077,6 @@ function FilterPathComponent(props: {
                                           )}
                                         </>
                                       </>
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
