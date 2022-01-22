@@ -4031,35 +4031,7 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
-                              return (
-                                <Input
-                                  defaultValue={value.toString()}
-                                  keyboardType={"number-pad"}
-                                  onChangeText={(x) =>
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [
-                                            op,
-                                            Decimal.clamp(
-                                              new Decimal(x || "0").truncated(),
-                                              -2147483648,
-                                              2147483648
-                                            ),
-                                          ],
-                                        ];
-                                        return it;
-                                      }),
-                                    ])
-                                  }
-                                />
-                              );
-                            } else {
+                            if (Array.isArray(value)) {
                               return (
                                 <Pressable
                                   onPress={() =>
@@ -4068,6 +4040,86 @@ function FilterPathComponent(props: {
                                 >
                                   <Text>{value[0]}</Text>
                                 </Pressable>
+                              );
+                            } else {
+                              return (
+                                <Input
+                                  flex={1}
+                                  ml={"2"}
+                                  size={"md"}
+                                  placeholder={props.filter_path.label}
+                                  value={local_val_1}
+                                  isInvalid={has_errors_1}
+                                  keyboardType={"numbers-and-punctuation"}
+                                  onChangeText={(x) => {
+                                    try {
+                                      set_local_val_1(x);
+                                      const val = Decimal.clamp(
+                                        new Decimal(x || "0").truncated(),
+                                        -2147483648,
+                                        2147483648
+                                      );
+                                      set_has_errors_1(false);
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [op, val],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    } catch (e) {
+                                      set_has_errors_1(true);
+                                    }
+                                  }}
+                                  InputRightElement={
+                                    local_val_1 !== default_value_1 &&
+                                    local_val_1 !== "" ? (
+                                      <Pressable
+                                        px={1}
+                                        onPress={() => {
+                                          try {
+                                            const val = Decimal.clamp(
+                                              new Decimal(
+                                                default_value_1 || "0"
+                                              ).truncated(),
+                                              -2147483648,
+                                              2147483648
+                                            );
+                                            set_local_val_1(default_value_1);
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, val],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {}
+                                        }}
+                                      >
+                                        <MaterialIcons
+                                          name="clear"
+                                          size={24}
+                                          color={bs_theme.placeholder}
+                                        />
+                                      </Pressable>
+                                    ) : (
+                                      <></>
+                                    )
+                                  }
+                                  borderColor={bs_theme.placeholder}
+                                  placeholderTextColor={bs_theme.placeholder}
+                                />
                               );
                             }
                           })}
@@ -4269,7 +4321,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -4301,16 +4363,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -4521,7 +4573,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -4553,16 +4615,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -4793,7 +4845,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Input
                                   defaultValue={value.toString()}
@@ -4820,16 +4882,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -5031,7 +5083,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -5063,16 +5125,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -5283,7 +5335,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -5315,16 +5377,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -5555,7 +5607,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Input
                                   defaultValue={value.toString()}
@@ -5584,16 +5646,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -5795,7 +5847,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -5831,16 +5893,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -6051,7 +6103,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -6087,16 +6149,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -6327,7 +6379,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Input
                                   defaultValue={value.toString()}
@@ -6354,16 +6416,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -6565,7 +6617,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -6599,16 +6661,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -6819,7 +6871,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -6853,16 +6915,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -7094,7 +7146,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Input
                                   defaultValue={value.toString()}
@@ -7114,16 +7176,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -7325,7 +7377,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -7351,16 +7413,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -7571,7 +7623,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -7597,16 +7659,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -7838,7 +7890,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Input
                                   defaultValue={value.toString()}
@@ -7858,16 +7920,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
@@ -8069,7 +8121,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef1.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -8095,16 +8157,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef1.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -8315,7 +8367,17 @@ function FilterPathComponent(props: {
                             return (
                               <Row flex={1} justifyContent={"flex-start"}>
                                 {arrow(() => {
-                                  if (is_decimal(value)) {
+                                  if (Array.isArray(value)) {
+                                    return (
+                                      <Pressable
+                                        onPress={() =>
+                                          bottomSheetModalRef2.current?.present()
+                                        }
+                                      >
+                                        <Text>{value[0]}</Text>
+                                      </Pressable>
+                                    );
+                                  } else {
                                     return (
                                       <Input
                                         defaultValue={value.toString()}
@@ -8341,16 +8403,6 @@ function FilterPathComponent(props: {
                                           ])
                                         }
                                       />
-                                    );
-                                  } else {
-                                    return (
-                                      <Pressable
-                                        onPress={() =>
-                                          bottomSheetModalRef2.current?.present()
-                                        }
-                                      >
-                                        <Text>{value[0]}</Text>
-                                      </Pressable>
                                     );
                                   }
                                 })}
@@ -11238,7 +11290,17 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (is_decimal(value)) {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Input
                                   defaultValue={value.toString()}
@@ -11259,16 +11321,6 @@ function FilterPathComponent(props: {
                                     ])
                                   }
                                 />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
-                                  }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
                               );
                             }
                           })}
