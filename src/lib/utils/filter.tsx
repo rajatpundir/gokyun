@@ -4034,6 +4034,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -4324,6 +4325,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -4576,6 +4578,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -4848,6 +4851,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -5086,6 +5090,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -5338,6 +5343,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -5610,6 +5616,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -5850,6 +5857,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -6106,6 +6114,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -6382,6 +6391,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -6620,6 +6630,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -6874,6 +6885,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -7149,6 +7161,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -7380,6 +7393,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -7626,6 +7640,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -7893,6 +7908,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -8124,6 +8140,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -8370,6 +8387,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -8858,6 +8876,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -9089,6 +9108,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value1)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -9344,6 +9364,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value2)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -9620,6 +9641,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -9852,6 +9874,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -10106,6 +10129,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -10380,6 +10404,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
@@ -10664,6 +10689,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef1.current?.present()
                                         }
@@ -10970,6 +10996,7 @@ function FilterPathComponent(props: {
                                   if (Array.isArray(value)) {
                                     return (
                                       <Pressable
+                                        ml={"2"}
                                         onPress={() =>
                                           bottomSheetModalRef2.current?.present()
                                         }
@@ -11293,6 +11320,7 @@ function FilterPathComponent(props: {
                             if (Array.isArray(value)) {
                               return (
                                 <Pressable
+                                  ml={"2"}
                                   onPress={() =>
                                     bottomSheetModalRef1.current?.present()
                                   }
