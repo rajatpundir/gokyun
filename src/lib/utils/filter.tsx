@@ -5898,31 +5898,81 @@ function FilterPathComponent(props: {
                             } else {
                               return (
                                 <Input
-                                  defaultValue={value.toString()}
-                                  keyboardType={"number-pad"}
-                                  onChangeText={(x) =>
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [
-                                            op,
-                                            Decimal.clamp(
-                                              new Decimal(x || "0").truncated(),
+                                  flex={1}
+                                  ml={"2"}
+                                  size={"md"}
+                                  placeholder={props.filter_path.label}
+                                  value={local_val_1}
+                                  isInvalid={has_errors_1}
+                                  keyboardType={"numbers-and-punctuation"}
+                                  onChangeText={(x) => {
+                                    try {
+                                      set_local_val_1(x);
+                                      const val = Decimal.clamp(
+                                        new Decimal(x || "0").truncated(),
+                                        -9223372036854775807,
+                                        9223372036854775807
+                                      );
+                                      set_has_errors_1(false);
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [op, val],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    } catch (e) {
+                                      set_has_errors_1(true);
+                                    }
+                                  }}
+                                  InputRightElement={
+                                    local_val_1 !== default_value_1 &&
+                                    local_val_1 !== "" ? (
+                                      <Pressable
+                                        px={1}
+                                        onPress={() => {
+                                          try {
+                                            const val = Decimal.clamp(
                                               new Decimal(
-                                                "-9223372036854775807"
-                                              ),
-                                              new Decimal("9223372036854775807")
-                                            ),
-                                          ],
-                                        ];
-                                        return it;
-                                      }),
-                                    ])
+                                                default_value_1 || "0"
+                                              ).truncated(),
+                                              -9223372036854775807,
+                                              9223372036854775807
+                                            );
+                                            set_local_val_1(default_value_1);
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, val],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {}
+                                        }}
+                                      >
+                                        <MaterialIcons
+                                          name="clear"
+                                          size={24}
+                                          color={bs_theme.placeholder}
+                                        />
+                                      </Pressable>
+                                    ) : (
+                                      <></>
+                                    )
                                   }
+                                  borderColor={bs_theme.placeholder}
+                                  placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
                             }
@@ -6139,37 +6189,87 @@ function FilterPathComponent(props: {
                                   } else {
                                     return (
                                       <Input
-                                        defaultValue={value.toString()}
-                                        keyboardType={"number-pad"}
-                                        onChangeText={(x) =>
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [
-                                                  op,
-                                                  [
-                                                    Decimal.clamp(
-                                                      new Decimal(
-                                                        x || "0"
-                                                      ).truncated(),
-                                                      new Decimal(
-                                                        "-9223372036854775807"
-                                                      ),
-                                                      new Decimal(
-                                                        "9223372036854775807"
-                                                      )
+                                        flex={1}
+                                        ml={"2"}
+                                        size={"md"}
+                                        placeholder={props.filter_path.label}
+                                        value={local_val_1}
+                                        isInvalid={has_errors_1}
+                                        keyboardType={"numbers-and-punctuation"}
+                                        onChangeText={(x) => {
+                                          try {
+                                            set_local_val_1(x);
+                                            const val = Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              -9223372036854775807,
+                                              9223372036854775807
+                                            );
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, [val, value2]],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {
+                                            set_has_errors_1(true);
+                                          }
+                                        }}
+                                        InputRightElement={
+                                          local_val_1 !== default_value_1 &&
+                                          local_val_1 !== "" ? (
+                                            <Pressable
+                                              px={1}
+                                              onPress={() => {
+                                                try {
+                                                  const val = Decimal.clamp(
+                                                    new Decimal(
+                                                      default_value_1 || "0"
+                                                    ).truncated(),
+                                                    -9223372036854775807,
+                                                    9223372036854775807
+                                                  );
+                                                  set_local_val_1(
+                                                    default_value_1
+                                                  );
+                                                  set_has_errors_1(false);
+                                                  props.dispatch([
+                                                    "filters",
+                                                    props.filter,
+                                                    "replace",
+                                                    apply(
+                                                      props.filter_path,
+                                                      (it) => {
+                                                        it.value = [
+                                                          field_struct_name,
+                                                          [op, [val, value2]],
+                                                        ];
+                                                        return it;
+                                                      }
                                                     ),
-                                                    value2,
-                                                  ],
-                                                ],
-                                              ];
-                                              return it;
-                                            }),
-                                          ])
+                                                  ]);
+                                                } catch (e) {}
+                                              }}
+                                            >
+                                              <MaterialIcons
+                                                name="clear"
+                                                size={24}
+                                                color={bs_theme.placeholder}
+                                              />
+                                            </Pressable>
+                                          ) : (
+                                            <></>
+                                          )
+                                        }
+                                        borderColor={bs_theme.placeholder}
+                                        placeholderTextColor={
+                                          bs_theme.placeholder
                                         }
                                       />
                                     );
@@ -6396,37 +6496,87 @@ function FilterPathComponent(props: {
                                   } else {
                                     return (
                                       <Input
-                                        defaultValue={value.toString()}
-                                        keyboardType={"number-pad"}
-                                        onChangeText={(x) =>
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [
-                                                  op,
-                                                  [
-                                                    value1,
-                                                    Decimal.clamp(
-                                                      new Decimal(
-                                                        x || "0"
-                                                      ).truncated(),
-                                                      new Decimal(
-                                                        "-9223372036854775807"
-                                                      ),
-                                                      new Decimal(
-                                                        "9223372036854775807"
-                                                      )
+                                        flex={1}
+                                        ml={"2"}
+                                        size={"md"}
+                                        placeholder={props.filter_path.label}
+                                        value={local_val_2}
+                                        isInvalid={has_errors_2}
+                                        keyboardType={"numbers-and-punctuation"}
+                                        onChangeText={(x) => {
+                                          try {
+                                            set_local_val_2(x);
+                                            const val = Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              -9223372036854775807,
+                                              9223372036854775807
+                                            );
+                                            set_has_errors_2(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, [value1, val]],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {
+                                            set_has_errors_2(true);
+                                          }
+                                        }}
+                                        InputRightElement={
+                                          local_val_2 !== default_value_2 &&
+                                          local_val_2 !== "" ? (
+                                            <Pressable
+                                              px={1}
+                                              onPress={() => {
+                                                try {
+                                                  const val = Decimal.clamp(
+                                                    new Decimal(
+                                                      default_value_1 || "0"
+                                                    ).truncated(),
+                                                    -9223372036854775807,
+                                                    9223372036854775807
+                                                  );
+                                                  set_local_val_2(
+                                                    default_value_2
+                                                  );
+                                                  set_has_errors_2(false);
+                                                  props.dispatch([
+                                                    "filters",
+                                                    props.filter,
+                                                    "replace",
+                                                    apply(
+                                                      props.filter_path,
+                                                      (it) => {
+                                                        it.value = [
+                                                          field_struct_name,
+                                                          [op, [value1, val]],
+                                                        ];
+                                                        return it;
+                                                      }
                                                     ),
-                                                  ],
-                                                ],
-                                              ];
-                                              return it;
-                                            }),
-                                          ])
+                                                  ]);
+                                                } catch (e) {}
+                                              }}
+                                            >
+                                              <MaterialIcons
+                                                name="clear"
+                                                size={24}
+                                                color={bs_theme.placeholder}
+                                              />
+                                            </Pressable>
+                                          ) : (
+                                            <></>
+                                          )
+                                        }
+                                        borderColor={bs_theme.placeholder}
+                                        placeholderTextColor={
+                                          bs_theme.placeholder
                                         }
                                       />
                                     );
@@ -6645,6 +6795,7 @@ function FilterPathComponent(props: {
                 }
                 return <></>;
               }
+
               case "u64": {
                 if (props.filter_path.value[1] !== undefined) {
                   const op = props.filter_path.value[1][0];
@@ -6673,29 +6824,81 @@ function FilterPathComponent(props: {
                             } else {
                               return (
                                 <Input
-                                  defaultValue={value.toString()}
-                                  keyboardType={"number-pad"}
-                                  onChangeText={(x) =>
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [
-                                            op,
-                                            Decimal.clamp(
-                                              new Decimal(x || "0").truncated(),
+                                  flex={1}
+                                  ml={"2"}
+                                  size={"md"}
+                                  placeholder={props.filter_path.label}
+                                  value={local_val_1}
+                                  isInvalid={has_errors_1}
+                                  keyboardType={"numbers-and-punctuation"}
+                                  onChangeText={(x) => {
+                                    try {
+                                      set_local_val_1(x);
+                                      const val = Decimal.clamp(
+                                        new Decimal(x || "0").truncated(),
+                                        0,
+                                        9223372036854775807
+                                      );
+                                      set_has_errors_1(false);
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [op, val],
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    } catch (e) {
+                                      set_has_errors_1(true);
+                                    }
+                                  }}
+                                  InputRightElement={
+                                    local_val_1 !== default_value_1 &&
+                                    local_val_1 !== "" ? (
+                                      <Pressable
+                                        px={1}
+                                        onPress={() => {
+                                          try {
+                                            const val = Decimal.clamp(
+                                              new Decimal(
+                                                default_value_1 || "0"
+                                              ).truncated(),
                                               0,
-                                              new Decimal("9223372036854775807")
-                                            ),
-                                          ],
-                                        ];
-                                        return it;
-                                      }),
-                                    ])
+                                              9223372036854775807
+                                            );
+                                            set_local_val_1(default_value_1);
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, val],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {}
+                                        }}
+                                      >
+                                        <MaterialIcons
+                                          name="clear"
+                                          size={24}
+                                          color={bs_theme.placeholder}
+                                        />
+                                      </Pressable>
+                                    ) : (
+                                      <></>
+                                    )
                                   }
+                                  borderColor={bs_theme.placeholder}
+                                  placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
                             }
@@ -6912,35 +7115,87 @@ function FilterPathComponent(props: {
                                   } else {
                                     return (
                                       <Input
-                                        defaultValue={value.toString()}
-                                        keyboardType={"number-pad"}
-                                        onChangeText={(x) =>
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [
-                                                  op,
-                                                  [
-                                                    Decimal.clamp(
-                                                      new Decimal(
-                                                        x || "0"
-                                                      ).truncated(),
-                                                      0,
-                                                      new Decimal(
-                                                        "9223372036854775807"
-                                                      )
+                                        flex={1}
+                                        ml={"2"}
+                                        size={"md"}
+                                        placeholder={props.filter_path.label}
+                                        value={local_val_1}
+                                        isInvalid={has_errors_1}
+                                        keyboardType={"numbers-and-punctuation"}
+                                        onChangeText={(x) => {
+                                          try {
+                                            set_local_val_1(x);
+                                            const val = Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              0,
+                                              9223372036854775807
+                                            );
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, [val, value2]],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {
+                                            set_has_errors_1(true);
+                                          }
+                                        }}
+                                        InputRightElement={
+                                          local_val_1 !== default_value_1 &&
+                                          local_val_1 !== "" ? (
+                                            <Pressable
+                                              px={1}
+                                              onPress={() => {
+                                                try {
+                                                  const val = Decimal.clamp(
+                                                    new Decimal(
+                                                      default_value_1 || "0"
+                                                    ).truncated(),
+                                                    0,
+                                                    9223372036854775807
+                                                  );
+                                                  set_local_val_1(
+                                                    default_value_1
+                                                  );
+                                                  set_has_errors_1(false);
+                                                  props.dispatch([
+                                                    "filters",
+                                                    props.filter,
+                                                    "replace",
+                                                    apply(
+                                                      props.filter_path,
+                                                      (it) => {
+                                                        it.value = [
+                                                          field_struct_name,
+                                                          [op, [val, value2]],
+                                                        ];
+                                                        return it;
+                                                      }
                                                     ),
-                                                    value2,
-                                                  ],
-                                                ],
-                                              ];
-                                              return it;
-                                            }),
-                                          ])
+                                                  ]);
+                                                } catch (e) {}
+                                              }}
+                                            >
+                                              <MaterialIcons
+                                                name="clear"
+                                                size={24}
+                                                color={bs_theme.placeholder}
+                                              />
+                                            </Pressable>
+                                          ) : (
+                                            <></>
+                                          )
+                                        }
+                                        borderColor={bs_theme.placeholder}
+                                        placeholderTextColor={
+                                          bs_theme.placeholder
                                         }
                                       />
                                     );
@@ -7167,35 +7422,87 @@ function FilterPathComponent(props: {
                                   } else {
                                     return (
                                       <Input
-                                        defaultValue={value.toString()}
-                                        keyboardType={"number-pad"}
-                                        onChangeText={(x) =>
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [
-                                                  op,
-                                                  [
-                                                    value1,
-                                                    Decimal.clamp(
-                                                      new Decimal(
-                                                        x || "0"
-                                                      ).truncated(),
-                                                      0,
-                                                      new Decimal(
-                                                        "9223372036854775807"
-                                                      )
+                                        flex={1}
+                                        ml={"2"}
+                                        size={"md"}
+                                        placeholder={props.filter_path.label}
+                                        value={local_val_2}
+                                        isInvalid={has_errors_2}
+                                        keyboardType={"numbers-and-punctuation"}
+                                        onChangeText={(x) => {
+                                          try {
+                                            set_local_val_2(x);
+                                            const val = Decimal.clamp(
+                                              new Decimal(x || "0").truncated(),
+                                              0,
+                                              9223372036854775807
+                                            );
+                                            set_has_errors_2(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, [value1, val]],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {
+                                            set_has_errors_2(true);
+                                          }
+                                        }}
+                                        InputRightElement={
+                                          local_val_2 !== default_value_2 &&
+                                          local_val_2 !== "" ? (
+                                            <Pressable
+                                              px={1}
+                                              onPress={() => {
+                                                try {
+                                                  const val = Decimal.clamp(
+                                                    new Decimal(
+                                                      default_value_1 || "0"
+                                                    ).truncated(),
+                                                    0,
+                                                    9223372036854775807
+                                                  );
+                                                  set_local_val_2(
+                                                    default_value_2
+                                                  );
+                                                  set_has_errors_2(false);
+                                                  props.dispatch([
+                                                    "filters",
+                                                    props.filter,
+                                                    "replace",
+                                                    apply(
+                                                      props.filter_path,
+                                                      (it) => {
+                                                        it.value = [
+                                                          field_struct_name,
+                                                          [op, [value1, val]],
+                                                        ];
+                                                        return it;
+                                                      }
                                                     ),
-                                                  ],
-                                                ],
-                                              ];
-                                              return it;
-                                            }),
-                                          ])
+                                                  ]);
+                                                } catch (e) {}
+                                              }}
+                                            >
+                                              <MaterialIcons
+                                                name="clear"
+                                                size={24}
+                                                color={bs_theme.placeholder}
+                                              />
+                                            </Pressable>
+                                          ) : (
+                                            <></>
+                                          )
+                                        }
+                                        borderColor={bs_theme.placeholder}
+                                        placeholderTextColor={
+                                          bs_theme.placeholder
                                         }
                                       />
                                     );
@@ -7414,6 +7721,7 @@ function FilterPathComponent(props: {
                 }
                 return <></>;
               }
+
               case "idouble":
               case "idecimal": {
                 if (props.filter_path.value[1] !== undefined) {
