@@ -1,4 +1,3 @@
-import { Dimensions } from "react-native";
 import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { HashSet } from "prelude-ts";
@@ -35,12 +34,6 @@ import {
   compare_paths,
   concat_path_strings,
 } from "./variable";
-
-export const dimensions = {
-  width: Dimensions.get("window").width,
-  height: Dimensions.get("window").height,
-  isSmallDevice: Dimensions.get("window").width < 375,
-};
 
 export type State = Immutable<{
   id: Decimal;
@@ -1011,4 +1004,84 @@ export function get_label(state: State, path: PathString | string): string {
     }
     return "";
   });
+}
+
+// export const dimensions = {
+//   width: Dimensions.get("window").width,
+//   height: Dimensions.get("window").height,
+//   isSmallDevice: Dimensions.get("window").width < 375,
+// };
+
+type X = [
+  (
+    | "i32"
+    | "u32"
+    | "i64"
+    | "u64"
+    | "idouble"
+    | "udouble"
+    | "idecimal"
+    | "udecimal"
+  ),
+  string
+];
+
+export function get_validated_decimal(
+  field_struct_name:
+    | "i32"
+    | "u32"
+    | "i64"
+    | "u64"
+    | "idouble"
+    | "udouble"
+    | "idecimal"
+    | "udecimal",
+  value: string
+): Decimal {
+  const x = value || "0";
+  switch (field_struct_name) {
+    case "i32":
+      return Decimal.clamp(new Decimal(x).truncated(), -2147483648, 2147483648);
+    case "u32":
+      return Decimal.clamp(new Decimal(x).truncated(), 0, 2147483648);
+    case "i64":
+      return Decimal.clamp(
+        new Decimal(x).truncated(),
+        "-9223372036854775807",
+        "9223372036854775807"
+      );
+    case "u64":
+      return Decimal.clamp(
+        new Decimal(x).truncated(),
+        0,
+        "9223372036854775807"
+      );
+    case "idouble":
+      return new Decimal(x);
+    case "udouble":
+      return new Decimal(x).abs();
+    case "idecimal":
+      return new Decimal(x);
+    case "udecimal":
+      return new Decimal(x).abs();
+  }
+}
+
+export function get_decimal_keyboard_type(
+  field_struct_name:
+    | "i32"
+    | "u32"
+    | "i64"
+    | "u64"
+    | "idouble"
+    | "udouble"
+    | "idecimal"
+    | "udecimal"
+) {
+  switch (field_struct_name) {
+    case "u32":
+    case "u64":
+      return "number-pad";
+  }
+  return "numbers-and-punctuation";
 }
