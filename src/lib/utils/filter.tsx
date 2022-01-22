@@ -3724,20 +3724,79 @@ function FilterPathComponent(props: {
                                   if (typeof value === "string") {
                                     return (
                                       <Input
-                                        defaultValue={value}
-                                        onChangeText={(x) =>
-                                          props.dispatch([
-                                            "filters",
-                                            props.filter,
-                                            "replace",
-                                            apply(props.filter_path, (it) => {
-                                              it.value = [
-                                                field_struct_name,
-                                                [op, [value1, x]],
-                                              ];
-                                              return it;
-                                            }),
-                                          ])
+                                        flex={1}
+                                        ml={"2"}
+                                        size={"md"}
+                                        placeholder={props.filter_path.label}
+                                        value={local_val_2}
+                                        isInvalid={has_errors_2}
+                                        onChangeText={(x) => {
+                                          try {
+                                            set_local_val_2(x);
+                                            set_has_errors_2(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, [value1, x]],
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {
+                                            set_has_errors_2(true);
+                                          }
+                                        }}
+                                        InputRightElement={
+                                          local_val_2 !==
+                                            default_value_2.toString() &&
+                                          local_val_2 !== "" ? (
+                                            <Pressable
+                                              px={1}
+                                              onPress={() => {
+                                                set_local_val_2(
+                                                  default_value_2
+                                                );
+                                                set_has_errors_2(false);
+                                                props.dispatch([
+                                                  "filters",
+                                                  props.filter,
+                                                  "replace",
+                                                  apply(
+                                                    props.filter_path,
+                                                    (it) => {
+                                                      it.value = [
+                                                        field_struct_name,
+                                                        [
+                                                          op,
+                                                          [
+                                                            value1,
+                                                            default_value_2,
+                                                          ],
+                                                        ],
+                                                      ];
+                                                      return it;
+                                                    }
+                                                  ),
+                                                ]);
+                                              }}
+                                            >
+                                              <MaterialIcons
+                                                name="clear"
+                                                size={24}
+                                                color={bs_theme.placeholder}
+                                              />
+                                            </Pressable>
+                                          ) : (
+                                            <></>
+                                          )
+                                        }
+                                        borderColor={bs_theme.placeholder}
+                                        placeholderTextColor={
+                                          bs_theme.placeholder
                                         }
                                       />
                                     );
