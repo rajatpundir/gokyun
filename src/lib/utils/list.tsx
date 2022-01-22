@@ -5,7 +5,7 @@ import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
 import { PathString, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
-import { ListRenderItemInfo, View } from "react-native";
+import { ListRenderItemInfo } from "react-native";
 import { apply, arrow, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
@@ -14,11 +14,10 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import Checkbox from "expo-checkbox";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
-import { Column, Row, Text, Pressable } from "native-base";
+import { Column, Row, Text, Pressable, Checkbox } from "native-base";
 import { ModalHeader } from "./component";
 import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
@@ -521,7 +520,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                   color={bs_theme.primary}
                 />
               )}
-              <Text style={tw.style(["pl-2"], {})}>Default</Text>
+              <Text pl={1}>Default</Text>
             </Pressable>
             {Object.keys(props.render_list_element[1]).map((layout) => (
               <Pressable
@@ -548,7 +547,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text style={tw.style(["pl-2"], {})}>{layout}</Text>
+                <Text pl={1}>{layout}</Text>
               </Pressable>
             ))}
           </BottomSheetScrollView>
@@ -659,10 +658,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Text>Active</Text>
               </Pressable>
               <Checkbox
-                value={state.active}
-                onValueChange={() => dispatch(["active", !state.active])}
-                color={state.active ? bs_theme.primary : undefined}
-                style={tw.style(["mx-1"], {})}
+                mx={"1"}
+                value={String(state.active)}
+                onChange={() => dispatch(["active", !state.active])}
+                colorScheme={state.active ? bs_theme.primary : undefined}
               />
             </Row>
 
@@ -678,12 +677,12 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Text>Unsaved</Text>
               </Pressable>
               <Checkbox
-                value={!state.level ? true : false}
-                onValueChange={(x) =>
+                mx={"1"}
+                value={String(!state.level ? true : false)}
+                onChange={(x) =>
                   dispatch(["level", x ? undefined : new Decimal(0)])
                 }
-                color={!state.level ? bs_theme.primary : undefined}
-                style={tw.style(["mx-1"], {})}
+                colorScheme={!state.level ? bs_theme.primary : undefined}
               />
             </Row>
             <Pressable
