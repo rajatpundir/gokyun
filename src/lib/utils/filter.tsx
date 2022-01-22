@@ -3293,6 +3293,8 @@ function FilterPathComponent(props: {
                               <Row>
                                 <Pressable
                                   onPress={() => {
+                                    set_local_val_1(default_value_1);
+                                    set_has_errors_1(false);
                                     props.dispatch([
                                       "filters",
                                       props.filter,
@@ -3575,6 +3577,8 @@ function FilterPathComponent(props: {
                                     <Row>
                                       <Pressable
                                         onPress={() => {
+                                          set_local_val_1(default_value_1);
+                                          set_has_errors_1(false);
                                           props.dispatch([
                                             "filters",
                                             props.filter,
@@ -3804,6 +3808,8 @@ function FilterPathComponent(props: {
                                     <Row>
                                       <Pressable
                                         onPress={() => {
+                                          set_local_val_2(default_value_2);
+                                          set_has_errors_2(false);
                                           props.dispatch([
                                             "filters",
                                             props.filter,
