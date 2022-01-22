@@ -4,7 +4,7 @@ import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Filter, FilterPath } from "./db";
 import { Platform } from "react-native";
-import { apply, arrow, is_decimal } from "./prelude";
+import { apply, arrow } from "./prelude";
 import {
   AntDesign,
   Entypo,
@@ -12,7 +12,6 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import Checkbox from "expo-checkbox";
 import { ListAction } from "./list";
 import {
   BottomSheetFlatList,
@@ -20,17 +19,18 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { compare_paths } from "./variable";
-import { colors, tw } from "./tailwind";
-import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
+import { tw } from "./tailwind";
+import {
+  Column,
+  Pressable,
+  Row,
+  Text,
+  Input,
+  Checkbox,
+  Menu,
+} from "native-base";
 import { bs_theme } from "./theme";
 import { get_decimal_keyboard_type, get_validated_decimal } from "./commons";
-
-// For fields.tsx, test Input for long values of text
-// Also cross button should reset value to default for that key in case of text and decimal fields
-
-// TODO. To resolve deciaml exception, do below.
-// Store value in internal state and show it, try to dispatch on change
-// Copy changes for text and numeric fields over from fields.tsx
 
 function op_to_string(op: string): string {
   switch (op) {
@@ -231,7 +231,7 @@ export function FilterComponent(props: {
           <Pressable
             onPress={() => props.dispatch(["filter", "remove", props.filter])}
           >
-            <Entypo name="cross" size={24} color={colors.slate[400]} />
+            <Entypo name="cross" size={24} color={bs_theme.text} />
           </Pressable>
         </Row>
         <Pressable
@@ -334,10 +334,10 @@ export function FilterComponent(props: {
                 >
                   <Row>
                     <Checkbox
-                      value={active}
-                      onValueChange={() => toggle(!active)}
-                      color={active ? bs_theme.primary : undefined}
-                      style={tw.style(["mr-1"], {})}
+                      mr={"1"}
+                      value={String(active)}
+                      onChange={() => toggle(!active)}
+                      colorScheme={active ? bs_theme.primary : undefined}
                     />
                     <Pressable onPress={() => toggle(!active)}>
                       <Text color={bs_theme.text}>Unique ID</Text>
@@ -842,10 +842,10 @@ export function FilterComponent(props: {
                 >
                   <Row>
                     <Checkbox
-                      value={active}
-                      onValueChange={() => toggle(!active)}
-                      color={active ? bs_theme.primary : undefined}
-                      style={tw.style(["mr-1"], {})}
+                      mr={"1"}
+                      value={String(active)}
+                      onChange={() => toggle(!active)}
+                      colorScheme={active ? bs_theme.primary : undefined}
                     />
                     <Pressable onPress={() => toggle(!active)}>
                       <Text color={bs_theme.text}>Created</Text>
@@ -1334,10 +1334,10 @@ export function FilterComponent(props: {
                 >
                   <Row>
                     <Checkbox
-                      value={active}
-                      onValueChange={() => toggle(!active)}
-                      color={active ? bs_theme.primary : undefined}
-                      style={tw.style(["mr-1"], {})}
+                      mr={"1"}
+                      value={String(active)}
+                      onChange={() => toggle(!active)}
+                      colorScheme={active ? bs_theme.primary : undefined}
                     />
                     <Pressable onPress={() => toggle(!active)}>
                       <Text color={bs_theme.text}>Updated</Text>
@@ -2531,10 +2531,12 @@ function FilterPathComponent(props: {
         <Row justifyContent={"space-between"} alignItems={"center"} my={"1"}>
           <Row>
             <Checkbox
-              value={props.filter_path.active}
-              onValueChange={() => toggle(!props.filter_path.active)}
-              color={props.filter_path.active ? bs_theme.primary : undefined}
-              style={tw.style(["mr-1"], {})}
+              mr={"1"}
+              value={String(props.filter_path.active)}
+              onChange={() => toggle(!props.filter_path.active)}
+              colorScheme={
+                props.filter_path.active ? bs_theme.primary : undefined
+              }
             />
             <Pressable onPress={() => toggle(!props.filter_path.active)}>
               <Text color={bs_theme.text}>{props.filter_path.label}</Text>
@@ -3299,7 +3301,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
@@ -3583,7 +3585,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -3873,7 +3875,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -4194,7 +4196,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
@@ -4493,7 +4495,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -4799,7 +4801,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -4991,11 +4993,22 @@ function FilterPathComponent(props: {
                       return (
                         <Row flex={1} justifyContent={"flex-start"}>
                           {arrow(() => {
-                            if (typeof value === "boolean") {
+                            if (Array.isArray(value)) {
+                              return (
+                                <Pressable
+                                  onPress={() =>
+                                    bottomSheetModalRef1.current?.present()
+                                  }
+                                >
+                                  <Text>{value[0]}</Text>
+                                </Pressable>
+                              );
+                            } else {
                               return (
                                 <Checkbox
-                                  value={value}
-                                  onValueChange={(x) =>
+                                  ml={"2"}
+                                  value={String(value)}
+                                  onChange={(x: boolean) =>
                                     props.dispatch([
                                       "filters",
                                       props.filter,
@@ -5006,18 +5019,10 @@ function FilterPathComponent(props: {
                                       }),
                                     ])
                                   }
-                                  color={value ? colors.sky[600] : undefined}
-                                />
-                              );
-                            } else {
-                              return (
-                                <Pressable
-                                  onPress={() =>
-                                    bottomSheetModalRef1.current?.present()
+                                  colorScheme={
+                                    value ? bs_theme.primary : undefined
                                   }
-                                >
-                                  <Text>{value[0]}</Text>
-                                </Pressable>
+                                />
                               );
                             }
                           })}
@@ -5044,7 +5049,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
@@ -5289,7 +5294,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
@@ -5538,7 +5543,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -5794,7 +5799,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -6054,7 +6059,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
@@ -6302,7 +6307,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -6557,7 +6562,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -6869,7 +6874,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
@@ -7169,7 +7174,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -7476,7 +7481,7 @@ function FilterPathComponent(props: {
                                     <Entypo
                                       name="edit"
                                       size={16}
-                                      color={colors.slate[400]}
+                                      color={bs_theme.text}
                                     />
                                   </Pressable>
                                 ) : (
@@ -7780,7 +7785,7 @@ function FilterPathComponent(props: {
                               <Entypo
                                 name="edit"
                                 size={16}
-                                color={colors.slate[400]}
+                                color={bs_theme.text}
                               />
                             </Pressable>
                           ) : (
