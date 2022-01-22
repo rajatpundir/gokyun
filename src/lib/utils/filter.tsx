@@ -2278,6 +2278,9 @@ function FilterPathComponent(props: {
       case "udecimal": {
         return new Decimal(0).toString();
       }
+      case "other": {
+        return new Decimal(-1).toString();
+      }
     }
     return "";
   });
@@ -2371,6 +2374,30 @@ function FilterPathComponent(props: {
               }
             }
           }
+          case "other": {
+            const val = props.filter_path.value[1];
+            const op = val[0];
+            switch (op) {
+              case "==":
+              case "!=": {
+                const value = val[1];
+                if (Array.isArray(value)) {
+                  return value[0];
+                } else {
+                  return apply(value.toString(), (it) => {
+                    if (it === "-1") {
+                      return "";
+                    }
+                    return it;
+                  });
+                }
+              }
+              default: {
+                const _exhaustiveCheck: never = op;
+                return _exhaustiveCheck;
+              }
+            }
+          }
         }
       }
       return default_value_1;
@@ -2394,6 +2421,9 @@ function FilterPathComponent(props: {
       case "idecimal":
       case "udecimal": {
         return new Decimal(0).toString();
+      }
+      case "other": {
+        return new Decimal(-1).toString();
       }
     }
     return "";
@@ -2472,6 +2502,9 @@ function FilterPathComponent(props: {
                 return _exhaustiveCheck;
               }
             }
+          }
+          case "other": {
+            return "";
           }
         }
       }
@@ -7642,25 +7675,81 @@ function FilterPathComponent(props: {
                             } else {
                               return (
                                 <Input
-                                  defaultValue={value.toString()}
+                                  flex={1}
+                                  ml={"2"}
+                                  size={"md"}
+                                  placeholder={props.filter_path.label}
+                                  value={local_val_1}
+                                  isInvalid={has_errors_1}
                                   keyboardType={get_decimal_keyboard_type(
                                     "u64"
                                   )}
-                                  onChangeText={(x) =>
-                                    props.dispatch([
-                                      "filters",
-                                      props.filter,
-                                      "replace",
-                                      apply(props.filter_path, (it) => {
-                                        it.value = [
-                                          field_struct_name,
-                                          [op, get_validated_decimal("u64", x)],
-                                          other_struct,
-                                        ];
-                                        return it;
-                                      }),
-                                    ])
+                                  onChangeText={(x) => {
+                                    try {
+                                      set_local_val_1(x);
+                                      const val = get_validated_decimal(
+                                        "u64",
+                                        x
+                                      );
+                                      set_has_errors_1(false);
+                                      props.dispatch([
+                                        "filters",
+                                        props.filter,
+                                        "replace",
+                                        apply(props.filter_path, (it) => {
+                                          it.value = [
+                                            field_struct_name,
+                                            [op, val],
+                                            other_struct,
+                                          ];
+                                          return it;
+                                        }),
+                                      ]);
+                                    } catch (e) {
+                                      set_has_errors_1(true);
+                                    }
+                                  }}
+                                  InputRightElement={
+                                    local_val_1 !== default_value_1 &&
+                                    local_val_1 !== "" ? (
+                                      <Pressable
+                                        px={1}
+                                        onPress={() => {
+                                          try {
+                                            const val = get_validated_decimal(
+                                              "u64",
+                                              default_value_1
+                                            );
+                                            set_local_val_1(default_value_1);
+                                            set_has_errors_1(false);
+                                            props.dispatch([
+                                              "filters",
+                                              props.filter,
+                                              "replace",
+                                              apply(props.filter_path, (it) => {
+                                                it.value = [
+                                                  field_struct_name,
+                                                  [op, val],
+                                                  other_struct,
+                                                ];
+                                                return it;
+                                              }),
+                                            ]);
+                                          } catch (e) {}
+                                        }}
+                                      >
+                                        <MaterialIcons
+                                          name="clear"
+                                          size={24}
+                                          color={bs_theme.placeholder}
+                                        />
+                                      </Pressable>
+                                    ) : (
+                                      <></>
+                                    )
                                   }
+                                  borderColor={bs_theme.placeholder}
+                                  placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
                             }

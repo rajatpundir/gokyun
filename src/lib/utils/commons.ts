@@ -1064,6 +1064,10 @@ export function get_validated_decimal(
       return new Decimal(x);
     case "udecimal":
       return new Decimal(x).abs();
+    default: {
+      const _exhaustiveCheck: never = field_struct_name;
+      return _exhaustiveCheck;
+    }
   }
 }
 
