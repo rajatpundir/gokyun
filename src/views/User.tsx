@@ -1,6 +1,5 @@
 import React from "react";
-import { Pressable } from "react-native";
-import { Column, Row, Text } from "native-base";
+import { Column, Pressable, Row, Text } from "native-base";
 import { ComponentViews } from "../lib/utils/component";
 import { Template } from "../lib/utils/templates";
 import { arrow } from "../lib/utils/prelude";
@@ -42,12 +41,13 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
           if (!props.selected) {
             return (
               <Pressable
+                px={"4"}
+                py={"2"}
+                rounded={"sm"}
+                backgroundColor={theme.primary}
                 onPress={props.update_parent_values}
-                style={tw.style(["px-2", "py-1", "rounded", "border"], {
-                  borderColor: theme.placeholder,
-                })}
               >
-                <Text fontWeight={"bold"}>OK</Text>
+                <Text bold>OK</Text>
               </Pressable>
             );
           }

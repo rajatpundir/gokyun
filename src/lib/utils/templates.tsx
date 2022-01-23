@@ -1,9 +1,10 @@
 import React from "react";
-import { Label, Field, Check, FieldOptions } from "./fields";
+import { Label, Field, Check } from "./fields";
 import { apply, arrow } from "./prelude";
 import { get_flattened_path, PathString, Struct } from "./variable";
 import { Action, get_label, State } from "./commons";
 import { Row, Column } from "native-base";
+import { FieldOptions } from "./variants";
 
 type CommonProps = {
   struct: Struct;
@@ -17,6 +18,7 @@ type CommonProps = {
         placeholder?: string;
         checks?: ReadonlyArray<{ name: string; message: string }>;
         options?: FieldOptions;
+        variant?: string;
       }
   >;
 };

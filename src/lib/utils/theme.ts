@@ -6,6 +6,8 @@ import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { extendTheme } from "native-base";
 import { colors } from "./tailwind";
 
+const color_scheme = "red";
+
 export const theme = {
   primary: colors.red[600],
   accent: colors.sky[600],
@@ -55,8 +57,87 @@ export const theme_rnp: ReactNativePaper.Theme = {
   },
 };
 
-export const theme_nb = extendTheme({
+const empty_theme = extendTheme({});
+type CustomThemeType = typeof empty_theme;
+export const theme_nb: CustomThemeType = extendTheme({
   config: {
     initialColorMode: "dark",
   },
+  components: {
+    Progress: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Radio: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Switch: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Tabs: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    AppBar: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Alert: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Badge: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Button: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    Checkbox: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    CircularProgress: {
+      defaultProps: { colorScheme: get_color_scheme(color_scheme) },
+    },
+    Code: { defaultProps: { colorScheme: get_color_scheme(color_scheme) } },
+    FAB: {
+      defaultProps: {
+        colorScheme: get_color_scheme(color_scheme),
+        renderInPortal: false,
+      },
+    },
+  },
 });
+
+export function get_color_scheme(
+  color: keyof typeof colors
+): keyof CustomThemeType["colors"] {
+  switch (color) {
+    case "slate":
+      return "blueGray";
+    case "gray":
+      return "coolGray";
+    case "zinc":
+      // values for dark are reversed
+      return "dark";
+    case "neutral":
+      return "trueGray";
+    case "stone":
+      return "warmGray";
+    case "red":
+      return "red";
+    case "orange":
+      return "orange";
+    case "amber":
+      return "amber";
+    case "yellow":
+      return "yellow";
+    case "lime":
+      return "lime";
+    case "green":
+      return "green";
+    case "emerald":
+      return "emerald";
+    case "teal":
+      return "teal";
+    case "cyan":
+      return "cyan";
+    case "sky":
+      return "lightBlue";
+    case "blue":
+      return "blue";
+    case "indigo":
+      return "indigo";
+    case "violet":
+      return "violet";
+    case "purple":
+      return "purple";
+    case "fuchsia":
+      return "fuchsia";
+    case "pink":
+      return "pink";
+    case "rose":
+      return "rose";
+    default: {
+      const _exhaustiveCheck: never = color;
+      return _exhaustiveCheck;
+    }
+  }
+}

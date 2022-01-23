@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import { Pressable } from "react-native";
-
 import { Option } from "prelude-ts";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import { useNavigation } from "@react-navigation/core";
@@ -9,9 +7,9 @@ import { useNavigation } from "@react-navigation/core";
 import { getState, subscribe } from "../../../../../lib/utils/store";
 import { get_structs } from "../../../../../lib/utils/schema";
 import { Struct } from "../../../../../lib/utils/variable";
-import { Column, Fab, Icon, Text } from "native-base";
-import { theme } from "../../../../../lib/utils/theme";
+import { Column, Fab, Icon, Pressable, Text } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
+import { get_color_scheme } from "../../../../../lib/utils/theme";
 
 // Show a flat list with a bunch of string, a button at top right to open a modal to add new string
 // Some mechanism to update and delete this list
@@ -78,12 +76,12 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
       <A /> */}
       </Column>
       <Fab
-        m={"2"}
         onPress={() => navigation.navigate("Test", { id: -1 })}
-        renderInPortal={false}
-        placement="bottom-right"
         icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
-        backgroundColor={theme.primary}
+        placement="bottom-right"
+        size={"md"}
+        p={"4"}
+        m={"2"}
       />
     </>
   );

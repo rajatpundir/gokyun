@@ -17,9 +17,8 @@ import {
 import { ListAction } from "./list";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Pressable } from "react-native";
 import { colors } from "./tailwind";
-import { Row, Text, Input } from "native-base";
+import { Row, Text, Input, Pressable } from "native-base";
 
 export type ComponentViews = Record<
   string,
@@ -378,23 +377,15 @@ export function ModalHeader(props: { title: string }): JSX.Element {
   const navigation = useNavigation();
   return (
     <Pressable
+      flexDirection={"row"}
+      justifyContent={"flex-start"}
+      alignItems={"center"}
+      px={"2"}
+      py={"4"}
       onPress={navigation.goBack}
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-      }}
     >
       <Ionicons name="arrow-back-outline" size={26} color={colors.zinc[200]} />
-      <Text
-        style={{
-          fontSize: 20,
-          fontWeight: "bold",
-          paddingHorizontal: 5,
-        }}
-      >
+      <Text bold px={"2"} fontSize={"lg"}>
         {props.title}
       </Text>
     </Pressable>

@@ -11,7 +11,7 @@ import Checkbox from "expo-checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { PathPermission, get_permissions } from "./permissions";
-import { apply, unwrap, Result, arrow, fold } from "./prelude";
+import { apply, unwrap, arrow } from "./prelude";
 import { Filter, FilterPath } from "./db";
 import {
   Action,
