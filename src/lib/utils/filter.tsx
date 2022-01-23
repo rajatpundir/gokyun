@@ -4129,7 +4129,14 @@ function FilterPathComponent(props: {
                                               field_struct_name,
                                               default_value_1
                                             );
-                                            set_local_val_1(default_value_1);
+                                            set_local_val_1(
+                                              apply(default_value_1, (it) => {
+                                                if (it === "0") {
+                                                  return "";
+                                                }
+                                                return it;
+                                              })
+                                            );
                                             set_has_errors_1(false);
                                             props.dispatch([
                                               "filters",
@@ -4422,7 +4429,15 @@ function FilterPathComponent(props: {
                                                       default_value_1
                                                     );
                                                   set_local_val_1(
-                                                    default_value_1
+                                                    apply(
+                                                      default_value_1,
+                                                      (it) => {
+                                                        if (it === "0") {
+                                                          return "";
+                                                        }
+                                                        return it;
+                                                      }
+                                                    )
                                                   );
                                                   set_has_errors_1(false);
                                                   props.dispatch([
@@ -4728,7 +4743,15 @@ function FilterPathComponent(props: {
                                                       default_value_2
                                                     );
                                                   set_local_val_2(
-                                                    default_value_2
+                                                    apply(
+                                                      default_value_2,
+                                                      (it) => {
+                                                        if (it === "0") {
+                                                          return "";
+                                                        }
+                                                        return it;
+                                                      }
+                                                    )
                                                   );
                                                   set_has_errors_2(false);
                                                   props.dispatch([
