@@ -6,10 +6,10 @@ import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { extendTheme } from "native-base";
 import { colors } from "./tailwind";
 
-const color_scheme = "red";
+const color_scheme = "teal";
 
 export const theme = {
-  primary: colors.red[600],
+  primary: colors.teal[500],
   accent: colors.sky[600],
   background: colors.zinc[900],
   card: colors.zinc[900],
