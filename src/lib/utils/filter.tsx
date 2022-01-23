@@ -1773,7 +1773,7 @@ export function FilterComponent(props: {
         >
           <Text bold>Fields</Text>
           <Pressable
-            onPress={() => bottomSheetModalRef.current?.close()}
+            onPress={() => bottomSheetModalRef.current?.forceClose()}
             borderColor={bs_theme.primary}
             borderWidth={"1"}
             borderRadius={"xs"}
@@ -3337,7 +3337,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -3349,7 +3349,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -3407,7 +3407,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {
@@ -3623,7 +3623,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef1.current?.close();
+                                          bottomSheetModalRef1.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -3635,7 +3635,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.close()
+                                          bottomSheetModalRef1.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -3701,7 +3701,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef1.current?.close();
+                                            bottomSheetModalRef1.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -3913,7 +3913,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef2.current?.close();
+                                          bottomSheetModalRef2.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -3925,7 +3925,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.close()
+                                          bottomSheetModalRef2.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -3991,7 +3991,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef2.current?.close();
+                                            bottomSheetModalRef2.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -4239,7 +4239,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -4251,7 +4251,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -4314,7 +4314,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {
@@ -4548,7 +4548,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef1.current?.close();
+                                          bottomSheetModalRef1.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -4560,7 +4560,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.close()
+                                          bottomSheetModalRef1.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -4631,7 +4631,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef1.current?.close();
+                                            bottomSheetModalRef1.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -4862,7 +4862,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef2.current?.close();
+                                          bottomSheetModalRef2.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -4874,7 +4874,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.close()
+                                          bottomSheetModalRef2.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -4945,7 +4945,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef2.current?.close();
+                                            bottomSheetModalRef2.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -5108,7 +5108,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -5120,7 +5120,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -5176,7 +5176,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {
@@ -5355,7 +5355,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -5367,7 +5367,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -5423,7 +5423,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {
@@ -5606,7 +5606,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef1.current?.close();
+                                          bottomSheetModalRef1.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -5618,7 +5618,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.close()
+                                          bottomSheetModalRef1.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -5682,7 +5682,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef1.current?.close();
+                                            bottomSheetModalRef1.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -5862,7 +5862,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef2.current?.close();
+                                          bottomSheetModalRef2.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -5874,7 +5874,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.close()
+                                          bottomSheetModalRef2.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -5938,7 +5938,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef2.current?.close();
+                                            bottomSheetModalRef2.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -6122,7 +6122,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -6134,7 +6134,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -6190,7 +6190,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {
@@ -6372,7 +6372,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef1.current?.close();
+                                          bottomSheetModalRef1.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -6384,7 +6384,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.close()
+                                          bottomSheetModalRef1.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -6448,7 +6448,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef1.current?.close();
+                                            bottomSheetModalRef1.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -6627,7 +6627,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef2.current?.close();
+                                          bottomSheetModalRef2.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -6639,7 +6639,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.close()
+                                          bottomSheetModalRef2.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -6703,7 +6703,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef2.current?.close();
+                                            bottomSheetModalRef2.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -6939,7 +6939,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -6951,7 +6951,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -7007,7 +7007,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {
@@ -7241,7 +7241,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef1.current?.close();
+                                          bottomSheetModalRef1.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -7253,7 +7253,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef1.current?.close()
+                                          bottomSheetModalRef1.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -7317,7 +7317,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef1.current?.close();
+                                            bottomSheetModalRef1.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -7548,7 +7548,7 @@ function FilterPathComponent(props: {
                                               return it;
                                             }),
                                           ]);
-                                          bottomSheetModalRef2.current?.close();
+                                          bottomSheetModalRef2.current?.forceClose();
                                         }}
                                         backgroundColor={bs_theme.primary}
                                         borderRadius={"xs"}
@@ -7560,7 +7560,7 @@ function FilterPathComponent(props: {
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
-                                          bottomSheetModalRef2.current?.close()
+                                          bottomSheetModalRef2.current?.forceClose()
                                         }
                                         borderColor={bs_theme.primary}
                                         borderWidth={"1"}
@@ -7624,7 +7624,7 @@ function FilterPathComponent(props: {
                                                 return it;
                                               }),
                                             ]);
-                                            bottomSheetModalRef2.current?.close();
+                                            bottomSheetModalRef2.current?.forceClose();
                                           }}
                                         >
                                           {arrow(() => {
@@ -7853,7 +7853,7 @@ function FilterPathComponent(props: {
                                         return it;
                                       }),
                                     ]);
-                                    bottomSheetModalRef1.current?.close();
+                                    bottomSheetModalRef1.current?.forceClose();
                                   }}
                                   backgroundColor={bs_theme.primary}
                                   borderRadius={"xs"}
@@ -7865,7 +7865,7 @@ function FilterPathComponent(props: {
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
-                                    bottomSheetModalRef1.current?.close()
+                                    bottomSheetModalRef1.current?.forceClose()
                                   }
                                   borderColor={bs_theme.primary}
                                   borderWidth={"1"}
@@ -7927,7 +7927,7 @@ function FilterPathComponent(props: {
                                           return it;
                                         }),
                                       ]);
-                                      bottomSheetModalRef1.current?.close();
+                                      bottomSheetModalRef1.current?.forceClose();
                                     }}
                                   >
                                     {arrow(() => {

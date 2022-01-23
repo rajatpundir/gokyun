@@ -19,6 +19,7 @@ import { get_path } from "../lib/utils/commons";
 import { tw } from "../lib/utils/tailwind";
 import { theme } from "../lib/utils/theme";
 import UserViews from "./User";
+import { RenderCustomFieldProps, RenderListElement } from "../lib/utils/list";
 
 const views = {
   User: UserViews,
@@ -118,8 +119,8 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                     <OtherComponent {...props} view={views.User["Default"]} />
                   ),
                   {},
-                ],
-                render_custom_fields: (props) => (
+                ] as RenderListElement,
+                render_custom_fields: (props: RenderCustomFieldProps) => (
                   <SearchBar
                     {...props}
                     placeholder="Nickname"

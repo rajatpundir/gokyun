@@ -486,7 +486,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           >
             <Text bold>VIEW</Text>
             <Pressable
-              onPress={() => bsm_view_ref.current?.close()}
+              onPress={() => bsm_view_ref.current?.forceClose()}
               borderColor={bs_theme.primary}
               borderWidth={"1"}
               borderRadius={"xs"}
@@ -500,7 +500,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Pressable
               onPress={() => {
                 if (state.layout !== "") {
-                  bsm_view_ref.current?.close();
+                  bsm_view_ref.current?.forceClose();
                   dispatch(["layout", ""]);
                 }
               }}
@@ -527,7 +527,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               <Pressable
                 onPress={() => {
                   if (state.layout !== layout) {
-                    bsm_view_ref.current?.close();
+                    bsm_view_ref.current?.forceClose();
                     dispatch(["layout", layout]);
                   }
                 }}
