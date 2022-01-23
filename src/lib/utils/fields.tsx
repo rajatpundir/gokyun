@@ -18,6 +18,8 @@ import {
   State,
   get_path,
   get_label,
+  get_decimal_keyboard_type,
+  get_validated_decimal,
 } from "./commons";
 import {
   compare_paths,
@@ -72,7 +74,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "str",
+                      type: value.type,
                       value: x,
                     };
                     return it;
@@ -93,7 +95,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
-                          type: "str",
+                          type: value.type,
                           value: default_value,
                         };
                         return it;
@@ -150,7 +152,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "lstr",
+                      type: value.type,
                       value: x,
                     };
                     return it;
@@ -170,7 +172,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
-                          type: "lstr",
+                          type: value.type,
                           value: default_value,
                         };
                         return it;
@@ -227,7 +229,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "clob",
+                      type: value.type,
                       value: x,
                     };
                     return it;
@@ -247,7 +249,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
                       "value",
                       apply(props.path, (it) => {
                         it.path[1][1] = {
-                          type: "clob",
+                          type: value.type,
                           value: default_value,
                         };
                         return it;
@@ -291,7 +293,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "i32") {
     return arrow(() => {
@@ -303,21 +305,17 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"numbers-and-punctuation"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = Decimal.clamp(
-                  new Decimal(x || "0").truncated(),
-                  -2147483648,
-                  2147483648
-                );
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "i32",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -328,22 +326,35 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "i32",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -381,7 +392,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "u32") {
     return arrow(() => {
@@ -393,21 +404,17 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"number-pad"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = Decimal.clamp(
-                  new Decimal(x || "0").truncated(),
-                  0,
-                  2147483648
-                );
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "u32",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -418,22 +425,35 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "u32",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -471,7 +491,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "i64") {
     return arrow(() => {
@@ -483,21 +503,17 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"numbers-and-punctuation"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = Decimal.clamp(
-                  new Decimal(x || "0").truncated(),
-                  new Decimal("-9223372036854775807"),
-                  new Decimal("9223372036854775807")
-                );
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "i64",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -508,22 +524,35 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "i64",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -561,7 +590,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "u64") {
     return arrow(() => {
@@ -573,21 +602,17 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"number-pad"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = Decimal.clamp(
-                  new Decimal(x || "0").truncated(),
-                  0,
-                  new Decimal("9223372036854775807")
-                );
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "u64",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -598,22 +623,35 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "u64",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -651,7 +689,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "idouble") {
     return arrow(() => {
@@ -663,17 +701,17 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"numbers-and-punctuation"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = new Decimal(x || "0");
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "idouble",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -684,22 +722,35 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "idouble",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -737,7 +788,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "udouble") {
     return arrow(() => {
@@ -749,17 +800,17 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"numbers-and-punctuation"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = new Decimal(x || "0").abs();
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "udouble",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -770,22 +821,35 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "udouble",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -823,7 +887,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "idecimal") {
     return arrow(() => {
@@ -835,17 +899,17 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"numbers-and-punctuation"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = new Decimal(x || "0");
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "idecimal",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -856,22 +920,35 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "idecimal",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -909,7 +986,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
-  const default_value = new Decimal(0);
+  const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "udecimal") {
     return arrow(() => {
@@ -921,17 +998,17 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
             placeholder={props.placeholder}
             value={local_val}
             isInvalid={has_errors || props.violates_checks}
-            keyboardType={"numbers-and-punctuation"}
+            keyboardType={get_decimal_keyboard_type(value.type)}
             onChangeText={(x) => {
               try {
                 set_local_val(x);
-                const val = new Decimal(x || "0").abs();
+                const val = get_validated_decimal(value.type, x);
                 set_has_errors(false);
                 props.dispatch([
                   "value",
                   apply(props.path, (it) => {
                     it.path[1][1] = {
-                      type: "udecimal",
+                      type: value.type,
                       value: val,
                     };
                     return it;
@@ -942,22 +1019,35 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
               }
             }}
             InputRightElement={
-              local_val !== default_value.toString() && local_val !== "" ? (
+              local_val !== default_value && local_val !== "" ? (
                 <Pressable
                   px={1}
                   onPress={() => {
-                    set_local_val(default_value.toString());
-                    set_has_errors(false);
-                    props.dispatch([
-                      "value",
-                      apply(props.path, (it) => {
-                        it.path[1][1] = {
-                          type: "udecimal",
-                          value: default_value,
-                        };
-                        return it;
-                      }),
-                    ]);
+                    try {
+                      const val = get_validated_decimal(
+                        value.type,
+                        default_value
+                      );
+                      set_local_val(
+                        apply(default_value, (it) => {
+                          if (it === "0") {
+                            return "";
+                          }
+                          return it;
+                        })
+                      );
+                      set_has_errors(false);
+                      props.dispatch([
+                        "value",
+                        apply(props.path, (it) => {
+                          it.path[1][1] = {
+                            type: value.type,
+                            value: val,
+                          };
+                          return it;
+                        }),
+                      ]);
+                    } catch (e) {}
                   }}
                 >
                   <MaterialIcons
@@ -997,7 +1087,7 @@ function Bool(props: ComponentProps & BoolFieldProps): JSX.Element {
               "value",
               apply(props.path, (it) => {
                 it.path[1][1] = {
-                  type: "bool",
+                  type: value.type,
                   value: x,
                 };
                 return it;
@@ -1041,7 +1131,7 @@ function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
                     "value",
                     apply(props.path, (it) => {
                       it.path[1][1] = {
-                        type: "date",
+                        type: value.type,
                         value: date || new Date(),
                       };
                       return it;
@@ -1087,7 +1177,7 @@ function Time_Field(props: ComponentProps & TimeFieldProps): JSX.Element {
                     "value",
                     apply(props.path, (it) => {
                       it.path[1][1] = {
-                        type: "time",
+                        type: value.type,
                         value: date || new Date(),
                       };
                       return it;
@@ -1166,7 +1256,7 @@ function Timestamp_Field(
                         "value",
                         apply(props.path, (it) => {
                           it.path[1][1] = {
-                            type: "timestamp",
+                            type: value.type,
                             value: new Date(date.getTime()),
                           };
                           return it;
