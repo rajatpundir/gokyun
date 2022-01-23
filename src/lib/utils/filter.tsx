@@ -32,8 +32,6 @@ import {
 import { bs_theme } from "./theme";
 import { get_decimal_keyboard_type, get_validated_decimal } from "./commons";
 
-// Fix Checkbox
-
 function op_to_string(op: string): string {
   switch (op) {
     case "==":
@@ -342,6 +340,7 @@ export function FilterComponent(props: {
                       mr={"1"}
                       value={String(active)}
                       onChange={() => toggle(!active)}
+                      accessibilityLabel={""}
                       colorScheme={active ? bs_theme.primary : undefined}
                     />
                     <Pressable onPress={() => toggle(!active)}>
@@ -850,6 +849,7 @@ export function FilterComponent(props: {
                       mr={"1"}
                       value={String(active)}
                       onChange={() => toggle(!active)}
+                      accessibilityLabel={""}
                       colorScheme={active ? bs_theme.primary : undefined}
                     />
                     <Pressable onPress={() => toggle(!active)}>
@@ -1342,6 +1342,7 @@ export function FilterComponent(props: {
                       mr={"1"}
                       value={String(active)}
                       onChange={() => toggle(!active)}
+                      accessibilityLabel={""}
                       colorScheme={active ? bs_theme.primary : undefined}
                     />
                     <Pressable onPress={() => toggle(!active)}>
@@ -2539,6 +2540,7 @@ function FilterPathComponent(props: {
               mr={"1"}
               value={String(props.filter_path.active)}
               onChange={() => toggle(!props.filter_path.active)}
+              accessibilityLabel={""}
               colorScheme={
                 props.filter_path.active ? bs_theme.primary : undefined
               }
@@ -5028,6 +5030,7 @@ function FilterPathComponent(props: {
                                       }),
                                     ])
                                   }
+                                  accessibilityLabel={""}
                                   colorScheme={
                                     value ? bs_theme.primary : undefined
                                   }

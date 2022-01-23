@@ -661,7 +661,8 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 mx={"1"}
                 value={String(state.active)}
                 onChange={() => dispatch(["active", !state.active])}
-                colorScheme={state.active ? bs_theme.primary : undefined}
+                accessibilityLabel={""}
+                colorScheme={state.active ? "lightBlue" : undefined}
               />
             </Row>
 
@@ -682,6 +683,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 onChange={(x) =>
                   dispatch(["level", x ? undefined : new Decimal(0)])
                 }
+                accessibilityLabel={""}
                 colorScheme={!state.level ? bs_theme.primary : undefined}
               />
             </Row>
@@ -706,7 +708,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             renderItem={(list_item) => {
               return (
                 <FilterComponent
-                  key={list_item.item.index}
+                  key={list_item.item.index.toString()}
                   init_filter={state.init_filter}
                   filter={list_item.item}
                   dispatch={dispatch}
