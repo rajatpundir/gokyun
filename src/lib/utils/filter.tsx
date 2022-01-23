@@ -20,15 +20,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import { compare_paths, get_flattened_path } from "./variable";
 import { tw } from "./tailwind";
-import {
-  Column,
-  Pressable,
-  Row,
-  Text,
-  Input,
-  Checkbox,
-  Menu,
-} from "native-base";
+import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
+import Checkbox from "expo-checkbox";
 import { bs_theme } from "./theme";
 import { get_decimal_keyboard_type, get_validated_decimal } from "./commons";
 
@@ -337,11 +330,10 @@ export function FilterComponent(props: {
                 >
                   <Row>
                     <Checkbox
-                      mr={"1"}
-                      value={String(active)}
-                      onChange={() => toggle(!active)}
-                      accessibilityLabel={""}
-                      colorScheme={active ? bs_theme.primary : undefined}
+                      value={active}
+                      onValueChange={() => toggle(!active)}
+                      color={active ? bs_theme.primary : undefined}
+                      style={tw.style(["mr-1"], {})}
                     />
                     <Pressable onPress={() => toggle(!active)}>
                       <Text color={bs_theme.text}>Unique ID</Text>
@@ -846,11 +838,10 @@ export function FilterComponent(props: {
                 >
                   <Row>
                     <Checkbox
-                      mr={"1"}
-                      value={String(active)}
-                      onChange={() => toggle(!active)}
-                      accessibilityLabel={""}
-                      colorScheme={active ? bs_theme.primary : undefined}
+                      value={active}
+                      onValueChange={() => toggle(!active)}
+                      color={active ? bs_theme.primary : undefined}
+                      style={tw.style(["mr-1"], {})}
                     />
                     <Pressable onPress={() => toggle(!active)}>
                       <Text color={bs_theme.text}>Created</Text>
@@ -1339,11 +1330,10 @@ export function FilterComponent(props: {
                 >
                   <Row>
                     <Checkbox
-                      mr={"1"}
-                      value={String(active)}
-                      onChange={() => toggle(!active)}
-                      accessibilityLabel={""}
-                      colorScheme={active ? bs_theme.primary : undefined}
+                      value={active}
+                      onValueChange={() => toggle(!active)}
+                      color={active ? bs_theme.primary : undefined}
+                      style={tw.style(["mr-1"], {})}
                     />
                     <Pressable onPress={() => toggle(!active)}>
                       <Text color={bs_theme.text}>Updated</Text>
@@ -2537,13 +2527,10 @@ function FilterPathComponent(props: {
         <Row justifyContent={"space-between"} alignItems={"center"} my={"1"}>
           <Row>
             <Checkbox
-              mr={"1"}
-              value={String(props.filter_path.active)}
-              onChange={() => toggle(!props.filter_path.active)}
-              accessibilityLabel={""}
-              colorScheme={
-                props.filter_path.active ? bs_theme.primary : undefined
-              }
+              value={props.filter_path.active}
+              onValueChange={() => toggle(!props.filter_path.active)}
+              color={props.filter_path.active ? bs_theme.primary : undefined}
+              style={tw.style(["mr-1"], {})}
             />
             <Pressable onPress={() => toggle(!props.filter_path.active)}>
               <Text color={bs_theme.text}>{props.filter_path.label}</Text>
@@ -5017,9 +5004,8 @@ function FilterPathComponent(props: {
                             } else {
                               return (
                                 <Checkbox
-                                  ml={"2"}
-                                  value={String(value)}
-                                  onChange={(x: boolean) =>
+                                  value={value}
+                                  onValueChange={(x: boolean) =>
                                     props.dispatch([
                                       "filters",
                                       props.filter,
@@ -5030,10 +5016,8 @@ function FilterPathComponent(props: {
                                       }),
                                     ])
                                   }
-                                  accessibilityLabel={""}
-                                  colorScheme={
-                                    value ? bs_theme.primary : undefined
-                                  }
+                                  color={value ? bs_theme.primary : undefined}
+                                  style={tw.style(["ml-2"], {})}
                                 />
                               );
                             }

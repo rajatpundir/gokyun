@@ -17,7 +17,8 @@ import {
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
-import { Column, Row, Text, Pressable, Checkbox } from "native-base";
+import { Column, Row, Text, Pressable } from "native-base";
+import Checkbox from "expo-checkbox";
 import { ModalHeader } from "./component";
 import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
@@ -658,11 +659,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Text>Active</Text>
               </Pressable>
               <Checkbox
-                mx={"1"}
-                value={String(state.active)}
-                onChange={() => dispatch(["active", !state.active])}
-                accessibilityLabel={""}
-                colorScheme={state.active ? "lightBlue" : undefined}
+                value={state.active}
+                onValueChange={() => dispatch(["active", !state.active])}
+                color={state.active ? bs_theme.primary : undefined}
+                style={tw.style(["mx-1"], {})}
               />
             </Row>
 
@@ -678,13 +678,12 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Text>Unsaved</Text>
               </Pressable>
               <Checkbox
-                mx={"1"}
-                value={String(!state.level ? true : false)}
-                onChange={(x) =>
+                value={!state.level ? true : false}
+                onValueChange={(x) =>
                   dispatch(["level", x ? undefined : new Decimal(0)])
                 }
-                accessibilityLabel={""}
-                colorScheme={!state.level ? bs_theme.primary : undefined}
+                color={!state.level ? bs_theme.primary : undefined}
+                style={tw.style(["mx-1"], {})}
               />
             </Row>
             <Pressable
