@@ -18,7 +18,7 @@ import {
   BottomSheetModal,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { compare_paths } from "./variable";
+import { compare_paths, get_flattened_path } from "./variable";
 import { tw } from "./tailwind";
 import {
   Column,
@@ -31,6 +31,8 @@ import {
 } from "native-base";
 import { bs_theme } from "./theme";
 import { get_decimal_keyboard_type, get_validated_decimal } from "./commons";
+
+// Fix Checkbox
 
 function op_to_string(op: string): string {
   switch (op) {
@@ -77,11 +79,14 @@ export function SortComponent(props: {
           }
           return 0;
         })
-        .map((filter_path, index) => {
+        .map((filter_path) => {
           const ordering = filter_path.ordering;
           if (ordering !== undefined) {
             return (
-              <Row key={index} py={"0.5"}>
+              <Row
+                key={get_flattened_path(filter_path.path).join(".")}
+                py={"0.5"}
+              >
                 <Column>
                   <Pressable
                     onPress={() => props.dispatch(["sort", "up", filter_path])}
@@ -159,7 +164,7 @@ export function SortComponentFields(props: {
       {props.init_filter.filter_paths
         .toArray()
         .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
-        .map((filter_path, index) => {
+        .map((filter_path) => {
           const active = filter_path.ordering !== undefined;
           const toggle = (x: boolean) => {
             if (x) {
@@ -185,7 +190,7 @@ export function SortComponentFields(props: {
           };
           return (
             <Pressable
-              key={index}
+              key={get_flattened_path(filter_path.path).join(".")}
               onPress={() => toggle(!active)}
               flex={1}
               flexDirection={"row"}
@@ -1746,10 +1751,10 @@ export function FilterComponent(props: {
         {props.filter.filter_paths
           .toArray()
           .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
-          .map((x, index) => {
+          .map((x) => {
             return (
               <FilterPathComponent
-                key={index}
+                key={get_flattened_path(x.path).join(".")}
                 init_filter={props.init_filter}
                 filter_path={x}
                 filter={props.filter}
@@ -1907,7 +1912,7 @@ export function FilterComponent(props: {
             .sort((a, b) =>
               a.label > b.label ? 1 : a.label < b.label ? -1 : 0
             )
-            .map((filter_path, index) => {
+            .map((filter_path) => {
               const field_struct_type = filter_path.value[0];
               const active = props.filter.filter_paths.anyMatch(
                 (x) => x.equals(filter_path) && x.value[1] !== undefined
@@ -2010,7 +2015,7 @@ export function FilterComponent(props: {
               };
               return (
                 <Pressable
-                  key={index}
+                  key={get_flattened_path(filter_path.path).join(".")}
                   onPress={() => toggle(!active)}
                   flex={1}
                   flexDirection={"row"}
@@ -3385,7 +3390,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
@@ -3674,8 +3681,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -3964,8 +3971,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -4283,7 +4290,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
@@ -4587,8 +4596,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -4893,8 +4902,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -5129,7 +5138,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
@@ -5374,7 +5385,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
@@ -5628,8 +5641,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -5884,8 +5897,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -6139,7 +6152,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
@@ -6392,8 +6407,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -6647,8 +6662,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -6954,7 +6969,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
@@ -7259,8 +7276,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -7566,8 +7583,8 @@ function FilterPathComponent(props: {
                                         }
                                         return false;
                                       })}
-                                    keyExtractor={(_, index) =>
-                                      index.toString()
+                                    keyExtractor={(x) =>
+                                      get_flattened_path(x.path).join(".")
                                     }
                                     renderItem={(list_item) => {
                                       return (
@@ -7871,7 +7888,9 @@ function FilterPathComponent(props: {
                                   }
                                   return false;
                                 })}
-                              keyExtractor={(_, index) => index.toString()}
+                              keyExtractor={(x) =>
+                                get_flattened_path(x.path).join(".")
+                              }
                               renderItem={(list_item) => {
                                 return (
                                   <Pressable
