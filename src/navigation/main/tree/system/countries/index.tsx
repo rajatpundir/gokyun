@@ -1,21 +1,17 @@
 import * as React from "react";
 
-import { Platform, StyleSheet, StatusBar as ST, Pressable } from "react-native";
-
-import { StatusBar } from "expo-status-bar";
+import { Pressable } from "react-native";
 
 import { Option } from "prelude-ts";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import { useNavigation } from "@react-navigation/core";
 
 import { getState, subscribe } from "../../../../../lib/utils/store";
 import { get_structs } from "../../../../../lib/utils/schema";
 import { Struct } from "../../../../../lib/utils/variable";
-import { Column, Text } from "native-base";
-
-// Add a ContainerH and ContainerV components
-// Move StatusBar with default style into above
+import { Column, Fab, Icon, Text } from "native-base";
+import { theme } from "../../../../../lib/utils/theme";
+import { AntDesign } from "@expo/vector-icons";
 
 // Show a flat list with a bunch of string, a button at top right to open a modal to add new string
 // Some mechanism to update and delete this list
@@ -75,44 +71,20 @@ export default function Component(props: ParentNavigatorProps<"Countries">) {
   // }
 
   return (
-    <Column>
-      {/* <A />
+    <>
+      <Column>
+        {/* <A />
       <B />
       <A /> */}
-
-      {/* Floating button */}
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-      <Pressable
+      </Column>
+      <Fab
+        m={"2"}
         onPress={() => navigation.navigate("Test", { id: -1 })}
-        style={styles.touchableOpacityStyle}
-      >
-        <SimpleLineIcons name="plus" size={36} color="white" />
-      </Pressable>
-    </Column>
+        renderInPortal={false}
+        placement="bottom-right"
+        icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
+        backgroundColor={theme.primary}
+      />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: ST.currentHeight || 0,
-  },
-  item: {
-    backgroundColor: "#f9c2ff",
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 32,
-  },
-  touchableOpacityStyle: {
-    position: "absolute",
-    width: 50,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-    right: 30,
-    bottom: 30,
-  },
-});
