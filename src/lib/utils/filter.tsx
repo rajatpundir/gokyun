@@ -237,7 +237,7 @@ export function FilterComponent(props: {
           px={"2"}
           py={"0.5"}
         >
-          <Text>Field++</Text>
+          <Text bold>Field++</Text>
         </Pressable>
       </Row>
       <Column>
