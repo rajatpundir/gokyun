@@ -304,22 +304,26 @@ type RenderListItemProps = {
   update_parent_values: () => void;
 };
 
+export type RenderListElement = [
+  (props: RenderListItemProps) => JSX.Element,
+  Record<string, (props: RenderListItemProps) => JSX.Element>
+];
+
+export type RenderCustomFieldProps = {
+  init_filter: Filter;
+  filters: HashSet<Filter>;
+  dispatch: React.Dispatch<ListAction>;
+  show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
+  show_sorting: (props: { element: JSX.Element }) => JSX.Element;
+  show_filters: (props: { element: JSX.Element }) => JSX.Element;
+};
+
 export type CommonProps = {
   user_paths: Array<PathString>;
   borrows: Array<string>;
   limit: Decimal;
-  render_list_element: [
-    (props: RenderListItemProps) => JSX.Element,
-    Record<string, (props: RenderListItemProps) => JSX.Element>
-  ];
-  render_custom_fields: (props: {
-    init_filter: Filter;
-    filters: HashSet<Filter>;
-    dispatch: React.Dispatch<ListAction>;
-    show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
-    show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-    show_filters: (props: { element: JSX.Element }) => JSX.Element;
-  }) => JSX.Element;
+  render_list_element: RenderListElement;
+  render_custom_fields: (props: RenderCustomFieldProps) => JSX.Element;
   horizontal?: boolean;
 };
 
