@@ -49,7 +49,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
           "udecimal",
         ]}
       />
-      <Template {...props} type={"RLA"} fields={["bool", "date"]} />
+      <Template {...props} type={"RLB"} fields={["bool", "date"]} />
       <Template {...props} type={"RLA"} fields={["time", "timestamp"]} />
       <Template
         {...props}

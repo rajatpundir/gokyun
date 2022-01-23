@@ -227,8 +227,81 @@ function RLA(props: RLAProps): JSX.Element {
   );
 }
 
+type RLBProps = CommonProps;
+
+// Row - Label Beside
+function RLB(props: RLBProps): JSX.Element {
+  return (
+    <Row
+      space={2}
+      my={"1"}
+      justifyContent={"space-between"}
+      alignItems={"center"}
+    >
+      {props.fields
+        .map((x) => {
+          if (typeof x === "string") {
+            return { path: x };
+          } else if (Array.isArray(x)) {
+            return { path: x };
+          } else {
+            return x;
+          }
+        })
+        .filter((x) => get_label(props.state, x.path) !== "")
+        .map((field) => {
+          const key = apply(field.path, (it) => {
+            if (typeof it === "string") {
+              return it;
+            } else {
+              return get_flattened_path(it).join(".");
+            }
+          });
+          return (
+            <Column key={key} flex={1}>
+              <Row
+                flex={1}
+                justifyContent={"space-between"}
+                alignItems={"center"}
+              >
+                <Column flex={1}>
+                  <Label {...props} {...field} />
+                </Column>
+                <Field
+                  {...props}
+                  {...field}
+                  checks={field.checks ? field.checks.map((x) => x.name) : []}
+                />
+              </Row>
+              {arrow(() => {
+                if (field.checks) {
+                  return (
+                    <Row mx={"2"} my={"1"}>
+                      <Column flex={1}>
+                        {field.checks.map((x) => (
+                          <Row key={x.name}>
+                            <Check
+                              {...props}
+                              name={x.name}
+                              message={x.message}
+                            />
+                          </Row>
+                        ))}
+                      </Column>
+                    </Row>
+                  );
+                }
+                return <></>;
+              })}
+            </Column>
+          );
+        })}
+    </Row>
+  );
+}
+
 type TemplateProps = CommonProps & {
-  type: "CLB" | "CLA" | "RLA";
+  type: "CLB" | "CLA" | "RLA" | "RLB";
 };
 
 export function Template(props: TemplateProps): JSX.Element {
@@ -241,6 +314,9 @@ export function Template(props: TemplateProps): JSX.Element {
     }
     case "RLA": {
       return <RLA {...props} />;
+    }
+    case "RLB": {
+      return <RLB {...props} />;
     }
     default: {
       const _exhaustiveCheck: never = props.type;
