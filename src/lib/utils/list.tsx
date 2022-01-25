@@ -428,47 +428,49 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   }, [state.reached_end]);
 
   return (
-    <Column>
-      <props.render_custom_fields
-        init_filter={state.init_filter}
-        filters={state.filters}
-        dispatch={dispatch}
-        show_views={[
-          ({ element }: { element: JSX.Element }) => (
-            <Pressable
-              onPress={() => {
-                bsm_view_ref.current?.present();
-              }}
-            >
+    <>
+      <Column flex={1}>
+        <props.render_custom_fields
+          init_filter={state.init_filter}
+          filters={state.filters}
+          dispatch={dispatch}
+          show_views={[
+            ({ element }: { element: JSX.Element }) => (
+              <Pressable
+                onPress={() => {
+                  bsm_view_ref.current?.present();
+                }}
+              >
+                {element}
+              </Pressable>
+            ),
+            Object.keys(props.render_list_element[1]).length === 0,
+          ]}
+          show_sorting={({ element }: { element: JSX.Element }) => (
+            <Pressable onPress={() => bsm_sorting_ref.current?.present()}>
               {element}
             </Pressable>
-          ),
-          Object.keys(props.render_list_element[1]).length === 0,
-        ]}
-        show_sorting={({ element }: { element: JSX.Element }) => (
-          <Pressable onPress={() => bsm_sorting_ref.current?.present()}>
-            {element}
-          </Pressable>
-        )}
-        show_filters={({ element }: { element: JSX.Element }) => (
-          <Pressable onPress={() => bsm_filters_ref.current?.present()}>
-            {element}
-          </Pressable>
-        )}
-      />
+          )}
+          show_filters={({ element }: { element: JSX.Element }) => (
+            <Pressable onPress={() => bsm_filters_ref.current?.present()}>
+              {element}
+            </Pressable>
+          )}
+        />
 
-      <FlatList
-        data={state.variables}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        refreshing={state.refreshing}
-        onRefresh={() => {}}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => dispatch(["offset"])}
-        ListFooterComponent={ListFooterComponent}
-        horizontal={!!props.horizontal}
-        nestedScrollEnabled={true}
-      />
+        <FlatList
+          data={state.variables}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          refreshing={state.refreshing}
+          onRefresh={() => {}}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => dispatch(["offset"])}
+          ListFooterComponent={ListFooterComponent}
+          horizontal={!!props.horizontal}
+          nestedScrollEnabled={true}
+        />
+      </Column>
 
       <Portal>
         <BottomSheetModal
@@ -721,7 +723,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           />
         </BottomSheetModal>
       </Portal>
-    </Column>
+    </>
   );
 }
 

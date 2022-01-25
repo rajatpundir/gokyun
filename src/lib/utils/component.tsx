@@ -19,6 +19,7 @@ import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
 import { Row, Text, Input, Pressable } from "native-base";
+import { theme } from "./theme";
 
 export type ComponentViews = Record<
   string,
@@ -360,16 +361,11 @@ export function SearchBar(props: {
 
 export function AppHeader(props: { title?: string }): JSX.Element {
   return (
-    <Text
-      style={{
-        fontSize: 20,
-        fontWeight: "bold",
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-      }}
-    >
-      {props.title ? props.title : "AppName"}
-    </Text>
+    <>
+      <Text bold p={"2"} fontSize={"lg"} color={theme.primary}>
+        {props.title ? props.title : "AppName"}
+      </Text>
+    </>
   );
 }
 

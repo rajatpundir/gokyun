@@ -50,7 +50,7 @@ export function Navigator(props: ParentNavigatorProps<"System">) {
         tabBarScrollEnabled: true,
         tabBarItemStyle: tw.style([], { width: 100 }),
         tabBarLabelStyle: tw.style([], {
-          fontSize: 13,
+          fontSize: 14,
           textTransform: "none",
         }),
       }}
