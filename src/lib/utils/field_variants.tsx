@@ -1473,7 +1473,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                   navigation.goBack();
                 },
                 render_custom_fields: props.render_custom_fields,
-                horizontal: props.horizontal,
+                variant_options: props.variant_options,
               });
             }
           }}

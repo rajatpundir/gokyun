@@ -4,7 +4,7 @@ import { apply, unwrap, Result, arrow, fold } from "./prelude";
 import { Action, State, get_path, get_label } from "./commons";
 import { PathString, Struct } from "./variable";
 import { theme } from "./theme";
-import { FieldOptions, field_variants } from "./variants";
+import { FieldOptions, field_variants } from "./field_variants";
 
 export function Label(props: {
   state: State;

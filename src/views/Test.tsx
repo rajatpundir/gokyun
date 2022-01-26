@@ -9,7 +9,7 @@ import {
   OtherComponent,
   SearchBar,
 } from "../lib/utils/component";
-import { Field } from "../lib/utils/fields";
+import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
 import { arrow, unwrap } from "../lib/utils/prelude";
 import { Path, Variable } from "../lib/utils/variable";

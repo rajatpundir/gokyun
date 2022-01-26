@@ -1,27 +1,22 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Draft } from "immer";
-import { FlatList } from "react-native-gesture-handler";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variables } from "./db";
 import { PathString, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
-import { ListRenderItemInfo } from "react-native";
-import { apply, arrow, fold, unwrap } from "./prelude";
+import { apply, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
-import {
-  BottomSheetFlatList,
-  BottomSheetModal,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
-import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
-import { Column, Row, Text, Pressable } from "native-base";
+import { Row, Text, Pressable } from "native-base";
 import Checkbox from "expo-checkbox";
 import { ModalHeader } from "./component";
 import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
+import { ListVariant, ListVariantOptions } from "./list_variants";
+import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -313,18 +308,18 @@ export type RenderCustomFieldProps = {
   init_filter: Filter;
   filters: HashSet<Filter>;
   dispatch: React.Dispatch<ListAction>;
-  show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
-  show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-  show_filters: (props: { element: JSX.Element }) => JSX.Element;
+  variant: JSX.Element;
 };
 
 export type CommonProps = {
+  bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
+  limit: Decimal;
   user_paths: Array<PathString>;
   borrows: Array<string>;
-  limit: Decimal;
-  render_list_element: RenderListElement;
   render_custom_fields: (props: RenderCustomFieldProps) => JSX.Element;
-  horizontal?: boolean;
+  variant_options?: ListVariantOptions;
 };
 
 type ListSpecificProps = CommonProps & {
@@ -386,182 +381,20 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     state.offset,
   ]);
 
-  const bsm_view_ref = useRef<BottomSheetModal>(null);
-  const bsm_sorting_ref = useRef<BottomSheetModal>(null);
-  const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
-  const bsm_filters_ref = useRef<BottomSheetModal>(null);
-
-  const renderItem = useCallback(
-    (list_item: ListRenderItemInfo<Variable>) => {
-      const ElementJSX = arrow(() => {
-        if (state.layout in props.render_list_element[1]) {
-          return props.render_list_element[1][state.layout];
-        }
-        return props.render_list_element[0];
-      });
-      return (
-        <ElementJSX
-          struct={state.struct}
-          user_paths={props.user_paths}
-          borrows={props.borrows}
-          variable={list_item.item}
-          selected={list_item.item.id.equals(props.selected)}
-          update_parent_values={() =>
-            props.update_parent_values(list_item.item)
-          }
-        />
-      );
-    },
-    [state.struct, state.layout, props.selected]
-  );
-
-  const keyExtractor = useCallback(
-    (list_item: Variable) => list_item.id.valueOf(),
-    []
-  );
-
-  const ListFooterComponent = useCallback(() => {
-    if (!state.reached_end) {
-      return <Text style={{ textAlign: "center" }}>Loading...</Text>;
-    }
-    return <Text mt={"2"} />;
-  }, [state.reached_end]);
-
   return (
     <>
-      <Column flex={1}>
-        <props.render_custom_fields
-          init_filter={state.init_filter}
-          filters={state.filters}
-          dispatch={dispatch}
-          show_views={[
-            ({ element }: { element: JSX.Element }) => (
-              <Pressable
-                onPress={() => {
-                  bsm_view_ref.current?.present();
-                }}
-              >
-                {element}
-              </Pressable>
-            ),
-            Object.keys(props.render_list_element[1]).length === 0,
-          ]}
-          show_sorting={({ element }: { element: JSX.Element }) => (
-            <Pressable onPress={() => bsm_sorting_ref.current?.present()}>
-              {element}
-            </Pressable>
-          )}
-          show_filters={({ element }: { element: JSX.Element }) => (
-            <Pressable onPress={() => bsm_filters_ref.current?.present()}>
-              {element}
-            </Pressable>
-          )}
-        />
-
-        <FlatList
-          data={state.variables}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          refreshing={state.refreshing}
-          onRefresh={() => {}}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => dispatch(["offset"])}
-          ListFooterComponent={ListFooterComponent}
-          horizontal={!!props.horizontal}
-          nestedScrollEnabled={true}
-        />
-      </Column>
+      {/* <Column flex={1}> */}
+      <props.render_custom_fields
+        init_filter={state.init_filter}
+        filters={state.filters}
+        dispatch={dispatch}
+        variant={<ListVariant state={state} dispatch={dispatch} {...props} />}
+      />
+      {/* </Column> */}
 
       <Portal>
         <BottomSheetModal
-          ref={bsm_view_ref}
-          snapPoints={["50%", "82%"]}
-          index={0}
-          backgroundStyle={tw.style(["border"], {
-            backgroundColor: bs_theme.background,
-            borderColor: bs_theme.primary,
-          })}
-        >
-          <Row
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            borderBottomColor={bs_theme.border}
-            borderBottomWidth={"1"}
-            px={"3"}
-            pb={"2"}
-          >
-            <Text bold>VIEW</Text>
-            <Pressable
-              onPress={() => bsm_view_ref.current?.forceClose()}
-              borderColor={bs_theme.primary}
-              borderWidth={"1"}
-              borderRadius={"xs"}
-              px={"2"}
-              py={"0.5"}
-            >
-              <Text>Close</Text>
-            </Pressable>
-          </Row>
-          <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
-            <Pressable
-              onPress={() => {
-                if (state.layout !== "") {
-                  bsm_view_ref.current?.forceClose();
-                  dispatch(["layout", ""]);
-                }
-              }}
-              flex={1}
-              flexDirection={"row"}
-              py={"0.5"}
-            >
-              {state.layout === "" ? (
-                <Ionicons
-                  name="radio-button-on"
-                  size={24}
-                  color={bs_theme.primary}
-                />
-              ) : (
-                <Ionicons
-                  name="radio-button-off"
-                  size={24}
-                  color={bs_theme.primary}
-                />
-              )}
-              <Text pl={1}>Default</Text>
-            </Pressable>
-            {Object.keys(props.render_list_element[1]).map((layout) => (
-              <Pressable
-                onPress={() => {
-                  if (state.layout !== layout) {
-                    bsm_view_ref.current?.forceClose();
-                    dispatch(["layout", layout]);
-                  }
-                }}
-                flex={1}
-                flexDirection={"row"}
-                py={"0.5"}
-              >
-                {state.layout === layout ? (
-                  <Ionicons
-                    name="radio-button-on"
-                    size={24}
-                    color={bs_theme.primary}
-                  />
-                ) : (
-                  <Ionicons
-                    name="radio-button-off"
-                    size={24}
-                    color={bs_theme.primary}
-                  />
-                )}
-                <Text pl={1}>{layout}</Text>
-              </Pressable>
-            ))}
-          </BottomSheetScrollView>
-        </BottomSheetModal>
-
-        <BottomSheetModal
-          ref={bsm_sorting_ref}
+          ref={props.bsm_sorting_ref}
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={tw.style(["border"], {
@@ -580,7 +413,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Text bold>SORT</Text>
             <Row>
               <Pressable
-                onPress={() => bsm_sorting_fields_ref.current?.present()}
+                onPress={() => props.bsm_sorting_fields_ref.current?.present()}
                 backgroundColor={bs_theme.primary}
                 borderRadius={"xs"}
                 px={"2"}
@@ -590,7 +423,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Text bold>Field++</Text>
               </Pressable>
               <Pressable
-                onPress={() => bsm_sorting_ref.current?.close()}
+                onPress={() => props.bsm_sorting_ref.current?.close()}
                 borderColor={bs_theme.primary}
                 borderWidth={"1"}
                 borderRadius={"xs"}
@@ -603,7 +436,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           </Row>
           <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
           <BottomSheetModal
-            ref={bsm_sorting_fields_ref}
+            ref={props.bsm_sorting_fields_ref}
             snapPoints={["50%", "82%"]}
             index={0}
             backgroundStyle={tw.style(["border"], {
@@ -621,7 +454,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             >
               <Text bold>Fields</Text>
               <Pressable
-                onPress={() => bsm_sorting_fields_ref.current?.close()}
+                onPress={() => props.bsm_sorting_fields_ref.current?.close()}
                 borderColor={bs_theme.primary}
                 borderWidth={"1"}
                 borderRadius={"xs"}
@@ -639,7 +472,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         </BottomSheetModal>
 
         <BottomSheetModal
-          ref={bsm_filters_ref}
+          ref={props.bsm_filters_ref}
           snapPoints={["50%", "82%"]}
           index={1}
           backgroundStyle={tw.style(["border"], {
@@ -671,7 +504,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 style={tw.style(["mx-1"], {})}
               />
             </Row>
-
             <Row>
               <Pressable
                 onPress={() =>
@@ -702,7 +534,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               <Text bold>Filter++</Text>
             </Pressable>
           </Row>
-
           <BottomSheetFlatList
             data={state.filters
               .toArray()
@@ -742,20 +573,7 @@ export function SelectionModal(
   return (
     <>
       <ModalHeader title={props.route.params.title} />
-      <List
-        selected={props.route.params.selected}
-        active={props.route.params.active}
-        struct={props.route.params.struct}
-        level={props.route.params.level}
-        filters={props.route.params.filters}
-        update_parent_values={props.route.params.update_parent_values}
-        user_paths={props.route.params.user_paths}
-        borrows={props.route.params.borrows}
-        limit={props.route.params.limit}
-        render_list_element={props.route.params.render_list_element}
-        render_custom_fields={props.route.params.render_custom_fields}
-        horizontal={props.route.params.horizontal}
-      />
+      <List {...props.route.params} />
     </>
   );
 }
