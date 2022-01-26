@@ -1423,7 +1423,6 @@ function Timestamp_Field(
 type OtherFieldProps = CommonProps &
   ModalSpecificProps & {
     labels: Immutable<Array<[string, PathString]>>;
-    element: JSX.Element;
   };
 
 function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
@@ -1437,106 +1436,67 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   if (value.type === "other") {
     const struct = get_struct(value.other);
     if (unwrap(struct)) {
+      const list_props = {
+        bsm_view_ref: bsm_view_ref,
+        bsm_sorting_ref: bsm_sorting_ref,
+        bsm_sorting_fields_ref: bsm_sorting_fields_ref,
+        bsm_filters_ref: bsm_filters_ref,
+        selected: value.value,
+        struct: struct.value,
+        active: true,
+        level: undefined,
+        filters: [
+          new Filter(
+            0,
+            [false, undefined],
+            [false, undefined],
+            [false, undefined],
+            get_other_filter_paths(
+              props.struct,
+              props.state,
+              props.path,
+              props.labels
+            )
+          ),
+          HashSet.of(),
+        ] as [Filter, HashSet<Filter>],
+        update_parent_values: (variable: Variable) => {
+          props.dispatch([
+            "values",
+            get_upscaled_paths(props.path, variable, props.state.labels),
+          ]);
+        },
+      };
       switch (props.options[0]) {
         case "list": {
+          const options = props.options[1];
           if (is_writeable) {
             return (
               <Pressable
                 onPress={() => {
                   navigation.navigate("SelectionModal", {
                     ...props,
-                    bsm_view_ref: bsm_view_ref,
-                    bsm_sorting_ref: bsm_sorting_ref,
-                    bsm_sorting_fields_ref: bsm_sorting_fields_ref,
-                    bsm_filters_ref: bsm_filters_ref,
-                    title: props.title,
-                    selected: value.value,
-                    struct: struct.value,
-                    user_paths: props.user_paths,
-                    borrows: props.borrows,
-                    active: true,
-                    level: undefined,
-                    filters: [
-                      new Filter(
-                        0,
-                        [false, undefined],
-                        [false, undefined],
-                        [false, undefined],
-                        get_other_filter_paths(
-                          props.struct,
-                          props.state,
-                          props.path,
-                          props.labels
-                        )
-                      ),
-                      HashSet.of(),
-                    ],
-                    limit: props.limit,
+                    ...list_props,
                     update_parent_values: (variable: Variable) => {
-                      props.dispatch([
-                        "values",
-                        get_upscaled_paths(
-                          props.path,
-                          variable,
-                          props.state.labels
-                        ),
-                      ]);
+                      list_props.update_parent_values(variable);
                       navigation.goBack();
                     },
-                    render_custom_fields: props.render_custom_fields,
+                    title: props.title,
                   });
                 }}
               >
-                {props.element}
+                {options.element}
               </Pressable>
             );
           } else {
-            const options = props.options[1];
             return options.element;
           }
         }
         case "menu": {
+          const options = props.options[1];
           if (is_writeable) {
-            return (
-              <List
-                {...props}
-                bsm_view_ref={bsm_view_ref}
-                bsm_sorting_ref={bsm_sorting_ref}
-                bsm_sorting_fields_ref={bsm_sorting_fields_ref}
-                bsm_filters_ref={bsm_filters_ref}
-                selected={value.value}
-                active={true}
-                struct={struct.value}
-                level={undefined}
-                filters={[
-                  new Filter(
-                    0,
-                    [false, undefined],
-                    [false, undefined],
-                    [false, undefined],
-                    get_other_filter_paths(
-                      props.struct,
-                      props.state,
-                      props.path,
-                      props.labels
-                    )
-                  ),
-                  HashSet.of(),
-                ]}
-                update_parent_values={(variable: Variable) => {
-                  props.dispatch([
-                    "values",
-                    get_upscaled_paths(
-                      props.path,
-                      variable,
-                      props.state.labels
-                    ),
-                  ]);
-                }}
-              />
-            );
+            return <List {...props} {...list_props} />;
           } else {
-            const options = props.options[1];
             return options.element;
           }
         }

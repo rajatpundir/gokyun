@@ -325,8 +325,8 @@ export type CommonProps = {
 
 type ListSpecificProps = CommonProps & {
   selected: Decimal;
-  active: boolean;
   struct: Struct;
+  active: boolean;
   level: Decimal | undefined;
   filters: [Filter, HashSet<Filter>];
   update_parent_values: (variable: Variable) => void;
