@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -31,9 +31,10 @@ import {
   Variable,
 } from "./variable";
 import { get_struct } from "./schema";
-import { CommonProps, ModalSpecificProps } from "./list";
+import { CommonProps, List, ModalSpecificProps } from "./list";
 import { theme } from "./theme";
 import { tw } from "./tailwind";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 type FieldVariant = {
   str: [
@@ -1429,22 +1430,85 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const navigation = useNavigation();
+  const bsm_view_ref = useRef<BottomSheetModal>(null);
+  const bsm_sorting_ref = useRef<BottomSheetModal>(null);
+  const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
+  const bsm_filters_ref = useRef<BottomSheetModal>(null);
   if (value.type === "other") {
-    if (is_writeable) {
-      return (
-        <Pressable
-          onPress={() => {
-            const struct = get_struct(value.other);
-            if (unwrap(struct)) {
-              navigation.navigate("SelectionModal", {
-                title: props.title,
-                selected: value.value,
-                struct: struct.value,
-                user_paths: props.user_paths,
-                borrows: props.borrows,
-                active: true,
-                level: undefined,
-                filters: [
+    const struct = get_struct(value.other);
+    if (unwrap(struct)) {
+      switch (props.options[0]) {
+        case "list": {
+          if (is_writeable) {
+            return (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("SelectionModal", {
+                    ...props,
+                    bsm_view_ref: bsm_view_ref,
+                    bsm_sorting_ref: bsm_sorting_ref,
+                    bsm_sorting_fields_ref: bsm_sorting_fields_ref,
+                    bsm_filters_ref: bsm_filters_ref,
+                    title: props.title,
+                    selected: value.value,
+                    struct: struct.value,
+                    user_paths: props.user_paths,
+                    borrows: props.borrows,
+                    active: true,
+                    level: undefined,
+                    filters: [
+                      new Filter(
+                        0,
+                        [false, undefined],
+                        [false, undefined],
+                        [false, undefined],
+                        get_other_filter_paths(
+                          props.struct,
+                          props.state,
+                          props.path,
+                          props.labels
+                        )
+                      ),
+                      HashSet.of(),
+                    ],
+                    limit: props.limit,
+                    update_parent_values: (variable: Variable) => {
+                      props.dispatch([
+                        "values",
+                        get_upscaled_paths(
+                          props.path,
+                          variable,
+                          props.state.labels
+                        ),
+                      ]);
+                      navigation.goBack();
+                    },
+                    render_custom_fields: props.render_custom_fields,
+                  });
+                }}
+              >
+                {props.element}
+              </Pressable>
+            );
+          } else {
+            const options = props.options[1];
+            return options.element;
+          }
+        }
+        case "menu": {
+          if (is_writeable) {
+            return (
+              <List
+                {...props}
+                bsm_view_ref={bsm_view_ref}
+                bsm_sorting_ref={bsm_sorting_ref}
+                bsm_sorting_fields_ref={bsm_sorting_fields_ref}
+                bsm_filters_ref={bsm_filters_ref}
+                selected={value.value}
+                active={true}
+                struct={struct.value}
+                level={undefined}
+                filters={[
                   new Filter(
                     0,
                     [false, undefined],
@@ -1458,10 +1522,8 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                     )
                   ),
                   HashSet.of(),
-                ],
-                limit: props.limit,
-                render_list_element: props.render_list_element,
-                update_parent_values: (variable: Variable) => {
+                ]}
+                update_parent_values={(variable: Variable) => {
                   props.dispatch([
                     "values",
                     get_upscaled_paths(
@@ -1470,19 +1532,20 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                       props.state.labels
                     ),
                   ]);
-                  navigation.goBack();
-                },
-                render_custom_fields: props.render_custom_fields,
-                variant_options: props.variant_options,
-              });
-            }
-          }}
-        >
-          {props.element}
-        </Pressable>
-      );
+                }}
+              />
+            );
+          } else {
+            const options = props.options[1];
+            return options.element;
+          }
+        }
+        default: {
+          const _exhaustiveCheck: never = props.options[0];
+          return _exhaustiveCheck;
+        }
+      }
     }
-    return props.element;
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;

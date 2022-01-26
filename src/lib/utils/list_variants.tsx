@@ -14,24 +14,21 @@ import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/typ
 
 export function ListVariant(
   props: VariantCommonProps & {
-    options?: ListVariantOptions;
+    options: ListVariantOptions;
   }
 ): JSX.Element {
-  if (props.options !== undefined) {
-    switch (props.options[0]) {
-      case "list": {
-        return <FlatlistVariant {...props} {...props.options[1]} />;
-      }
-      case "menu": {
-        return <MenuVariant {...props} {...props.options[1]} />;
-      }
-      default: {
-        const _exhaustiveCheck: never = props.options[0];
-        return _exhaustiveCheck;
-      }
+  switch (props.options[0]) {
+    case "list": {
+      return <FlatlistVariant {...props} {...props.options[1]} />;
+    }
+    case "menu": {
+      return <MenuVariant {...props} {...props.options[1]} />;
+    }
+    default: {
+      const _exhaustiveCheck: never = props.options[0];
+      return _exhaustiveCheck;
     }
   }
-  return <></>;
 }
 
 export type ListVariantOptions =
@@ -43,10 +40,14 @@ type VariantCommonProps = {
   dispatch: React.Dispatch<ListAction>;
   selected: Decimal;
   update_parent_values: (variable: Variable) => void;
+  bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
 };
 
 type FlatlistVariantProps = {
-  bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
+  element: JSX.Element;
   render_list_element: RenderListElement;
   user_paths: Array<PathString>;
   borrows: Array<string>;

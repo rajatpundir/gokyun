@@ -312,6 +312,7 @@ export type RenderCustomFieldProps = {
 };
 
 export type CommonProps = {
+  bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
@@ -319,7 +320,7 @@ export type CommonProps = {
   user_paths: Array<PathString>;
   borrows: Array<string>;
   render_custom_fields: (props: RenderCustomFieldProps) => JSX.Element;
-  variant_options?: ListVariantOptions;
+  options: ListVariantOptions;
 };
 
 type ListSpecificProps = CommonProps & {
