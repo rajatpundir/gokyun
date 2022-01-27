@@ -52,6 +52,7 @@ type FlatlistVariantProps = {
   user_paths: Array<PathString>;
   borrows: Array<string>;
   horizontal?: boolean;
+  title?: string;
 };
 
 function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {

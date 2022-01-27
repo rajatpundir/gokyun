@@ -1420,10 +1420,9 @@ function Timestamp_Field(
   return <></>;
 }
 
-type OtherFieldProps = CommonProps &
-  ModalSpecificProps & {
-    labels: Immutable<Array<[string, PathString]>>;
-  };
+type OtherFieldProps = CommonProps & {
+  labels: Immutable<Array<[string, PathString]>>;
+};
 
 function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const value = props.path.path[1][1];
@@ -1437,6 +1436,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
     const struct = get_struct(value.other);
     if (unwrap(struct)) {
       const list_props = {
+        ...props,
         bsm_view_ref: bsm_view_ref,
         bsm_sorting_ref: bsm_sorting_ref,
         bsm_sorting_fields_ref: bsm_sorting_fields_ref,
@@ -1460,44 +1460,42 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
           ),
           HashSet.of(),
         ] as [Filter, HashSet<Filter>],
-        update_parent_values: (variable: Variable) => {
+        update_parent_values: (variable: Variable) =>
           props.dispatch([
             "values",
             get_upscaled_paths(props.path, variable, props.state.labels),
-          ]);
-        },
+          ]),
       };
       switch (props.options[0]) {
         case "list": {
-          const options = props.options[1];
+          const title: string = apply(props.options[1].title, (it) => {
+            if (it !== undefined) {
+              return it;
+            }
+            return "Select value";
+          });
           if (is_writeable) {
             return (
               <Pressable
                 onPress={() => {
                   navigation.navigate("SelectionModal", {
-                    ...props,
                     ...list_props,
-                    update_parent_values: (variable: Variable) => {
-                      list_props.update_parent_values(variable);
-                      navigation.goBack();
-                    },
-                    title: props.title,
+                    title: title,
                   });
                 }}
               >
-                {options.element}
+                {props.options[1].element}
               </Pressable>
             );
           } else {
-            return options.element;
+            return props.options[1].element;
           }
         }
         case "menu": {
-          const options = props.options[1];
           if (is_writeable) {
-            return <List {...props} {...list_props} />;
+            return <List {...list_props} />;
           } else {
-            return options.element;
+            return props.options[1].element;
           }
         }
         default: {

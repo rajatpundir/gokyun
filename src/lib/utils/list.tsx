@@ -574,7 +574,13 @@ export function SelectionModal(
   return (
     <>
       <ModalHeader title={props.route.params.title} />
-      <List {...props.route.params} />
+      <List
+        {...props.route.params}
+        update_parent_values={(variable: Variable) => {
+          props.route.params.update_parent_values(variable);
+          props.navigation.goBack();
+        }}
+      />
     </>
   );
 }
