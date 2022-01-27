@@ -3,7 +3,6 @@ import { Column, Pressable, Row, Text } from "native-base";
 import { ComponentViews } from "../lib/utils/component";
 import { Template } from "../lib/utils/templates";
 import { arrow } from "../lib/utils/prelude";
-import { colors, tw } from "../lib/utils/tailwind";
 import { theme } from "../lib/utils/theme";
 
 const views = {};
@@ -15,12 +14,12 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       m={"1"}
       borderWidth={"1"}
       borderRadius={"md"}
-      borderColor={colors.slate[600]}
+      borderColor={theme.border}
       backgroundColor={arrow(() => {
         if (props.selected) {
-          return colors.slate[800];
+          return theme.border;
         }
-        return colors.slate[900];
+        return theme.background;
       })}
     >
       <Row justifyContent={"space-between"}>

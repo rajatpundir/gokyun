@@ -313,8 +313,6 @@ export type RenderCustomFieldProps = {
 
 export type CommonProps = {
   limit: Decimal;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
   render_custom_fields: (props: RenderCustomFieldProps) => JSX.Element;
   options: ListVariantOptions;
   bsm_view_ref?: React.RefObject<BottomSheetModalMethods>;
@@ -329,7 +327,7 @@ type ListSpecificProps = CommonProps & {
   active: boolean;
   level: Decimal | undefined;
   filters: [Filter, HashSet<Filter>];
-  update_parent_values: (variable: Variable) => void;
+  update_parent_values?: (variable: Variable) => void;
 };
 
 export function List(props: CommonProps & ListSpecificProps): JSX.Element {
@@ -430,6 +428,11 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             bsm_sorting_ref={bsm_sorting_ref}
             bsm_sorting_fields_ref={bsm_sorting_fields_ref}
             bsm_filters_ref={bsm_filters_ref}
+            update_parent_values={
+              props.update_parent_values !== undefined
+                ? props.update_parent_values
+                : () => {}
+            }
           />
         }
       />
@@ -619,7 +622,9 @@ export function SelectionModal(
       <List
         {...props.route.params}
         update_parent_values={(variable: Variable) => {
-          props.route.params.update_parent_values(variable);
+          if (props.route.params.update_parent_values !== undefined) {
+            props.route.params.update_parent_values(variable);
+          }
           props.navigation.goBack();
         }}
       />

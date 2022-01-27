@@ -47,12 +47,12 @@ type VariantCommonProps = {
 };
 
 type FlatlistVariantProps = {
-  element: JSX.Element;
   render_list_element: RenderListElement;
   user_paths: Array<PathString>;
   borrows: Array<string>;
   horizontal?: boolean;
   title?: string;
+  element?: JSX.Element;
 };
 
 function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {

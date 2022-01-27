@@ -60,66 +60,83 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
             options: [
               "other",
               {
-                title: "Select User",
                 limit: new Decimal(10),
-                user_paths: [],
-                borrows: [],
                 labels: [
                   ["Nickname", [[], "nickname"]],
                   ["Knows english", [[], "knows_english"]],
                   ["Mobile", [[], "mobile"]],
                   ["Product Count", [[], "product_count"]],
                 ],
-                element: arrow(() => {
-                  const result = get_path(props.state, [[], "user"]);
-                  if (unwrap(result)) {
-                    const path = result.value;
-                    if (path.writeable) {
-                      const value = path.path[1][1];
-                      if (value.type === "other" && value.value.equals(-1)) {
-                        return (
-                          <Row>
-                            <Text>Select User </Text>
-                            {props.state.mode === "write" ? (
-                              <FontAwesome
-                                name="edit"
-                                size={24}
-                                color={theme.placeholder}
-                              />
-                            ) : (
-                              <></>
-                            )}
-                          </Row>
-                        );
-                      } else {
-                        return (
-                          <Row>
-                            <Field {...props} path={[["user"], "nickname"]} />
-                            <Text> </Text>
-                            {props.state.mode === "write" ? (
-                              <FontAwesome
-                                name="edit"
-                                size={24}
-                                color={theme.placeholder}
-                              />
-                            ) : (
-                              <></>
-                            )}
-                          </Row>
-                        );
+                options: [
+                  "list",
+                  {
+                    user_paths: [],
+                    borrows: [],
+                    element: arrow(() => {
+                      const result = get_path(props.state, [[], "user"]);
+                      if (unwrap(result)) {
+                        const path = result.value;
+                        if (path.writeable) {
+                          const value = path.path[1][1];
+                          if (
+                            value.type === "other" &&
+                            value.value.equals(-1)
+                          ) {
+                            return (
+                              <Row>
+                                <Text>Select User </Text>
+                                {props.state.mode === "write" ? (
+                                  <FontAwesome
+                                    name="edit"
+                                    size={24}
+                                    color={theme.placeholder}
+                                  />
+                                ) : (
+                                  <></>
+                                )}
+                              </Row>
+                            );
+                          } else {
+                            return (
+                              <Row>
+                                <Field
+                                  {...props}
+                                  path={[["user"], "nickname"]}
+                                />
+                                <Text> </Text>
+                                {props.state.mode === "write" ? (
+                                  <FontAwesome
+                                    name="edit"
+                                    size={24}
+                                    color={theme.placeholder}
+                                  />
+                                ) : (
+                                  <></>
+                                )}
+                              </Row>
+                            );
+                          }
+                        }
                       }
-                    }
-                  }
-                  return <></>;
-                }),
-                render_list_element: [
-                  (props) => (
-                    <OtherComponent {...props} view={views.User["Default"]} />
-                  ),
-                  {},
-                ] as RenderListElement,
+                      return <></>;
+                    }),
+                    render_list_element: [
+                      (props) => (
+                        <OtherComponent
+                          {...props}
+                          view={views.User["Default"]}
+                        />
+                      ),
+                      {},
+                    ] as RenderListElement,
+                    title: "Select User",
+                  },
+                ],
                 render_custom_fields: (props: RenderCustomFieldProps) => (
                   <SearchBar
+                    // show_views={() => {}}
+                    // show_sorting={() => {}}
+                    // show_filters={{() => {}}
                     {...props}
                     placeholder="Nickname"
                     path={[[], "nickname"]}

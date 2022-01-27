@@ -25,8 +25,6 @@ export default function Component(
         <List
           selected={new Decimal(-1)}
           struct={struct.value}
-          user_paths={[]}
-          borrows={[]}
           active={true}
           level={undefined}
           filters={[
@@ -50,17 +48,24 @@ export default function Component(
             HashSet.of(),
           ]}
           limit={new Decimal(10)}
-          render_list_element={[
-            (props) => (
-              <OtherComponent {...props} view={views.User["Default"]} />
-            ),
+          options={[
+            "list",
             {
-              ABC: (props) => (
-                <OtherComponent {...props} view={views.User["Default"]} />
-              ),
-              DEF: (props) => (
-                <OtherComponent {...props} view={views.User["Default"]} />
-              ),
+              user_paths: [],
+              borrows: [],
+              render_list_element: [
+                (props) => (
+                  <OtherComponent {...props} view={views.User["Default"]} />
+                ),
+                {
+                  ABC: (props) => (
+                    <OtherComponent {...props} view={views.User["Default"]} />
+                  ),
+                  DEF: (props) => (
+                    <OtherComponent {...props} view={views.User["Default"]} />
+                  ),
+                },
+              ],
             },
           ]}
           render_custom_fields={(props) => (
