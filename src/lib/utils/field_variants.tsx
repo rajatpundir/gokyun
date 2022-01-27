@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -11,7 +11,7 @@ import Checkbox from "expo-checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { PathPermission, get_permissions } from "./permissions";
-import { apply, unwrap, arrow, PartialBy } from "./prelude";
+import { apply, unwrap, arrow } from "./prelude";
 import { Filter, FilterPath } from "./db";
 import {
   Action,
@@ -31,10 +31,9 @@ import {
   Variable,
 } from "./variable";
 import { get_struct } from "./schema";
-import { CommonProps, List, ModalSpecificProps } from "./list";
+import { CommonProps, List } from "./list";
 import { theme } from "./theme";
 import { tw } from "./tailwind";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 type FieldVariant = {
   str: [
@@ -1420,13 +1419,7 @@ function Timestamp_Field(
   return <></>;
 }
 
-type OtherFieldProps = PartialBy<
-  CommonProps,
-  | "bsm_view_ref"
-  | "bsm_sorting_ref"
-  | "bsm_sorting_fields_ref"
-  | "bsm_filters_ref"
-> & {
+type OtherFieldProps = CommonProps & {
   labels: Immutable<Array<[string, PathString]>>;
 };
 
@@ -1434,25 +1427,11 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const navigation = useNavigation();
-  const bsm_view_ref = useRef<BottomSheetModal>(null);
-  const bsm_sorting_ref = useRef<BottomSheetModal>(null);
-  const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
-  const bsm_filters_ref = useRef<BottomSheetModal>(null);
   if (value.type === "other") {
     const struct = get_struct(value.other);
     if (unwrap(struct)) {
       const list_props = {
         ...props,
-        bsm_view_ref: props.bsm_view_ref ? props.bsm_view_ref : bsm_view_ref,
-        bsm_sorting_ref: props.bsm_sorting_ref
-          ? props.bsm_sorting_ref
-          : bsm_sorting_ref,
-        bsm_sorting_fields_ref: props.bsm_sorting_fields_ref
-          ? props.bsm_sorting_fields_ref
-          : bsm_sorting_fields_ref,
-        bsm_filters_ref: props.bsm_filters_ref
-          ? props.bsm_filters_ref
-          : bsm_filters_ref,
         selected: value.value,
         struct: struct.value,
         active: true,

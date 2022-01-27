@@ -312,15 +312,15 @@ export type RenderCustomFieldProps = {
 };
 
 export type CommonProps = {
-  bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
-  bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
-  bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
-  bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
   limit: Decimal;
   user_paths: Array<PathString>;
   borrows: Array<string>;
   render_custom_fields: (props: RenderCustomFieldProps) => JSX.Element;
   options: ListVariantOptions;
+  bsm_view_ref?: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_ref?: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_fields_ref?: React.RefObject<BottomSheetModalMethods>;
+  bsm_filters_ref?: React.RefObject<BottomSheetModalMethods>;
 };
 
 type ListSpecificProps = CommonProps & {
@@ -382,6 +382,38 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     state.offset,
   ]);
 
+  const bsm_view_ref_1 = useRef<BottomSheetModal>(null);
+  const bsm_view_ref = apply(props.bsm_view_ref, (it) => {
+    if (it !== undefined) {
+      return it;
+    }
+    return bsm_view_ref_1;
+  });
+
+  const bsm_sorting_ref_1 = useRef<BottomSheetModal>(null);
+  const bsm_sorting_ref = apply(props.bsm_sorting_ref, (it) => {
+    if (it !== undefined) {
+      return it;
+    }
+    return bsm_sorting_ref_1;
+  });
+
+  const bsm_sorting_fields_ref_1 = useRef<BottomSheetModal>(null);
+  const bsm_sorting_fields_ref = apply(props.bsm_sorting_fields_ref, (it) => {
+    if (it !== undefined) {
+      return it;
+    }
+    return bsm_sorting_fields_ref_1;
+  });
+
+  const bsm_filters_ref_1 = useRef<BottomSheetModal>(null);
+  const bsm_filters_ref = apply(props.bsm_filters_ref, (it) => {
+    if (it !== undefined) {
+      return it;
+    }
+    return bsm_filters_ref_1;
+  });
+
   return (
     <>
       {/* <Column flex={1}> */}
@@ -389,7 +421,17 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         init_filter={state.init_filter}
         filters={state.filters}
         dispatch={dispatch}
-        variant={<ListVariant state={state} dispatch={dispatch} {...props} />}
+        variant={
+          <ListVariant
+            state={state}
+            dispatch={dispatch}
+            {...props}
+            bsm_view_ref={bsm_view_ref}
+            bsm_sorting_ref={bsm_sorting_ref}
+            bsm_sorting_fields_ref={bsm_sorting_fields_ref}
+            bsm_filters_ref={bsm_filters_ref}
+          />
+        }
       />
       {/* </Column> */}
 
@@ -414,7 +456,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Text bold>SORT</Text>
             <Row>
               <Pressable
-                onPress={() => props.bsm_sorting_fields_ref.current?.present()}
+                onPress={() => bsm_sorting_fields_ref.current?.present()}
                 backgroundColor={bs_theme.primary}
                 borderRadius={"xs"}
                 px={"2"}
@@ -424,7 +466,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 <Text bold>Field++</Text>
               </Pressable>
               <Pressable
-                onPress={() => props.bsm_sorting_ref.current?.close()}
+                onPress={() => bsm_sorting_ref.current?.close()}
                 borderColor={bs_theme.primary}
                 borderWidth={"1"}
                 borderRadius={"xs"}
@@ -455,7 +497,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             >
               <Text bold>Fields</Text>
               <Pressable
-                onPress={() => props.bsm_sorting_fields_ref.current?.close()}
+                onPress={() => bsm_sorting_fields_ref.current?.close()}
                 borderColor={bs_theme.primary}
                 borderWidth={"1"}
                 borderRadius={"xs"}
