@@ -1,6 +1,8 @@
 import Decimal from "decimal.js";
 import { errors, ErrMsg } from "./errors";
 
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 export class CustomError {
   value: ErrMsg | Record<string, CustomError>;
 

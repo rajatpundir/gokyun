@@ -11,7 +11,7 @@ import Checkbox from "expo-checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import { PathPermission, get_permissions } from "./permissions";
-import { apply, unwrap, arrow } from "./prelude";
+import { apply, unwrap, arrow, PartialBy } from "./prelude";
 import { Filter, FilterPath } from "./db";
 import {
   Action,
@@ -140,7 +140,7 @@ export type FieldOptions =
   | ["timestamp", TimestampFieldProps]
   | ["other", OtherFieldProps];
 
-type ComponentProps = {
+export type ComponentProps = {
   mode: "read" | "write";
   struct: Struct;
   state: State;
@@ -1420,7 +1420,13 @@ function Timestamp_Field(
   return <></>;
 }
 
-type OtherFieldProps = CommonProps & {
+type OtherFieldProps = PartialBy<
+  CommonProps,
+  | "bsm_view_ref"
+  | "bsm_sorting_ref"
+  | "bsm_sorting_fields_ref"
+  | "bsm_filters_ref"
+> & {
   labels: Immutable<Array<[string, PathString]>>;
 };
 
@@ -1437,10 +1443,16 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
     if (unwrap(struct)) {
       const list_props = {
         ...props,
-        bsm_view_ref: bsm_view_ref,
-        bsm_sorting_ref: bsm_sorting_ref,
-        bsm_sorting_fields_ref: bsm_sorting_fields_ref,
-        bsm_filters_ref: bsm_filters_ref,
+        bsm_view_ref: props.bsm_view_ref ? props.bsm_view_ref : bsm_view_ref,
+        bsm_sorting_ref: props.bsm_sorting_ref
+          ? props.bsm_sorting_ref
+          : bsm_sorting_ref,
+        bsm_sorting_fields_ref: props.bsm_sorting_fields_ref
+          ? props.bsm_sorting_fields_ref
+          : bsm_sorting_fields_ref,
+        bsm_filters_ref: props.bsm_filters_ref
+          ? props.bsm_filters_ref
+          : bsm_filters_ref,
         selected: value.value,
         struct: struct.value,
         active: true,

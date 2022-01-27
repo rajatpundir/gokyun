@@ -1,10 +1,11 @@
 import React from "react";
 import { Text } from "native-base";
-import { apply, unwrap, Result, arrow, fold } from "./prelude";
+import { apply, unwrap, Result, arrow, fold, PartialBy } from "./prelude";
 import { Action, State, get_path, get_label } from "./commons";
 import { PathString, Struct } from "./variable";
 import { theme } from "./theme";
-import { FieldOptions, field_variants } from "./field_variants";
+import { ComponentProps, FieldOptions, field_variants } from "./field_variants";
+import { CommonProps } from "./list";
 
 export function Label(props: {
   state: State;
@@ -38,17 +39,18 @@ export function Check(props: {
   return <></>;
 }
 
-export function Field(props: {
-  struct: Struct;
-  state: State;
-  dispatch: React.Dispatch<Action>;
+type FieldProps = PartialBy<
+  Omit<ComponentProps, "path" | "mode" | "violates_checks">,
+  "placeholder"
+> & {
   path: PathString | string;
   mode?: "read";
-  placeholder?: string;
   checks?: ReadonlyArray<string>;
   options?: FieldOptions;
   variant?: string;
-}): JSX.Element {
+};
+
+export function Field(props: FieldProps): JSX.Element {
   const path_string: PathString = arrow(() => {
     if (typeof props.path === "string") {
       return [[], props.path];
