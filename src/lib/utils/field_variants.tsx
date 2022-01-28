@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -156,6 +156,10 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(strong_enum_to_string(value));
+    set_has_errors(false);
+  }, [value]);
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "str") {
@@ -234,6 +238,10 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(strong_enum_to_string(value));
+    set_has_errors(false);
+  }, [value]);
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "lstr") {
@@ -312,6 +320,10 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(strong_enum_to_string(value));
+    set_has_errors(false);
+  }, [value]);
   const default_value = "";
   const style = tw.style([], {});
   if (value.type === "clob") {
@@ -396,6 +408,17 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "i32") {
@@ -495,6 +518,17 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "u32") {
@@ -594,6 +628,17 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "i64") {
@@ -693,6 +738,17 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "u64") {
@@ -792,6 +848,17 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "idouble") {
@@ -891,6 +958,17 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "udouble") {
@@ -990,6 +1068,17 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "idecimal") {
@@ -1089,6 +1178,17 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
     })
   );
   const [has_errors, set_has_errors] = useState(false);
+  useEffect(() => {
+    set_local_val(
+      apply(strong_enum_to_string(value), (it) => {
+        if (is_writeable && it === "0") {
+          return "";
+        }
+        return it;
+      })
+    );
+    set_has_errors(false);
+  }, [value]);
   const default_value = new Decimal(0).toString();
   const style = tw.style([], {});
   if (value.type === "udecimal") {
