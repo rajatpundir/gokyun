@@ -427,9 +427,9 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         dispatch={dispatch}
         variant={
           <ListVariant
+            {...props}
             state={state}
             dispatch={dispatch}
-            {...props}
             bsm_view_ref={bsm_view_ref}
             bsm_sorting_ref={bsm_sorting_ref}
             bsm_sorting_fields_ref={bsm_sorting_fields_ref}
@@ -626,6 +626,7 @@ export function SelectionModal(
   useEffect(() => {
     props.navigation.setOptions({ headerTitle: props.route.params.title });
   }, []);
+  console.log(props.route.params);
   return (
     <>
       <ModalHeader title={props.route.params.title} />
