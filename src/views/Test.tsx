@@ -120,7 +120,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    render_list_element: [
+                    ListElement: [
                       (props) => (
                         <OtherComponent
                           {...props}

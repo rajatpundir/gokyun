@@ -47,7 +47,7 @@ type VariantCommonProps = {
 };
 
 type FlatlistVariantProps = {
-  render_list_element: RenderListElement;
+  ListElement: RenderListElement;
   user_paths: Array<PathString>;
   borrows: Array<string>;
   horizontal?: boolean;
@@ -59,10 +59,10 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
   const renderItem = useCallback(
     (list_item: ListRenderItemInfo<Variable>) => {
       const ElementJSX = arrow(() => {
-        if (props.state.layout in props.render_list_element[1]) {
-          return props.render_list_element[1][props.state.layout];
+        if (props.state.layout in props.ListElement[1]) {
+          return props.ListElement[1][props.state.layout];
         }
-        return props.render_list_element[0];
+        return props.ListElement[0];
       });
       return (
         <ElementJSX
@@ -81,16 +81,22 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
   );
 
   const keyExtractor = useCallback(
-    (list_item: Variable) => list_item.id.valueOf(),
+    (list_item: Variable) => list_item.id.toString(),
     []
   );
 
   const ListFooterComponent = useCallback(() => {
     if (!props.state.reached_end) {
-      return <Text style={{ textAlign: "center" }}>Loading...</Text>;
+      return (
+        <Text my={"1"} textAlign={"center"}>
+          Loading...
+        </Text>
+      );
     }
-    return <Text mt={"2"} />;
+    return <></>;
   }, [props.state.reached_end]);
+
+  console.log(props.state.refreshing, "---------");
 
   return (
     <>
@@ -98,7 +104,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
         data={props.state.variables}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        refreshing={props.state.refreshing}
+        refreshing={!!props.state.refreshing}
         onRefresh={() => {}}
         onEndReachedThreshold={0.5}
         onEndReached={() => props.dispatch(["offset"])}
@@ -163,7 +169,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
               )}
               <Text pl={1}>Default</Text>
             </Pressable>
-            {Object.keys(props.render_list_element[1]).map((layout) => (
+            {Object.keys(props.ListElement[1]).map((layout) => (
               <Pressable
                 onPress={() => {
                   if (props.state.layout !== layout) {

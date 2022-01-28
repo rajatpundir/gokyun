@@ -53,7 +53,7 @@ export default function Component(
             {
               user_paths: [],
               borrows: [],
-              render_list_element: [
+              ListElement: [
                 (props) => (
                   <OtherComponent {...props} view={views.User["Default"]} />
                 ),

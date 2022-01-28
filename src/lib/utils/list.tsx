@@ -416,6 +416,8 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     return bsm_filters_ref_1;
   });
 
+  console.log(state.refreshing, "#####");
+
   return (
     <>
       {/* <Column flex={1}> */}
