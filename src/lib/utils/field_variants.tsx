@@ -1524,9 +1524,9 @@ type OtherFieldProps = CommonProps & {
 };
 
 function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
+  const navigation = useNavigation();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
-  const navigation = useNavigation();
   if (value.type === "other") {
     const struct = get_struct(value.other);
     if (unwrap(struct)) {
