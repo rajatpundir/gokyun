@@ -232,19 +232,30 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
   );
 }
 
-type SheetVariantProps = {
+export type SheetVariantProps = {
   element: JSX.Element;
-  title: string;
   RenderElement: (variable: Variable) => string;
+  title?: string;
   bsm_ref?: React.RefObject<BottomSheetModalMethods>;
 };
 
 function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
+  const bsm_ref_1 = useRef<BottomSheetModal>(null);
+  const bsm_ref = apply(props.bsm_ref, (it) => {
+    if (it !== undefined) {
+      return it;
+    }
+    return bsm_ref_1;
+  });
+
   const renderItem = useCallback(
     (list_item: ListRenderItemInfo<Variable>) => {
       return (
         <Pressable
-          onPress={() => props.update_parent_values(list_item.item)}
+          onPress={() => {
+            props.update_parent_values(list_item.item);
+            bsm_ref.current?.forceClose();
+          }}
           flex={1}
           flexDirection={"row"}
           py={"0.5"}
@@ -282,14 +293,6 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
     return <></>;
   }, [props.state.reached_end]);
 
-  const bsm_ref_1 = useRef<BottomSheetModal>(null);
-  const bsm_ref = apply(props.bsm_ref, (it) => {
-    if (it !== undefined) {
-      return it;
-    }
-    return bsm_ref_1;
-  });
-
   return (
     <Portal>
       <BottomSheetModal
@@ -322,6 +325,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
           </Pressable>
         </Row>
         <BottomSheetFlatList
+          contentContainerStyle={tw.style(["m-2"], {})}
           data={props.state.variables}
           renderItem={renderItem}
           keyExtractor={keyExtractor}

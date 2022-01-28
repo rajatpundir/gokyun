@@ -226,6 +226,88 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
           },
         ]}
       />
+      <Template
+        {...props}
+        type={"CLA"}
+        fields={[
+          {
+            path: "user",
+            options: [
+              "other",
+              {
+                limit: new Decimal(10),
+                labels: [
+                  ["Nickname", [[], "nickname"]],
+                  ["Knows english", [[], "knows_english"]],
+                  ["Mobile", [[], "mobile"]],
+                  ["Product Count", [[], "product_count"]],
+                ],
+                options: [
+                  "sheet",
+                  {
+                    element: arrow(() => {
+                      const result = get_path(props.state, [[], "user"]);
+                      if (unwrap(result)) {
+                        const path = result.value;
+                        if (path.writeable) {
+                          const value = path.path[1][1];
+                          if (
+                            value.type === "other" &&
+                            value.value.equals(-1)
+                          ) {
+                            return (
+                              <Row>
+                                <Text>Select User </Text>
+                                {props.state.mode === "write" ? (
+                                  <FontAwesome
+                                    name="edit"
+                                    size={24}
+                                    color={theme.placeholder}
+                                  />
+                                ) : (
+                                  <></>
+                                )}
+                              </Row>
+                            );
+                          } else {
+                            return (
+                              <Row>
+                                <Field
+                                  {...props}
+                                  path={[["user"], "nickname"]}
+                                />
+                                <Text> </Text>
+                                {props.state.mode === "write" ? (
+                                  <FontAwesome
+                                    name="edit"
+                                    size={24}
+                                    color={theme.placeholder}
+                                  />
+                                ) : (
+                                  <></>
+                                )}
+                              </Row>
+                            );
+                          }
+                        }
+                      }
+                      return <></>;
+                    }),
+                    RenderElement: (variable) => variable.id.toString(),
+                  },
+                ],
+                RenderVariant: (props: RenderListVariantProps) => (
+                  <SearchX
+                    {...props}
+                    placeholder="Nickname"
+                    path={[[], "nickname"]}
+                  />
+                ),
+              },
+            ],
+          },
+        ]}
+      />
       <Row justifyContent={"flex-end"} my={"2"}>
         <Pressable
           onPress={() => navigation.goBack()}

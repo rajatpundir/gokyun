@@ -35,6 +35,7 @@ import { CommonProps, List } from "./list";
 import { theme } from "./theme";
 import { tw } from "./tailwind";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { SheetVariantProps } from "./list_variants";
 
 type FieldVariant = {
   str: [
@@ -1603,9 +1604,23 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
         }
         case "sheet": {
           if (is_writeable) {
+            const title: string = apply(props.options[1].title, (it) => {
+              if (it !== undefined) {
+                return it;
+              }
+              return "Select value";
+            });
             const bsm_ref = props.options[1].bsm_ref
               ? props.options[1].bsm_ref
               : sheet_ref;
+            const options = [
+              props.options[0],
+              {
+                ...props.options[1],
+                title: title,
+                bsm_ref: bsm_ref,
+              },
+            ] as ["sheet", SheetVariantProps];
             return (
               <>
                 <Pressable
@@ -1615,7 +1630,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                 >
                   {props.options[1].element}
                 </Pressable>
-                <List {...list_props} />
+                <List {...list_props} options={options} />
               </>
             );
           } else {
