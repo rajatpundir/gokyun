@@ -12,7 +12,7 @@ import {
 import { apply, arrow } from "./prelude";
 import { PathString, Variable } from "./variable";
 import { tw } from "./tailwind";
-import { bs_theme } from "./theme";
+import { theme, bs_theme } from "./theme";
 import { ListAction, ListState, RenderListElement } from "./list";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
@@ -223,7 +223,10 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
     >
       {props.state.variables.map((variable) => {
         return (
-          <Menu.Item onPress={() => props.update_parent_values(variable)}>
+          <Menu.Item
+            key={variable.id.toString()}
+            onPress={() => props.update_parent_values(variable)}
+          >
             <Text>{props.RenderElement(variable)}</Text>
           </Menu.Item>
         );
@@ -261,17 +264,9 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
           py={"0.5"}
         >
           {props.selected.equals(list_item.item.id) ? (
-            <Ionicons
-              name="radio-button-on"
-              size={24}
-              color={bs_theme.primary}
-            />
+            <Ionicons name="radio-button-on" size={24} color={theme.primary} />
           ) : (
-            <Ionicons
-              name="radio-button-off"
-              size={24}
-              color={bs_theme.primary}
-            />
+            <Ionicons name="radio-button-off" size={24} color={theme.primary} />
           )}
           <Text pl={1}>{props.RenderElement(list_item.item)}</Text>
         </Pressable>
@@ -300,14 +295,14 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
         snapPoints={["50%", "82%"]}
         index={0}
         backgroundStyle={tw.style(["border"], {
-          backgroundColor: bs_theme.background,
-          borderColor: bs_theme.primary,
+          backgroundColor: theme.background,
+          borderColor: theme.primary,
         })}
       >
         <Row
           justifyContent={"space-between"}
           alignItems={"center"}
-          borderBottomColor={bs_theme.border}
+          borderBottomColor={theme.primary}
           borderBottomWidth={"1"}
           px={"3"}
           pb={"2"}
@@ -315,7 +310,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
           <Text bold>{props.title}</Text>
           <Pressable
             onPress={() => bsm_ref.current?.forceClose()}
-            borderColor={bs_theme.primary}
+            borderColor={theme.primary}
             borderWidth={"1"}
             borderRadius={"xs"}
             px={"2"}
