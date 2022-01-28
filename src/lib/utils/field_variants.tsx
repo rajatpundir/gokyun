@@ -1565,12 +1565,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
             }
             return "Select value";
           });
-          const element = apply(props.options[1].element, (it) => {
-            if (it !== undefined) {
-              return it;
-            }
-            return <></>;
-          });
+          // const element = ;
           if (is_writeable) {
             return (
               <Pressable
@@ -1581,11 +1576,21 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                   });
                 }}
               >
-                {element}
+                {apply(props.options[1].element, (it) => {
+                  if (it !== undefined) {
+                    return it;
+                  }
+                  return <></>;
+                })}
               </Pressable>
             );
           } else {
-            return element;
+            return apply(props.options[1].element, (it) => {
+              if (it !== undefined) {
+                return it;
+              }
+              return <></>;
+            });
           }
         }
         case "menu": {
