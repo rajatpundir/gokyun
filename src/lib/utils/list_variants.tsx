@@ -80,10 +80,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
     [props.state.struct, props.state.layout, props.selected]
   );
 
-  const keyExtractor = useCallback(
-    (list_item: Variable) => list_item.id.toString(),
-    []
-  );
+  const keyExtractor = (variable: Variable) => variable.id.toString();
 
   const ListFooterComponent = useCallback(() => {
     if (!props.state.reached_end) {
@@ -171,6 +168,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
             </Pressable>
             {Object.keys(props.ListElement[1]).map((layout) => (
               <Pressable
+                key={layout}
                 onPress={() => {
                   if (props.state.layout !== layout) {
                     props.bsm_view_ref.current?.forceClose();
