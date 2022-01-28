@@ -416,8 +416,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     return bsm_filters_ref_1;
   });
 
-  console.log(state.refreshing, "#####");
-
   return (
     <>
       {/* <Column flex={1}> */}
@@ -625,8 +623,7 @@ export function SelectionModal(
 ): JSX.Element {
   useEffect(() => {
     props.navigation.setOptions({ headerTitle: props.route.params.title });
-  }, []);
-  console.log(props.route.params);
+  }, [props.route.params.title]);
   return (
     <>
       <ModalHeader title={props.route.params.title} />
