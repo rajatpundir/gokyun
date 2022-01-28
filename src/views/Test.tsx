@@ -7,7 +7,7 @@ import { ScrollView, Row, Text, Pressable } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
-  SearchBar,
+  SearchX,
 } from "../lib/utils/component";
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
@@ -17,7 +17,7 @@ import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import { theme } from "../lib/utils/theme";
 import UserViews from "./User";
-import { RenderCustomFieldProps, RenderListElement } from "../lib/utils/list";
+import { RenderListVariantProps, RenderListElement } from "../lib/utils/list";
 
 const views = {
   User: UserViews,
@@ -132,11 +132,8 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                     title: "Select User",
                   },
                 ],
-                render_custom_fields: (props: RenderCustomFieldProps) => (
-                  <SearchBar
-                    // show_views={() => {}}
-                    // show_sorting={() => {}}
-                    // show_filters={{() => {}}
+                RenderListVariant: (props: RenderListVariantProps) => (
+                  <SearchX
                     {...props}
                     placeholder="Nickname"
                     path={[[], "nickname"]}

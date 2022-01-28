@@ -304,16 +304,20 @@ export type RenderListElement = [
   Record<string, (props: RenderListItemProps) => JSX.Element>
 ];
 
-export type RenderCustomFieldProps = {
+export type RenderListVariantProps = {
   init_filter: Filter;
   filters: HashSet<Filter>;
   dispatch: React.Dispatch<ListAction>;
   variant: JSX.Element;
+  bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
+  bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
 };
 
 export type CommonProps = {
   limit: Decimal;
-  render_custom_fields: (props: RenderCustomFieldProps) => JSX.Element;
+  RenderListVariant: (props: RenderListVariantProps) => JSX.Element;
   options: ListVariantOptions;
   bsm_view_ref?: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_ref?: React.RefObject<BottomSheetModalMethods>;
@@ -415,7 +419,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   return (
     <>
       {/* <Column flex={1}> */}
-      <props.render_custom_fields
+      <props.RenderListVariant
         init_filter={state.init_filter}
         filters={state.filters}
         dispatch={dispatch}
@@ -435,6 +439,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             }
           />
         }
+        bsm_view_ref={bsm_view_ref}
+        bsm_sorting_ref={bsm_sorting_ref}
+        bsm_sorting_fields_ref={bsm_sorting_fields_ref}
+        bsm_filters_ref={bsm_filters_ref}
       />
       {/* </Column> */}
 

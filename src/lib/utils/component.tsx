@@ -14,7 +14,7 @@ import {
   run_triggers,
   compute_checks,
 } from "./commons";
-import { ListAction } from "./list";
+import { ListAction, RenderListVariantProps } from "./list";
 import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
@@ -207,6 +207,29 @@ export function OtherComponent(props: {
   view: ComponentViews[string];
 }): JSX.Element {
   return useOtherComponent(props)[2];
+}
+
+// export type RenderCustomFieldProps = {
+//   init_filter: Filter;
+//   filters: HashSet<Filter>;
+//   dispatch: React.Dispatch<ListAction>;
+//   variant: JSX.Element;
+//   bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
+//   bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
+//   bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
+//   bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
+// };
+
+export function SearchX(
+  props: RenderListVariantProps & {
+    placeholder: string;
+    path: PathString;
+    is_views_editable?: boolean;
+    is_sorting_editable?: boolean;
+    is_filters_editable?: boolean;
+  }
+): JSX.Element {
+  return props.variant;
 }
 
 export function SearchBar(props: {

@@ -7,7 +7,7 @@ import { Filter } from "../../../../lib/utils/db";
 import { get_filter_paths } from "../../../../lib/utils/commons";
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
-import { OtherComponent, SearchBar } from "../../../../lib/utils/component";
+import { OtherComponent, SearchX } from "../../../../lib/utils/component";
 import { views } from "../../../../views";
 
 // Show a flat list with a bunch of string, a button at top right to open a modal to add new string
@@ -68,8 +68,8 @@ export default function Component(
               ],
             },
           ]}
-          render_custom_fields={(props) => (
-            <SearchBar
+          RenderListVariant={(props) => (
+            <SearchX
               {...props}
               placeholder="Nickname"
               path={[[], "nickname"]}

@@ -1465,6 +1465,12 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
             }
             return "Select value";
           });
+          const element = apply(props.options[1].element, (it) => {
+            if (it !== undefined) {
+              return it;
+            }
+            return <></>;
+          });
           if (is_writeable) {
             return (
               <Pressable
@@ -1475,11 +1481,11 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
                   });
                 }}
               >
-                {props.options[1].element}
+                {element}
               </Pressable>
             );
           } else {
-            return props.options[1].element;
+            return element;
           }
         }
         case "menu": {
