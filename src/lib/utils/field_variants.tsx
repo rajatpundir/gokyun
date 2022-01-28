@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
@@ -34,6 +34,7 @@ import { get_struct } from "./schema";
 import { CommonProps, List } from "./list";
 import { theme } from "./theme";
 import { tw } from "./tailwind";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 type FieldVariant = {
   str: [
@@ -1527,6 +1528,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const navigation = useNavigation();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
+  const sheet_ref = useRef<BottomSheetModal>(null);
   if (value.type === "other") {
     const struct = get_struct(value.other);
     if (unwrap(struct)) {
@@ -1595,6 +1597,27 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
         case "menu": {
           if (is_writeable) {
             return <List {...list_props} />;
+          } else {
+            return props.options[1].element;
+          }
+        }
+        case "sheet": {
+          if (is_writeable) {
+            const bsm_ref = props.options[1].bsm_ref
+              ? props.options[1].bsm_ref
+              : sheet_ref;
+            return (
+              <>
+                <Pressable
+                  onPress={() => {
+                    bsm_ref.current?.present();
+                  }}
+                >
+                  {props.options[1].element}
+                </Pressable>
+                <List {...list_props} />
+              </>
+            );
           } else {
             return props.options[1].element;
           }

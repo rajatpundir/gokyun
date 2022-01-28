@@ -1,11 +1,15 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import Decimal from "decimal.js";
 import { Menu, Text, Pressable, Row } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
-import { BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import { arrow } from "./prelude";
+import {
+  BottomSheetFlatList,
+  BottomSheetModal,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
+import { apply, arrow } from "./prelude";
 import { PathString, Variable } from "./variable";
 import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
@@ -24,6 +28,9 @@ export function ListVariant(
     case "menu": {
       return <MenuVariant {...props} {...props.options[1]} />;
     }
+    case "sheet": {
+      return <SheetVariant {...props} {...props.options[1]} />;
+    }
     default: {
       const _exhaustiveCheck: never = props.options[0];
       return _exhaustiveCheck;
@@ -33,7 +40,8 @@ export function ListVariant(
 
 export type ListVariantOptions =
   | ["list", FlatlistVariantProps]
-  | ["menu", MenuVariantProps];
+  | ["menu", MenuVariantProps]
+  | ["sheet", SheetVariantProps];
 
 type VariantCommonProps = {
   state: ListState;
@@ -221,5 +229,110 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
         );
       })}
     </Menu>
+  );
+}
+
+type SheetVariantProps = {
+  element: JSX.Element;
+  title: string;
+  RenderElement: (variable: Variable) => string;
+  bsm_ref?: React.RefObject<BottomSheetModalMethods>;
+};
+
+function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
+  const renderItem = useCallback(
+    (list_item: ListRenderItemInfo<Variable>) => {
+      return (
+        <Pressable
+          onPress={() => props.update_parent_values(list_item.item)}
+          flex={1}
+          flexDirection={"row"}
+          py={"0.5"}
+        >
+          {props.selected.equals(list_item.item.id) ? (
+            <Ionicons
+              name="radio-button-on"
+              size={24}
+              color={bs_theme.primary}
+            />
+          ) : (
+            <Ionicons
+              name="radio-button-off"
+              size={24}
+              color={bs_theme.primary}
+            />
+          )}
+          <Text pl={1}>{props.RenderElement(list_item.item)}</Text>
+        </Pressable>
+      );
+    },
+    [props.selected, props.RenderElement, props.update_parent_values]
+  );
+
+  const keyExtractor = (variable: Variable) => variable.id.toString();
+
+  const ListFooterComponent = useCallback(() => {
+    if (!props.state.reached_end) {
+      return (
+        <Text my={"1"} textAlign={"center"}>
+          Loading...
+        </Text>
+      );
+    }
+    return <></>;
+  }, [props.state.reached_end]);
+
+  const bsm_ref_1 = useRef<BottomSheetModal>(null);
+  const bsm_ref = apply(props.bsm_ref, (it) => {
+    if (it !== undefined) {
+      return it;
+    }
+    return bsm_ref_1;
+  });
+
+  return (
+    <Portal>
+      <BottomSheetModal
+        ref={props.bsm_ref}
+        snapPoints={["50%", "82%"]}
+        index={0}
+        backgroundStyle={tw.style(["border"], {
+          backgroundColor: bs_theme.background,
+          borderColor: bs_theme.primary,
+        })}
+      >
+        <Row
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          borderBottomColor={bs_theme.border}
+          borderBottomWidth={"1"}
+          px={"3"}
+          pb={"2"}
+        >
+          <Text bold>{props.title}</Text>
+          <Pressable
+            onPress={() => bsm_ref.current?.forceClose()}
+            borderColor={bs_theme.primary}
+            borderWidth={"1"}
+            borderRadius={"xs"}
+            px={"2"}
+            py={"0.5"}
+          >
+            <Text>Close</Text>
+          </Pressable>
+        </Row>
+        <BottomSheetFlatList
+          data={props.state.variables}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          refreshing={!!props.state.refreshing}
+          onRefresh={() => {}}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => props.dispatch(["offset"])}
+          ListFooterComponent={ListFooterComponent}
+          nestedScrollEnabled={true}
+        />
+      </BottomSheetModal>
+    </Portal>
   );
 }
