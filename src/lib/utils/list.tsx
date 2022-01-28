@@ -317,7 +317,7 @@ export type RenderListVariantProps = {
 
 export type CommonProps = {
   limit: Decimal;
-  RenderListVariant: (props: RenderListVariantProps) => JSX.Element;
+  RenderVariant: (props: RenderListVariantProps) => JSX.Element;
   options: ListVariantOptions;
   bsm_view_ref?: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_ref?: React.RefObject<BottomSheetModalMethods>;
@@ -419,7 +419,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   return (
     <>
       {/* <Column flex={1}> */}
-      <props.RenderListVariant
+      <props.RenderVariant
         init_filter={state.init_filter}
         filters={state.filters}
         dispatch={dispatch}

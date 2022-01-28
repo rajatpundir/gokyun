@@ -47,7 +47,7 @@ type VariantCommonProps = {
 };
 
 type FlatlistVariantProps = {
-  ListElement: RenderListElement;
+  RenderElement: RenderListElement;
   user_paths: Array<PathString>;
   borrows: Array<string>;
   horizontal?: boolean;
@@ -59,10 +59,10 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
   const renderItem = useCallback(
     (list_item: ListRenderItemInfo<Variable>) => {
       const ElementJSX = arrow(() => {
-        if (props.state.layout in props.ListElement[1]) {
-          return props.ListElement[1][props.state.layout];
+        if (props.state.layout in props.RenderElement[1]) {
+          return props.RenderElement[1][props.state.layout];
         }
-        return props.ListElement[0];
+        return props.RenderElement[0];
       });
       return (
         <ElementJSX
@@ -164,7 +164,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
               )}
               <Text pl={1}>Default</Text>
             </Pressable>
-            {Object.keys(props.ListElement[1]).map((layout) => (
+            {Object.keys(props.RenderElement[1]).map((layout) => (
               <Pressable
                 key={layout}
                 onPress={() => {
@@ -202,7 +202,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
 
 type MenuVariantProps = {
   element: JSX.Element;
-  render_menu_item: (variable: Variable) => JSX.Element;
+  RenderElement: (variable: Variable) => string;
 };
 
 function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
@@ -216,8 +216,7 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
       {props.state.variables.map((variable) => {
         return (
           <Menu.Item onPress={() => props.update_parent_values(variable)}>
-            {props.render_menu_item(variable)}
-            {/* <Text>TODO. Test this</Text> */}
+            <Text>{props.RenderElement(variable)}</Text>
           </Menu.Item>
         );
       })}

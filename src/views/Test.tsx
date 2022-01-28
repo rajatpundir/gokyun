@@ -120,7 +120,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    ListElement: [
+                    RenderElement: [
                       (props) => (
                         <OtherComponent
                           {...props}
@@ -132,7 +132,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                     title: "Select User",
                   },
                 ],
-                RenderListVariant: (props: RenderListVariantProps) => (
+                RenderVariant: (props: RenderListVariantProps) => (
                   <SearchX
                     {...props}
                     placeholder="Nickname"
@@ -211,12 +211,10 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    render_menu_item: (variable) => {
-                      return <Text>{variable.id.toString()}</Text>;
-                    },
+                    RenderElement: (variable) => variable.id.toString(),
                   },
                 ],
-                RenderListVariant: (props: RenderListVariantProps) => (
+                RenderVariant: (props: RenderListVariantProps) => (
                   <SearchX
                     {...props}
                     placeholder="Nickname"

@@ -53,7 +53,7 @@ export default function Component(
             {
               user_paths: [],
               borrows: [],
-              ListElement: [
+              RenderElement: [
                 (props) => (
                   <OtherComponent {...props} view={views.User["Default"]} />
                 ),
@@ -68,7 +68,7 @@ export default function Component(
               ],
             },
           ]}
-          RenderListVariant={(props) => (
+          RenderVariant={(props) => (
             <SearchX
               {...props}
               placeholder="Nickname"
