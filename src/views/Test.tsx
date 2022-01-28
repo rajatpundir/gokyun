@@ -53,7 +53,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
       <Template {...props} type={"RLA"} fields={["time", "timestamp"]} />
       <Template
         {...props}
-        type={"CLA"}
+        type={"CLB"}
         fields={[
           {
             path: "user",
@@ -146,7 +146,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
       />
       <Template
         {...props}
-        type={"CLA"}
+        type={"CLB"}
         fields={[
           {
             path: "user",
@@ -228,7 +228,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
       />
       <Template
         {...props}
-        type={"CLA"}
+        type={"CLB"}
         fields={[
           {
             path: "user",
