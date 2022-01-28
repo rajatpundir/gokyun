@@ -93,8 +93,6 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
     return <></>;
   }, [props.state.reached_end]);
 
-  console.log(props.state.refreshing, "---------");
-
   return (
     <>
       <FlatList

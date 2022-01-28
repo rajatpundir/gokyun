@@ -1565,7 +1565,6 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
             }
             return "Select value";
           });
-          // const element = ;
           if (is_writeable) {
             return (
               <Pressable
