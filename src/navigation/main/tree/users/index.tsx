@@ -10,10 +10,6 @@ import Decimal from "decimal.js";
 import { OtherComponent, SearchWrapper } from "../../../../lib/utils/component";
 import { views } from "../../../../views";
 
-// Show a flat list with a bunch of string, a button at top right to open a modal to add new string
-// Some mechanism to update and delete this list
-// Edit and Show modes to show or edit this list
-
 export default function Component(
   props: ParentNavigatorProps<"Users">
 ): JSX.Element {
