@@ -7,11 +7,7 @@ import { Filter } from "../../../../lib/utils/db";
 import { get_filter_paths } from "../../../../lib/utils/commons";
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
-import {
-  OtherComponent,
-  Identity,
-  SearchWrapper,
-} from "../../../../lib/utils/component";
+import { OtherComponent, SearchWrapper } from "../../../../lib/utils/component";
 import { views } from "../../../../views";
 
 // Show a flat list with a bunch of string, a button at top right to open a modal to add new string
@@ -77,6 +73,9 @@ export default function Component(
               {...props}
               placeholder="Nickname"
               path={[[], "nickname"]}
+              is_views_editable
+              is_sorting_editable
+              is_filters_editable
             />
           )}
           update_parent_values={() => {}}

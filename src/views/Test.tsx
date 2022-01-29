@@ -8,6 +8,7 @@ import {
   ComponentViews,
   OtherComponent,
   Identity,
+  SearchWrapper,
 } from "../lib/utils/component";
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
@@ -138,7 +139,14 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                   },
                 ],
                 RenderVariant: (props: RenderListVariantProps) => (
-                  <Identity {...props} />
+                  <SearchWrapper
+                    {...props}
+                    placeholder="Nickname"
+                    path={[[], "nickname"]}
+                    is_views_editable
+                    is_sorting_editable
+                    is_filters_editable
+                  />
                 ),
               },
             ],

@@ -14,7 +14,7 @@ import {
   run_triggers,
   compute_checks,
 } from "./commons";
-import { ListAction, RenderListVariantProps } from "./list";
+import { RenderListVariantProps } from "./list";
 import {
   Feather,
   FontAwesome,
@@ -316,112 +316,105 @@ export function SearchWrapper(
               </Row>
             }
             InputRightElement={
-              <Row px={1}>
-                {arrow(() => {
-                  const result = filter
-                    .get()
-                    .filter_paths.findAny((x) =>
-                      compare_paths(x.path, props.path)
-                    );
-                  if (result.isSome()) {
-                    const v = result.get().value;
-                    if (v[0] === "str") {
-                      let check = false;
-                      if (v[1] !== undefined) {
-                        if (v[1][0] === "like") {
-                          const x = v[1][1];
-                          if (!Array.isArray(x)) {
-                            if (x !== default_value) {
-                              check = true;
+              <Row mx={1}>
+                <Row key={"clear"}>
+                  {arrow(() => {
+                    const result = filter
+                      .get()
+                      .filter_paths.findAny((x) =>
+                        compare_paths(x.path, props.path)
+                      );
+                    if (result.isSome()) {
+                      const v = result.get().value;
+                      if (v[0] === "str") {
+                        let check = false;
+                        if (v[1] !== undefined) {
+                          if (v[1][0] === "like") {
+                            const x = v[1][1];
+                            if (!Array.isArray(x)) {
+                              if (x !== default_value) {
+                                check = true;
+                              }
                             }
                           }
                         }
-                      }
-                      if (check) {
-                        return (
-                          <Pressable
-                            onPress={() => {
-                              try {
-                                const val = default_value;
-                                set_local_val(val);
-                                set_has_errors(false);
-                                props.dispatch([
-                                  "filters",
-                                  filter.get(),
-                                  "replace",
-                                  apply(
-                                    new FilterPath(
-                                      result.get().label,
-                                      props.path,
-                                      ["str", undefined],
-                                      undefined
+                        if (check) {
+                          return (
+                            <Pressable
+                              onPress={() => {
+                                try {
+                                  const val = default_value;
+                                  set_local_val(val);
+                                  set_has_errors(false);
+                                  props.dispatch([
+                                    "filters",
+                                    filter.get(),
+                                    "replace",
+                                    apply(
+                                      new FilterPath(
+                                        result.get().label,
+                                        props.path,
+                                        ["str", undefined],
+                                        undefined
+                                      ),
+                                      (it) => {
+                                        it.active = true;
+                                        return it;
+                                      }
                                     ),
-                                    (it) => {
-                                      it.active = true;
-                                      return it;
-                                    }
-                                  ),
-                                ]);
-                              } catch (e) {}
-                            }}
-                          >
-                            <MaterialIcons
-                              name="clear"
-                              size={24}
-                              color={theme.placeholder}
-                            />
-                          </Pressable>
-                        );
+                                  ]);
+                                } catch (e) {}
+                              }}
+                            >
+                              <MaterialIcons
+                                name="clear"
+                                size={24}
+                                color={theme.placeholder}
+                              />
+                            </Pressable>
+                          );
+                        }
                       }
                     }
-                  }
-                  return <></>;
-                })}
-                <Row>
+                    return <></>;
+                  })}
+                </Row>
+                <Row
+                  key={"bsm"}
+                  space={"1"}
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                >
                   {props.is_views_editable ? (
-                    <Pressable onPress={props.bsm_view_ref.current?.present}>
-                      <Feather
-                        name="layout"
-                        size={20}
-                        color={theme.primary}
-                        style={{
-                          alignSelf: "center",
-                          padding: 4,
-                          marginHorizontal: 0,
-                        }}
-                      />
+                    <Pressable
+                      key={"bsm_view_ref"}
+                      onPress={props.bsm_view_ref.current?.present}
+                    >
+                      <Feather name="layout" size={20} color={theme.primary} />
                     </Pressable>
                   ) : (
                     <></>
                   )}
                   {props.is_sorting_editable ? (
-                    <Pressable onPress={props.bsm_sorting_ref.current?.present}>
+                    <Pressable
+                      key={"bsm_sorting_ref"}
+                      onPress={props.bsm_sorting_ref.current?.present}
+                    >
                       <FontAwesome
                         name="sort-alpha-asc"
-                        size={20}
+                        size={18}
                         color={theme.primary}
-                        style={{
-                          alignSelf: "center",
-                          padding: 4,
-                          marginHorizontal: 0,
-                        }}
                       />
                     </Pressable>
                   ) : (
                     <></>
                   )}
                   {props.is_filters_editable ? (
-                    <Pressable onPress={props.bsm_filters_ref.current?.present}>
-                      <Ionicons
-                        name="filter"
-                        size={20}
-                        color={theme.primary}
-                        style={{
-                          alignSelf: "center",
-                          padding: 3,
-                          marginHorizontal: 0,
-                        }}
-                      />
+                    <Pressable
+                      key={"bsm_filters_ref"}
+                      onPress={props.bsm_filters_ref.current?.present}
+                    >
+                      <Feather name="filter" size={21} color={theme.primary} />
                     </Pressable>
                   ) : (
                     <></>
@@ -434,156 +427,6 @@ export function SearchWrapper(
         <Column flex={1}>{props.variant}</Column>
       </Column>
     );
-  }
-  return <></>;
-}
-
-export function SearchBar(props: {
-  init_filter: Filter;
-  filters: HashSet<Filter>;
-  dispatch: React.Dispatch<ListAction>;
-  show_views: [(props: { element: JSX.Element }) => JSX.Element, boolean];
-  show_sorting: (props: { element: JSX.Element }) => JSX.Element;
-  show_filters: (props: { element: JSX.Element }) => JSX.Element;
-  placeholder: string;
-  path: PathString;
-  is_views_editable?: boolean;
-  is_sorting_editable?: boolean;
-  is_filters_editable?: boolean;
-}): JSX.Element {
-  const filter = props.filters.findAny((x) => x.index === 0);
-  if (filter.isSome()) {
-    return (
-      <Row>
-        <Feather
-          name="search"
-          size={24}
-          color={colors.slate[300]}
-          style={{ alignSelf: "center" }}
-        />
-        <Input
-          flex={1}
-          placeholder={props.placeholder}
-          value={arrow(() => {
-            const result = filter
-              .get()
-              .filter_paths.findAny((x) => compare_paths(x.path, props.path));
-            if (result.isSome()) {
-              const v = result.get().value;
-              if (v[0] === "str" && v[1] !== undefined && v[1][0] === "like") {
-                if (typeof v[1][1] === "string") {
-                  return v[1][1];
-                }
-              }
-            }
-            return "";
-          })}
-          onChangeText={(x) => {
-            const result = props.init_filter.filter_paths.findAny((x) =>
-              compare_paths(x.path, props.path)
-            );
-            if (result.isSome()) {
-              props.dispatch([
-                "filters",
-                filter.get(),
-                "replace",
-                apply(
-                  new FilterPath(
-                    result.get().label,
-                    props.path,
-                    ["str", ["like", x]],
-                    undefined
-                  ),
-                  (it) => {
-                    it.active = true;
-                    return it;
-                  }
-                ),
-              ]);
-            }
-          }}
-        />
-        <>
-          {!props.show_views[1] &&
-          (props.is_views_editable === undefined || props.is_views_editable) ? (
-            <Row>
-              {apply(props.show_views[0], (ShowViews) => (
-                <ShowViews
-                  element={
-                    <Feather
-                      name="layout"
-                      size={20}
-                      color={colors.slate[400]}
-                      style={{
-                        alignSelf: "center",
-                        padding: 4,
-                        marginHorizontal: 0,
-                      }}
-                    />
-                  }
-                />
-              ))}
-            </Row>
-          ) : (
-            <></>
-          )}
-          {props.is_sorting_editable === undefined ||
-          props.is_sorting_editable ? (
-            <Row>
-              <props.show_sorting
-                element={
-                  <FontAwesome
-                    name="sort-alpha-asc"
-                    size={20}
-                    color={colors.slate[400]}
-                    style={{
-                      alignSelf: "center",
-                      padding: 4,
-                      marginHorizontal: 0,
-                    }}
-                  />
-                }
-              />
-            </Row>
-          ) : (
-            <></>
-          )}
-          {props.is_filters_editable === undefined ||
-          props.is_filters_editable === true ? (
-            <Row>
-              <props.show_filters
-                element={
-                  <Ionicons
-                    name="filter"
-                    size={20}
-                    color={colors.slate[400]}
-                    style={{
-                      alignSelf: "center",
-                      padding: 3,
-                      marginHorizontal: 0,
-                    }}
-                  />
-                }
-              />
-            </Row>
-          ) : (
-            <></>
-          )}
-        </>
-      </Row>
-    );
-  } else {
-    props.dispatch([
-      "filter",
-      "replace",
-      new Filter(
-        0,
-        [false, undefined],
-        [false, undefined],
-        [false, undefined],
-        HashSet.of()
-      ),
-    ]);
   }
   return <></>;
 }
