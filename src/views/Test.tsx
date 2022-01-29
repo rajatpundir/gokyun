@@ -304,10 +304,6 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                         if (path.path[1][1].type === "str") {
                           return path.path[1][1].value;
                         }
-                      } else {
-                        variable.paths
-                          .toArray()
-                          .forEach((x) => console.log(get_path_string(x)));
                       }
                       return variable.id.toString();
                     },
