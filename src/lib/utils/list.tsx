@@ -311,7 +311,6 @@ export type RenderListVariantProps = {
   variant: JSX.Element;
   bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
-  bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
 };
 
@@ -319,10 +318,6 @@ export type CommonProps = {
   limit: Decimal;
   RenderVariant: (props: RenderListVariantProps) => JSX.Element;
   options: ListVariantOptions;
-  bsm_view_ref?: React.RefObject<BottomSheetModalMethods>;
-  bsm_sorting_ref?: React.RefObject<BottomSheetModalMethods>;
-  bsm_sorting_fields_ref?: React.RefObject<BottomSheetModalMethods>;
-  bsm_filters_ref?: React.RefObject<BottomSheetModalMethods>;
 };
 
 type ListSpecificProps = CommonProps & {
@@ -384,37 +379,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     state.offset,
   ]);
 
-  const bsm_view_ref_1 = useRef<BottomSheetModal>(null);
-  const bsm_view_ref = apply(props.bsm_view_ref, (it) => {
-    if (it !== undefined) {
-      return it;
-    }
-    return bsm_view_ref_1;
-  });
-
-  const bsm_sorting_ref_1 = useRef<BottomSheetModal>(null);
-  const bsm_sorting_ref = apply(props.bsm_sorting_ref, (it) => {
-    if (it !== undefined) {
-      return it;
-    }
-    return bsm_sorting_ref_1;
-  });
-
-  const bsm_sorting_fields_ref_1 = useRef<BottomSheetModal>(null);
-  const bsm_sorting_fields_ref = apply(props.bsm_sorting_fields_ref, (it) => {
-    if (it !== undefined) {
-      return it;
-    }
-    return bsm_sorting_fields_ref_1;
-  });
-
-  const bsm_filters_ref_1 = useRef<BottomSheetModal>(null);
-  const bsm_filters_ref = apply(props.bsm_filters_ref, (it) => {
-    if (it !== undefined) {
-      return it;
-    }
-    return bsm_filters_ref_1;
-  });
+  const bsm_view_ref = useRef<BottomSheetModal>(null);
+  const bsm_sorting_ref = useRef<BottomSheetModal>(null);
+  const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
+  const bsm_filters_ref = useRef<BottomSheetModal>(null);
 
   return (
     <>
@@ -441,14 +409,13 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         }
         bsm_view_ref={bsm_view_ref}
         bsm_sorting_ref={bsm_sorting_ref}
-        bsm_sorting_fields_ref={bsm_sorting_fields_ref}
         bsm_filters_ref={bsm_filters_ref}
       />
       {/* </Column> */}
 
       <Portal>
         <BottomSheetModal
-          ref={props.bsm_sorting_ref}
+          ref={bsm_sorting_ref}
           snapPoints={["50%", "82%"]}
           index={0}
           backgroundStyle={tw.style(["border"], {
@@ -490,7 +457,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           </Row>
           <SortComponent init_filter={state.init_filter} dispatch={dispatch} />
           <BottomSheetModal
-            ref={props.bsm_sorting_fields_ref}
+            ref={bsm_sorting_fields_ref}
             snapPoints={["50%", "82%"]}
             index={0}
             backgroundStyle={tw.style(["border"], {
@@ -526,7 +493,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         </BottomSheetModal>
 
         <BottomSheetModal
-          ref={props.bsm_filters_ref}
+          ref={bsm_filters_ref}
           snapPoints={["50%", "82%"]}
           index={1}
           backgroundStyle={tw.style(["border"], {

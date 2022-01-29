@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import Decimal from "decimal.js";
 import { Menu, Text, Pressable, Row } from "native-base";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import {
   BottomSheetFlatList,

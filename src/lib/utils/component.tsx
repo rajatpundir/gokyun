@@ -214,24 +214,19 @@ export function OtherComponent(props: {
   return useOtherComponent(props)[2];
 }
 
-// export type RenderCustomFieldProps = {
-//   init_filter: Filter;
-//   filters: HashSet<Filter>;
-//   dispatch: React.Dispatch<ListAction>;
-//   variant: JSX.Element;
-//   bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
-//   bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
-//   bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
-//   bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
-// };
-
 export function Identity(props: RenderListVariantProps): JSX.Element {
   return props.variant;
 }
 
 export function SearchWrapper(
-  props: RenderListVariantProps & { placeholder: string; path: PathString }
-) {
+  props: RenderListVariantProps & {
+    placeholder: string;
+    path: PathString;
+    is_views_editable?: boolean;
+    is_sorting_editable?: boolean;
+    is_filters_editable?: boolean;
+  }
+): JSX.Element {
   const filter = props.filters.findAny((x) => x.index === 0);
   useEffect(() => {
     if (filter.isNone()) {
@@ -358,7 +353,7 @@ export function SearchWrapper(
                                     new FilterPath(
                                       result.get().label,
                                       props.path,
-                                      ["str", ["like", val]],
+                                      ["str", undefined],
                                       undefined
                                     ),
                                     (it) => {
@@ -382,6 +377,56 @@ export function SearchWrapper(
                   }
                   return <></>;
                 })}
+                <Row>
+                  {props.is_views_editable ? (
+                    <Pressable onPress={props.bsm_view_ref.current?.present}>
+                      <Feather
+                        name="layout"
+                        size={20}
+                        color={theme.primary}
+                        style={{
+                          alignSelf: "center",
+                          padding: 4,
+                          marginHorizontal: 0,
+                        }}
+                      />
+                    </Pressable>
+                  ) : (
+                    <></>
+                  )}
+                  {props.is_sorting_editable ? (
+                    <Pressable onPress={props.bsm_sorting_ref.current?.present}>
+                      <FontAwesome
+                        name="sort-alpha-asc"
+                        size={20}
+                        color={theme.primary}
+                        style={{
+                          alignSelf: "center",
+                          padding: 4,
+                          marginHorizontal: 0,
+                        }}
+                      />
+                    </Pressable>
+                  ) : (
+                    <></>
+                  )}
+                  {props.is_filters_editable ? (
+                    <Pressable onPress={props.bsm_filters_ref.current?.present}>
+                      <Ionicons
+                        name="filter"
+                        size={20}
+                        color={theme.primary}
+                        style={{
+                          alignSelf: "center",
+                          padding: 3,
+                          marginHorizontal: 0,
+                        }}
+                      />
+                    </Pressable>
+                  ) : (
+                    <></>
+                  )}
+                </Row>
               </Row>
             }
           />
