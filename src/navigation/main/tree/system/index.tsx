@@ -18,6 +18,7 @@ import Countries from "./countries";
 import Languages from "./languages";
 import Tags from "./tags";
 import Categories from "./categories";
+import Tests from "./tests";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { tw } from "../../../../lib/utils/tailwind";
@@ -27,6 +28,7 @@ export type NavigatorParams = {
   Languages: undefined;
   Tags: undefined;
   Categories: undefined;
+  Tests: undefined;
 };
 
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
@@ -43,7 +45,7 @@ const TopTab = createMaterialTopTabNavigator<NavigatorParams>();
 export function Navigator(props: ParentNavigatorProps<"System">) {
   return (
     <TopTab.Navigator
-      initialRouteName="Countries"
+      initialRouteName="Tests"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,
@@ -59,6 +61,7 @@ export function Navigator(props: ParentNavigatorProps<"System">) {
       <TopTab.Screen name="Languages" component={Languages} />
       <TopTab.Screen name="Tags" component={Tags} />
       <TopTab.Screen name="Categories" component={Categories} />
+      <TopTab.Screen name="Tests" component={Tests} />
     </TopTab.Navigator>
   );
 }

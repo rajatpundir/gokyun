@@ -17,8 +17,7 @@ import { views } from "../../../../views";
 export default function Component(
   props: ParentNavigatorProps<"Users">
 ): JSX.Element {
-  const struct_name = "User";
-  const struct = get_struct(struct_name);
+  const struct = get_struct("User");
   if (unwrap(struct)) {
     return (
       <>
