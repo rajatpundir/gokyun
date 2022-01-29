@@ -220,15 +220,7 @@ export function OtherComponent(props: {
 //   bsm_filters_ref: React.RefObject<BottomSheetModalMethods>;
 // };
 
-export function SearchX(
-  props: RenderListVariantProps & {
-    placeholder: string;
-    path: PathString;
-    is_views_editable?: boolean;
-    is_sorting_editable?: boolean;
-    is_filters_editable?: boolean;
-  }
-): JSX.Element {
+export function Identity(props: RenderListVariantProps): JSX.Element {
   return props.variant;
 }
 

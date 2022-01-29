@@ -7,7 +7,7 @@ import { ScrollView, Row, Text, Pressable } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
-  SearchX,
+  Identity,
 } from "../lib/utils/component";
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
@@ -133,11 +133,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                   },
                 ],
                 RenderVariant: (props: RenderListVariantProps) => (
-                  <SearchX
-                    {...props}
-                    placeholder="Nickname"
-                    path={[[], "nickname"]}
-                  />
+                  <Identity {...props} />
                 ),
               },
             ],
@@ -209,11 +205,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                   },
                 ],
                 RenderVariant: (props: RenderListVariantProps) => (
-                  <SearchX
-                    {...props}
-                    placeholder="Nickname"
-                    path={[[], "nickname"]}
-                  />
+                  <Identity {...props} />
                 ),
               },
             ],
@@ -291,11 +283,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                   },
                 ],
                 RenderVariant: (props: RenderListVariantProps) => (
-                  <SearchX
-                    {...props}
-                    placeholder="Nickname"
-                    path={[[], "nickname"]}
-                  />
+                  <Identity {...props} />
                 ),
               },
             ],

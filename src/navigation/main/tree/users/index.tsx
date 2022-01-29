@@ -7,7 +7,7 @@ import { Filter } from "../../../../lib/utils/db";
 import { get_filter_paths } from "../../../../lib/utils/commons";
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
-import { OtherComponent, SearchX } from "../../../../lib/utils/component";
+import { OtherComponent, Identity } from "../../../../lib/utils/component";
 import { views } from "../../../../views";
 
 // Show a flat list with a bunch of string, a button at top right to open a modal to add new string
@@ -68,13 +68,7 @@ export default function Component(
               ],
             },
           ]}
-          RenderVariant={(props) => (
-            <SearchX
-              {...props}
-              placeholder="Nickname"
-              path={[[], "nickname"]}
-            />
-          )}
+          RenderVariant={(props) => <Identity {...props} />}
           update_parent_values={() => {}}
         />
       </>
