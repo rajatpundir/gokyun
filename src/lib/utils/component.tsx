@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { useLayoutEffect } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variable } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
@@ -15,10 +15,15 @@ import {
   compute_checks,
 } from "./commons";
 import { ListAction, RenderListVariantProps } from "./list";
-import { Feather, FontAwesome, Ionicons } from "@expo/vector-icons";
+import {
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
-import { Row, Text, Input, Pressable } from "native-base";
+import { Text, Input, Pressable, Row, Column } from "native-base";
 import { theme } from "./theme";
 
 export type ComponentViews = Record<
@@ -222,6 +227,168 @@ export function OtherComponent(props: {
 
 export function Identity(props: RenderListVariantProps): JSX.Element {
   return props.variant;
+}
+
+export function SearchWrapper(
+  props: RenderListVariantProps & { placeholder: string; path: PathString }
+) {
+  const filter = props.filters.findAny((x) => x.index === 0);
+  useEffect(() => {
+    if (filter.isNone()) {
+      props.dispatch([
+        "filter",
+        "replace",
+        new Filter(
+          0,
+          [false, undefined],
+          [false, undefined],
+          [false, undefined],
+          HashSet.of()
+        ),
+      ]);
+    }
+  }, [filter]);
+  const [local_val, set_local_val] = useState(
+    arrow(() => {
+      if (filter.isSome()) {
+        const result = filter
+          .get()
+          .filter_paths.findAny((x) => compare_paths(x.path, props.path));
+        if (result.isSome()) {
+          const v = result.get().value;
+          if (v[0] === "str" && v[1] !== undefined && v[1][0] === "like") {
+            if (typeof v[1][1] === "string") {
+              return v[1][1];
+            }
+          }
+        }
+      }
+      return "";
+    })
+  );
+  const [has_errors, set_has_errors] = useState(false);
+  const default_value = "";
+  if (filter.isSome()) {
+    return (
+      <Column flex={1}>
+        <Row>
+          <Input
+            m={"2"}
+            flex={1}
+            size={"md"}
+            maxLength={255}
+            placeholder={props.placeholder}
+            value={local_val}
+            isInvalid={has_errors}
+            onChangeText={(x) => {
+              const result = props.init_filter.filter_paths.findAny((x) =>
+                compare_paths(x.path, props.path)
+              );
+              if (result.isSome()) {
+                try {
+                  set_local_val(x);
+                  set_has_errors(false);
+                  props.dispatch([
+                    "filters",
+                    filter.get(),
+                    "replace",
+                    apply(
+                      new FilterPath(
+                        result.get().label,
+                        props.path,
+                        ["str", ["like", x]],
+                        undefined
+                      ),
+                      (it) => {
+                        it.active = true;
+                        return it;
+                      }
+                    ),
+                  ]);
+                } catch (e) {
+                  set_has_errors(true);
+                }
+              }
+            }}
+            InputLeftElement={
+              <Row px={"1"}>
+                <Feather
+                  name="search"
+                  size={24}
+                  color={theme.primary}
+                  style={{ alignSelf: "center" }}
+                />
+              </Row>
+            }
+            InputRightElement={
+              <Row px={1}>
+                {arrow(() => {
+                  const result = filter
+                    .get()
+                    .filter_paths.findAny((x) =>
+                      compare_paths(x.path, props.path)
+                    );
+                  if (result.isSome()) {
+                    const v = result.get().value;
+                    if (v[0] === "str") {
+                      let check = false;
+                      if (v[1] !== undefined) {
+                        if (v[1][0] === "like") {
+                          const x = v[1][1];
+                          if (!Array.isArray(x)) {
+                            if (x !== default_value) {
+                              check = true;
+                            }
+                          }
+                        }
+                      }
+                      if (check) {
+                        return (
+                          <Pressable
+                            onPress={() => {
+                              const val = default_value;
+                              set_local_val(val);
+                              set_has_errors(false);
+                              props.dispatch([
+                                "filters",
+                                filter.get(),
+                                "replace",
+                                apply(
+                                  new FilterPath(
+                                    result.get().label,
+                                    props.path,
+                                    ["str", ["like", val]],
+                                    undefined
+                                  ),
+                                  (it) => {
+                                    it.active = true;
+                                    return it;
+                                  }
+                                ),
+                              ]);
+                            }}
+                          >
+                            <MaterialIcons
+                              name="clear"
+                              size={24}
+                              color={theme.placeholder}
+                            />
+                          </Pressable>
+                        );
+                      }
+                    }
+                  }
+                  return <></>;
+                })}
+              </Row>
+            }
+          />
+        </Row>
+        <Column flex={1}>{props.variant}</Column>
+      </Column>
+    );
+  }
+  return <></>;
 }
 
 export function SearchBar(props: {
