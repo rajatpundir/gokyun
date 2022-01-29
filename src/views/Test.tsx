@@ -12,7 +12,12 @@ import {
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
 import { apply, arrow, unwrap } from "../lib/utils/prelude";
-import { Path, Variable } from "../lib/utils/variable";
+import {
+  compare_paths,
+  get_path_string,
+  Path,
+  Variable,
+} from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
 import { theme } from "../lib/utils/theme";
@@ -201,7 +206,18 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    RenderElement: (variable) => variable.id.toString(),
+                    RenderElement: (variable) => {
+                      const result = variable.paths.findAny((x) =>
+                        compare_paths(get_path_string(x), [[], "nickname"])
+                      );
+                      if (result.isSome()) {
+                        const path = result.get();
+                        if (path.path[1][1].type === "str") {
+                          return path.path[1][1].value;
+                        }
+                      }
+                      return variable.id.toString();
+                    },
                   },
                 ],
                 RenderVariant: (props: RenderListVariantProps) => (
