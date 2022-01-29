@@ -1,11 +1,10 @@
 import React from "react";
 import { Text } from "native-base";
 import { apply, unwrap, Result, arrow, fold, PartialBy } from "./prelude";
-import { Action, State, get_path, get_label } from "./commons";
-import { PathString, Struct } from "./variable";
+import { State, get_path, get_label } from "./commons";
+import { PathString } from "./variable";
 import { theme } from "./theme";
 import { ComponentProps, FieldOptions, field_variants } from "./field_variants";
-import { CommonProps } from "./list";
 
 export function Label(props: {
   state: State;
