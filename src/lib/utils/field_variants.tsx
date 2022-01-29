@@ -36,6 +36,7 @@ import { theme } from "./theme";
 import { tw } from "./tailwind";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { SheetVariantProps } from "./list_variants";
+import { cloneDeep } from "lodash";
 
 type FieldVariant = {
   str: [
@@ -1812,9 +1813,9 @@ function get_upscaled_paths(
   const base_value: StrongEnum = base_path.path[1][1];
   let upscaled_paths: HashSet<Path> = HashSet.of();
   if (base_value.type === "other") {
-    base_value.other;
-    if (variable.struct.name === base_value.other) {
-      for (let path of variable.paths) {
+    const cloned_variable = cloneDeep(variable);
+    if (cloned_variable.struct.name === base_value.other) {
+      for (let path of cloned_variable.paths) {
         upscaled_paths = upscaled_paths.add(
           apply(path, (it) => {
             it.path = [
@@ -1823,11 +1824,11 @@ function get_upscaled_paths(
                 [
                   base_path.path[1][0],
                   {
-                    struct: variable.struct,
-                    id: variable.id,
-                    active: variable.active,
-                    created_at: variable.created_at,
-                    updated_at: variable.updated_at,
+                    struct: cloned_variable.struct,
+                    id: cloned_variable.id,
+                    active: cloned_variable.active,
+                    created_at: cloned_variable.created_at,
+                    updated_at: cloned_variable.updated_at,
                   },
                 ],
                 ...it.path[0],
@@ -1858,7 +1859,7 @@ function get_upscaled_paths(
               {
                 type: "other",
                 other: base_value.other,
-                value: variable.id,
+                value: cloned_variable.id,
               },
             ],
           ];
