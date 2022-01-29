@@ -1969,7 +1969,7 @@ export class Filter {
 
 ///////////////////////////////////
 
-export async function load_test_data() {
+async function load_users() {
   const struct = get_struct("User");
   if (unwrap(struct)) {
     await replace_variables(
@@ -2303,6 +2303,92 @@ export async function load_test_data() {
       ])
     );
   }
-  // const x = await execute_transaction("SELECT * FROM VARS;", []);
-  // console.log(x);
+}
+
+async function load_tests() {
+  const struct = get_struct("Test");
+  if (unwrap(struct)) {
+    await replace_variables(
+      new Decimal(0),
+      HashSet.ofIterable([
+        new Variable(
+          struct.value,
+          new Decimal(1),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("STR", [
+              [],
+              ["str", { type: "str", value: "STR STR STR" }],
+            ]),
+            new Path("LSTR", [
+              [],
+              ["lstr", { type: "lstr", value: "LSTR LSTR LSTR" }],
+            ]),
+            new Path("CLOB", [
+              [],
+              ["clob", { type: "str", value: "CLOB CLOB CLOB" }],
+            ]),
+
+            new Path("U32", [
+              [],
+              ["u32", { type: "u32", value: new Decimal(59) }],
+            ]),
+            new Path("I32", [
+              [],
+              ["i32", { type: "i32", value: new Decimal(-50) }],
+            ]),
+            new Path("U64", [
+              [],
+              ["u64", { type: "u64", value: new Decimal(75) }],
+            ]),
+            new Path("I64", [
+              [],
+              ["i64", { type: "i64", value: new Decimal(-95) }],
+            ]),
+            new Path("UDOUBLE", [
+              [],
+              ["udouble", { type: "udouble", value: new Decimal(59) }],
+            ]),
+            new Path("IDOUBLE", [
+              [],
+              ["idouble", { type: "idouble", value: new Decimal(-50) }],
+            ]),
+            new Path("UDECIMAL", [
+              [],
+              ["udecimal", { type: "udecimal", value: new Decimal(75) }],
+            ]),
+            new Path("IDECIMAL", [
+              [],
+              ["idecimal", { type: "idecimal", value: new Decimal(-95) }],
+            ]),
+            new Path("DATE", [
+              [],
+              ["date", { type: "date", value: new Date() }],
+            ]),
+            new Path("TIME", [
+              [],
+              ["time", { type: "time", value: new Date() }],
+            ]),
+            new Path("TIMESTAMP", [
+              [],
+              ["timestamp", { type: "timestamp", value: new Date() }],
+            ]),
+            new Path("USER", [
+              [],
+              ["user", { type: "other", other: "User", value: new Decimal(1) }],
+            ]),
+          ])
+        ),
+      ])
+    );
+  }
+}
+
+export async function load_test_data() {
+  await load_users();
+  await load_tests();
+  const x = await execute_transaction("SELECT * FROM VARS;", []);
+  console.log(x);
 }
