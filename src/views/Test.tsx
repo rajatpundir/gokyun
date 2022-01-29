@@ -295,7 +295,22 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    RenderElement: (variable) => variable.id.toString(),
+                    RenderElement: (variable) => {
+                      const result = variable.paths.findAny((x) =>
+                        compare_paths(get_path_string(x), [[], "nickname"])
+                      );
+                      if (result.isSome()) {
+                        const path = result.get();
+                        if (path.path[1][1].type === "str") {
+                          return path.path[1][1].value;
+                        }
+                      } else {
+                        variable.paths
+                          .toArray()
+                          .forEach((x) => console.log(get_path_string(x)));
+                      }
+                      return variable.id.toString();
+                    },
                   },
                 ],
                 RenderVariant: (props: RenderListVariantProps) => (
