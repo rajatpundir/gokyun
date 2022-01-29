@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import Decimal from "decimal.js";
 import { Menu, Text, Pressable, Row } from "native-base";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import {
   BottomSheetFlatList,
@@ -216,9 +216,24 @@ type MenuVariantProps = {
 function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
   return (
     <Menu
+      mx={"3"}
       shouldOverlapWithTrigger={true}
+      backgroundColor={theme.background}
+      borderColor={theme.border}
       trigger={(menu_props) => (
-        <Pressable {...menu_props}>{props.element}</Pressable>
+        <Pressable
+          {...menu_props}
+          flexDirection={"row"}
+          alignItems={"center"}
+          borderColor={theme.border}
+          borderWidth={"1"}
+          borderRadius={"sm"}
+          pl={"1.5"}
+          pr={"0"}
+          py={"0.5"}
+        >
+          {props.element}
+        </Pressable>
       )}
     >
       {props.state.variables.map((variable) => {

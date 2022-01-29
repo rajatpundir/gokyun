@@ -2,7 +2,7 @@ import React from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView, Row, Text, Pressable } from "native-base";
 import {
   ComponentViews,
@@ -11,7 +11,7 @@ import {
 } from "../lib/utils/component";
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
-import { arrow, unwrap } from "../lib/utils/prelude";
+import { apply, arrow, unwrap } from "../lib/utils/prelude";
 import { Path, Variable } from "../lib/utils/variable";
 import { replace_variable } from "../lib/utils/db";
 import { get_path } from "../lib/utils/commons";
@@ -169,44 +169,38 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                         const path = result.value;
                         if (path.writeable) {
                           const value = path.path[1][1];
-                          if (
-                            value.type === "other" &&
-                            value.value.equals(-1)
-                          ) {
-                            return (
-                              <Row>
-                                <Text>Select User </Text>
-                                {props.state.mode === "write" ? (
-                                  <FontAwesome
-                                    name="edit"
-                                    size={24}
-                                    color={theme.placeholder}
-                                  />
-                                ) : (
-                                  <></>
-                                )}
-                              </Row>
-                            );
-                          } else {
-                            return (
-                              <Row>
-                                <Field
-                                  {...props}
-                                  path={[["user"], "nickname"]}
-                                />
-                                <Text> </Text>
-                                {props.state.mode === "write" ? (
-                                  <FontAwesome
-                                    name="edit"
-                                    size={24}
-                                    color={theme.placeholder}
-                                  />
-                                ) : (
-                                  <></>
-                                )}
-                              </Row>
-                            );
-                          }
+                          return (
+                            <>
+                              {apply(
+                                value.type === "other" &&
+                                  value.value.equals(-1),
+                                (it) => {
+                                  if (it) {
+                                    return <Text>Select User </Text>;
+                                  } else {
+                                    return (
+                                      <Field
+                                        {...props}
+                                        path={[["user"], "nickname"]}
+                                      />
+                                    );
+                                  }
+                                }
+                              )}
+                              {apply(props.state.mode === "write", (it) => {
+                                if (it) {
+                                  return (
+                                    <MaterialCommunityIcons
+                                      name="menu-down"
+                                      size={20}
+                                      color={theme.text}
+                                    />
+                                  );
+                                }
+                                return <></>;
+                              })}
+                            </>
+                          );
                         }
                       }
                       return <></>;

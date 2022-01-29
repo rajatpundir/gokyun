@@ -6,7 +6,7 @@ import { Immutable } from "immer";
 import moment from "moment";
 import { Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Text, Input, TextArea, Switch, Pressable } from "native-base";
+import { Text, Input, TextArea, Switch, Pressable, Row } from "native-base";
 import Checkbox from "expo-checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -1599,7 +1599,11 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
           if (is_writeable) {
             return <List {...list_props} />;
           } else {
-            return props.options[1].element;
+            return (
+              <Row alignItems={"center"} pl={"1.5"} pr={"0"} py={"0.5"}>
+                {props.options[1].element}
+              </Row>
+            );
           }
         }
         case "sheet": {
