@@ -346,26 +346,28 @@ export function SearchWrapper(
                         return (
                           <Pressable
                             onPress={() => {
-                              const val = default_value;
-                              set_local_val(val);
-                              set_has_errors(false);
-                              props.dispatch([
-                                "filters",
-                                filter.get(),
-                                "replace",
-                                apply(
-                                  new FilterPath(
-                                    result.get().label,
-                                    props.path,
-                                    ["str", ["like", val]],
-                                    undefined
+                              try {
+                                const val = default_value;
+                                set_local_val(val);
+                                set_has_errors(false);
+                                props.dispatch([
+                                  "filters",
+                                  filter.get(),
+                                  "replace",
+                                  apply(
+                                    new FilterPath(
+                                      result.get().label,
+                                      props.path,
+                                      ["str", ["like", val]],
+                                      undefined
+                                    ),
+                                    (it) => {
+                                      it.active = true;
+                                      return it;
+                                    }
                                   ),
-                                  (it) => {
-                                    it.active = true;
-                                    return it;
-                                  }
-                                ),
-                              ]);
+                                ]);
+                              } catch (e) {}
                             }}
                           >
                             <MaterialIcons
