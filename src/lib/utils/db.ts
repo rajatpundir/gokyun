@@ -2328,7 +2328,7 @@ async function load_tests() {
             ]),
             new Path("CLOB", [
               [],
-              ["clob", { type: "str", value: "CLOB CLOB CLOB" }],
+              ["clob", { type: "clob", value: "CLOB CLOB CLOB" }],
             ]),
 
             new Path("U32", [
@@ -2363,6 +2363,7 @@ async function load_tests() {
               [],
               ["idecimal", { type: "idecimal", value: new Decimal(-95) }],
             ]),
+            new Path("BOOL", [[], ["bool", { type: "bool", value: true }]]),
             new Path("DATE", [
               [],
               ["date", { type: "date", value: new Date() }],
