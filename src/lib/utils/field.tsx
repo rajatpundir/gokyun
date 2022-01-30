@@ -12,7 +12,7 @@ export function Label(props: {
 }): JSX.Element {
   const label = get_label(props.state, props.path);
   if (label !== "") {
-    return <Text color={theme.placeholder}>{label}</Text>;
+    return <Text color={theme.label}>{label}</Text>;
   }
   return <></>;
 }
@@ -28,7 +28,7 @@ export function Check(props: {
     if (unwrap(result)) {
       if (!result.value) {
         return (
-          <Text fontSize={"xs"} color={"lightBlue.600"}>
+          <Text fontSize={"xs"} color={theme.error}>
             * {props.message}
           </Text>
         );

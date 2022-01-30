@@ -16,7 +16,8 @@ export const theme = {
   border: colors.zinc[800],
   placeholder: colors.zinc[300],
   text: colors.zinc[100],
-  error: colors.blue[900],
+  label: colors.teal[200],
+  error: colors.sky[600],
   notification: colors.sky[600],
 };
 
