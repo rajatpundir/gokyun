@@ -7,7 +7,6 @@ import { ScrollView, Row, Text, Pressable } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
-  Identity,
   SearchWrapper,
 } from "../lib/utils/component";
 import { Field } from "../lib/utils/field";
@@ -228,9 +227,6 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                     },
                   },
                 ],
-                RenderVariant: (props: RenderListVariantProps) => (
-                  <Identity {...props} />
-                ),
               },
             ],
           },
@@ -317,9 +313,6 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                     },
                   },
                 ],
-                RenderVariant: (props: RenderListVariantProps) => (
-                  <Identity {...props} />
-                ),
               },
             ],
           },

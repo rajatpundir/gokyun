@@ -93,7 +93,6 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
               is_filters_editable
             />
           )}
-          update_parent_values={() => {}}
         />
         <Fab
           onPress={() => props.navigation.navigate("Test", { id: -1 })}

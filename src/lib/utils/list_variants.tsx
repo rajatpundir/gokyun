@@ -128,7 +128,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.border}
+            borderBottomColor={bs_theme.primary}
             borderBottomWidth={"1"}
             px={"3"}
             pb={"2"}
@@ -310,14 +310,14 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
         snapPoints={["50%", "82%"]}
         index={0}
         backgroundStyle={tw.style(["border"], {
-          backgroundColor: theme.background,
-          borderColor: theme.primary,
+          backgroundColor: bs_theme.background,
+          borderColor: bs_theme.primary,
         })}
       >
         <Row
           justifyContent={"space-between"}
           alignItems={"center"}
-          borderBottomColor={theme.primary}
+          borderBottomColor={bs_theme.primary}
           borderBottomWidth={"1"}
           px={"3"}
           pb={"2"}
@@ -325,7 +325,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
           <Text bold>{props.title}</Text>
           <Pressable
             onPress={() => bsm_ref.current?.forceClose()}
-            borderColor={theme.primary}
+            borderColor={bs_theme.primary}
             borderWidth={"1"}
             borderRadius={"xs"}
             px={"2"}

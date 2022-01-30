@@ -73,7 +73,6 @@ export default function Component(
               is_filters_editable
             />
           )}
-          update_parent_values={() => {}}
         />
       </>
     );

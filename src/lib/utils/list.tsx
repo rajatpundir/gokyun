@@ -12,7 +12,7 @@ import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
 import { Portal } from "@gorhom/portal";
 import { Row, Text, Pressable } from "native-base";
 import Checkbox from "expo-checkbox";
-import { ModalHeader } from "./component";
+import { Identity, ModalHeader } from "./component";
 import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
 import { ListVariant, ListVariantOptions } from "./list_variants";
@@ -316,8 +316,8 @@ export type RenderListVariantProps = {
 
 export type CommonProps = {
   limit: Decimal;
-  RenderVariant: (props: RenderListVariantProps) => JSX.Element;
   options: ListVariantOptions;
+  RenderVariant?: (props: RenderListVariantProps) => JSX.Element;
 };
 
 type ListSpecificProps = CommonProps & {
@@ -384,10 +384,11 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   const bsm_sorting_fields_ref = useRef<BottomSheetModal>(null);
   const bsm_filters_ref = useRef<BottomSheetModal>(null);
 
+  const RenderVariant = props.RenderVariant ? props.RenderVariant : Identity;
+
   return (
     <>
-      {/* <Column flex={1}> */}
-      <props.RenderVariant
+      <RenderVariant
         init_filter={state.init_filter}
         filters={state.filters}
         dispatch={dispatch}
@@ -411,8 +412,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         bsm_sorting_ref={bsm_sorting_ref}
         bsm_filters_ref={bsm_filters_ref}
       />
-      {/* </Column> */}
-
       <Portal>
         <BottomSheetModal
           ref={bsm_sorting_ref}
@@ -426,7 +425,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.border}
+            borderBottomColor={bs_theme.primary}
             borderBottomWidth={"1"}
             px={"3"}
             pb={"2"}
@@ -468,7 +467,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Row
               justifyContent={"space-between"}
               alignItems={"center"}
-              borderBottomColor={bs_theme.border}
+              borderBottomColor={bs_theme.primary}
               borderBottomWidth={"1"}
               px={"3"}
               pb={"2"}
@@ -504,7 +503,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.border}
+            borderBottomColor={bs_theme.primary}
             borderBottomWidth={"1"}
             px={"3"}
             pb={"2"}

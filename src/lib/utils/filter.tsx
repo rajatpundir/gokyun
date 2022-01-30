@@ -1766,7 +1766,7 @@ export function FilterComponent(props: {
         <Row
           justifyContent={"space-between"}
           alignItems={"center"}
-          borderBottomColor={bs_theme.border}
+          borderBottomColor={bs_theme.primary}
           borderBottomWidth={"1"}
           px={"3"}
           pb={"2"}
@@ -3314,7 +3314,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
@@ -3600,7 +3600,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -3890,7 +3890,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -4218,7 +4218,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
@@ -4527,7 +4527,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -4841,7 +4841,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -5087,7 +5087,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
@@ -5334,7 +5334,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
@@ -5585,7 +5585,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -5841,7 +5841,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -6101,7 +6101,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
@@ -6351,7 +6351,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -6606,7 +6606,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -6918,7 +6918,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
@@ -7220,7 +7220,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -7527,7 +7527,7 @@ function FilterPathComponent(props: {
                                   <Row
                                     justifyContent={"space-between"}
                                     alignItems={"center"}
-                                    borderBottomColor={bs_theme.border}
+                                    borderBottomColor={bs_theme.primary}
                                     borderBottomWidth={"1"}
                                     px={"3"}
                                     pb={"2"}
@@ -7831,7 +7831,7 @@ function FilterPathComponent(props: {
                             <Row
                               justifyContent={"space-between"}
                               alignItems={"center"}
-                              borderBottomColor={bs_theme.border}
+                              borderBottomColor={bs_theme.primary}
                               borderBottomWidth={"1"}
                               px={"3"}
                               pb={"2"}
