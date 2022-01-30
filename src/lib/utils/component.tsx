@@ -1,6 +1,7 @@
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { View } from "react-native";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useImmerReducer } from "use-immer";
 import { Filter, FilterPath, get_variable } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
@@ -397,7 +398,7 @@ export function SearchWrapper(
                       <Feather name="layout" size={20} color={theme.primary} />
                     </Pressable>
                   ) : (
-                    <></>
+                    <View key={"bsm_view_ref"} />
                   )}
                   {props.is_sorting_editable ? (
                     <Pressable
@@ -411,7 +412,7 @@ export function SearchWrapper(
                       />
                     </Pressable>
                   ) : (
-                    <></>
+                    <View key={"bsm_sorting_ref"} />
                   )}
                   {props.is_filters_editable ? (
                     <Pressable
@@ -421,7 +422,7 @@ export function SearchWrapper(
                       <Feather name="filter" size={21} color={theme.primary} />
                     </Pressable>
                   ) : (
-                    <></>
+                    <View key={"bsm_filters_ref"} />
                   )}
                 </Row>
               </Row>

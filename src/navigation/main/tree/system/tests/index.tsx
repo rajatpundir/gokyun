@@ -72,14 +72,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
                 (props) => (
                   <OtherComponent {...props} view={views.Test["Default"]} />
                 ),
-                {
-                  ABC: (props) => (
-                    <OtherComponent {...props} view={views.Test["Default"]} />
-                  ),
-                  DEF: (props) => (
-                    <OtherComponent {...props} view={views.Test["Default"]} />
-                  ),
-                },
+                {},
               ],
             },
           ]}
@@ -88,7 +81,6 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
               {...props}
               placeholder="STR"
               path={[[], "str"]}
-              is_views_editable
               is_sorting_editable
               is_filters_editable
             />
