@@ -588,7 +588,7 @@ export function FilterComponent(props: {
                                 <></>
                               )
                             }
-                            borderColor={bs_theme.placeholder}
+                            borderColor={bs_theme.border}
                             placeholderTextColor={bs_theme.placeholder}
                           />
                         );
@@ -3264,7 +3264,7 @@ function FilterPathComponent(props: {
                                       <></>
                                     )
                                   }
-                                  borderColor={bs_theme.placeholder}
+                                  borderColor={bs_theme.border}
                                   placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
@@ -3546,7 +3546,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
-                                        borderColor={bs_theme.placeholder}
+                                        borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
                                         }
@@ -3826,7 +3826,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
-                                        borderColor={bs_theme.placeholder}
+                                        borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
                                         }
@@ -4163,7 +4163,7 @@ function FilterPathComponent(props: {
                                       <></>
                                     )
                                   }
-                                  borderColor={bs_theme.placeholder}
+                                  borderColor={bs_theme.border}
                                   placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
@@ -4468,7 +4468,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
-                                        borderColor={bs_theme.placeholder}
+                                        borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
                                         }
@@ -4782,7 +4782,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
-                                        borderColor={bs_theme.placeholder}
+                                        borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
                                         }
@@ -7780,7 +7780,7 @@ function FilterPathComponent(props: {
                                       <></>
                                     )
                                   }
-                                  borderColor={bs_theme.placeholder}
+                                  borderColor={bs_theme.border}
                                   placeholderTextColor={bs_theme.placeholder}
                                 />
                               );
