@@ -41,6 +41,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
           headerShown: false,
           tabBarHideOnKeyboard: true,
           tabBarLabelStyle: { fontSize: 14 },
+          tabBarItemStyle: { paddingBottom: 8 },
         }}
       >
         <BottomTab.Screen

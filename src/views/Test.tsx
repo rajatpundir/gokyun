@@ -416,6 +416,7 @@ export default {
                 "date",
                 "time",
                 "timestamp",
+                [["user"], "nickname"],
               ]}
             />
           </Column>
