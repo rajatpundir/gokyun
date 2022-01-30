@@ -55,6 +55,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
                   ["TIME", [[], "time"]],
                   ["TIMESTAMP", [[], "timestamp"]],
                   ["USER", [[], "user"]],
+                  // ["USER NICKNAME", [["user"], "nickname"]],
                 ],
                 [],
                 []
@@ -70,7 +71,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
               borrows: [],
               RenderElement: [
                 (props) => (
-                  <OtherComponent {...props} view={views.Test["Default"]} />
+                  <OtherComponent {...props} view={views.Test["Card"]} />
                 ),
                 {},
               ],

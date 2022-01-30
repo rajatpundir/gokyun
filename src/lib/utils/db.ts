@@ -1462,7 +1462,7 @@ export async function get_variables(
       limit,
       offset
     );
-    // console.log(result_set);
+    console.log(result_set);
     for (let result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
@@ -2000,306 +2000,306 @@ async function load_users() {
             ]),
           ])
         ),
-        new Variable(
-          struct.value,
-          new Decimal(2),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER FOUR" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(34) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(3),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 3" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(33) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(4),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 42" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(53) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(5),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 5" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(63) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(6),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 6" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(73) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(7),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 7" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(83) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(8),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 8" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(93) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(9),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 9" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(39) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(10),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 10" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(38) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(11),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 11" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(37) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(12),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 12" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(36) }],
-            ]),
-          ])
-        ),
-        new Variable(
-          struct.value,
-          new Decimal(13),
-          true,
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: "NUMBER 13" }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: "5678" }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: false }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: new Decimal(3) }],
-            ]),
-          ])
-        ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(2),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER FOUR" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(34) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(3),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 3" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(33) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(4),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 42" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(53) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(5),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 5" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(63) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(6),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 6" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(73) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(7),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 7" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(83) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(8),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 8" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(93) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(9),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 9" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(39) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(10),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 10" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(38) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(11),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 11" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(37) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(12),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 12" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(36) }],
+        //     ]),
+        //   ])
+        // ),
+        // new Variable(
+        //   struct.value,
+        //   new Decimal(13),
+        //   true,
+        //   new Date(),
+        //   new Date(),
+        //   HashSet.ofIterable([
+        //     new Path("NICKNAME", [
+        //       [],
+        //       ["nickname", { type: "str", value: "NUMBER 13" }],
+        //     ]),
+        //     new Path("MOBILE", [
+        //       [],
+        //       ["mobile", { type: "str", value: "5678" }],
+        //     ]),
+        //     new Path("KNOWS ENGLISH", [
+        //       [],
+        //       ["knows_english", { type: "bool", value: false }],
+        //     ]),
+        //     new Path("Product Count", [
+        //       [],
+        //       ["product_count", { type: "u32", value: new Decimal(3) }],
+        //     ]),
+        //   ])
+        // ),
       ])
     );
   }
@@ -2391,5 +2391,63 @@ export async function load_test_data() {
   await load_users();
   await load_tests();
   const x = await execute_transaction("SELECT * FROM VARS;", []);
-  // console.log(x);
+  console.log(x);
+  console.log("-------------------------------------");
+  const y = await execute_transaction("SELECT * FROM VALS;", []);
+  console.log(y);
+  console.log("#####################################");
+  const z = await execute_transaction(
+    `SELECT 
+  v1.level AS _level,
+  v1.struct_name AS _struct_name,
+  v1.id AS _id,
+  v1.active AS _active,
+  v1.created_at AS _created_at,
+  v1.updated_at AS _updated_at,
+  v1.requested_at AS _requested_at,
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'str') THEN (v2.text_value) END) AS 'str',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'lstr') THEN (v2.text_value) END) AS 'lstr',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'clob') THEN (v2.text_value) END) AS 'clob',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'i32') THEN (v2.integer_value) END) AS 'i32',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'u32') THEN (v2.integer_value) END) AS 'u32',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'i64') THEN (v2.integer_value) END) AS 'i64',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'u64') THEN (v2.integer_value) END) AS 'u64',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'idouble') THEN (v2.real_value) END) AS 'idouble',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'udouble') THEN (v2.real_value) END) AS 'udouble',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'idecimal') THEN (v2.real_value) END) AS 'idecimal',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'udecimal') THEN (v2.real_value) END) AS 'udecimal',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'bool') THEN (v2.integer_value) END) AS 'bool',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'date') THEN (v2.integer_value) END) AS 'date',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'time') THEN (v2.integer_value) END) AS 'time',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'timestamp') THEN (v2.integer_value) END) AS 'timestamp',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'user') THEN (v2.integer_value) END) AS 'user',
+  MAX(CASE WHEN (IFNULL(v2.field_name, '') || '.' || IFNULL(v4.field_name, '') = 'user.nickname') THEN (v4.text_value) END) AS 'user.nickname',
+  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.id) END) AS 'user',
+  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v2.field_struct_name) END) AS 'user._struct_name',
+  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.active) END) AS 'user._active',
+  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.created_at) END) AS 'user._created_at',
+  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.updated_at) END) AS 'user._updated_at' 
+ 
+ FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level <= v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)
+  LEFT JOIN vars AS v3 ON (v3.level <= v2.level AND v3.struct_name = v2.field_struct_name AND  v3.id = v2.integer_value)
+  LEFT JOIN vals AS v4 ON (v4.level <= v3.level AND v4.struct_name = v3.struct_name AND v4.variable_id = v3.id) 
+ 
+ WHERE (v1.struct_name = 'Test')
+  AND (v1.active = 1)
+  AND (v1.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v1.struct_name AND vars.id = v1.id AND removed_vars.id IS NULL))
+  AND (v2.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v2.struct_name AND vals.variable_id = v2.variable_id AND vals.field_name = v2.field_name AND removed_vars.id IS NULL))
+ -- AND (v3.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v3.struct_name AND vars.id = v3.id AND removed_vars.id IS NULL))
+ -- AND (v4.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v4.struct_name AND vals.variable_id = v4.variable_id AND vals.field_name = v4.field_name AND removed_vars.id IS NULL))
+  AND ((v2.field_name = 'str' AND v2.field_struct_name = 'str') OR (v2.field_name = 'lstr' AND v2.field_struct_name = 'lstr') OR (v2.field_name = 'clob' AND v2.field_struct_name = 'clob') OR (v2.field_name = 'i32' AND v2.field_struct_name = 'i32') OR (v2.field_name = 'u32' AND v2.field_struct_name = 'u32') OR (v2.field_name = 'i64' AND v2.field_struct_name = 'i64') OR (v2.field_name = 'u64' AND v2.field_struct_name = 'u64') OR (v2.field_name = 'idouble' AND v2.field_struct_name = 'idouble') OR (v2.field_name = 'udouble' AND v2.field_struct_name = 'udouble') OR (v2.field_name = 'idecimal' AND v2.field_struct_name = 'idecimal') OR (v2.field_name = 'udecimal' AND v2.field_struct_name = 'udecimal') OR (v2.field_name = 'bool' AND v2.field_struct_name = 'bool') OR (v2.field_name = 'date' AND v2.field_struct_name = 'date') OR (v2.field_name = 'time' AND v2.field_struct_name = 'time') OR (v2.field_name = 'timestamp' AND v2.field_struct_name = 'timestamp') OR (v2.field_name = 'user' AND v2.field_struct_name = 'User') OR (v2.field_name = 'user' AND v4.field_name = 'nickname' AND v4.field_struct_name = 'str'))  
+ 
+ GROUP BY v1.struct_name, v1.id 
+ 
+  
+ 
+ ORDER BY v1.requested_at DESC, v1.updated_at DESC, v1.id DESC  
+ 
+ LIMIT 10 OFFSET 0;`,
+    []
+  );
+  console.log(z);
 }

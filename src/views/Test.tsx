@@ -3,7 +3,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ScrollView, Row, Text, Pressable } from "native-base";
+import { ScrollView, Row, Text, Pressable, Column } from "native-base";
 import {
   ComponentViews,
   OtherComponent,
@@ -364,5 +364,63 @@ export default {
     create: common_default_component,
     update: common_default_component,
     show: common_default_component,
+  },
+  Card: {
+    create: (props) => <></>,
+    update: (props) => <></>,
+    show: (props) => {
+      const navigation = useNavigation();
+      return (
+        <Pressable
+          onPress={() =>
+            navigation.navigate("Test", { id: props.state.id.toNumber() })
+          }
+        >
+          <Column
+            p={"2"}
+            m={"1"}
+            borderWidth={"1"}
+            borderRadius={"md"}
+            borderColor={theme.border}
+            backgroundColor={arrow(() => {
+              if (props.selected) {
+                return theme.border;
+              }
+              return theme.background;
+            })}
+          >
+            <Row justifyContent={"space-between"}>
+              <Column>
+                <Text color={theme.label}>Unique ID</Text>
+              </Column>
+              <Column>
+                <Text>{props.state.id.toString()}</Text>
+              </Column>
+            </Row>
+            <Template
+              {...props}
+              type={"CLB"}
+              fields={[
+                "str",
+                "lstr",
+                "clob",
+                "i32",
+                "u32",
+                "i64",
+                "u64",
+                "idouble",
+                "udouble",
+                "idecimal",
+                "udecimal",
+                "bool",
+                "date",
+                "time",
+                "timestamp",
+              ]}
+            />
+          </Column>
+        </Pressable>
+      );
+    },
   },
 } as ComponentViews;
