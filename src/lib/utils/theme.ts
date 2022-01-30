@@ -14,9 +14,9 @@ export const theme = {
   background: colors.zinc[900],
   card: colors.zinc[900],
   border: colors.zinc[800],
+  label: colors.zinc[400],
   placeholder: colors.zinc[300],
   text: colors.zinc[100],
-  label: colors.teal[200],
   error: colors.sky[600],
   notification: colors.sky[600],
 };
