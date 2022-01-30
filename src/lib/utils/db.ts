@@ -2391,5 +2391,5 @@ export async function load_test_data() {
   await load_users();
   await load_tests();
   const x = await execute_transaction("SELECT * FROM VARS;", []);
-  console.log(x);
+  // console.log(x);
 }

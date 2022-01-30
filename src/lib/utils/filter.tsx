@@ -1757,7 +1757,7 @@ export function FilterComponent(props: {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         snapPoints={["50%", "82%"]}
-        index={1}
+        index={0}
         backgroundStyle={tw.style(["border"], {
           backgroundColor: bs_theme.background,
           borderColor: bs_theme.primary,
@@ -3305,7 +3305,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,
@@ -3591,7 +3591,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -3881,7 +3881,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -4209,7 +4209,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,
@@ -4518,7 +4518,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -4832,7 +4832,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -5078,7 +5078,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,
@@ -5325,7 +5325,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,
@@ -5576,7 +5576,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -5832,7 +5832,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -6092,7 +6092,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,
@@ -6342,7 +6342,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -6597,7 +6597,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -6909,7 +6909,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,
@@ -7211,7 +7211,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef1}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -7518,7 +7518,7 @@ function FilterPathComponent(props: {
                                 <BottomSheetModal
                                   ref={bottomSheetModalRef2}
                                   snapPoints={["50%", "82%"]}
-                                  index={1}
+                                  index={0}
                                   backgroundStyle={tw.style(["border"], {
                                     backgroundColor: bs_theme.background,
                                     borderColor: bs_theme.primary,
@@ -7822,7 +7822,7 @@ function FilterPathComponent(props: {
                           <BottomSheetModal
                             ref={bottomSheetModalRef1}
                             snapPoints={["50%", "82%"]}
-                            index={1}
+                            index={0}
                             backgroundStyle={tw.style(["border"], {
                               backgroundColor: bs_theme.background,
                               borderColor: bs_theme.primary,

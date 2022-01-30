@@ -21,13 +21,22 @@ export const theme = {
 };
 
 export const bs_theme = {
-  primary: colors.sky[600],
-  background: colors.slate[900],
-  border: colors.slate[600],
-  placeholder: colors.slate[500],
-  text: colors.slate[400],
-  highlight: colors.blue[500],
+  primary: theme.primary,
+  background: theme.background,
+  border: theme.border,
+  placeholder: theme.placeholder,
+  text: theme.text,
+  highlight: colors.teal[500],
 };
+
+// export const bs_theme = {
+//   primary: colors.sky[600],
+//   background: colors.slate[900],
+//   border: colors.slate[600],
+//   placeholder: colors.slate[500],
+//   text: colors.slate[400],
+//   highlight: colors.blue[500],
+// };
 
 export const theme_rn: ReactNavigationTheme = {
   dark: true,

@@ -495,7 +495,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         <BottomSheetModal
           ref={bsm_filters_ref}
           snapPoints={["50%", "82%"]}
-          index={1}
+          index={0}
           backgroundStyle={tw.style(["border"], {
             backgroundColor: bs_theme.background,
             borderColor: bs_theme.primary,
