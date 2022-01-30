@@ -124,10 +124,14 @@ export function useComponent(props: {
     update_values();
   }, []);
   useLayoutEffect(() => {
-    run_triggers(props.struct, state, dispatch);
+    if (state.mode === "write") {
+      run_triggers(props.struct, state, dispatch);
+    }
   }, [state.event_trigger]);
   useLayoutEffect(() => {
-    compute_checks(props.struct, state, dispatch);
+    if (state.mode === "write") {
+      compute_checks(props.struct, state, dispatch);
+    }
   }, [state.check_trigger]);
   const jsx: JSX.Element = arrow(() => {
     if (state.mode === "write") {
