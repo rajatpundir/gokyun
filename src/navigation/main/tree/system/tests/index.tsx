@@ -55,7 +55,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
                   ["TIME", [[], "time"]],
                   ["TIMESTAMP", [[], "timestamp"]],
                   ["USER", [[], "user"]],
-                  // ["USER NICKNAME", [["user"], "nickname"]],
+                  ["USER NICKNAME", [["user"], "nickname"]],
                 ],
                 [],
                 []

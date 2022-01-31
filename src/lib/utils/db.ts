@@ -381,10 +381,10 @@ function query(
     from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.level <= v${prev_val_ref}.level AND v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
     from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level <= v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
     append_to_where_stmt(
-      `v${var_ref}.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v${var_ref}.struct_name AND vars.id = v${var_ref}.id AND removed_vars.id IS NULL)`
+      `v${var_ref}.level IS NULL OR v${var_ref}.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v${var_ref}.struct_name AND vars.id = v${var_ref}.id AND removed_vars.id IS NULL)`
     );
     append_to_where_stmt(
-      `v${next_val_ref}.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v${next_val_ref}.struct_name AND vals.variable_id = v${next_val_ref}.variable_id AND vals.field_name = v${next_val_ref}.field_name AND removed_vars.id IS NULL)`
+      `v${next_val_ref}.level IS NULL OR v${next_val_ref}.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v${next_val_ref}.struct_name AND vals.variable_id = v${next_val_ref}.variable_id AND vals.field_name = v${next_val_ref}.field_name AND removed_vars.id IS NULL)`
     );
   }
 
@@ -2390,64 +2390,9 @@ async function load_tests() {
 export async function load_test_data() {
   await load_users();
   await load_tests();
-  const x = await execute_transaction("SELECT * FROM VARS;", []);
-  console.log(x);
-  console.log("-------------------------------------");
-  const y = await execute_transaction("SELECT * FROM VALS;", []);
-  console.log(y);
-  console.log("#####################################");
-  const z = await execute_transaction(
-    `SELECT 
-  v1.level AS _level,
-  v1.struct_name AS _struct_name,
-  v1.id AS _id,
-  v1.active AS _active,
-  v1.created_at AS _created_at,
-  v1.updated_at AS _updated_at,
-  v1.requested_at AS _requested_at,
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'str') THEN (v2.text_value) END) AS 'str',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'lstr') THEN (v2.text_value) END) AS 'lstr',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'clob') THEN (v2.text_value) END) AS 'clob',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'i32') THEN (v2.integer_value) END) AS 'i32',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'u32') THEN (v2.integer_value) END) AS 'u32',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'i64') THEN (v2.integer_value) END) AS 'i64',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'u64') THEN (v2.integer_value) END) AS 'u64',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'idouble') THEN (v2.real_value) END) AS 'idouble',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'udouble') THEN (v2.real_value) END) AS 'udouble',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'idecimal') THEN (v2.real_value) END) AS 'idecimal',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'udecimal') THEN (v2.real_value) END) AS 'udecimal',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'bool') THEN (v2.integer_value) END) AS 'bool',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'date') THEN (v2.integer_value) END) AS 'date',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'time') THEN (v2.integer_value) END) AS 'time',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'timestamp') THEN (v2.integer_value) END) AS 'timestamp',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') = 'user') THEN (v2.integer_value) END) AS 'user',
-  MAX(CASE WHEN (IFNULL(v2.field_name, '') || '.' || IFNULL(v4.field_name, '') = 'user.nickname') THEN (v4.text_value) END) AS 'user.nickname',
-  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.id) END) AS 'user',
-  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v2.field_struct_name) END) AS 'user._struct_name',
-  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.active) END) AS 'user._active',
-  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.created_at) END) AS 'user._created_at',
-  MAX(CASE WHEN(IFNULL(v2.field_name, '') = 'user') THEN (v1.updated_at) END) AS 'user._updated_at' 
- 
- FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level <= v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)
-  LEFT JOIN vars AS v3 ON (v3.level <= v2.level AND v3.struct_name = v2.field_struct_name AND  v3.id = v2.integer_value)
-  LEFT JOIN vals AS v4 ON (v4.level <= v3.level AND v4.struct_name = v3.struct_name AND v4.variable_id = v3.id) 
- 
- WHERE (v1.struct_name = 'Test')
-  AND (v1.active = 1)
-  AND (v1.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v1.struct_name AND vars.id = v1.id AND removed_vars.id IS NULL))
-  AND (v2.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v2.struct_name AND vals.variable_id = v2.variable_id AND vals.field_name = v2.field_name AND removed_vars.id IS NULL))
- -- AND (v3.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v3.struct_name AND vars.id = v3.id AND removed_vars.id IS NULL))
- -- AND (v4.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v4.struct_name AND vals.variable_id = v4.variable_id AND vals.field_name = v4.field_name AND removed_vars.id IS NULL))
-  AND ((v2.field_name = 'str' AND v2.field_struct_name = 'str') OR (v2.field_name = 'lstr' AND v2.field_struct_name = 'lstr') OR (v2.field_name = 'clob' AND v2.field_struct_name = 'clob') OR (v2.field_name = 'i32' AND v2.field_struct_name = 'i32') OR (v2.field_name = 'u32' AND v2.field_struct_name = 'u32') OR (v2.field_name = 'i64' AND v2.field_struct_name = 'i64') OR (v2.field_name = 'u64' AND v2.field_struct_name = 'u64') OR (v2.field_name = 'idouble' AND v2.field_struct_name = 'idouble') OR (v2.field_name = 'udouble' AND v2.field_struct_name = 'udouble') OR (v2.field_name = 'idecimal' AND v2.field_struct_name = 'idecimal') OR (v2.field_name = 'udecimal' AND v2.field_struct_name = 'udecimal') OR (v2.field_name = 'bool' AND v2.field_struct_name = 'bool') OR (v2.field_name = 'date' AND v2.field_struct_name = 'date') OR (v2.field_name = 'time' AND v2.field_struct_name = 'time') OR (v2.field_name = 'timestamp' AND v2.field_struct_name = 'timestamp') OR (v2.field_name = 'user' AND v2.field_struct_name = 'User') OR (v2.field_name = 'user' AND v4.field_name = 'nickname' AND v4.field_struct_name = 'str'))  
- 
- GROUP BY v1.struct_name, v1.id 
- 
-  
- 
- ORDER BY v1.requested_at DESC, v1.updated_at DESC, v1.id DESC  
- 
- LIMIT 10 OFFSET 0;`,
-    []
-  );
-  console.log(z);
+  // const x = await execute_transaction("SELECT * FROM VARS;", []);
+  // console.log(x);
+  // console.log("-------------------------------------");
+  // const y = await execute_transaction("SELECT * FROM VALS;", []);
+  // console.log(y);
 }
