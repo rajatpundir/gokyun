@@ -138,7 +138,7 @@ export default function Component(
               {state1.mode === "write" ? (
                 <Row>
                   <Pressable
-                    onPress={() => props.navigation.goBack()}
+                    onPress={() => dispatch1(["mode", "read"])}
                     px={"3"}
                     py={"2"}
                     mx={"1"}

@@ -128,12 +128,12 @@ export function useComponent(props: {
     if (state.mode === "write") {
       run_triggers(props.struct, state, dispatch);
     }
-  }, [state.event_trigger]);
+  }, [state.mode, state.event_trigger]);
   useLayoutEffect(() => {
     if (state.mode === "write") {
       compute_checks(props.struct, state, dispatch);
     }
-  }, [state.check_trigger]);
+  }, [state.mode, state.check_trigger]);
   const jsx: JSX.Element = arrow(() => {
     if (state.mode === "write") {
       if (state.id.equals(-1)) {

@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
+import { cloneDeep } from "lodash";
 import { HashSet } from "prelude-ts";
 import React from "react";
 import { FilterPath } from "./db";
@@ -159,7 +160,7 @@ export function reducer(state: Draft<State>, action: Action) {
         state,
         action[1].paths
       );
-      state.init_values = state.values;
+      state.init_values = cloneDeep(state.values);
       state.event_trigger += 1;
       state.check_trigger += 1;
       break;
@@ -183,6 +184,7 @@ export function reducer(state: Draft<State>, action: Action) {
     case "mode": {
       state.mode = action[1];
       if (state.mode === "read") {
+        state.checks = {};
         // Code for dispatch['values', HashSet<Path>] is repeated for loading initial values
         for (let value of state.init_values) {
           const result = state.values.findAny((x) => x.equals(value));
