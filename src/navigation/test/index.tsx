@@ -10,6 +10,8 @@ import { ModalHeader, useComponent } from "../../lib/utils/component";
 import { Row, Pressable, Text } from "native-base";
 import { theme } from "../../lib/utils/theme";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { replace_variable } from "../../lib/utils/db";
+import { Path, Variable } from "../../lib/utils/variable";
 
 // 1. Update TextInput everywhere
 // 2. Finish styling
@@ -152,17 +154,17 @@ export default function Component(
                   <Pressable
                     onPress={async () => {
                       try {
-                        // await replace_variable(
-                        //   new Decimal(0),
-                        //   new Variable(
-                        //     props.struct,
-                        //     props.state.id as Decimal,
-                        //     props.state.active,
-                        //     props.state.created_at,
-                        //     props.state.updated_at,
-                        //     props.state.values as HashSet<Path>
-                        //   )
-                        // );
+                        await replace_variable(
+                          new Decimal(0),
+                          new Variable(
+                            struct1.value,
+                            state1.id as Decimal,
+                            state1.active,
+                            state1.created_at,
+                            state1.updated_at,
+                            state1.values as HashSet<Path>
+                          )
+                        );
                         props.navigation.goBack();
                       } catch (e) {}
                     }}
