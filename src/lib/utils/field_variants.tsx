@@ -4,9 +4,9 @@ import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
 import { Immutable } from "immer";
 import moment from "moment";
-import { Platform } from "react-native";
+import { Platform, Switch } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Text, Input, TextArea, Switch, Pressable, Row } from "native-base";
+import { Text, Input, TextArea, Pressable, Row } from "native-base";
 import Checkbox from "expo-checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -1311,7 +1311,8 @@ function Bool_Switch(props: ComponentProps & BoolFieldProps): JSX.Element {
               }),
             ])
           }
-          color={value.value ? theme.primary : undefined}
+          trackColor={{ true: theme.accent, false: theme.accent }}
+          thumbColor={theme.primary}
         />
       );
     }

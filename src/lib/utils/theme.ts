@@ -10,7 +10,7 @@ const color_scheme = "teal";
 
 export const theme = {
   primary: colors.teal[500],
-  accent: colors.sky[600],
+  accent: colors.teal[600],
   background: colors.zinc[900],
   card: colors.zinc[900],
   border: colors.zinc[700],

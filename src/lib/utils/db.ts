@@ -1462,7 +1462,7 @@ export async function get_variables(
       limit,
       offset
     );
-    // console.log(result_set);
+    console.log(result_set);
     for (let result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
