@@ -1,6 +1,5 @@
 import React from "react";
 import Decimal from "decimal.js";
-import { HashSet } from "prelude-ts";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView, Row, Text, Pressable, Column } from "native-base";
@@ -12,13 +11,7 @@ import {
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
 import { apply, arrow, unwrap } from "../lib/utils/prelude";
-import {
-  compare_paths,
-  get_path_string,
-  Path,
-  Variable,
-} from "../lib/utils/variable";
-import { replace_variable } from "../lib/utils/db";
+import { compare_paths, get_path_string } from "../lib/utils/variable";
 import { get_path } from "../lib/utils/commons";
 import { theme } from "../lib/utils/theme";
 import UserViews from "./User";
@@ -318,43 +311,6 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
           },
         ]}
       />
-      <Row justifyContent={"flex-end"} my={"2"}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          px={"4"}
-          py={"2"}
-          mx={"2"}
-          rounded={"sm"}
-          borderWidth={"1"}
-          borderColor={theme.primary}
-        >
-          <Text>Cancel</Text>
-        </Pressable>
-        <Pressable
-          onPress={async () => {
-            try {
-              await replace_variable(
-                new Decimal(0),
-                new Variable(
-                  props.struct,
-                  props.state.id as Decimal,
-                  props.state.active,
-                  props.state.created_at,
-                  props.state.updated_at,
-                  props.state.values as HashSet<Path>
-                )
-              );
-              navigation.goBack();
-            } catch (e) {}
-          }}
-          px={"4"}
-          py={"2"}
-          rounded={"sm"}
-          backgroundColor={theme.primary}
-        >
-          <Text fontWeight={"bold"}>Save</Text>
-        </Pressable>
-      </Row>
     </ScrollView>
   );
 };

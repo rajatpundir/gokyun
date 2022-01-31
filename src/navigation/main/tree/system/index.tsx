@@ -45,7 +45,7 @@ const TopTab = createMaterialTopTabNavigator<NavigatorParams>();
 export function Navigator(props: ParentNavigatorProps<"System">) {
   return (
     <TopTab.Navigator
-      initialRouteName="Categories"
+      initialRouteName="Tests"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,

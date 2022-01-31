@@ -13,7 +13,7 @@ export const theme = {
   accent: colors.sky[600],
   background: colors.zinc[900],
   card: colors.zinc[900],
-  border: colors.zinc[800],
+  border: colors.zinc[700],
   placeholder: colors.zinc[300],
   label: colors.zinc[200],
   text: colors.zinc[100],

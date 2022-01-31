@@ -7,6 +7,11 @@ import { get_struct } from "../../lib/utils/schema";
 import { apply, unwrap } from "../../lib/utils/prelude";
 import { views } from "../../views";
 import { ModalHeader, useComponent } from "../../lib/utils/component";
+import { Row, Pressable, Text } from "native-base";
+import { theme } from "../../lib/utils/theme";
+import { Path, Variable } from "../../lib/utils/variable";
+import { replace_variable } from "../../lib/utils/db";
+import { State } from "react-native-gesture-handler";
 
 // 1. Update TextInput everywhere
 // 2. Finish styling
@@ -128,6 +133,66 @@ export default function Component(
             }
             return it;
           })}
+          RightElement={
+            <>
+              {state1.mode === "write" ? (
+                <Row>
+                  <Pressable
+                    onPress={() => props.navigation.goBack()}
+                    px={"3"}
+                    py={"2"}
+                    mx={"1"}
+                    rounded={"sm"}
+                    borderWidth={"1"}
+                    borderColor={theme.primary}
+                  >
+                    <Text>Cancel</Text>
+                  </Pressable>
+                  <Pressable
+                    onPress={async () => {
+                      try {
+                        // await replace_variable(
+                        //   new Decimal(0),
+                        //   new Variable(
+                        //     props.struct,
+                        //     props.state.id as Decimal,
+                        //     props.state.active,
+                        //     props.state.created_at,
+                        //     props.state.updated_at,
+                        //     props.state.values as HashSet<Path>
+                        //   )
+                        // );
+                        props.navigation.goBack();
+                      } catch (e) {}
+                    }}
+                    px={"4"}
+                    py={"2"}
+                    mx={"1"}
+                    rounded={"sm"}
+                    backgroundColor={theme.primary}
+                  >
+                    <Text fontWeight={"bold"}>Save</Text>
+                  </Pressable>
+                </Row>
+              ) : (
+                <Row>
+                  <Pressable
+                    onPress={() => {
+                      dispatch1(["mode", "write"]);
+                    }}
+                    px={"3"}
+                    py={"2"}
+                    mx={"1"}
+                    rounded={"sm"}
+                    borderWidth={"1"}
+                    borderColor={theme.primary}
+                  >
+                    <Text>EDIT</Text>
+                  </Pressable>
+                </Row>
+              )}
+            </>
+          }
         />
         {jsx1}
         {/* {jsx2} */}

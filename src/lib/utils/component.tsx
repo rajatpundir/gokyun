@@ -446,21 +446,34 @@ export function AppHeader(props: { title?: string }): JSX.Element {
   );
 }
 
-export function ModalHeader(props: { title: string }): JSX.Element {
+export function ModalHeader(props: {
+  title: string;
+  RightElement?: JSX.Element;
+}): JSX.Element {
   const navigation = useNavigation();
   return (
-    <Pressable
-      flexDirection={"row"}
-      justifyContent={"flex-start"}
+    <Row
+      justifyContent={"space-between"}
       alignItems={"center"}
       px={"2"}
-      py={"4"}
-      onPress={navigation.goBack}
+      py={"3"}
     >
-      <Ionicons name="arrow-back-outline" size={26} color={colors.zinc[200]} />
-      <Text bold px={"2"} fontSize={"lg"}>
-        {props.title}
-      </Text>
-    </Pressable>
+      <Pressable
+        flexDirection={"row"}
+        justifyContent={"flex-start"}
+        alignItems={"center"}
+        onPress={navigation.goBack}
+      >
+        <Ionicons
+          name="arrow-back-outline"
+          size={26}
+          color={colors.zinc[200]}
+        />
+        <Text bold px={"2"} fontSize={"lg"}>
+          {props.title}
+        </Text>
+      </Pressable>
+      {props.RightElement ? props.RightElement : <></>}
+    </Row>
   );
 }
