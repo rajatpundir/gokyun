@@ -9,9 +9,7 @@ import { views } from "../../views";
 import { ModalHeader, useComponent } from "../../lib/utils/component";
 import { Row, Pressable, Text } from "native-base";
 import { theme } from "../../lib/utils/theme";
-import { Path, Variable } from "../../lib/utils/variable";
-import { replace_variable } from "../../lib/utils/db";
-import { State } from "react-native-gesture-handler";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 // 1. Update TextInput everywhere
 // 2. Finish styling
@@ -139,6 +137,8 @@ export default function Component(
                 <Row>
                   <Pressable
                     onPress={() => dispatch1(["mode", "read"])}
+                    flexDirection={"row"}
+                    alignItems={"center"}
                     px={"3"}
                     py={"2"}
                     mx={"1"}
@@ -146,7 +146,8 @@ export default function Component(
                     borderWidth={"1"}
                     borderColor={theme.primary}
                   >
-                    <Text>Cancel</Text>
+                    <Text>Cancel </Text>
+                    <MaterialIcons name="clear" size={16} color={theme.text} />
                   </Pressable>
                   <Pressable
                     onPress={async () => {
@@ -165,13 +166,16 @@ export default function Component(
                         props.navigation.goBack();
                       } catch (e) {}
                     }}
+                    flexDirection={"row"}
+                    alignItems={"center"}
                     px={"4"}
                     py={"2"}
                     mx={"1"}
                     rounded={"sm"}
                     backgroundColor={theme.primary}
                   >
-                    <Text fontWeight={"bold"}>Save</Text>
+                    <Text fontWeight={"bold"}>Save </Text>
+                    <Feather name="check" size={16} color={theme.text} />
                   </Pressable>
                 </Row>
               ) : (
@@ -180,14 +184,19 @@ export default function Component(
                     onPress={() => {
                       dispatch1(["mode", "write"]);
                     }}
+                    flexDirection={"row"}
+                    alignItems={"center"}
                     px={"3"}
-                    py={"2"}
+                    py={"1.5"}
                     mx={"1"}
                     rounded={"sm"}
                     borderWidth={"1"}
                     borderColor={theme.primary}
                   >
-                    <Text>EDIT</Text>
+                    <Text bold color={theme.text}>
+                      Edit{" "}
+                    </Text>
+                    <Feather name="edit-3" size={16} color={theme.text} />
                   </Pressable>
                 </Row>
               )}
