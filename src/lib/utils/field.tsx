@@ -12,7 +12,11 @@ export function Label(props: {
 }): JSX.Element {
   const label = get_label(props.state, props.path);
   if (label !== "") {
-    return <Text color={theme.label}>{label}</Text>;
+    return (
+      <Text bold color={theme.label}>
+        {label}
+      </Text>
+    );
   }
   return <></>;
 }

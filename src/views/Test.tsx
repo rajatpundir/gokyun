@@ -391,7 +391,9 @@ export default {
           >
             <Row justifyContent={"space-between"}>
               <Column>
-                <Text color={theme.label}>Unique ID</Text>
+                <Text bold color={theme.label}>
+                  Unique ID
+                </Text>
               </Column>
               <Column>
                 <Text>{props.state.id.toString()}</Text>
