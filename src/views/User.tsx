@@ -17,7 +17,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       borderColor={theme.border}
       backgroundColor={arrow(() => {
         if (props.selected) {
-          return theme.border;
+          return theme.background;
         }
         return theme.background;
       })}

@@ -154,6 +154,7 @@ export default function Component(
                   <Pressable
                     onPress={async () => {
                       try {
+                        // May use reaplace_variable_in_db method instead, since it seems more straight forward
                         await replace_variable(
                           new Decimal(0),
                           new Variable(
@@ -165,7 +166,8 @@ export default function Component(
                             state1.values as HashSet<Path>
                           )
                         );
-                        props.navigation.goBack();
+                        // reaload variable from db
+                        dispatch1(["mode", "read"]);
                       } catch (e) {}
                     }}
                     flexDirection={"row"}
