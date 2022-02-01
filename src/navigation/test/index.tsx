@@ -4,13 +4,17 @@ import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as RootNavigatorProps } from "../main";
 import { get_struct } from "../../lib/utils/schema";
-import { apply, unwrap } from "../../lib/utils/prelude";
+import { apply, arrow, unwrap } from "../../lib/utils/prelude";
 import { views } from "../../views";
 import { ModalHeader, useComponent } from "../../lib/utils/component";
 import { Row, Pressable, Text } from "native-base";
 import { theme } from "../../lib/utils/theme";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { replace_variable } from "../../lib/utils/db";
+import {
+  get_struct_counter,
+  increment_struct_counter,
+  replace_variable,
+} from "../../lib/utils/db";
 import { Path, Variable } from "../../lib/utils/variable";
 
 // 1. Update TextInput everywhere
@@ -140,12 +144,24 @@ export default function Component(
                   <Pressable
                     onPress={async () => {
                       try {
-                        // May use reaplace_variable_in_db method instead, since it seems more straight forward
                         await replace_variable(
                           new Decimal(0),
                           new Variable(
                             struct1.value,
-                            state1.id as Decimal,
+                            await arrow(async () => {
+                              if (state1.id.equals(-1)) {
+                                await increment_struct_counter(
+                                  struct1.value.name
+                                );
+                                const result = await get_struct_counter(
+                                  struct1.value.name
+                                );
+                                if (unwrap(result)) {
+                                  return result.value;
+                                }
+                              }
+                              return state1.id as Decimal;
+                            }),
                             state1.active,
                             state1.created_at,
                             state1.updated_at,

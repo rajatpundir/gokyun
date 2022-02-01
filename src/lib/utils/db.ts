@@ -1353,7 +1353,7 @@ export async function get_struct_counter(
     if (result_set.rows.length == 1) {
       const result = result_set.rows._array[0];
       if ("count" in result) {
-        return new Ok(new Decimal(result["count"]).abs().truncated());
+        return new Ok(new Decimal(result["count"]).truncated().abs().negated());
       }
     } else {
       try {
@@ -1361,7 +1361,7 @@ export async function get_struct_counter(
           `REPLACE INTO "COUNTERS" ("struct_name", "count") VALUES(?, 2)`,
           [name]
         );
-        return new Ok(new Decimal(2));
+        return new Ok(new Decimal(-2));
       } catch (err) {
         return new Err(
           new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg)
