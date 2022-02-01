@@ -340,7 +340,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           refreshing={!!props.state.refreshing}
-          onRefresh={() => {}}
+          onRefresh={() => props.dispatch(["reload"])}
           onEndReachedThreshold={0.5}
           onEndReached={() => props.dispatch(["offset"])}
           ListFooterComponent={ListFooterComponent}
