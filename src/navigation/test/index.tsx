@@ -18,13 +18,6 @@ import {
 } from "../../lib/utils/db";
 import { Path, Variable } from "../../lib/utils/variable";
 
-// 1. Update TextInput everywhere
-// 2. Finish styling
-// 3. List Tests component
-// 4. Create, Read, Update, Delete
-
-// IMPORTANT. Get working on creating actual app components for real by 12th of Jan!
-
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
