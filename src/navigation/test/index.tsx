@@ -13,6 +13,7 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import {
   get_struct_counter,
   increment_struct_counter,
+  remove_variables_in_db,
   replace_variable,
 } from "../../lib/utils/db";
 import { Path, Variable } from "../../lib/utils/variable";
@@ -210,9 +211,34 @@ export default function Component(
               ) : (
                 <Row>
                   <Pressable
-                    onPress={() => {
-                      dispatch1(["mode", "write"]);
+                    onPress={async () => {
+                      await remove_variables_in_db(
+                        new Decimal(0),
+                        struct1.value.name,
+                        [state1.id as Decimal]
+                      );
+                      props.navigation.goBack();
                     }}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    px={"2"}
+                    py={"1.5"}
+                    mx={"1"}
+                    rounded={"sm"}
+                    borderWidth={"1"}
+                    borderColor={theme.primary}
+                  >
+                    <Text bold color={theme.text}>
+                      Delete{" "}
+                    </Text>
+                    <MaterialIcons
+                      name="delete-outline"
+                      size={16}
+                      color={theme.text}
+                    />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => dispatch1(["mode", "write"])}
                     flexDirection={"row"}
                     alignItems={"center"}
                     px={"2"}

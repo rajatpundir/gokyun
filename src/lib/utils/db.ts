@@ -1090,7 +1090,7 @@ async function replace_variable_in_db(
   return new Ok([] as []);
 }
 
-async function remove_variables_in_db(
+export async function remove_variables_in_db(
   level: Decimal,
   struct_name: string,
   ids: ReadonlyArray<Decimal>
@@ -1678,23 +1678,6 @@ export async function replace_variables(
     for (let variable of variables) {
       await replace_variable(level, variable, requested_at);
     }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function remove_variables(
-  level: Decimal,
-  struct: Struct,
-  variables: HashSet<Variable>
-): Promise<Result<[]>> {
-  try {
-    await remove_variables_in_db(
-      level,
-      struct.name,
-      variables.toArray().map((x) => x.id)
-    );
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }

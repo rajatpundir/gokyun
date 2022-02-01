@@ -2,7 +2,6 @@ import Decimal from "decimal.js";
 import { Immutable, Draft } from "immer";
 import { cloneDeep } from "lodash";
 import { HashSet } from "prelude-ts";
-import React from "react";
 import { FilterPath } from "./db";
 import { ErrMsg, errors } from "./errors";
 import {
