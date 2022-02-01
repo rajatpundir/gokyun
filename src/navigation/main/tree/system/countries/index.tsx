@@ -9,10 +9,6 @@ import { get_structs } from "../../../../../lib/utils/schema";
 import { Struct } from "../../../../../lib/utils/variable";
 import { Column, Pressable, Text } from "native-base";
 
-// Show a flat list with a bunch of string, a button at top right to open a modal to add new string
-// Some mechanism to update and delete this list
-// Edit and Show modes to show or edit this list
-
 function A() {
   const [x, setX] = React.useState(getState().db_updation_toggle);
   subscribe((s) => {

@@ -52,7 +52,6 @@ function Component() {
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
-                              // animation: "none",
                             }}
                           >
                             <Stack.Screen name="Main" component={Navigator} />

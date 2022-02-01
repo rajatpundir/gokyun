@@ -33,9 +33,6 @@ const db_name: string = "test1.db";
 const db = apply(SQLite.openDatabase(db_name), (db) => {
   db.exec(
     [
-      // Note. We maybe getting some fields as null due to WAL mode.
-      // { sql: "PRAGMA journal_mode = WAL;", args: [] },
-      // { sql: "PRAGMA synchronous = 1;", args: [] },
       { sql: "PRAGMA foreign_keys = ON;", args: [] },
       { sql: "VACUUM;", args: [] },
       { sql: `DROP TABLE IF EXISTS "LEVELS";`, args: [] },
