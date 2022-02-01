@@ -359,7 +359,7 @@ function query(
 
   if (level !== undefined) {
     const value: Decimal = level;
-    let stmt = `v1.level = '${value.truncated().toString()}'`;
+    let stmt = `v1.level = '${value.abs().truncated().toString()}'`;
     append_to_where_stmt(stmt);
   }
   append_to_where_stmt(`v1.struct_name = '${struct.name}'`);
@@ -512,8 +512,9 @@ function query(
   );
 
   const limit_offset_stmt: string = `LIMIT ${limit
+    .abs()
     .truncated()
-    .toString()} OFFSET ${offset.truncated().toString()}`;
+    .toString()} OFFSET ${offset.abs().truncated().toString()}`;
 
   const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${having_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
   console.log("FINAL STMT = ", final_stmt);
@@ -916,7 +917,7 @@ export async function get_max_level(): Promise<Result<Decimal>> {
     if (result_set.rows.length == 1) {
       const result = result_set.rows._array[0];
       if ("max_id" in result) {
-        return new Ok(new Decimal(result["max_id"]).truncated());
+        return new Ok(new Decimal(result["max_id"]).abs().truncated());
       }
     }
   } catch (err) {
@@ -929,7 +930,7 @@ export async function create_level(id: Decimal): Promise<Result<[]>> {
   try {
     await execute_transaction(
       `INSERT INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
-      [id.truncated().toString(), new Date().getTime().toString()]
+      [id.abs().truncated().toString(), new Date().getTime().toString()]
     );
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
@@ -940,7 +941,7 @@ export async function create_level(id: Decimal): Promise<Result<[]>> {
 export async function activate_level(id: Decimal): Promise<Result<[]>> {
   try {
     await execute_transaction(`UPDATE "LEVELS" SET active = 1 WHERE id = ?;`, [
-      id.truncated().toString(),
+      id.abs().truncated().toString(),
     ]);
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
@@ -951,7 +952,7 @@ export async function activate_level(id: Decimal): Promise<Result<[]>> {
 export async function deactivate_level(id: Decimal): Promise<Result<[]>> {
   try {
     await execute_transaction(`UPDATE "LEVELS" SET active = 0 WHERE id = ?;`, [
-      id.truncated().toString(),
+      id.abs().truncated().toString(),
     ]);
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
@@ -962,7 +963,7 @@ export async function deactivate_level(id: Decimal): Promise<Result<[]>> {
 export async function remove_level(id: Decimal): Promise<Result<[]>> {
   try {
     await execute_transaction(`DELETE FROM "LEVELS" WHERE id = ?;`, [
-      id.truncated().toString(),
+      id.abs().truncated().toString(),
     ]);
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
@@ -999,19 +1000,35 @@ async function replace_variable_in_db(
     ]
   >
 ): Promise<Result<[]>> {
+  const q = await execute_transaction("SELECT COUNT(*) FROM VALS;", []);
+  console.log(q);
   try {
     await execute_transaction(
-      `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+      `UPDATE "VARS" SET active=?, created_at=?, updated_at=?, requested_at=? WHERE level=? AND struct_name=? AND id=?`,
       [
-        level.truncated().toString(),
-        struct_name,
-        id.truncated().toString(),
         active ? "1" : "0",
         created_at.getTime().toString(),
         updated_at.getTime().toString(),
         requested_at.getTime().toString(),
+        level.abs().truncated().toString(),
+        struct_name,
+        id.truncated().toString(),
       ]
     );
+    try {
+      await execute_transaction(
+        `INSERT INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        [
+          level.abs().truncated().toString(),
+          struct_name,
+          id.truncated().toString(),
+          active ? "1" : "0",
+          created_at.getTime().toString(),
+          updated_at.getTime().toString(),
+          requested_at.getTime().toString(),
+        ]
+      );
+    } catch (e) {}
     for (let [path, [leaf_field_name, leaf_value]] of paths) {
       let ref_struct_name = struct_name;
       let ref_id: Decimal = id.truncated();
@@ -1019,9 +1036,9 @@ async function replace_variable_in_db(
         await execute_transaction(
           `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
           [
-            level.truncated().toString(),
+            level.abs().truncated().toString(),
             ref_struct_name,
-            ref_id.truncated().toString(),
+            ref_id.toString(),
             field_name,
             next_var.value.other,
             next_var.value.value.truncated().toString(),
@@ -1030,17 +1047,31 @@ async function replace_variable_in_db(
         ref_struct_name = next_var.value.other;
         ref_id = next_var.value.value.truncated();
         await execute_transaction(
-          `REPLACE INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+          `UPDATE "VARS" SET active=?, created_at=?, updated_at=?, requested_at=? WHERE level=? AND struct_name=? AND id=?`,
           [
-            level.truncated().toString(),
-            ref_struct_name,
-            ref_id.truncated().toString(),
             next_var.active ? "1" : "0",
             next_var.created_at.getTime().toString(),
             next_var.updated_at.getTime().toString(),
             requested_at.getTime().toString(),
+            level.abs().truncated().toString(),
+            ref_struct_name,
+            ref_id.toString(),
           ]
         );
+        try {
+          await execute_transaction(
+            `INSERT INTO "VARS"("level", "struct_name", "id", "active", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+            [
+              level.abs().truncated().toString(),
+              ref_struct_name,
+              ref_id.toString(),
+              next_var.active ? "1" : "0",
+              next_var.created_at.getTime().toString(),
+              next_var.updated_at.getTime().toString(),
+              requested_at.getTime().toString(),
+            ]
+          );
+        } catch (e) {}
       }
       const leaf_value_type = leaf_value.type;
       switch (leaf_value_type) {
@@ -1050,9 +1081,9 @@ async function replace_variable_in_db(
           await execute_transaction(
             `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "text_value") VALUES (?, ?, ?, ?, ?, ?);`,
             [
-              level.truncated().toString(),
+              level.abs().truncated().toString(),
               ref_struct_name,
-              ref_id.truncated().toString(),
+              ref_id.toString(),
               leaf_field_name,
               leaf_value_type,
               leaf_value.value,
@@ -1067,9 +1098,9 @@ async function replace_variable_in_db(
           await execute_transaction(
             `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
             [
-              level.truncated().toString(),
+              level.abs().truncated().toString(),
               ref_struct_name,
-              ref_id.truncated().toString(),
+              ref_id.toString(),
               leaf_field_name,
               leaf_value_type,
               leaf_value.value.truncated().toString(),
@@ -1084,9 +1115,9 @@ async function replace_variable_in_db(
           await execute_transaction(
             `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "real_value") VALUES (?, ?, ?, ?, ?, ?);`,
             [
-              level.truncated().toString(),
+              level.abs().truncated().toString(),
               ref_struct_name,
-              ref_id.truncated().toString(),
+              ref_id.toString(),
               leaf_field_name,
               leaf_value_type,
               leaf_value.value.toString(),
@@ -1098,9 +1129,9 @@ async function replace_variable_in_db(
           await execute_transaction(
             `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
             [
-              level.truncated().toString(),
+              level.abs().truncated().toString(),
               ref_struct_name,
-              ref_id.truncated().toString(),
+              ref_id.toString(),
               leaf_field_name,
               leaf_value_type,
               leaf_value.value ? "1" : "0",
@@ -1114,9 +1145,9 @@ async function replace_variable_in_db(
           await execute_transaction(
             `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
             [
-              level.truncated().toString(),
+              level.abs().truncated().toString(),
               ref_struct_name,
-              ref_id.truncated().toString(),
+              ref_id.toString(),
               leaf_field_name,
               leaf_value_type,
               leaf_value.value.getTime().toString(),
@@ -1128,9 +1159,9 @@ async function replace_variable_in_db(
           await execute_transaction(
             `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
             [
-              level.truncated().toString(),
+              level.abs().truncated().toString(),
               ref_struct_name,
-              ref_id.truncated().toString(),
+              ref_id.toString(),
               leaf_field_name,
               leaf_value.other,
               leaf_value.value.truncated().toString(),
@@ -1147,6 +1178,12 @@ async function replace_variable_in_db(
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
+  const x = await execute_transaction("SELECT COUNT(*) FROM VALS;", []);
+  console.log(x);
+  const r = await execute_transaction("SELECT * FROM VALS;", []);
+  console.log(r);
+  const w = await execute_transaction("SELECT * FROM VARS;", []);
+  console.log(w);
   return new Ok([] as []);
 }
 
@@ -1167,7 +1204,11 @@ async function remove_variables_in_db(
       for (let id of ids) {
         await execute_transaction(
           `REPLACE INTO "REMOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
-          [level.truncated().toString(), struct_name, id.truncated().toString()]
+          [
+            level.abs().truncated().toString(),
+            struct_name,
+            id.truncated().toString(),
+          ]
         );
       }
     }
@@ -1363,7 +1404,9 @@ export async function get_param_date(name: string): Promise<Result<Date>> {
       const result = result_set.rows._array[0];
       if ("integer_value" in result) {
         return new Ok(
-          new Date(new Decimal(result["integer_value"]).truncated().toNumber())
+          new Date(
+            new Decimal(result["integer_value"]).abs().truncated().toNumber()
+          )
         );
       }
     }
@@ -1407,7 +1450,7 @@ export async function get_struct_counter(
     if (result_set.rows.length == 1) {
       const result = result_set.rows._array[0];
       if ("count" in result) {
-        return new Ok(new Decimal(result["count"]).truncated());
+        return new Ok(new Decimal(result["count"]).abs().truncated());
       }
     } else {
       try {

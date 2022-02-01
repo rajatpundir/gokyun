@@ -135,6 +135,7 @@ export function reducer(state: Draft<State>, action: Action) {
           state.values = apply(state.values.remove(path), (vals) => {
             return vals.add(
               apply(path, (path) => {
+                path.path[0] = value.path[0];
                 path.path[1] = [path.path[1][0], value.path[1][1]];
                 path.modified = value.modified;
                 return path;
@@ -193,6 +194,7 @@ export function reducer(state: Draft<State>, action: Action) {
             state.values = apply(state.values.remove(path), (vals) => {
               return vals.add(
                 apply(path, (path) => {
+                  path.path[0] = value.path[0];
                   path.path[1] = [path.path[1][0], value.path[1][1]];
                   path.modified = value.modified;
                   return path;
