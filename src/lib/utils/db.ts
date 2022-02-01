@@ -23,7 +23,7 @@ import {
   Variable,
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import { HashSet, Vector, Option as OptionTS } from "prelude-ts";
+import { HashSet, Option as OptionTS } from "prelude-ts";
 import { get_struct, get_structs } from "./schema";
 
 // We will also need functions for activating or deactivating variable in a layer

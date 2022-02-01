@@ -32,6 +32,7 @@ export type ListState = {
   reached_end: boolean;
   refreshing: boolean;
   layout: string;
+  reload: number;
 };
 
 export type ListAction =
@@ -47,7 +48,8 @@ export type ListAction =
   | ["filter", "replace", Filter]
   | ["filters", Filter, "remove", FilterPath]
   | ["filters", Filter, "replace", FilterPath]
-  | ["layout", string];
+  | ["layout", string]
+  | ["reload"];
 
 export function reducer(state: Draft<ListState>, action: ListAction) {
   switch (action[0]) {
@@ -283,6 +285,10 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       state.layout = action[1];
       break;
     }
+    case "reload": {
+      state.reload += 1;
+      break;
+    }
     default: {
       const _exhaustiveCheck: never = action[0];
       return _exhaustiveCheck;
@@ -342,6 +348,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     reached_end: false,
     refreshing: true,
     layout: "",
+    reload: 0,
   });
 
   const request_counter = useRef(0);
@@ -377,6 +384,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     state.filters,
     state.limit,
     state.offset,
+    state.reload,
   ]);
 
   const bsm_view_ref = useRef<BottomSheetModal>(null);
