@@ -13,6 +13,7 @@ import {
 } from "./prelude";
 import Decimal from "decimal.js";
 import {
+  compare_flattened_paths,
   compare_paths,
   get_flattened_path,
   Path,
@@ -157,6 +158,108 @@ function query(
       })
       .join(` || '.' || `);
   };
+
+  console.log("#######################");
+
+  apply(
+    init_filter.filter_paths
+      .toArray()
+      .map(
+        (x) =>
+          [get_flattened_path(x.path), x.value[0]] as [
+            ReadonlyArray<string>,
+            FilterPathValue[0]
+          ]
+      ),
+    (it) => {
+      for (const [path, field_struct_name] of it) {
+        const stmt = `MAX(CASE WHEN(${Array.from(Array(path.length).keys())
+          .map((x) => `IFNULL(v${2 * (x + 1)}.field_name, '')`)
+          .join(` || '.' || `)} = '${path.join(".")}') THEN(v${
+          2 * path.length
+        }.${arrow(() => {
+          switch (field_struct_name) {
+            case "str":
+            case "lstr":
+            case "clob": {
+              return "text_value";
+            }
+            case "i32":
+            case "u32":
+            case "i64":
+            case "u64": {
+              return "integer_value";
+            }
+            case "idouble":
+            case "udouble":
+            case "idecimal":
+            case "udecimal": {
+              return "real_value";
+            }
+            case "bool": {
+              return "integer_value";
+            }
+            case "date":
+            case "time":
+            case "timestamp": {
+              return "integer_value";
+            }
+            case "other": {
+              return "integer_value";
+            }
+          }
+        })}) END) AS '${path.join(".")}'`;
+        console.log(stmt);
+      }
+    }
+  );
+
+  apply(
+    arrow(() => {
+      let path_headers: Array<ReadonlyArray<string>> = [];
+      for (const path_header of init_filter.filter_paths
+        .toArray()
+        .map((x) => x.path[0])) {
+        const sub_path_headers: Array<ReadonlyArray<string>> = [];
+        for (let i = 1; i <= path_header.length; i++) {
+          sub_path_headers.push(path_header.slice(i));
+        }
+        for (const sub_path_header of sub_path_headers) {
+          let check = true;
+          for (const ph of path_headers) {
+            if (sub_path_header.length === ph.length) {
+              if (compare_flattened_paths(sub_path_header, ph)) {
+                check = false;
+                break;
+              }
+            }
+          }
+          if (check && sub_path_header.length !== 0) {
+            path_headers.push(sub_path_header);
+          }
+        }
+      }
+      return path_headers;
+    }),
+    (path_headers) => {
+      for (const path_header of path_headers) {
+        const gen_stmt = (a: [string, string]) =>
+          `MAX(CASE WHEN(${Array.from(Array(path_header.length).keys())
+            .map((x) => `IFNULL(v${2 * (x + 1)}.field_name, '')`)
+            .join(` || '.' || `)}) THEN(v${path_header.length * 2 + 1}.${
+            a[0]
+          }) END) AS '${path_header.join(".")}${a[1]}'`;
+        console.log(gen_stmt(["id", ""]));
+        console.log(gen_stmt(["struct_name", "._struct_name"]));
+        console.log(gen_stmt(["active", "._active"]));
+        console.log(gen_stmt(["created_at", "._created_at"]));
+        console.log(gen_stmt(["updated_at", "._updated_at"]));
+      }
+    }
+  );
+
+  console.log("#######################");
+
   arrow(() => {
     let intermediate_paths = HashSet.of<Vector<string>>();
     for (let filter_path of init_filter.filter_paths) {

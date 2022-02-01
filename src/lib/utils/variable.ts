@@ -457,6 +457,25 @@ export function compare_paths(
   return false;
 }
 
+export function compare_flattened_paths(
+  path_string: Immutable<ReadonlyArray<string>>,
+  other_path_string: Immutable<ReadonlyArray<string>>
+): boolean {
+  if (path_string.length === other_path_string.length) {
+    let check = true;
+    for (let [index, field_name] of path_string.entries()) {
+      if (other_path_string[index] !== field_name) {
+        check = false;
+        break;
+      }
+    }
+    if (check) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function concat_path_strings(
   path_string: PathString,
   other_path_string: PathString
