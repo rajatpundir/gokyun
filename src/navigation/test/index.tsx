@@ -138,20 +138,6 @@ export default function Component(
               {state1.mode === "write" ? (
                 <Row>
                   <Pressable
-                    onPress={() => dispatch1(["mode", "read"])}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    px={"3"}
-                    py={"2"}
-                    mx={"1"}
-                    rounded={"sm"}
-                    borderWidth={"1"}
-                    borderColor={theme.primary}
-                  >
-                    <Text>Cancel </Text>
-                    <MaterialIcons name="clear" size={16} color={theme.text} />
-                  </Pressable>
-                  <Pressable
                     onPress={async () => {
                       try {
                         // May use reaplace_variable_in_db method instead, since it seems more straight forward
@@ -172,7 +158,7 @@ export default function Component(
                     }}
                     flexDirection={"row"}
                     alignItems={"center"}
-                    px={"4"}
+                    px={"3"}
                     py={"2"}
                     mx={"1"}
                     rounded={"sm"}
@@ -180,6 +166,20 @@ export default function Component(
                   >
                     <Text fontWeight={"bold"}>Save </Text>
                     <Feather name="check" size={16} color={theme.text} />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => dispatch1(["mode", "read"])}
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    px={"2"}
+                    py={"1.5"}
+                    mx={"1"}
+                    rounded={"sm"}
+                    borderWidth={"1"}
+                    borderColor={theme.primary}
+                  >
+                    <Text>Cancel </Text>
+                    <MaterialIcons name="clear" size={16} color={theme.text} />
                   </Pressable>
                 </Row>
               ) : (
@@ -190,7 +190,7 @@ export default function Component(
                     }}
                     flexDirection={"row"}
                     alignItems={"center"}
-                    px={"3"}
+                    px={"2"}
                     py={"1.5"}
                     mx={"1"}
                     rounded={"sm"}
