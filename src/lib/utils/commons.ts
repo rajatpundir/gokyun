@@ -83,7 +83,8 @@ export type Action =
   | ["event_trigger"]
   | ["check_trigger"]
   | ["check", string, Result<boolean>]
-  | ["mode", "read" | "write"];
+  | ["mode", "read" | "write"]
+  | ["reload", Decimal];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -210,6 +211,14 @@ export function reducer(state: Draft<State>, action: Action) {
           }
         }
       }
+      break;
+    }
+    case "reload": {
+      state.id = action[1];
+      state.mode = action[1].equals(-1) ? "write" : "read";
+      state.event_trigger = 0;
+      state.check_trigger = 0;
+      state.checks = {};
       break;
     }
     default: {

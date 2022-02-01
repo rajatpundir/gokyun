@@ -157,9 +157,14 @@ export default function Component(
                                   struct1.value.name
                                 );
                                 if (unwrap(result)) {
+                                  dispatch1(["reload", result.value]);
                                   return result.value;
                                 }
                               }
+                              dispatch1([
+                                "reload",
+                                new Decimal(state1.id as Decimal),
+                              ]);
                               return state1.id as Decimal;
                             }),
                             state1.active,
@@ -168,8 +173,6 @@ export default function Component(
                             state1.values as HashSet<Path>
                           )
                         );
-                        // reaload variable from db
-                        dispatch1(["mode", "read"]);
                       } catch (e) {}
                     }}
                     flexDirection={"row"}
@@ -184,7 +187,13 @@ export default function Component(
                     <Feather name="check" size={16} color={theme.text} />
                   </Pressable>
                   <Pressable
-                    onPress={() => dispatch1(["mode", "read"])}
+                    onPress={() => {
+                      if (state1.id.equals(-1)) {
+                        props.navigation.goBack();
+                      } else {
+                        dispatch1(["mode", "read"]);
+                      }
+                    }}
                     flexDirection={"row"}
                     alignItems={"center"}
                     px={"2"}

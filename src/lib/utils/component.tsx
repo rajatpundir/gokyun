@@ -123,17 +123,17 @@ export function useComponent(props: {
       }
     };
     update_values();
-  }, []);
+  }, [state.id]);
   useLayoutEffect(() => {
     if (state.mode === "write") {
       run_triggers(props.struct, state, dispatch);
     }
-  }, [state.mode, state.event_trigger]);
+  }, [state.id, state.mode, state.event_trigger]);
   useLayoutEffect(() => {
     if (state.mode === "write") {
       compute_checks(props.struct, state, dispatch);
     }
-  }, [state.mode, state.check_trigger]);
+  }, [state.id, state.mode, state.check_trigger]);
   const jsx: JSX.Element = arrow(() => {
     if (state.mode === "write") {
       if (state.id.equals(-1)) {
