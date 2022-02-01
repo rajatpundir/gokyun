@@ -159,8 +159,6 @@ function query(
       .join(` || '.' || `);
   };
 
-  console.log("#######################");
-
   apply(
     init_filter.filter_paths
       .toArray()
@@ -173,43 +171,44 @@ function query(
       ),
     (it) => {
       for (const [path, field_struct_name] of it) {
-        const stmt = `MAX(CASE WHEN(${Array.from(Array(path.length).keys())
-          .map((x) => `IFNULL(v${2 * (x + 1)}.field_name, '')`)
-          .join(` || '.' || `)} = '${path.join(".")}') THEN(v${
-          2 * path.length
-        }.${arrow(() => {
-          switch (field_struct_name) {
-            case "str":
-            case "lstr":
-            case "clob": {
-              return "text_value";
+        append_to_select_stmt(
+          `MAX(CASE WHEN(${Array.from(Array(path.length).keys())
+            .map((x) => `IFNULL(v${2 * (x + 1)}.field_name, '')`)
+            .join(` || '.' || `)} = '${path.join(".")}') THEN(v${
+            2 * path.length
+          }.${arrow(() => {
+            switch (field_struct_name) {
+              case "str":
+              case "lstr":
+              case "clob": {
+                return "text_value";
+              }
+              case "i32":
+              case "u32":
+              case "i64":
+              case "u64": {
+                return "integer_value";
+              }
+              case "idouble":
+              case "udouble":
+              case "idecimal":
+              case "udecimal": {
+                return "real_value";
+              }
+              case "bool": {
+                return "integer_value";
+              }
+              case "date":
+              case "time":
+              case "timestamp": {
+                return "integer_value";
+              }
+              case "other": {
+                return "integer_value";
+              }
             }
-            case "i32":
-            case "u32":
-            case "i64":
-            case "u64": {
-              return "integer_value";
-            }
-            case "idouble":
-            case "udouble":
-            case "idecimal":
-            case "udecimal": {
-              return "real_value";
-            }
-            case "bool": {
-              return "integer_value";
-            }
-            case "date":
-            case "time":
-            case "timestamp": {
-              return "integer_value";
-            }
-            case "other": {
-              return "integer_value";
-            }
-          }
-        })}) END) AS '${path.join(".")}'`;
-        console.log(stmt);
+          })}) END) AS '${path.join(".")}'`
+        );
       }
     }
   );
@@ -221,8 +220,8 @@ function query(
         .toArray()
         .map((x) => x.path[0])) {
         const sub_path_headers: Array<ReadonlyArray<string>> = [];
-        for (let i = 1; i <= path_header.length; i++) {
-          sub_path_headers.push(path_header.slice(i));
+        for (let i = 0; i <= path_header.length; i++) {
+          sub_path_headers.push(path_header.slice(0, i));
         }
         for (const sub_path_header of sub_path_headers) {
           let check = true;
@@ -243,211 +242,20 @@ function query(
     }),
     (path_headers) => {
       for (const path_header of path_headers) {
-        const gen_stmt = (a: [string, string]) =>
+        const gen_stmt = (z: [string, string]) =>
           `MAX(CASE WHEN(${Array.from(Array(path_header.length).keys())
             .map((x) => `IFNULL(v${2 * (x + 1)}.field_name, '')`)
-            .join(` || '.' || `)}) THEN(v${path_header.length * 2 + 1}.${
-            a[0]
-          }) END) AS '${path_header.join(".")}${a[1]}'`;
-        console.log(gen_stmt(["id", ""]));
-        console.log(gen_stmt(["struct_name", "._struct_name"]));
-        console.log(gen_stmt(["active", "._active"]));
-        console.log(gen_stmt(["created_at", "._created_at"]));
-        console.log(gen_stmt(["updated_at", "._updated_at"]));
+            .join(` || '.' || `)} = '${path_header.join(".")}') THEN(v${
+            path_header.length * 2 + 1
+          }.${z[0]}) END) AS '${path_header.join(".")}${z[1]}'`;
+        append_to_select_stmt(gen_stmt(["id", ""]));
+        append_to_select_stmt(gen_stmt(["struct_name", "._struct_name"]));
+        append_to_select_stmt(gen_stmt(["active", "._active"]));
+        append_to_select_stmt(gen_stmt(["created_at", "._created_at"]));
+        append_to_select_stmt(gen_stmt(["updated_at", "._updated_at"]));
       }
     }
   );
-
-  console.log("#######################");
-
-  arrow(() => {
-    let intermediate_paths = HashSet.of<Vector<string>>();
-    for (let filter_path of init_filter.filter_paths) {
-      const path: PathString = filter_path.path;
-      const flattened_path: ReadonlyArray<string> = get_flattened_path(path);
-      const path_name_expression = get_path_name_expression(path[0].length + 1);
-      if (path[0].length != 0) {
-        intermediate_paths = intermediate_paths.add(Vector.ofIterable(path[0]));
-      }
-      const val_ref: number = flattened_path.length * 2;
-      const field_struct_name = filter_path.value[0];
-      const stmt = arrow(() => {
-        switch (field_struct_name) {
-          case "str":
-          case "lstr":
-          case "clob": {
-            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
-              "."
-            )}') THEN (v${val_ref}.text_value) END) AS '${flattened_path.join(
-              "."
-            )}'`;
-          }
-          case "i32":
-          case "u32":
-          case "i64":
-          case "u64": {
-            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
-              "."
-            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
-              "."
-            )}'`;
-          }
-          case "idouble":
-          case "udouble":
-          case "idecimal":
-          case "udecimal": {
-            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
-              "."
-            )}') THEN (v${val_ref}.real_value) END) AS '${flattened_path.join(
-              "."
-            )}'`;
-          }
-          case "bool": {
-            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
-              "."
-            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
-              "."
-            )}'`;
-          }
-          case "date":
-          case "time":
-          case "timestamp": {
-            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
-              "."
-            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
-              "."
-            )}'`;
-          }
-          case "other": {
-            return `MAX(CASE WHEN (${path_name_expression} = '${flattened_path.join(
-              "."
-            )}') THEN (v${val_ref}.integer_value) END) AS '${flattened_path.join(
-              "."
-            )}'`;
-          }
-          default: {
-            const _exhaustiveCheck: never = field_struct_name;
-            return _exhaustiveCheck;
-          }
-        }
-      });
-      append_to_select_stmt(stmt);
-    }
-    for (let intermediate_path of intermediate_paths) {
-      const var_ref: number = (intermediate_path.length() - 1) * 2 + 1;
-      append_to_select_stmt(
-        `MAX(CASE WHEN(${get_path_name_expression(
-          intermediate_path.length()
-        )} = '${intermediate_path
-          .toArray()
-          .join(".")}') THEN (v${var_ref}.id) END) AS '${intermediate_path
-          .toArray()
-          .join(".")}'`
-      );
-      append_to_select_stmt(
-        `MAX(CASE WHEN(${get_path_name_expression(
-          intermediate_path.length()
-        )} = '${intermediate_path.toArray().join(".")}') THEN (v${
-          var_ref + 1
-        }.field_struct_name) END) AS '${intermediate_path
-          .toArray()
-          .join(".")}._struct_name'`
-      );
-      append_to_select_stmt(
-        `MAX(CASE WHEN(${get_path_name_expression(
-          intermediate_path.length()
-        )} = '${intermediate_path
-          .toArray()
-          .join(".")}') THEN (v${var_ref}.active) END) AS '${intermediate_path
-          .toArray()
-          .join(".")}._active'`
-      );
-      append_to_select_stmt(
-        `MAX(CASE WHEN(${get_path_name_expression(
-          intermediate_path.length()
-        )} = '${intermediate_path
-          .toArray()
-          .join(
-            "."
-          )}') THEN (v${var_ref}.created_at) END) AS '${intermediate_path
-          .toArray()
-          .join(".")}._created_at'`
-      );
-      append_to_select_stmt(
-        `MAX(CASE WHEN(${get_path_name_expression(
-          intermediate_path.length()
-        )} = '${intermediate_path
-          .toArray()
-          .join(
-            "."
-          )}') THEN (v${var_ref}.updated_at) END) AS '${intermediate_path
-          .toArray()
-          .join(".")}._updated_at'`
-      );
-      if (intermediate_path.length() > 1) {
-        for (let i = intermediate_path.length(); i > 0; i--) {
-          const temp_path = Vector.ofIterable(
-            intermediate_path.toArray().slice(0, i)
-          );
-          if (
-            !intermediate_paths.contains(temp_path) &&
-            !HashSet.ofIterable(
-              init_filter.filter_paths.map((filter_path) =>
-                Vector.ofIterable(get_flattened_path(filter_path.path))
-              )
-            ).contains(temp_path)
-          ) {
-            const temp_var_ref: number =
-              (intermediate_path.length() - 1) * 2 + 1;
-            append_to_select_stmt(
-              `MAX(CASE WHEN(${get_path_name_expression(
-                intermediate_path.length()
-              )} = '${intermediate_path
-                .toArray()
-                .join(
-                  "."
-                )}') THEN (v${temp_var_ref}.id) END) AS '${intermediate_path
-                .toArray()
-                .join(".")}'`
-            );
-            append_to_select_stmt(
-              `MAX(CASE WHEN(${get_path_name_expression(
-                intermediate_path.length()
-              )} = '${intermediate_path
-                .toArray()
-                .join(
-                  "."
-                )}') THEN (v${temp_var_ref}.active) END) AS '${intermediate_path
-                .toArray()
-                .join(".")}._active'`
-            );
-            append_to_select_stmt(
-              `MAX(CASE WHEN(${get_path_name_expression(
-                intermediate_path.length()
-              )} = '${intermediate_path
-                .toArray()
-                .join(
-                  "."
-                )}') THEN (v${temp_var_ref}.created_at) END) AS '${intermediate_path
-                .toArray()
-                .join(".")}._created_at'`
-            );
-            append_to_select_stmt(
-              `MAX(CASE WHEN(${get_path_name_expression(
-                intermediate_path.length()
-              )} = '${intermediate_path
-                .toArray()
-                .join(
-                  "."
-                )}') THEN (v${temp_var_ref}.updated_at) END) AS '${intermediate_path
-                .toArray()
-                .join(".")}._updated_at'`
-            );
-          }
-        }
-      }
-    }
-  });
 
   let where_stmt: string = "WHERE ";
   const append_to_where_stmt = (stmt: string) => {
@@ -1103,8 +911,6 @@ async function replace_variable_in_db(
     ]
   >
 ): Promise<Result<[]>> {
-  const q = await execute_transaction("SELECT COUNT(*) FROM VALS;", []);
-  console.log(q);
   try {
     await execute_transaction(
       `UPDATE "VARS" SET active=?, created_at=?, updated_at=?, requested_at=? WHERE level=? AND struct_name=? AND id=?`,
@@ -1281,12 +1087,6 @@ async function replace_variable_in_db(
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
-  const x = await execute_transaction("SELECT COUNT(*) FROM VALS;", []);
-  console.log(x);
-  const r = await execute_transaction("SELECT * FROM VALS;", []);
-  console.log(r);
-  const w = await execute_transaction("SELECT * FROM VARS;", []);
-  console.log(w);
   return new Ok([] as []);
 }
 
@@ -1608,7 +1408,7 @@ export async function get_variables(
       limit,
       offset
     );
-    console.log(result_set);
+    // console.log(result_set);
     for (let result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
