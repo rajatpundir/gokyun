@@ -65,23 +65,21 @@ export const store = create<
             };
           }
           set({ structs: temp1 });
-          setTimeout(async () => {
-            const temp2 = { ...get().structs };
-            for (const struct_name of Object.keys(args)) {
-              temp1[struct_name as QueueStruct] = {
-                create: get().structs[struct_name as QueueStruct].create.slice(
-                  args[struct_name as QueueStruct].create.length
-                ),
-                update: get().structs[struct_name as QueueStruct].update.slice(
-                  args[struct_name as QueueStruct].update.length
-                ),
-                remove: get().structs[struct_name as QueueStruct].remove.slice(
-                  args[struct_name as QueueStruct].remove.length
-                ),
-              };
-            }
-            set({ structs: temp2 });
-          }, 1);
+          const temp2 = { ...get().structs };
+          for (const struct_name of Object.keys(args)) {
+            temp2[struct_name as QueueStruct] = {
+              create: get().structs[struct_name as QueueStruct].create.slice(
+                args[struct_name as QueueStruct].create.length
+              ),
+              update: get().structs[struct_name as QueueStruct].update.slice(
+                args[struct_name as QueueStruct].update.length
+              ),
+              remove: get().structs[struct_name as QueueStruct].remove.slice(
+                args[struct_name as QueueStruct].remove.length
+              ),
+            };
+          }
+          set({ structs: temp2 });
         },
       } as State)
   )
