@@ -5,17 +5,11 @@ import {
 } from "zustand/middleware";
 import { GetState, SetState } from "zustand";
 
-type StructQueue = {
-  User: Array<number>;
-  Test: Array<number>;
-};
-
 type State = {
-  // db_updation_toggle: boolean;
-  // toggle_db_update_toggle: () => void;
   structs: StructQueue;
   notify_struct_changes: (
     struct_name: keyof StructQueue,
+    op: "create" | "update" | "remove",
     ids: Array<number>
   ) => Promise<void>;
 };
@@ -29,25 +23,31 @@ export const store = create<
   subscribeWithSelector(
     (set, get) =>
       ({
-        // db_updation_toggle: false,
-        // toggle_db_update_toggle: () => {
-        //   console.log("store value was toggled");
-        //   set({ db_updation_toggle: !get().db_updation_toggle });
-        // }
         structs: {
-          User: [],
-          Test: [],
+          User: {
+            create: [],
+            update: [],
+            remove: [],
+          },
+          Test: {
+            create: [],
+            update: [],
+            remove: [],
+          },
         },
         notify_struct_changes: async (
           struct_name: keyof StructQueue,
+          op: "create" | "update" | "remove",
           ids: Array<number>
         ) => {
           const temp1 = { ...get().structs };
-          temp1[struct_name] = get().structs[struct_name].concat(ids);
+          temp1[struct_name][op] = get().structs[struct_name][op].concat(ids);
           set({ structs: temp1 });
           setTimeout(async () => {
             const temp2 = { ...get().structs };
-            temp2[struct_name] = get().structs[struct_name].slice(ids.length);
+            temp2[struct_name][op] = get().structs[struct_name][op].slice(
+              ids.length
+            );
             set({ structs: temp2 });
           }, 1);
         },
@@ -56,3 +56,16 @@ export const store = create<
 );
 
 export const { getState, setState, subscribe, destroy } = store;
+
+type StructQueue = {
+  User: {
+    create: Array<number>;
+    update: Array<number>;
+    remove: Array<number>;
+  };
+  Test: {
+    create: Array<number>;
+    update: Array<number>;
+    remove: Array<number>;
+  };
+};
