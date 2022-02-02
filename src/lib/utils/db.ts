@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { getState, subscribe } from "./store";
 import * as SQLite from "expo-sqlite";
 import {
@@ -78,15 +77,15 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
   return db;
 });
 
-export function useDB() {
-  const [db_updation_toggle, set_db_updation_toggle] = useState(
-    getState().db_updation_toggle
-  );
-  subscribe((store) => {
-    set_db_updation_toggle(store.db_updation_toggle);
-  });
-  return db;
-}
+// export function useDB() {
+//   const [db_updation_toggle, set_db_updation_toggle] = useState(
+//     getState().db_updation_toggle
+//   );
+//   subscribe((store) => {
+//     set_db_updation_toggle(store.db_updation_toggle);
+//   });
+//   return db;
+// }
 
 export function execute_transaction(
   sql: string,
@@ -1111,6 +1110,12 @@ export async function remove_variables_in_db(
           ]
         );
       }
+    }
+    if (struct_name in getState().structs) {
+      getState().notify_struct_changes(
+        struct_name as any,
+        ids.map((x) => x.toNumber())
+      );
     }
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
