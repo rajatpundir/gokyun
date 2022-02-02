@@ -8,9 +8,14 @@ import { GetState, SetState } from "zustand";
 type State = {
   structs: StructQueue;
   notify_struct_changes: (
-    struct_name: keyof StructQueue,
-    op: "create" | "update" | "remove",
-    ids: Array<number>
+    args: Record<
+      QueueStruct,
+      {
+        create: ReadonlyArray<number>;
+        update: ReadonlyArray<number>;
+        remove: ReadonlyArray<number>;
+      }
+    >
   ) => Promise<void>;
 };
 
@@ -36,18 +41,45 @@ export const store = create<
           },
         },
         notify_struct_changes: async (
-          struct_name: keyof StructQueue,
-          op: "create" | "update" | "remove",
-          ids: Array<number>
+          args: Record<
+            QueueStruct,
+            {
+              create: ReadonlyArray<number>;
+              update: ReadonlyArray<number>;
+              remove: ReadonlyArray<number>;
+            }
+          >
         ) => {
           const temp1 = { ...get().structs };
-          temp1[struct_name][op] = get().structs[struct_name][op].concat(ids);
+          for (const struct_name of Object.keys(args)) {
+            temp1[struct_name as QueueStruct] = {
+              create: get().structs[struct_name as QueueStruct].create.concat(
+                args[struct_name as QueueStruct].create
+              ),
+              update: get().structs[struct_name as QueueStruct].update.concat(
+                args[struct_name as QueueStruct].update
+              ),
+              remove: get().structs[struct_name as QueueStruct].remove.concat(
+                args[struct_name as QueueStruct].remove
+              ),
+            };
+          }
           set({ structs: temp1 });
           setTimeout(async () => {
             const temp2 = { ...get().structs };
-            temp2[struct_name][op] = get().structs[struct_name][op].slice(
-              ids.length
-            );
+            for (const struct_name of Object.keys(args)) {
+              temp1[struct_name as QueueStruct] = {
+                create: get().structs[struct_name as QueueStruct].create.slice(
+                  args[struct_name as QueueStruct].create.length
+                ),
+                update: get().structs[struct_name as QueueStruct].update.slice(
+                  args[struct_name as QueueStruct].update.length
+                ),
+                remove: get().structs[struct_name as QueueStruct].remove.slice(
+                  args[struct_name as QueueStruct].remove.length
+                ),
+              };
+            }
             set({ structs: temp2 });
           }, 1);
         },
@@ -69,3 +101,5 @@ type StructQueue = {
     remove: Array<number>;
   };
 };
+
+export type QueueStruct = keyof StructQueue;

@@ -17,6 +17,7 @@ import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
 import { ListVariant, ListVariantOptions } from "./list_variants";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { QueueStruct, subscribe } from "./store";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -390,6 +391,21 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     state.offset,
     state.reload,
   ]);
+
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.structs,
+      (queue) => {
+        if (state.struct.name in queue) {
+          const x = queue[state.struct.name as QueueStruct];
+          if (x.create.length !== 0 || x.remove.length !== 0) {
+            dispatch(["reload"]);
+          }
+        }
+      }
+    );
+    return unsub;
+  }, []);
 
   const bsm_view_ref = useRef<BottomSheetModal>(null);
   const bsm_sorting_ref = useRef<BottomSheetModal>(null);

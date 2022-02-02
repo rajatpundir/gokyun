@@ -1,4 +1,4 @@
-import { getState } from "./store";
+import { getState, QueueStruct } from "./store";
 import * as SQLite from "expo-sqlite";
 import {
   apply,
@@ -896,7 +896,26 @@ async function replace_variable_in_db(
       [string, StrongEnum]
     ]
   >
-): Promise<Result<[]>> {
+): Promise<
+  Result<
+    Record<
+      QueueStruct,
+      {
+        create: Array<number>;
+        update: Array<number>;
+        remove: Array<number>;
+      }
+    >
+  >
+> {
+  const changes = {} as Record<
+    QueueStruct,
+    {
+      create: Array<number>;
+      update: Array<number>;
+      remove: Array<number>;
+    }
+  >;
   try {
     await execute_transaction(
       `UPDATE "VARS" SET active=?, created_at=?, updated_at=?, requested_at=? WHERE level=? AND struct_name=? AND id=?`,
@@ -925,16 +944,38 @@ async function replace_variable_in_db(
       );
       // variable was inserted as there was no exception
       if (struct_name in getState().structs) {
-        getState().notify_struct_changes(struct_name as any, "create", [
-          id.truncated().toNumber(),
-        ]);
+        if (struct_name in changes) {
+          changes[struct_name as QueueStruct] = {
+            ...changes[struct_name as QueueStruct],
+            create: changes[struct_name as QueueStruct].create.concat([
+              id.truncated().toNumber(),
+            ]),
+          };
+        } else {
+          changes[struct_name as QueueStruct] = {
+            create: [id.truncated().toNumber()],
+            update: [],
+            remove: [],
+          };
+        }
       }
     } catch (e) {
       // variable could not be inserted, so must have already existed and updated instead
       if (struct_name in getState().structs) {
-        getState().notify_struct_changes(struct_name as any, "update", [
-          id.truncated().toNumber(),
-        ]);
+        if (struct_name in changes) {
+          changes[struct_name as QueueStruct] = {
+            ...changes[struct_name as QueueStruct],
+            update: changes[struct_name as QueueStruct].update.concat([
+              id.truncated().toNumber(),
+            ]),
+          };
+        } else {
+          changes[struct_name as QueueStruct] = {
+            create: [],
+            update: [id.truncated().toNumber()],
+            remove: [],
+          };
+        }
       }
     }
     for (let [path, [leaf_field_name, leaf_value]] of paths) {
@@ -981,16 +1022,38 @@ async function replace_variable_in_db(
           );
           // variable was inserted as there was no exception
           if (ref_struct_name in getState().structs) {
-            getState().notify_struct_changes(ref_struct_name as any, "create", [
-              ref_id.toNumber(),
-            ]);
+            if (ref_struct_name in changes) {
+              changes[ref_struct_name as QueueStruct] = {
+                ...changes[ref_struct_name as QueueStruct],
+                create: changes[ref_struct_name as QueueStruct].create.concat([
+                  ref_id.toNumber(),
+                ]),
+              };
+            } else {
+              changes[ref_struct_name as QueueStruct] = {
+                create: [ref_id.toNumber()],
+                update: [],
+                remove: [],
+              };
+            }
           }
         } catch (e) {
           // variable could not be inserted, so must have already existed and updated instead
           if (ref_struct_name in getState().structs) {
-            getState().notify_struct_changes(ref_struct_name as any, "update", [
-              ref_id.toNumber(),
-            ]);
+            if (ref_struct_name in changes) {
+              changes[ref_struct_name as QueueStruct] = {
+                ...changes[ref_struct_name as QueueStruct],
+                update: changes[ref_struct_name as QueueStruct].update.concat([
+                  ref_id.toNumber(),
+                ]),
+              };
+            } else {
+              changes[ref_struct_name as QueueStruct] = {
+                create: [],
+                update: [ref_id.toNumber()],
+                remove: [],
+              };
+            }
           }
         }
       }
@@ -1099,7 +1162,7 @@ async function replace_variable_in_db(
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
-  return new Ok([] as []);
+  return new Ok(changes);
 }
 
 export async function remove_variables_in_db(
@@ -1129,9 +1192,24 @@ export async function remove_variables_in_db(
     }
     if (struct_name in getState().structs) {
       getState().notify_struct_changes(
-        struct_name as any,
-        "remove",
-        ids.map((x) => x.toNumber())
+        apply(
+          {} as Record<
+            QueueStruct,
+            {
+              create: ReadonlyArray<number>;
+              update: ReadonlyArray<number>;
+              remove: ReadonlyArray<number>;
+            }
+          >,
+          (it) => {
+            it[struct_name as QueueStruct] = {
+              create: [],
+              update: [],
+              remove: ids.map((x) => x.truncated().toNumber()),
+            };
+            return it;
+          }
+        )
       );
     }
   } catch (err) {
@@ -1654,10 +1732,30 @@ export async function get_variable(
 export async function replace_variable(
   level: Decimal,
   variable: Variable,
-  requested_at: Date = new Date()
-): Promise<Result<[]>> {
+  requested_at: Date = new Date(),
+  entrypoint: boolean = true
+): Promise<
+  Result<
+    Record<
+      QueueStruct,
+      {
+        create: Array<number>;
+        update: Array<number>;
+        remove: Array<number>;
+      }
+    >
+  >
+> {
+  let changes = {} as Record<
+    QueueStruct,
+    {
+      create: Array<number>;
+      update: Array<number>;
+      remove: Array<number>;
+    }
+  >;
   try {
-    await replace_variable_in_db(
+    const result = await replace_variable_in_db(
       level,
       requested_at,
       variable.struct.name,
@@ -1682,25 +1780,79 @@ export async function replace_variable(
         x.path[1],
       ])
     );
+    if (unwrap(result)) {
+      changes = result.value;
+    }
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
-  return new Ok([] as []);
+  if (entrypoint) {
+    getState().notify_struct_changes(changes);
+  }
+  return new Ok(changes);
 }
 
 export async function replace_variables(
   level: Decimal,
   variables: HashSet<Variable>,
   requested_at: Date = new Date()
-): Promise<Result<[]>> {
+): Promise<
+  Result<
+    Record<
+      QueueStruct,
+      {
+        create: Array<number>;
+        update: Array<number>;
+        remove: Array<number>;
+      }
+    >
+  >
+> {
+  const changes = {} as Record<
+    QueueStruct,
+    {
+      create: Array<number>;
+      update: Array<number>;
+      remove: Array<number>;
+    }
+  >;
   try {
     for (let variable of variables) {
-      await replace_variable(level, variable, requested_at);
+      const result = await replace_variable(
+        level,
+        variable,
+        requested_at,
+        false
+      );
+      if (unwrap(result)) {
+        for (const struct_name of Object.keys(result.value)) {
+          if (struct_name in changes) {
+            changes[struct_name as QueueStruct] = {
+              create: changes[struct_name as QueueStruct].create.concat(
+                result.value[struct_name as QueueStruct].create
+              ),
+              update: changes[struct_name as QueueStruct].update.concat(
+                result.value[struct_name as QueueStruct].update
+              ),
+              remove: changes[struct_name as QueueStruct].remove.concat(
+                result.value[struct_name as QueueStruct].remove
+              ),
+            };
+          } else {
+            changes[struct_name as QueueStruct] = {
+              create: result.value[struct_name as QueueStruct].create,
+              update: result.value[struct_name as QueueStruct].update,
+              remove: result.value[struct_name as QueueStruct].remove,
+            };
+          }
+        }
+      }
     }
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
-  return new Ok([] as []);
+  getState().notify_struct_changes(changes);
+  return new Ok(changes);
 }
 
 ///////////////////////////////////
