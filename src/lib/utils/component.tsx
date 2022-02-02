@@ -26,6 +26,7 @@ import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
 import { Text, Input, Pressable, Row, Column } from "native-base";
 import { theme } from "./theme";
+import { subscribe } from "./store";
 
 export type ComponentViews = Record<
   string,
@@ -134,6 +135,25 @@ export function useComponent(props: {
       compute_checks(props.struct, state, dispatch);
     }
   }, [state.id, state.mode, state.check_trigger]);
+
+  // fetching -> found
+  // fetching -> not_found
+
+  // update / show -> [remove] -> not_found
+  // not_found -> [insert/update] -> found (update / show)
+
+  useEffect(() => {
+    const unsub = subscribe(
+      (s) => s.structs,
+      (queue) => {
+        console.log("-----------------------------");
+        console.log(queue);
+        console.log("------------###-----------------");
+      }
+    );
+    return unsub;
+  }, []);
+
   const jsx: JSX.Element = arrow(() => {
     if (state.mode === "write") {
       if (state.id.equals(-1)) {

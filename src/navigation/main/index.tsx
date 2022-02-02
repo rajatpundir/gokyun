@@ -37,7 +37,6 @@ export type NavigatorParams = {
 };
 
 function Component() {
-  useDeviceContext(tw);
   useEffect(() => {
     const unsub = subscribe(
       (s) => s.structs,
@@ -49,6 +48,7 @@ function Component() {
     );
     return unsub;
   }, []);
+  useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
       return (

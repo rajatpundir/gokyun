@@ -11,9 +11,17 @@ type State = {
     args: Record<
       QueueStruct,
       {
+        // create / remove is primarily observed by lists
+        // since updated_at and created_at is always used in sort
+        // tracking path changes is not useful since list will always be affected nonetheless
         create: ReadonlyArray<number>;
-        update: ReadonlyArray<number>;
         remove: ReadonlyArray<number>;
+        // tracking path changes is useful only in case of update
+        // this will prevent unecessary fetches in case of join structs
+        // a component should only re-fetch if a path it uses has been updated
+        // why not push whole variable in below array instead?
+        // affected paths can then be simply cloned and replaced inside the component and there is no extra fetches
+        update: ReadonlyArray<number>;
       }
     >
   ) => Promise<void>;
