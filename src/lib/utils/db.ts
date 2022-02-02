@@ -923,7 +923,20 @@ async function replace_variable_in_db(
           requested_at.getTime().toString(),
         ]
       );
-    } catch (e) {}
+      // variable was inserted as there was no exception
+      if (struct_name in getState().structs) {
+        getState().notify_struct_changes(struct_name as any, "create", [
+          id.truncated().toNumber(),
+        ]);
+      }
+    } catch (e) {
+      // variable could not be inserted, so must have already existed and updated instead
+      if (struct_name in getState().structs) {
+        getState().notify_struct_changes(struct_name as any, "update", [
+          id.truncated().toNumber(),
+        ]);
+      }
+    }
     for (let [path, [leaf_field_name, leaf_value]] of paths) {
       let ref_struct_name = struct_name;
       let ref_id: Decimal = id.truncated();
@@ -966,7 +979,20 @@ async function replace_variable_in_db(
               requested_at.getTime().toString(),
             ]
           );
-        } catch (e) {}
+          // variable was inserted as there was no exception
+          if (ref_struct_name in getState().structs) {
+            getState().notify_struct_changes(ref_struct_name as any, "create", [
+              ref_id.toNumber(),
+            ]);
+          }
+        } catch (e) {
+          // variable could not be inserted, so must have already existed and updated instead
+          if (ref_struct_name in getState().structs) {
+            getState().notify_struct_changes(ref_struct_name as any, "update", [
+              ref_id.toNumber(),
+            ]);
+          }
+        }
       }
       const leaf_value_type = leaf_value.type;
       switch (leaf_value_type) {

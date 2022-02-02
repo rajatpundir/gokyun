@@ -42,7 +42,9 @@ function Component() {
     const unsub = subscribe(
       (s) => s.structs,
       (x) => {
+        console.log("-----------------------------");
         console.log(x);
+        console.log("------------###-----------------");
       }
     );
     return unsub;
