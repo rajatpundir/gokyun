@@ -397,10 +397,11 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
       (s) => s.structs,
       (queue) => {
         if (state.struct.name in queue) {
-          const x = queue[state.struct.name as QueueStruct];
-          if (x.create.length !== 0 || x.remove.length !== 0) {
-            dispatch(["reload"]);
-          }
+          apply(queue[state.struct.name as QueueStruct], (it) => {
+            if (it.create.length !== 0 || it.remove.length !== 0) {
+              dispatch(["reload"]);
+            }
+          });
         }
       }
     );
