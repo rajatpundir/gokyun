@@ -152,6 +152,7 @@ export default function Component(
                                 );
                                 if (unwrap(result)) {
                                   dispatch1(["reload", result.value]);
+                                  props.navigation.goBack();
                                   return result.value;
                                 }
                               }
