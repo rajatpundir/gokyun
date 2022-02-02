@@ -287,6 +287,10 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
     }
     case "reload": {
       state.reload += 1;
+      state.offset = new Decimal(0);
+      state.variables = [];
+      state.reached_end = false;
+      state.refreshing = true;
       break;
     }
     default: {
