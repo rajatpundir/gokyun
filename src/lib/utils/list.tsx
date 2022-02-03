@@ -400,8 +400,8 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           apply(broker[state.struct.name as BrokerKey], (it) => {
             if (
               it.create.length !== 0 ||
-              it.remove.length !== 0 ||
               it.update.length !== 0
+              // || it.remove.length !== 0
             ) {
               dispatch(["reload"]);
             }

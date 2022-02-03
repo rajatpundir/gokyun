@@ -99,6 +99,7 @@ function query(
   active: boolean,
   level: Decimal | undefined,
   init_filter: OrFilter,
+  // filters: HashSet<AndFilter>,
   filters: HashSet<OrFilter>,
   limit: Decimal,
   offset: Decimal

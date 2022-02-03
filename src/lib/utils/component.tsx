@@ -176,7 +176,7 @@ export function useComponent(props: {
         if (state.found === undefined) {
           return <Text>Loading...</Text>;
         } else if (!state.found) {
-          return <Text>Not Found</Text>;
+          return <></>;
         } else {
           return (
             <props.update
@@ -197,7 +197,7 @@ export function useComponent(props: {
       if (state.found === undefined) {
         return <Text>Loading...</Text>;
       } else if (!state.found) {
-        return <Text>Not Found</Text>;
+        return <></>;
       } else {
         return (
           <props.show
