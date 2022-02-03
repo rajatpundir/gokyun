@@ -132,122 +132,125 @@ export default function Component(
           })}
           RightElement={
             <>
-              {state1.mode === "write" ? (
-                <Row>
-                  <Pressable
-                    onPress={async () => {
-                      try {
-                        await replace_variable(
-                          new Decimal(0),
-                          new Variable(
-                            struct1.value,
-                            await arrow(async () => {
-                              if (state1.id.equals(-1)) {
-                                await increment_struct_counter(
-                                  struct1.value.name
-                                );
-                                const result = await get_struct_counter(
-                                  struct1.value.name
-                                );
-                                if (unwrap(result)) {
-                                  dispatch1(["reload", result.value]);
-                                  props.navigation.goBack();
-                                  return result.value;
+              {state1.found ? (
+                state1.mode === "write" ? (
+                  <Row>
+                    <Pressable
+                      onPress={async () => {
+                        try {
+                          await replace_variable(
+                            new Decimal(0),
+                            new Variable(
+                              struct1.value,
+                              await arrow(async () => {
+                                if (state1.id.equals(-1)) {
+                                  await increment_struct_counter(
+                                    struct1.value.name
+                                  );
+                                  const result = await get_struct_counter(
+                                    struct1.value.name
+                                  );
+                                  if (unwrap(result)) {
+                                    dispatch1(["reload", result.value]);
+                                    props.navigation.goBack();
+                                    return result.value;
+                                  }
                                 }
-                              }
-                              // reload in case of update/show should not be required
-                              // dispatch1([
-                              //   "reload",
-                              //   new Decimal(state1.id as Decimal),
-                              // ]);
-                              return state1.id as Decimal;
-                            }),
-                            state1.active,
-                            state1.created_at,
-                            state1.updated_at,
-                            state1.values as HashSet<Path>
-                          )
+                                return state1.id as Decimal;
+                              }),
+                              state1.active,
+                              state1.created_at,
+                              state1.updated_at,
+                              state1.values as HashSet<Path>
+                            )
+                          );
+                        } catch (e) {}
+                      }}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      px={"3"}
+                      py={"2"}
+                      mx={"1"}
+                      rounded={"sm"}
+                      backgroundColor={theme.primary}
+                    >
+                      <Text fontWeight={"bold"}>Save </Text>
+                      <Feather name="check" size={16} color={theme.text} />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        if (state1.id.equals(-1)) {
+                          props.navigation.goBack();
+                        } else {
+                          dispatch1(["mode", "read"]);
+                        }
+                      }}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      px={"2"}
+                      py={"1.5"}
+                      mx={"1"}
+                      rounded={"sm"}
+                      borderWidth={"1"}
+                      borderColor={theme.primary}
+                    >
+                      <Text>Cancel </Text>
+                      <MaterialIcons
+                        name="clear"
+                        size={16}
+                        color={theme.text}
+                      />
+                    </Pressable>
+                  </Row>
+                ) : (
+                  <Row>
+                    <Pressable
+                      onPress={async () => {
+                        await remove_variables_in_db(
+                          new Decimal(0),
+                          struct1.value.name,
+                          [state1.id as Decimal]
                         );
-                      } catch (e) {}
-                    }}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    px={"3"}
-                    py={"2"}
-                    mx={"1"}
-                    rounded={"sm"}
-                    backgroundColor={theme.primary}
-                  >
-                    <Text fontWeight={"bold"}>Save </Text>
-                    <Feather name="check" size={16} color={theme.text} />
-                  </Pressable>
-                  <Pressable
-                    onPress={() => {
-                      if (state1.id.equals(-1)) {
                         props.navigation.goBack();
-                      } else {
-                        dispatch1(["mode", "read"]);
-                      }
-                    }}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    px={"2"}
-                    py={"1.5"}
-                    mx={"1"}
-                    rounded={"sm"}
-                    borderWidth={"1"}
-                    borderColor={theme.primary}
-                  >
-                    <Text>Cancel </Text>
-                    <MaterialIcons name="clear" size={16} color={theme.text} />
-                  </Pressable>
-                </Row>
+                      }}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      px={"2"}
+                      py={"1.5"}
+                      mx={"1"}
+                      rounded={"sm"}
+                      borderWidth={"1"}
+                      borderColor={theme.primary}
+                    >
+                      <Text bold color={theme.text}>
+                        Delete{" "}
+                      </Text>
+                      <MaterialIcons
+                        name="delete-outline"
+                        size={16}
+                        color={theme.text}
+                      />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => dispatch1(["mode", "write"])}
+                      flexDirection={"row"}
+                      alignItems={"center"}
+                      px={"2"}
+                      py={"1.5"}
+                      mx={"1"}
+                      rounded={"sm"}
+                      borderWidth={"1"}
+                      borderColor={theme.primary}
+                    >
+                      <Text bold color={theme.text}>
+                        Edit{" "}
+                      </Text>
+                      <Feather name="edit-3" size={16} color={theme.text} />
+                    </Pressable>
+                  </Row>
+                )
               ) : (
-                <Row>
-                  <Pressable
-                    onPress={async () => {
-                      await remove_variables_in_db(
-                        new Decimal(0),
-                        struct1.value.name,
-                        [state1.id as Decimal]
-                      );
-                      props.navigation.goBack();
-                    }}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    px={"2"}
-                    py={"1.5"}
-                    mx={"1"}
-                    rounded={"sm"}
-                    borderWidth={"1"}
-                    borderColor={theme.primary}
-                  >
-                    <Text bold color={theme.text}>
-                      Delete{" "}
-                    </Text>
-                    <MaterialIcons
-                      name="delete-outline"
-                      size={16}
-                      color={theme.text}
-                    />
-                  </Pressable>
-                  <Pressable
-                    onPress={() => dispatch1(["mode", "write"])}
-                    flexDirection={"row"}
-                    alignItems={"center"}
-                    px={"2"}
-                    py={"1.5"}
-                    mx={"1"}
-                    rounded={"sm"}
-                    borderWidth={"1"}
-                    borderColor={theme.primary}
-                  >
-                    <Text bold color={theme.text}>
-                      Edit{" "}
-                    </Text>
-                    <Feather name="edit-3" size={16} color={theme.text} />
-                  </Pressable>
-                </Row>
+                <></>
               )}
             </>
           }

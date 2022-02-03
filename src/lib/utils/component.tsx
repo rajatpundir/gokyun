@@ -71,6 +71,7 @@ export function useComponent(props: {
   show: ComponentViews[string]["show"];
   selected?: boolean;
   update_parent_values?: () => void;
+  found?: boolean | undefined;
 }): [State, React.Dispatch<Action>, JSX.Element] {
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.id),
@@ -88,7 +89,7 @@ export function useComponent(props: {
     labels: props.labels,
     user_paths: props.user_paths,
     borrows: props.borrows,
-    found: undefined,
+    found: props.found,
   });
   useLayoutEffect(() => {
     const update_values = async () => {
@@ -105,24 +106,22 @@ export function useComponent(props: {
           ),
         ]);
       } else {
-        if (state.init_values.length() === 0) {
-          const result = await get_variable(
+        const result = await get_variable(
+          props.struct,
+          true,
+          undefined,
+          state.id as Decimal,
+          get_filter_paths(
             props.struct,
-            true,
-            undefined,
-            state.id as Decimal,
-            get_filter_paths(
-              props.struct,
-              state.labels as Array<[string, PathString]>,
-              state.user_paths as Array<PathString>,
-              state.borrows as Array<string>
-            )
-          );
-          if (unwrap(result)) {
-            dispatch(["variable", result.value]);
-          } else {
-            dispatch(["found", false]);
-          }
+            state.labels as Array<[string, PathString]>,
+            state.user_paths as Array<PathString>,
+            state.borrows as Array<string>
+          )
+        );
+        if (unwrap(result)) {
+          dispatch(["variable", result.value]);
+        } else {
+          dispatch(["found", false]);
         }
       }
     };
@@ -138,12 +137,6 @@ export function useComponent(props: {
       compute_checks(props.struct, state, dispatch);
     }
   }, [state.id, state.mode, state.check_trigger]);
-
-  // fetching -> found
-  // fetching -> not_found
-
-  // update / show -> [remove] -> not_found
-  // not_found -> [insert/update] -> found (update / show)
 
   useEffect(() => {
     if (!state.id.equals(-1)) {
@@ -252,6 +245,7 @@ export function useOtherComponent(props: {
     show: props.view.show,
     selected: props.selected,
     update_parent_values: props.update_parent_values,
+    found: true,
   });
   return [state, dispatch, jsx];
 }

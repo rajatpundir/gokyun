@@ -216,7 +216,7 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "reload": {
-      state.id = action[1];
+      state.id = new Decimal(action[1].toNumber());
       state.mode = action[1].equals(-1) ? "write" : "read";
       state.event_trigger = 0;
       state.check_trigger = 0;
