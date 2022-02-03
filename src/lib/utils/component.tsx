@@ -144,10 +144,10 @@ export function useComponent(props: {
 
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.structs,
-      (queue) => {
+      (store) => store.broker,
+      (broker) => {
         console.log("-----------------------------");
-        console.log(queue);
+        console.log(broker);
         console.log("------------###-----------------");
       }
     );

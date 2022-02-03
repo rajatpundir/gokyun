@@ -6,21 +6,13 @@ import {
 import { GetState, SetState } from "zustand";
 
 type State = {
-  structs: StructQueue;
-  notify_struct_changes: (
+  broker: Broker;
+  announce_message: (
     args: Record<
-      QueueStruct,
+      BrokerKey,
       {
-        // create / remove is primarily observed by lists
-        // since updated_at and created_at is always used in sort
-        // tracking path changes is not useful since list will always be affected nonetheless
         create: ReadonlyArray<number>;
         remove: ReadonlyArray<number>;
-        // tracking path changes is useful only in case of update
-        // this will prevent unecessary fetches in case of join structs
-        // a component should only re-fetch if a path it uses has been updated
-        // why not push whole variable in below array instead?
-        // affected paths can then be simply cloned and replaced inside the component and there is no extra fetches
         update: ReadonlyArray<number>;
       }
     >
@@ -36,7 +28,7 @@ export const store = create<
   subscribeWithSelector(
     (set, get) =>
       ({
-        structs: {
+        broker: {
           User: {
             create: [],
             update: [],
@@ -48,9 +40,9 @@ export const store = create<
             remove: [],
           },
         },
-        notify_struct_changes: async (
+        announce_message: async (
           args: Record<
-            QueueStruct,
+            BrokerKey,
             {
               create: ReadonlyArray<number>;
               update: ReadonlyArray<number>;
@@ -58,36 +50,36 @@ export const store = create<
             }
           >
         ) => {
-          const temp1 = { ...get().structs };
+          const temp1 = { ...get().broker };
           for (const struct_name of Object.keys(args)) {
-            temp1[struct_name as QueueStruct] = {
-              create: get().structs[struct_name as QueueStruct].create.concat(
-                args[struct_name as QueueStruct].create
+            temp1[struct_name as BrokerKey] = {
+              create: get().broker[struct_name as BrokerKey].create.concat(
+                args[struct_name as BrokerKey].create
               ),
-              update: get().structs[struct_name as QueueStruct].update.concat(
-                args[struct_name as QueueStruct].update
+              update: get().broker[struct_name as BrokerKey].update.concat(
+                args[struct_name as BrokerKey].update
               ),
-              remove: get().structs[struct_name as QueueStruct].remove.concat(
-                args[struct_name as QueueStruct].remove
+              remove: get().broker[struct_name as BrokerKey].remove.concat(
+                args[struct_name as BrokerKey].remove
               ),
             };
           }
-          set({ structs: temp1 });
-          const temp2 = { ...get().structs };
+          set({ broker: temp1 });
+          const temp2 = { ...get().broker };
           for (const struct_name of Object.keys(args)) {
-            temp2[struct_name as QueueStruct] = {
-              create: get().structs[struct_name as QueueStruct].create.slice(
-                args[struct_name as QueueStruct].create.length
+            temp2[struct_name as BrokerKey] = {
+              create: get().broker[struct_name as BrokerKey].create.slice(
+                args[struct_name as BrokerKey].create.length
               ),
-              update: get().structs[struct_name as QueueStruct].update.slice(
-                args[struct_name as QueueStruct].update.length
+              update: get().broker[struct_name as BrokerKey].update.slice(
+                args[struct_name as BrokerKey].update.length
               ),
-              remove: get().structs[struct_name as QueueStruct].remove.slice(
-                args[struct_name as QueueStruct].remove.length
+              remove: get().broker[struct_name as BrokerKey].remove.slice(
+                args[struct_name as BrokerKey].remove.length
               ),
             };
           }
-          set({ structs: temp2 });
+          set({ broker: temp2 });
         },
       } as State)
   )
@@ -95,7 +87,7 @@ export const store = create<
 
 export const { getState, setState, subscribe, destroy } = store;
 
-type StructQueue = {
+type Broker = {
   User: {
     create: Array<number>;
     update: Array<number>;
@@ -108,4 +100,4 @@ type StructQueue = {
   };
 };
 
-export type QueueStruct = keyof StructQueue;
+export type BrokerKey = keyof Broker;

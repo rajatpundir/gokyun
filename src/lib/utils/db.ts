@@ -1,4 +1,4 @@
-import { getState, QueueStruct } from "./store";
+import { getState, BrokerKey } from "./store";
 import * as SQLite from "expo-sqlite";
 import {
   apply,
@@ -899,7 +899,7 @@ async function replace_variable_in_db(
 ): Promise<
   Result<
     Record<
-      QueueStruct,
+      BrokerKey,
       {
         create: Array<number>;
         update: Array<number>;
@@ -909,7 +909,7 @@ async function replace_variable_in_db(
   >
 > {
   const changes = {} as Record<
-    QueueStruct,
+    BrokerKey,
     {
       create: Array<number>;
       update: Array<number>;
@@ -943,16 +943,16 @@ async function replace_variable_in_db(
         ]
       );
       // variable was inserted as there was no exception
-      if (struct_name in getState().structs) {
+      if (struct_name in getState().broker) {
         if (struct_name in changes) {
-          changes[struct_name as QueueStruct] = {
-            ...changes[struct_name as QueueStruct],
-            create: changes[struct_name as QueueStruct].create.concat([
+          changes[struct_name as BrokerKey] = {
+            ...changes[struct_name as BrokerKey],
+            create: changes[struct_name as BrokerKey].create.concat([
               id.truncated().toNumber(),
             ]),
           };
         } else {
-          changes[struct_name as QueueStruct] = {
+          changes[struct_name as BrokerKey] = {
             create: [id.truncated().toNumber()],
             update: [],
             remove: [],
@@ -961,16 +961,16 @@ async function replace_variable_in_db(
       }
     } catch (e) {
       // variable could not be inserted, so must have already existed and updated instead
-      if (struct_name in getState().structs) {
+      if (struct_name in getState().broker) {
         if (struct_name in changes) {
-          changes[struct_name as QueueStruct] = {
-            ...changes[struct_name as QueueStruct],
-            update: changes[struct_name as QueueStruct].update.concat([
+          changes[struct_name as BrokerKey] = {
+            ...changes[struct_name as BrokerKey],
+            update: changes[struct_name as BrokerKey].update.concat([
               id.truncated().toNumber(),
             ]),
           };
         } else {
-          changes[struct_name as QueueStruct] = {
+          changes[struct_name as BrokerKey] = {
             create: [],
             update: [id.truncated().toNumber()],
             remove: [],
@@ -1021,16 +1021,16 @@ async function replace_variable_in_db(
             ]
           );
           // variable was inserted as there was no exception
-          if (ref_struct_name in getState().structs) {
+          if (ref_struct_name in getState().broker) {
             if (ref_struct_name in changes) {
-              changes[ref_struct_name as QueueStruct] = {
-                ...changes[ref_struct_name as QueueStruct],
-                create: changes[ref_struct_name as QueueStruct].create.concat([
+              changes[ref_struct_name as BrokerKey] = {
+                ...changes[ref_struct_name as BrokerKey],
+                create: changes[ref_struct_name as BrokerKey].create.concat([
                   ref_id.toNumber(),
                 ]),
               };
             } else {
-              changes[ref_struct_name as QueueStruct] = {
+              changes[ref_struct_name as BrokerKey] = {
                 create: [ref_id.toNumber()],
                 update: [],
                 remove: [],
@@ -1039,16 +1039,16 @@ async function replace_variable_in_db(
           }
         } catch (e) {
           // variable could not be inserted, so must have already existed and updated instead
-          if (ref_struct_name in getState().structs) {
+          if (ref_struct_name in getState().broker) {
             if (ref_struct_name in changes) {
-              changes[ref_struct_name as QueueStruct] = {
-                ...changes[ref_struct_name as QueueStruct],
-                update: changes[ref_struct_name as QueueStruct].update.concat([
+              changes[ref_struct_name as BrokerKey] = {
+                ...changes[ref_struct_name as BrokerKey],
+                update: changes[ref_struct_name as BrokerKey].update.concat([
                   ref_id.toNumber(),
                 ]),
               };
             } else {
-              changes[ref_struct_name as QueueStruct] = {
+              changes[ref_struct_name as BrokerKey] = {
                 create: [],
                 update: [ref_id.toNumber()],
                 remove: [],
@@ -1190,11 +1190,11 @@ export async function remove_variables_in_db(
         );
       }
     }
-    if (struct_name in getState().structs) {
-      getState().notify_struct_changes(
+    if (struct_name in getState().broker) {
+      getState().announce_message(
         apply(
           {} as Record<
-            QueueStruct,
+            BrokerKey,
             {
               create: ReadonlyArray<number>;
               update: ReadonlyArray<number>;
@@ -1202,7 +1202,7 @@ export async function remove_variables_in_db(
             }
           >,
           (it) => {
-            it[struct_name as QueueStruct] = {
+            it[struct_name as BrokerKey] = {
               create: [],
               update: [],
               remove: ids.map((x) => x.truncated().toNumber()),
@@ -1737,7 +1737,7 @@ export async function replace_variable(
 ): Promise<
   Result<
     Record<
-      QueueStruct,
+      BrokerKey,
       {
         create: Array<number>;
         update: Array<number>;
@@ -1747,7 +1747,7 @@ export async function replace_variable(
   >
 > {
   let changes = {} as Record<
-    QueueStruct,
+    BrokerKey,
     {
       create: Array<number>;
       update: Array<number>;
@@ -1787,7 +1787,7 @@ export async function replace_variable(
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
   if (entrypoint) {
-    getState().notify_struct_changes(changes);
+    getState().announce_message(changes);
   }
   return new Ok(changes);
 }
@@ -1799,7 +1799,7 @@ export async function replace_variables(
 ): Promise<
   Result<
     Record<
-      QueueStruct,
+      BrokerKey,
       {
         create: Array<number>;
         update: Array<number>;
@@ -1809,7 +1809,7 @@ export async function replace_variables(
   >
 > {
   const changes = {} as Record<
-    QueueStruct,
+    BrokerKey,
     {
       create: Array<number>;
       update: Array<number>;
@@ -1827,22 +1827,22 @@ export async function replace_variables(
       if (unwrap(result)) {
         for (const struct_name of Object.keys(result.value)) {
           if (struct_name in changes) {
-            changes[struct_name as QueueStruct] = {
-              create: changes[struct_name as QueueStruct].create.concat(
-                result.value[struct_name as QueueStruct].create
+            changes[struct_name as BrokerKey] = {
+              create: changes[struct_name as BrokerKey].create.concat(
+                result.value[struct_name as BrokerKey].create
               ),
-              update: changes[struct_name as QueueStruct].update.concat(
-                result.value[struct_name as QueueStruct].update
+              update: changes[struct_name as BrokerKey].update.concat(
+                result.value[struct_name as BrokerKey].update
               ),
-              remove: changes[struct_name as QueueStruct].remove.concat(
-                result.value[struct_name as QueueStruct].remove
+              remove: changes[struct_name as BrokerKey].remove.concat(
+                result.value[struct_name as BrokerKey].remove
               ),
             };
           } else {
-            changes[struct_name as QueueStruct] = {
-              create: result.value[struct_name as QueueStruct].create,
-              update: result.value[struct_name as QueueStruct].update,
-              remove: result.value[struct_name as QueueStruct].remove,
+            changes[struct_name as BrokerKey] = {
+              create: result.value[struct_name as BrokerKey].create,
+              update: result.value[struct_name as BrokerKey].update,
+              remove: result.value[struct_name as BrokerKey].remove,
             };
           }
         }
@@ -1851,7 +1851,7 @@ export async function replace_variables(
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
-  getState().notify_struct_changes(changes);
+  getState().announce_message(changes);
   return new Ok(changes);
 }
 

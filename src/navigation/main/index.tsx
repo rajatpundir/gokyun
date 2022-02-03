@@ -39,10 +39,10 @@ export type NavigatorParams = {
 function Component() {
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.structs,
-      (x) => {
+      (store) => store.broker,
+      (broker) => {
         console.log("-----------------------------");
-        console.log(x);
+        console.log(broker);
         console.log("------------###-----------------");
       }
     );

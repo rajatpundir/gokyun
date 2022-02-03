@@ -17,7 +17,7 @@ import { tw } from "./tailwind";
 import { bs_theme } from "./theme";
 import { ListVariant, ListVariantOptions } from "./list_variants";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
-import { QueueStruct, subscribe } from "./store";
+import { BrokerKey, subscribe } from "./store";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -394,11 +394,15 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
 
   useEffect(() => {
     const unsub = subscribe(
-      (s) => s.structs,
-      (queue) => {
-        if (state.struct.name in queue) {
-          apply(queue[state.struct.name as QueueStruct], (it) => {
-            if (it.create.length !== 0 || it.remove.length !== 0) {
+      (store) => store.broker,
+      (broker) => {
+        if (state.struct.name in broker) {
+          apply(broker[state.struct.name as BrokerKey], (it) => {
+            if (
+              it.create.length !== 0 ||
+              it.remove.length !== 0 ||
+              it.update.length !== 0
+            ) {
               dispatch(["reload"]);
             }
           });
