@@ -3,7 +3,7 @@ import { View } from "react-native";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useImmerReducer } from "use-immer";
-import { Filter, FilterPath, get_variable } from "./db";
+import { OrFilter, FilterPath, get_variable } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
 import { compare_paths, Path, PathString, Struct, Variable } from "./variable";
 import {
@@ -281,7 +281,7 @@ export function SearchWrapper(
       props.dispatch([
         "filter",
         "replace",
-        new Filter(
+        new OrFilter(
           0,
           [false, undefined],
           [false, undefined],

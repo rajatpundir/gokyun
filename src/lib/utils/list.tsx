@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Draft } from "immer";
 import { useImmerReducer } from "use-immer";
-import { Filter, FilterPath, get_variables } from "./db";
+import { OrFilter, FilterPath, get_variables } from "./db";
 import { PathString, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
 import { apply, fold, unwrap } from "./prelude";
@@ -25,8 +25,8 @@ export type ListState = {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
-  init_filter: Filter;
-  filters: HashSet<Filter>;
+  init_filter: OrFilter;
+  filters: HashSet<OrFilter>;
   limit: Decimal;
   offset: Decimal;
   variables: Array<Variable>;
@@ -45,10 +45,10 @@ export type ListAction =
   | ["sort", "remove", FilterPath]
   | ["sort", "up" | "down" | "toggle", FilterPath]
   | ["filter", "add"]
-  | ["filter", "remove", Filter]
-  | ["filter", "replace", Filter]
-  | ["filters", Filter, "remove", FilterPath]
-  | ["filters", Filter, "replace", FilterPath]
+  | ["filter", "remove", OrFilter]
+  | ["filter", "replace", OrFilter]
+  | ["filters", OrFilter, "remove", FilterPath]
+  | ["filters", OrFilter, "replace", FilterPath]
   | ["layout", string]
   | ["reload"];
 
@@ -209,7 +209,7 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       switch (action[1]) {
         case "add": {
           state.filters = state.filters.add(
-            new Filter(
+            new OrFilter(
               1 + Math.max(-1, ...state.filters.map((x) => x.index).toArray()),
               [false, undefined],
               [false, undefined],
@@ -316,8 +316,8 @@ export type RenderListElement = [
 ];
 
 export type RenderListVariantProps = {
-  init_filter: Filter;
-  filters: HashSet<Filter>;
+  init_filter: OrFilter;
+  filters: HashSet<OrFilter>;
   dispatch: React.Dispatch<ListAction>;
   variant: JSX.Element;
   bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
@@ -336,7 +336,7 @@ type ListSpecificProps = CommonProps & {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
-  filters: [Filter, HashSet<Filter>];
+  filters: [OrFilter, HashSet<OrFilter>];
   update_parent_values?: (variable: Variable) => void;
 };
 

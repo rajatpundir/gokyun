@@ -8,7 +8,7 @@ import {
   OtherComponent,
   SearchWrapper,
 } from "../../../../../lib/utils/component";
-import { Filter } from "../../../../../lib/utils/db";
+import { OrFilter } from "../../../../../lib/utils/db";
 import { List } from "../../../../../lib/utils/list";
 import { unwrap } from "../../../../../lib/utils/prelude";
 import { get_struct } from "../../../../../lib/utils/schema";
@@ -27,7 +27,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
           active={true}
           level={undefined}
           filters={[
-            new Filter(
+            new OrFilter(
               0,
               [false, undefined],
               [false, undefined],

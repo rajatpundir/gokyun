@@ -3,7 +3,7 @@ import { NavigatorProps as ParentNavigatorProps } from "..";
 import { List } from "../../../../lib/utils/list";
 import { unwrap } from "../../../../lib/utils/prelude";
 import { get_struct } from "../../../../lib/utils/schema";
-import { Filter } from "../../../../lib/utils/db";
+import { OrFilter } from "../../../../lib/utils/db";
 import { get_filter_paths } from "../../../../lib/utils/commons";
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
@@ -23,7 +23,7 @@ export default function Component(
           active={true}
           level={undefined}
           filters={[
-            new Filter(
+            new OrFilter(
               0,
               [false, undefined],
               [false, undefined],

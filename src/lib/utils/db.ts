@@ -98,8 +98,8 @@ function query(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
-  init_filter: Filter,
-  filters: HashSet<Filter>,
+  init_filter: OrFilter,
+  filters: HashSet<OrFilter>,
   limit: Decimal,
   offset: Decimal
 ): Promise<SQLite.SQLResultSet> {
@@ -420,7 +420,7 @@ function query(
 }
 
 function get_filter_stmt(
-  filter: Filter
+  filter: OrFilter
 ): [string, ReadonlyArray<string | number>] {
   const args: Array<string | number> = [];
   let filter_stmt: string = "";
@@ -1489,8 +1489,8 @@ export async function get_variables(
   struct: Struct,
   active: boolean,
   level: Decimal | undefined,
-  init_filter: Filter,
-  filters: HashSet<Filter>,
+  init_filter: OrFilter,
+  filters: HashSet<OrFilter>,
   limit: Decimal,
   offset: Decimal
 ): Promise<Result<Array<Variable>>> {
@@ -1707,7 +1707,7 @@ export async function get_variable(
       struct,
       active,
       level,
-      new Filter(
+      new OrFilter(
         0,
         [true, ["==", id]],
         [false, undefined],
@@ -1978,7 +1978,7 @@ export class FilterPath {
   }
 }
 
-export class Filter {
+export class OrFilter {
   index: number;
   id: [
     boolean,
@@ -2041,7 +2041,7 @@ export class Filter {
     this.filter_paths = filter_paths;
   }
 
-  equals(other: Filter): boolean {
+  equals(other: OrFilter): boolean {
     if (!other) {
       return false;
     }
@@ -2057,13 +2057,42 @@ export class Filter {
   }
 
   clone() {
-    return new Filter(
+    return new OrFilter(
       this.index,
       this.id,
       this.created_at,
       this.updated_at,
       this.filter_paths
     );
+  }
+}
+
+export class AndFilter {
+  index: number;
+  filters: HashSet<OrFilter>;
+
+  constructor(index: number, filters: HashSet<OrFilter>) {
+    this.index = index;
+    this.filters = filters;
+  }
+
+  equals(other: OrFilter): boolean {
+    if (!other) {
+      return false;
+    }
+    return this.index === other.index;
+  }
+
+  hashCode(): number {
+    return 0;
+  }
+
+  toString(): string {
+    return "";
+  }
+
+  clone() {
+    return new AndFilter(this.index, this.filters);
   }
 }
 

@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Decimal from "decimal.js";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Filter, FilterPath } from "./db";
+import { OrFilter, FilterPath } from "./db";
 import { Platform } from "react-native";
 import { apply, arrow } from "./prelude";
 import {
@@ -52,7 +52,7 @@ function op_to_string(op: string): string {
 }
 
 export function SortComponent(props: {
-  init_filter: Filter;
+  init_filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }) {
   return (
@@ -147,7 +147,7 @@ export function SortComponent(props: {
 }
 
 export function SortComponentFields(props: {
-  init_filter: Filter;
+  init_filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }) {
   return (
@@ -209,8 +209,8 @@ export function SortComponentFields(props: {
 }
 
 export function FilterComponent(props: {
-  init_filter: Filter;
-  filter: Filter;
+  init_filter: OrFilter;
+  filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -2036,9 +2036,9 @@ export function FilterComponent(props: {
 }
 
 function FilterPathComponent(props: {
-  init_filter: Filter;
+  init_filter: OrFilter;
   filter_path: FilterPath;
-  filter: Filter;
+  filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   const [showPicker1, setPicker1] = useState(false);
