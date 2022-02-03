@@ -26,7 +26,7 @@ import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
 import { Text, Input, Pressable, Row, Column } from "native-base";
 import { theme } from "./theme";
-import { subscribe } from "./store";
+import { BrokerKey, subscribe } from "./store";
 
 export type ComponentViews = Record<
   string,
@@ -88,6 +88,7 @@ export function useComponent(props: {
     labels: props.labels,
     user_paths: props.user_paths,
     borrows: props.borrows,
+    found: undefined,
   });
   useLayoutEffect(() => {
     const update_values = async () => {
@@ -119,6 +120,8 @@ export function useComponent(props: {
           );
           if (unwrap(result)) {
             dispatch(["variable", result.value]);
+          } else {
+            dispatch(["found", false]);
           }
         }
       }
@@ -143,16 +146,28 @@ export function useComponent(props: {
   // not_found -> [insert/update] -> found (update / show)
 
   useEffect(() => {
-    const unsub = subscribe(
-      (store) => store.broker,
-      (broker) => {
-        console.log("-----------------------------");
-        console.log(broker);
-        console.log("------------###-----------------");
-      }
-    );
-    return unsub;
-  }, []);
+    if (!state.id.equals(-1)) {
+      const unsub = subscribe(
+        (store) => store.broker,
+        (broker) => {
+          if (props.struct.name in broker) {
+            apply(broker[props.struct.name as BrokerKey], (it) => {
+              if (it.update.includes(state.id.toNumber())) {
+                dispatch(["reload", state.id as Decimal]);
+              }
+              if (it.remove.includes(state.id.toNumber())) {
+                dispatch(["found", false]);
+              }
+              if (it.create.includes(state.id.toNumber())) {
+                dispatch(["reload", state.id as Decimal]);
+              }
+            });
+          }
+        }
+      );
+      return unsub;
+    }
+  }, [state.id]);
 
   const jsx: JSX.Element = arrow(() => {
     if (state.mode === "write") {
@@ -165,8 +180,34 @@ export function useComponent(props: {
           />
         );
       } else {
+        if (state.found === undefined) {
+          return <Text>Loading...</Text>;
+        } else if (!state.found) {
+          return <Text>Not Found</Text>;
+        } else {
+          return (
+            <props.update
+              struct={props.struct}
+              state={state}
+              dispatch={dispatch}
+              selected={!!props.selected}
+              update_parent_values={
+                props.update_parent_values
+                  ? props.update_parent_values
+                  : () => {}
+              }
+            />
+          );
+        }
+      }
+    } else {
+      if (state.found === undefined) {
+        return <Text>Loading...</Text>;
+      } else if (!state.found) {
+        return <Text>Not Found</Text>;
+      } else {
         return (
-          <props.update
+          <props.show
             struct={props.struct}
             state={state}
             dispatch={dispatch}
@@ -177,18 +218,6 @@ export function useComponent(props: {
           />
         );
       }
-    } else {
-      return (
-        <props.show
-          struct={props.struct}
-          state={state}
-          dispatch={dispatch}
-          selected={!!props.selected}
-          update_parent_values={
-            props.update_parent_values ? props.update_parent_values : () => {}
-          }
-        />
-      );
     }
   });
   return [state, dispatch, jsx];

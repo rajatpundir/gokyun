@@ -58,6 +58,7 @@ export type State = Immutable<{
   user_paths: Array<PathString>;
   borrows: Array<string>;
   checks: Record<string, Result<boolean>>;
+  found: boolean | undefined;
 }>;
 
 export type Action =
@@ -83,7 +84,8 @@ export type Action =
   | ["check_trigger"]
   | ["check", string, Result<boolean>]
   | ["mode", "read" | "write"]
-  | ["reload", Decimal];
+  | ["reload", Decimal]
+  | ["found", boolean | undefined];
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
@@ -164,6 +166,7 @@ export function reducer(state: Draft<State>, action: Action) {
       state.init_values = cloneDeep(state.values);
       state.event_trigger += 1;
       state.check_trigger += 1;
+      state.found = true;
       break;
     }
     case "extension": {
@@ -218,6 +221,11 @@ export function reducer(state: Draft<State>, action: Action) {
       state.event_trigger = 0;
       state.check_trigger = 0;
       state.checks = {};
+      state.found = undefined;
+      break;
+    }
+    case "found": {
+      state.found = action[1];
       break;
     }
     default: {

@@ -129,7 +129,6 @@ export default function Component(
             } else {
               return "Test";
             }
-            return it;
           })}
           RightElement={
             <>
@@ -156,10 +155,11 @@ export default function Component(
                                   return result.value;
                                 }
                               }
-                              dispatch1([
-                                "reload",
-                                new Decimal(state1.id as Decimal),
-                              ]);
+                              // reload in case of update/show should not be required
+                              // dispatch1([
+                              //   "reload",
+                              //   new Decimal(state1.id as Decimal),
+                              // ]);
                               return state1.id as Decimal;
                             }),
                             state1.active,
