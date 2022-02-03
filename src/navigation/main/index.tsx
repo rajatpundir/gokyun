@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -24,7 +24,6 @@ import { theme, theme_rn, theme_rnp, theme_nb } from "../../lib/utils/theme";
 import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
 
 import Test from "../test";
-import { subscribe } from "../../lib/utils/store";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -37,17 +36,6 @@ export type NavigatorParams = {
 };
 
 function Component() {
-  useEffect(() => {
-    const unsub = subscribe(
-      (store) => store.broker,
-      (broker) => {
-        console.log("-----------------------------");
-        console.log(broker);
-        console.log("------------###-----------------");
-      }
-    );
-    return unsub;
-  }, []);
   useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
