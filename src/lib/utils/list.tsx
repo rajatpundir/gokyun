@@ -218,7 +218,15 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
           state.filters = state.filters.add(
             new AndFilter(
               1 + Math.max(-1, ...state.filters.map((x) => x.index).toArray()),
-              HashSet.of()
+              HashSet.of(
+                new OrFilter(
+                  0,
+                  [false, undefined],
+                  [false, undefined],
+                  [false, undefined],
+                  HashSet.of()
+                )
+              )
             )
           );
           break;

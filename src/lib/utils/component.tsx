@@ -3,7 +3,7 @@ import { View } from "react-native";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useImmerReducer } from "use-immer";
-import { OrFilter, FilterPath, get_variable } from "./db";
+import { OrFilter, FilterPath, get_variable, AndFilter } from "./db";
 import { apply, arrow, unwrap } from "./prelude";
 import { compare_paths, Path, PathString, Struct, Variable } from "./variable";
 import {
@@ -291,33 +291,59 @@ export function SearchWrapper(
     is_filters_editable?: boolean;
   }
 ): JSX.Element {
-  const filter = props.filters.findAny((x) => x.index === 0);
+  const and_filter = props.filters.findAny((x) => x.index === 0);
   useEffect(() => {
-    if (filter.isNone()) {
+    if (and_filter.isNone()) {
       props.dispatch([
-        "filter",
+        "and_filter",
         "replace",
-        new OrFilter(
+        new AndFilter(
           0,
-          [false, undefined],
-          [false, undefined],
-          [false, undefined],
-          HashSet.of()
+          HashSet.of(
+            new OrFilter(
+              0,
+              [false, undefined],
+              [false, undefined],
+              [false, undefined],
+              HashSet.of()
+            )
+          )
         ),
       ]);
+    } else {
+      const or_filter = and_filter.get().filters.findAny((x) => x.index === 0);
+      if (or_filter.isNone()) {
+        props.dispatch([
+          "or_filter",
+          and_filter.get(),
+          "replace",
+          new OrFilter(
+            0,
+            [false, undefined],
+            [false, undefined],
+            [false, undefined],
+            HashSet.of()
+          ),
+        ]);
+      }
     }
-  }, [filter]);
+  }, [and_filter]);
   const [local_val, set_local_val] = useState(
     arrow(() => {
-      if (filter.isSome()) {
-        const result = filter
+      if (and_filter.isSome()) {
+        const or_filter = and_filter
           .get()
-          .filter_paths.findAny((x) => compare_paths(x.path, props.path));
-        if (result.isSome()) {
-          const v = result.get().value;
-          if (v[0] === "str" && v[1] !== undefined && v[1][0] === "like") {
-            if (typeof v[1][1] === "string") {
-              return v[1][1];
+          .filters.findAny((x) => x.index === 0);
+        if (or_filter.isSome()) {
+          const result = or_filter
+            .get()
+            .filter_paths.findAny((x) => compare_paths(x.path, props.path));
+          if (result.isSome()) {
+            const v = result.get().value;
+            if (v[0] === "str" && v[1] !== undefined && v[1][0] === "like") {
+              if (typeof v[1][1] === "string") {
+                return v[1][1];
+              }
             }
           }
         }
@@ -327,170 +353,183 @@ export function SearchWrapper(
   );
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
-  if (filter.isSome()) {
-    return (
-      <Column flex={1}>
-        <Row>
-          <Input
-            m={"2"}
-            flex={1}
-            size={"md"}
-            maxLength={255}
-            placeholder={props.placeholder}
-            value={local_val}
-            isInvalid={has_errors}
-            onChangeText={(x) => {
-              const result = props.init_filter.filter_paths.findAny((x) =>
-                compare_paths(x.path, props.path)
-              );
-              if (result.isSome()) {
-                try {
-                  set_local_val(x);
-                  set_has_errors(false);
-                  props.dispatch([
-                    "filters",
-                    filter.get(),
-                    "replace",
-                    apply(
-                      new FilterPath(
-                        result.get().label,
-                        props.path,
-                        ["str", ["like", x]],
-                        undefined
+  if (and_filter.isSome()) {
+    const or_filter = and_filter.get().filters.findAny((x) => x.index === 0);
+    if (or_filter.isSome()) {
+      return (
+        <Column flex={1}>
+          <Row>
+            <Input
+              m={"2"}
+              flex={1}
+              size={"md"}
+              maxLength={255}
+              placeholder={props.placeholder}
+              value={local_val}
+              isInvalid={has_errors}
+              onChangeText={(x) => {
+                const result = props.init_filter.filter_paths.findAny((x) =>
+                  compare_paths(x.path, props.path)
+                );
+                if (result.isSome()) {
+                  try {
+                    set_local_val(x);
+                    set_has_errors(false);
+                    props.dispatch([
+                      "filter_path",
+                      and_filter.get(),
+                      or_filter.get(),
+                      "replace",
+                      apply(
+                        new FilterPath(
+                          result.get().label,
+                          props.path,
+                          ["str", ["like", x]],
+                          undefined
+                        ),
+                        (it) => {
+                          it.active = true;
+                          return it;
+                        }
                       ),
-                      (it) => {
-                        it.active = true;
-                        return it;
-                      }
-                    ),
-                  ]);
-                } catch (e) {
-                  set_has_errors(true);
+                    ]);
+                  } catch (e) {
+                    set_has_errors(true);
+                  }
                 }
+              }}
+              InputLeftElement={
+                <Row px={"1"}>
+                  <Feather
+                    name="search"
+                    size={24}
+                    color={theme.primary}
+                    style={{ alignSelf: "center" }}
+                  />
+                </Row>
               }
-            }}
-            InputLeftElement={
-              <Row px={"1"}>
-                <Feather
-                  name="search"
-                  size={24}
-                  color={theme.primary}
-                  style={{ alignSelf: "center" }}
-                />
-              </Row>
-            }
-            InputRightElement={
-              <Row mx={1}>
-                <Row key={"clear"}>
-                  {arrow(() => {
-                    const result = filter
-                      .get()
-                      .filter_paths.findAny((x) =>
-                        compare_paths(x.path, props.path)
-                      );
-                    if (result.isSome()) {
-                      const v = result.get().value;
-                      if (v[0] === "str") {
-                        let check = false;
-                        if (v[1] !== undefined) {
-                          if (v[1][0] === "like") {
-                            const x = v[1][1];
-                            if (!Array.isArray(x)) {
-                              if (x !== default_value) {
-                                check = true;
+              InputRightElement={
+                <Row mx={1}>
+                  <Row key={"clear"}>
+                    {arrow(() => {
+                      const result = or_filter
+                        .get()
+                        .filter_paths.findAny((x) =>
+                          compare_paths(x.path, props.path)
+                        );
+                      if (result.isSome()) {
+                        const v = result.get().value;
+                        if (v[0] === "str") {
+                          let check = false;
+                          if (v[1] !== undefined) {
+                            if (v[1][0] === "like") {
+                              const x = v[1][1];
+                              if (!Array.isArray(x)) {
+                                if (x !== default_value) {
+                                  check = true;
+                                }
                               }
                             }
                           }
-                        }
-                        if (check) {
-                          return (
-                            <Pressable
-                              onPress={() => {
-                                try {
-                                  const val = default_value;
-                                  set_local_val(val);
-                                  set_has_errors(false);
-                                  props.dispatch([
-                                    "filters",
-                                    filter.get(),
-                                    "replace",
-                                    apply(
-                                      new FilterPath(
-                                        result.get().label,
-                                        props.path,
-                                        ["str", undefined],
-                                        undefined
+                          if (check) {
+                            return (
+                              <Pressable
+                                onPress={() => {
+                                  try {
+                                    const val = default_value;
+                                    set_local_val(val);
+                                    set_has_errors(false);
+                                    props.dispatch([
+                                      "filter_path",
+                                      and_filter.get(),
+                                      or_filter.get(),
+                                      "replace",
+                                      apply(
+                                        new FilterPath(
+                                          result.get().label,
+                                          props.path,
+                                          ["str", undefined],
+                                          undefined
+                                        ),
+                                        (it) => {
+                                          it.active = true;
+                                          return it;
+                                        }
                                       ),
-                                      (it) => {
-                                        it.active = true;
-                                        return it;
-                                      }
-                                    ),
-                                  ]);
-                                } catch (e) {}
-                              }}
-                            >
-                              <MaterialIcons
-                                name="clear"
-                                size={24}
-                                color={theme.placeholder}
-                              />
-                            </Pressable>
-                          );
+                                    ]);
+                                  } catch (e) {}
+                                }}
+                              >
+                                <MaterialIcons
+                                  name="clear"
+                                  size={24}
+                                  color={theme.placeholder}
+                                />
+                              </Pressable>
+                            );
+                          }
                         }
                       }
-                    }
-                    return <></>;
-                  })}
+                      return <></>;
+                    })}
+                  </Row>
+                  <Row
+                    key={"bsm"}
+                    space={"1"}
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                  >
+                    {props.is_views_editable ? (
+                      <Pressable
+                        key={"bsm_view_ref"}
+                        onPress={props.bsm_view_ref.current?.present}
+                      >
+                        <Feather
+                          name="layout"
+                          size={20}
+                          color={theme.primary}
+                        />
+                      </Pressable>
+                    ) : (
+                      <View key={"bsm_view_ref"} />
+                    )}
+                    {props.is_sorting_editable ? (
+                      <Pressable
+                        key={"bsm_sorting_ref"}
+                        onPress={props.bsm_sorting_ref.current?.present}
+                      >
+                        <FontAwesome
+                          name="sort-alpha-asc"
+                          size={18}
+                          color={theme.primary}
+                        />
+                      </Pressable>
+                    ) : (
+                      <View key={"bsm_sorting_ref"} />
+                    )}
+                    {props.is_filters_editable ? (
+                      <Pressable
+                        key={"bsm_filters_ref"}
+                        onPress={props.bsm_filters_ref.current?.present}
+                      >
+                        <Feather
+                          name="filter"
+                          size={21}
+                          color={theme.primary}
+                        />
+                      </Pressable>
+                    ) : (
+                      <View key={"bsm_filters_ref"} />
+                    )}
+                  </Row>
                 </Row>
-                <Row
-                  key={"bsm"}
-                  space={"1"}
-                  justifyContent={"space-between"}
-                  alignItems={"center"}
-                >
-                  {props.is_views_editable ? (
-                    <Pressable
-                      key={"bsm_view_ref"}
-                      onPress={props.bsm_view_ref.current?.present}
-                    >
-                      <Feather name="layout" size={20} color={theme.primary} />
-                    </Pressable>
-                  ) : (
-                    <View key={"bsm_view_ref"} />
-                  )}
-                  {props.is_sorting_editable ? (
-                    <Pressable
-                      key={"bsm_sorting_ref"}
-                      onPress={props.bsm_sorting_ref.current?.present}
-                    >
-                      <FontAwesome
-                        name="sort-alpha-asc"
-                        size={18}
-                        color={theme.primary}
-                      />
-                    </Pressable>
-                  ) : (
-                    <View key={"bsm_sorting_ref"} />
-                  )}
-                  {props.is_filters_editable ? (
-                    <Pressable
-                      key={"bsm_filters_ref"}
-                      onPress={props.bsm_filters_ref.current?.present}
-                    >
-                      <Feather name="filter" size={21} color={theme.primary} />
-                    </Pressable>
-                  ) : (
-                    <View key={"bsm_filters_ref"} />
-                  )}
-                </Row>
-              </Row>
-            }
-          />
-        </Row>
-        <Column flex={1}>{props.variant}</Column>
-      </Column>
-    );
+              }
+            />
+          </Row>
+          <Column flex={1}>{props.variant}</Column>
+        </Column>
+      );
+    }
   }
   return <></>;
 }
