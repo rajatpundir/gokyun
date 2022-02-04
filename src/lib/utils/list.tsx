@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Draft } from "immer";
 import { useImmerReducer } from "use-immer";
-import { OrFilter, FilterPath, get_variables, AndFilter } from "./db";
+import { get_variables, AndFilter, OrFilter, FilterPath } from "./db";
 import { PathString, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
 import { apply, fold, unwrap } from "./prelude";
