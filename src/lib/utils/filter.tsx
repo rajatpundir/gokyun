@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import Decimal from "decimal.js";
 import moment from "moment";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { OrFilter, FilterPath } from "./db";
+import { OrFilter, FilterPath, AndFilter } from "./db";
 import { Platform } from "react-native";
 import { apply, arrow } from "./prelude";
 import {
@@ -208,9 +208,24 @@ export function SortComponentFields(props: {
   );
 }
 
-export function FilterComponent(props: {
+export function AndFilterComponent(props: {
   init_filter: OrFilter;
-  filter: OrFilter;
+  and_filter: AndFilter;
+  dispatch: React.Dispatch<ListAction>;
+}): JSX.Element {
+  return (
+    <Column>
+      {props.and_filter.filters.toArray().map((or_filter) => (
+        <OrFilterComponent {...props} or_filter={or_filter} />
+      ))}
+    </Column>
+  );
+}
+
+export function OrFilterComponent(props: {
+  init_filter: OrFilter;
+  and_filter: AndFilter;
+  or_filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -223,9 +238,16 @@ export function FilterComponent(props: {
     >
       <Row justifyContent={"space-between"} alignItems={"center"} mb={"0.5"}>
         <Row>
-          <Text>Filter {props.filter.index + 1}</Text>
+          <Text>Filter {props.or_filter.index + 1}</Text>
           <Pressable
-            onPress={() => props.dispatch(["filter", "remove", props.filter])}
+            onPress={() =>
+              props.dispatch([
+                "or_filter",
+                props.and_filter,
+                "remove",
+                props.or_filter,
+              ])
+            }
           >
             <Entypo name="cross" size={24} color={bs_theme.text} />
           </Pressable>
@@ -243,14 +265,15 @@ export function FilterComponent(props: {
       <Column>
         {arrow(() => {
           const [selectedOp, setSelectedOp] = useState(
-            props.filter.id[1] ? props.filter.id[1][0] : "=="
+            props.or_filter.id[1] ? props.or_filter.id[1][0] : "=="
           );
-          const [active, value] = props.filter.id;
+          const [active, value] = props.or_filter.id;
           const toggle = (x: boolean) => {
             props.dispatch([
-              "filter",
+              "or_filter",
+              props.and_filter,
               "replace",
-              apply(props.filter, (it) => {
+              apply(props.or_filter, (it) => {
                 it.id[0] = x;
                 return it;
               }),
@@ -340,7 +363,7 @@ export function FilterComponent(props: {
                     </Pressable>
                   </Row>
                   {arrow(() => {
-                    const value = props.filter.id[1];
+                    const value = props.or_filter.id[1];
                     if (value !== undefined) {
                       const v1 = apply(value[0], () => {
                         switch (value[0]) {
@@ -383,7 +406,7 @@ export function FilterComponent(props: {
                         }
                       });
                       const dispatch_op = (
-                        op: Exclude<typeof props.filter.id[1], undefined>[0]
+                        op: Exclude<typeof props.or_filter.id[1], undefined>[0]
                       ) => {
                         switch (op) {
                           case "==":
@@ -393,9 +416,10 @@ export function FilterComponent(props: {
                           case ">":
                           case "<": {
                             props.dispatch([
-                              "filter",
+                              "or_filter",
+                              props.and_filter,
                               "replace",
-                              apply(props.filter, (it) => {
+                              apply(props.or_filter, (it) => {
                                 it.id[1] = [op, v1];
                                 return it;
                               }),
@@ -423,9 +447,10 @@ export function FilterComponent(props: {
                           case "between":
                           case "not_between": {
                             props.dispatch([
-                              "filter",
+                              "or_filter",
+                              props.and_filter,
                               "replace",
-                              apply(props.filter, (it) => {
+                              apply(props.or_filter, (it) => {
                                 it.id[1] = [op, [v1, v2]];
                                 return it;
                               }),
@@ -539,9 +564,10 @@ export function FilterComponent(props: {
                                   .abs();
                                 set_has_errors_1(false);
                                 props.dispatch([
-                                  "filter",
+                                  "or_filter",
+                                  props.and_filter,
                                   "replace",
-                                  apply(props.filter, (it) => {
+                                  apply(props.or_filter, (it) => {
                                     it.id[1] = [op, val];
                                     return it;
                                   }),
@@ -569,9 +595,10 @@ export function FilterComponent(props: {
                                     );
                                     set_has_errors_1(false);
                                     props.dispatch([
-                                      "filter",
+                                      "or_filter",
+                                      props.and_filter,
                                       "replace",
-                                      apply(props.filter, (it) => {
+                                      apply(props.or_filter, (it) => {
                                         it.id[1] = [op, default_value_1];
                                         return it;
                                       }),
@@ -613,9 +640,10 @@ export function FilterComponent(props: {
                                     .abs();
                                   set_has_errors_1(false);
                                   props.dispatch([
-                                    "filter",
+                                    "or_filter",
+                                    props.and_filter,
                                     "replace",
-                                    apply(props.filter, (it) => {
+                                    apply(props.or_filter, (it) => {
                                       it.id[1] = [op, [val, value[1][1]]];
                                       return it;
                                     }),
@@ -643,9 +671,10 @@ export function FilterComponent(props: {
                                       );
                                       set_has_errors_1(false);
                                       props.dispatch([
-                                        "filter",
+                                        "or_filter",
+                                        props.and_filter,
                                         "replace",
-                                        apply(props.filter, (it) => {
+                                        apply(props.or_filter, (it) => {
                                           it.id[1] = [
                                             op,
                                             [default_value_1, value[1][1]],
@@ -684,9 +713,10 @@ export function FilterComponent(props: {
                                     .abs();
                                   set_has_errors_2(false);
                                   props.dispatch([
-                                    "filter",
+                                    "or_filter",
+                                    props.and_filter,
                                     "replace",
-                                    apply(props.filter, (it) => {
+                                    apply(props.or_filter, (it) => {
                                       it.id[1] = [op, [value[1][0], val]];
                                       return it;
                                     }),
@@ -714,9 +744,10 @@ export function FilterComponent(props: {
                                       );
                                       set_has_errors_2(false);
                                       props.dispatch([
-                                        "filter",
+                                        "or_filter",
+                                        props.and_filter,
                                         "replace",
-                                        apply(props.filter, (it) => {
+                                        apply(props.or_filter, (it) => {
                                           it.id[1] = [
                                             op,
                                             [value[1][0], default_value_2],
@@ -757,16 +788,17 @@ export function FilterComponent(props: {
 
         {arrow(() => {
           const [selectedOp, setSelectedOp] = useState(
-            props.filter.created_at[1]
-              ? props.filter.created_at[1][0]
+            props.or_filter.created_at[1]
+              ? props.or_filter.created_at[1][0]
               : "between"
           );
-          const [active, value] = props.filter.created_at;
+          const [active, value] = props.or_filter.created_at;
           const toggle = (x: boolean) => {
             props.dispatch([
-              "filter",
+              "or_filter",
+              props.and_filter,
               "replace",
-              apply(props.filter, (it) => {
+              apply(props.or_filter, (it) => {
                 it.created_at[0] = x;
                 return it;
               }),
@@ -891,7 +923,7 @@ export function FilterComponent(props: {
                       });
                       const dispatch_op = (
                         op: Exclude<
-                          typeof props.filter.created_at[1],
+                          typeof props.or_filter.created_at[1],
                           undefined
                         >[0]
                       ) => {
@@ -903,9 +935,10 @@ export function FilterComponent(props: {
                           case ">":
                           case "<": {
                             props.dispatch([
-                              "filter",
+                              "or_filter",
+                              props.and_filter,
                               "replace",
-                              apply(props.filter, (it) => {
+                              apply(props.or_filter, (it) => {
                                 it.created_at[1] = [op, v1];
                                 return it;
                               }),
@@ -915,9 +948,10 @@ export function FilterComponent(props: {
                           case "between":
                           case "not_between": {
                             props.dispatch([
-                              "filter",
+                              "or_filter",
+                              props.and_filter,
                               "replace",
-                              apply(props.filter, (it) => {
+                              apply(props.or_filter, (it) => {
                                 it.created_at[1] = [op, [v1, v2]];
                                 return it;
                               }),
@@ -1044,9 +1078,10 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filter",
+                                          "or_filter",
+                                          props.and_filter,
                                           "replace",
-                                          apply(props.filter, (it) => {
+                                          apply(props.or_filter, (it) => {
                                             it.created_at[1] = [
                                               op,
                                               date1 || new Date(),
@@ -1125,9 +1160,10 @@ export function FilterComponent(props: {
                                             })
                                           );
                                           props.dispatch([
-                                            "filter",
+                                            "or_filter",
+                                            props.and_filter,
                                             "replace",
-                                            apply(props.filter, (it) => {
+                                            apply(props.or_filter, (it) => {
                                               it.created_at[1] = [
                                                 op,
                                                 [
@@ -1205,9 +1241,10 @@ export function FilterComponent(props: {
                                             })
                                           );
                                           props.dispatch([
-                                            "filter",
+                                            "or_filter",
+                                            props.and_filter,
                                             "replace",
-                                            apply(props.filter, (it) => {
+                                            apply(props.or_filter, (it) => {
                                               it.created_at[1] = [
                                                 op,
                                                 [
@@ -1249,16 +1286,17 @@ export function FilterComponent(props: {
 
         {arrow(() => {
           const [selectedOp, setSelectedOp] = useState(
-            props.filter.updated_at[1]
-              ? props.filter.updated_at[1][0]
+            props.or_filter.updated_at[1]
+              ? props.or_filter.updated_at[1][0]
               : "between"
           );
-          const [active, value] = props.filter.updated_at;
+          const [active, value] = props.or_filter.updated_at;
           const toggle = (x: boolean) => {
             props.dispatch([
-              "filter",
+              "or_filter",
+              props.and_filter,
               "replace",
-              apply(props.filter, (it) => {
+              apply(props.or_filter, (it) => {
                 it.updated_at[0] = x;
                 return it;
               }),
@@ -1383,7 +1421,7 @@ export function FilterComponent(props: {
                       });
                       const dispatch_op = (
                         op: Exclude<
-                          typeof props.filter.updated_at[1],
+                          typeof props.or_filter.updated_at[1],
                           undefined
                         >[0]
                       ) => {
@@ -1395,9 +1433,10 @@ export function FilterComponent(props: {
                           case ">":
                           case "<": {
                             props.dispatch([
-                              "filter",
+                              "or_filter",
+                              props.and_filter,
                               "replace",
-                              apply(props.filter, (it) => {
+                              apply(props.or_filter, (it) => {
                                 it.updated_at[1] = [op, v1];
                                 return it;
                               }),
@@ -1407,9 +1446,10 @@ export function FilterComponent(props: {
                           case "between":
                           case "not_between": {
                             props.dispatch([
-                              "filter",
+                              "or_filter",
+                              props.and_filter,
                               "replace",
-                              apply(props.filter, (it) => {
+                              apply(props.or_filter, (it) => {
                                 it.updated_at[1] = [op, [v1, v2]];
                                 return it;
                               }),
@@ -1536,9 +1576,10 @@ export function FilterComponent(props: {
                                           })
                                         );
                                         props.dispatch([
-                                          "filter",
+                                          "or_filter",
+                                          props.and_filter,
                                           "replace",
-                                          apply(props.filter, (it) => {
+                                          apply(props.or_filter, (it) => {
                                             it.updated_at[1] = [
                                               op,
                                               date1 || new Date(),
@@ -1617,9 +1658,10 @@ export function FilterComponent(props: {
                                             })
                                           );
                                           props.dispatch([
-                                            "filter",
+                                            "or_filter",
+                                            props.and_filter,
                                             "replace",
-                                            apply(props.filter, (it) => {
+                                            apply(props.or_filter, (it) => {
                                               it.updated_at[1] = [
                                                 op,
                                                 [
@@ -1697,9 +1739,10 @@ export function FilterComponent(props: {
                                             })
                                           );
                                           props.dispatch([
-                                            "filter",
+                                            "or_filter",
+                                            props.and_filter,
                                             "replace",
-                                            apply(props.filter, (it) => {
+                                            apply(props.or_filter, (it) => {
                                               it.updated_at[1] = [
                                                 op,
                                                 [
@@ -1739,17 +1782,15 @@ export function FilterComponent(props: {
           return <></>;
         })}
 
-        {props.filter.filter_paths
+        {props.or_filter.filter_paths
           .toArray()
           .sort((a, b) => (a.label > b.label ? 1 : a.label < b.label ? -1 : 0))
           .map((x) => {
             return (
               <FilterPathComponent
                 key={get_flattened_path(x.path).join(".")}
-                init_filter={props.init_filter}
+                {...props}
                 filter_path={x}
-                filter={props.filter}
-                dispatch={props.dispatch}
               />
             );
           })}
@@ -1785,12 +1826,13 @@ export function FilterComponent(props: {
         </Row>
         <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
           {arrow(() => {
-            const active = props.filter.id[1] !== undefined;
+            const active = props.or_filter.id[1] !== undefined;
             const toggle = (x: boolean) => {
               props.dispatch([
-                "filter",
+                "or_filter",
+                props.and_filter,
                 "replace",
-                apply(props.filter, (it) => {
+                apply(props.or_filter, (it) => {
                   it.id = [false, x ? ["==", new Decimal(0)] : undefined];
                   return it;
                 }),
@@ -1821,12 +1863,13 @@ export function FilterComponent(props: {
             );
           })}
           {arrow(() => {
-            const active = props.filter.created_at[1] !== undefined;
+            const active = props.or_filter.created_at[1] !== undefined;
             const toggle = (x: boolean) => {
               props.dispatch([
-                "filter",
+                "or_filter",
+                props.and_filter,
                 "replace",
-                apply(props.filter, (it) => {
+                apply(props.or_filter, (it) => {
                   it.created_at = [
                     false,
                     x ? ["between", [new Date(), new Date()]] : undefined,
@@ -1860,12 +1903,13 @@ export function FilterComponent(props: {
             );
           })}
           {arrow(() => {
-            const active = props.filter.updated_at[1] !== undefined;
+            const active = props.or_filter.updated_at[1] !== undefined;
             const toggle = (x: boolean) => {
               props.dispatch([
-                "filter",
+                "or_filter",
+                props.and_filter,
                 "replace",
-                apply(props.filter, (it) => {
+                apply(props.or_filter, (it) => {
                   it.updated_at = [
                     false,
                     x ? ["between", [new Date(), new Date()]] : undefined,
@@ -1905,7 +1949,7 @@ export function FilterComponent(props: {
             )
             .map((filter_path) => {
               const field_struct_type = filter_path.value[0];
-              const active = props.filter.filter_paths.anyMatch(
+              const active = props.or_filter.filter_paths.anyMatch(
                 (x) => x.equals(filter_path) && x.value[1] !== undefined
               );
               const toggle = (x: boolean) => {
@@ -1914,8 +1958,9 @@ export function FilterComponent(props: {
                   case "lstr":
                   case "clob": {
                     props.dispatch([
-                      "filters",
-                      props.filter,
+                      "filter_path",
+                      props.and_filter,
+                      props.or_filter,
                       "replace",
                       new FilterPath(
                         filter_path.label,
@@ -1935,8 +1980,9 @@ export function FilterComponent(props: {
                   case "idecimal":
                   case "udecimal": {
                     props.dispatch([
-                      "filters",
-                      props.filter,
+                      "filter_path",
+                      props.and_filter,
+                      props.or_filter,
                       "replace",
                       new FilterPath(
                         filter_path.label,
@@ -1952,8 +1998,9 @@ export function FilterComponent(props: {
                   }
                   case "bool": {
                     props.dispatch([
-                      "filters",
-                      props.filter,
+                      "filter_path",
+                      props.and_filter,
+                      props.or_filter,
                       "replace",
                       new FilterPath(
                         filter_path.label,
@@ -1968,8 +2015,9 @@ export function FilterComponent(props: {
                   case "time":
                   case "timestamp": {
                     props.dispatch([
-                      "filters",
-                      props.filter,
+                      "filter_path",
+                      props.and_filter,
+                      props.or_filter,
                       "replace",
                       new FilterPath(
                         filter_path.label,
@@ -1986,8 +2034,9 @@ export function FilterComponent(props: {
                   case "other": {
                     const other_struct = filter_path.value[2];
                     props.dispatch([
-                      "filters",
-                      props.filter,
+                      "filter_path",
+                      props.and_filter,
+                      props.or_filter,
                       "replace",
                       new FilterPath(
                         filter_path.label,
@@ -2037,8 +2086,9 @@ export function FilterComponent(props: {
 
 function FilterPathComponent(props: {
   init_filter: OrFilter;
+  and_filter: AndFilter;
+  or_filter: OrFilter;
   filter_path: FilterPath;
-  filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   const [showPicker1, setPicker1] = useState(false);
@@ -2511,8 +2561,9 @@ function FilterPathComponent(props: {
   if (props.filter_path.value[1] !== undefined) {
     const toggle = (x: boolean) => {
       props.dispatch([
-        "filters",
-        props.filter,
+        "filter_path",
+        props.and_filter,
+        props.or_filter,
         "replace",
         apply(props.filter_path, (it) => {
           it.active = x;
@@ -2582,8 +2633,9 @@ function FilterPathComponent(props: {
                       case "like":
                       case "glob": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, v1]];
@@ -2615,8 +2667,9 @@ function FilterPathComponent(props: {
                       case "between":
                       case "not_between": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, [v1, v2]]];
@@ -2757,8 +2810,9 @@ function FilterPathComponent(props: {
                       case ">":
                       case "<": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, v1]];
@@ -2800,8 +2854,9 @@ function FilterPathComponent(props: {
                       case "between":
                       case "not_between": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, [v1, v2]]];
@@ -2914,8 +2969,9 @@ function FilterPathComponent(props: {
                       case "==":
                       case "!=": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, value[1]]];
@@ -3007,8 +3063,9 @@ function FilterPathComponent(props: {
                       case ">":
                       case "<": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, v1]];
@@ -3020,8 +3077,9 @@ function FilterPathComponent(props: {
                       case "between":
                       case "not_between": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [field_struct_name, [op, [v1, v2]]];
@@ -3105,8 +3163,9 @@ function FilterPathComponent(props: {
                       case "==":
                       case "!=": {
                         props.dispatch([
-                          "filters",
-                          props.filter,
+                          "filter_path",
+                          props.and_filter,
+                          props.or_filter,
                           "replace",
                           apply(props.filter_path, (it) => {
                             it.value = [
@@ -3216,8 +3275,9 @@ function FilterPathComponent(props: {
                                       set_local_val_1(x);
                                       set_has_errors_1(false);
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -3241,8 +3301,9 @@ function FilterPathComponent(props: {
                                           set_local_val_1(default_value_1);
                                           set_has_errors_1(false);
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -3326,8 +3387,9 @@ function FilterPathComponent(props: {
                                     set_local_val_1(default_value_1);
                                     set_has_errors_1(false);
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -3390,8 +3452,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -3487,8 +3550,9 @@ function FilterPathComponent(props: {
                                             set_local_val_1(x);
                                             set_has_errors_1(false);
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -3514,8 +3578,9 @@ function FilterPathComponent(props: {
                                                 );
                                                 set_has_errors_1(false);
                                                 props.dispatch([
-                                                  "filters",
-                                                  props.filter,
+                                                  "filter_path",
+                                                  props.and_filter,
+                                                  props.or_filter,
                                                   "replace",
                                                   apply(
                                                     props.filter_path,
@@ -3612,8 +3677,9 @@ function FilterPathComponent(props: {
                                           set_local_val_1(default_value_1);
                                           set_has_errors_1(false);
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -3681,8 +3747,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -3767,8 +3834,9 @@ function FilterPathComponent(props: {
                                             set_local_val_2(x);
                                             set_has_errors_2(false);
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -3794,8 +3862,9 @@ function FilterPathComponent(props: {
                                                 );
                                                 set_has_errors_2(false);
                                                 props.dispatch([
-                                                  "filters",
-                                                  props.filter,
+                                                  "filter_path",
+                                                  props.and_filter,
+                                                  props.or_filter,
                                                   "replace",
                                                   apply(
                                                     props.filter_path,
@@ -3902,8 +3971,9 @@ function FilterPathComponent(props: {
                                           set_local_val_2(default_value_2);
                                           set_has_errors_2(false);
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -3971,8 +4041,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -4103,8 +4174,9 @@ function FilterPathComponent(props: {
                                       );
                                       set_has_errors_1(false);
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -4139,8 +4211,9 @@ function FilterPathComponent(props: {
                                             );
                                             set_has_errors_1(false);
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -4228,8 +4301,9 @@ function FilterPathComponent(props: {
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -4297,8 +4371,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -4401,8 +4476,9 @@ function FilterPathComponent(props: {
                                             );
                                             set_has_errors_1(false);
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -4441,8 +4517,9 @@ function FilterPathComponent(props: {
                                                   );
                                                   set_has_errors_1(false);
                                                   props.dispatch([
-                                                    "filters",
-                                                    props.filter,
+                                                    "filter_path",
+                                                    props.and_filter,
+                                                    props.or_filter,
                                                     "replace",
                                                     apply(
                                                       props.filter_path,
@@ -4537,8 +4614,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -4611,8 +4689,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -4715,8 +4794,9 @@ function FilterPathComponent(props: {
                                             );
                                             set_has_errors_2(false);
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -4755,8 +4835,9 @@ function FilterPathComponent(props: {
                                                   );
                                                   set_has_errors_2(false);
                                                   props.dispatch([
-                                                    "filters",
-                                                    props.filter,
+                                                    "filter_path",
+                                                    props.and_filter,
+                                                    props.or_filter,
                                                     "replace",
                                                     apply(
                                                       props.filter_path,
@@ -4851,8 +4932,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -4925,8 +5007,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -5030,8 +5113,9 @@ function FilterPathComponent(props: {
                                   value={value}
                                   onValueChange={(x: boolean) =>
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [field_struct_name, [op, x]];
@@ -5097,8 +5181,9 @@ function FilterPathComponent(props: {
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -5159,8 +5244,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -5273,8 +5359,9 @@ function FilterPathComponent(props: {
                                         ) => {
                                           setPicker1(Platform.OS === "ios");
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -5344,8 +5431,9 @@ function FilterPathComponent(props: {
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -5406,8 +5494,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -5513,8 +5602,9 @@ function FilterPathComponent(props: {
                                                   Platform.OS === "ios"
                                                 );
                                                 props.dispatch([
-                                                  "filters",
-                                                  props.filter,
+                                                  "filter_path",
+                                                  props.and_filter,
+                                                  props.or_filter,
                                                   "replace",
                                                   apply(
                                                     props.filter_path,
@@ -5595,8 +5685,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -5662,8 +5753,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -5769,8 +5861,9 @@ function FilterPathComponent(props: {
                                                   Platform.OS === "ios"
                                                 );
                                                 props.dispatch([
-                                                  "filters",
-                                                  props.filter,
+                                                  "filter_path",
+                                                  props.and_filter,
+                                                  props.or_filter,
                                                   "replace",
                                                   apply(
                                                     props.filter_path,
@@ -5851,8 +5944,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -5918,8 +6012,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -6040,8 +6135,9 @@ function FilterPathComponent(props: {
                                         ) => {
                                           setPicker1(Platform.OS === "ios");
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -6111,8 +6207,9 @@ function FilterPathComponent(props: {
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -6173,8 +6270,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -6279,8 +6377,9 @@ function FilterPathComponent(props: {
                                                   Platform.OS === "ios"
                                                 );
                                                 props.dispatch([
-                                                  "filters",
-                                                  props.filter,
+                                                  "filter_path",
+                                                  props.and_filter,
+                                                  props.or_filter,
                                                   "replace",
                                                   apply(
                                                     props.filter_path,
@@ -6361,8 +6460,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -6428,8 +6528,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -6534,8 +6635,9 @@ function FilterPathComponent(props: {
                                                   Platform.OS === "ios"
                                                 );
                                                 props.dispatch([
-                                                  "filters",
-                                                  props.filter,
+                                                  "filter_path",
+                                                  props.and_filter,
+                                                  props.or_filter,
                                                   "replace",
                                                   apply(
                                                     props.filter_path,
@@ -6616,8 +6718,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -6683,8 +6786,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -6843,8 +6947,9 @@ function FilterPathComponent(props: {
                                                 })
                                               );
                                               props.dispatch([
-                                                "filters",
-                                                props.filter,
+                                                "filter_path",
+                                                props.and_filter,
+                                                props.or_filter,
                                                 "replace",
                                                 apply(
                                                   props.filter_path,
@@ -6928,8 +7033,9 @@ function FilterPathComponent(props: {
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -6990,8 +7096,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -7138,8 +7245,9 @@ function FilterPathComponent(props: {
                                                       })
                                                     );
                                                     props.dispatch([
-                                                      "filters",
-                                                      props.filter,
+                                                      "filter_path",
+                                                      props.and_filter,
+                                                      props.or_filter,
                                                       "replace",
                                                       apply(
                                                         props.filter_path,
@@ -7230,8 +7338,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -7297,8 +7406,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -7445,8 +7555,9 @@ function FilterPathComponent(props: {
                                                       })
                                                     );
                                                     props.dispatch([
-                                                      "filters",
-                                                      props.filter,
+                                                      "filter_path",
+                                                      props.and_filter,
+                                                      props.or_filter,
                                                       "replace",
                                                       apply(
                                                         props.filter_path,
@@ -7537,8 +7648,9 @@ function FilterPathComponent(props: {
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
-                                            "filters",
-                                            props.filter,
+                                            "filter_path",
+                                            props.and_filter,
+                                            props.or_filter,
                                             "replace",
                                             apply(props.filter_path, (it) => {
                                               it.value = [
@@ -7604,8 +7716,9 @@ function FilterPathComponent(props: {
                                           py={"0.5"}
                                           onPress={() => {
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -7725,8 +7838,9 @@ function FilterPathComponent(props: {
                                       );
                                       set_has_errors_1(false);
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [
@@ -7755,8 +7869,9 @@ function FilterPathComponent(props: {
                                             set_local_val_1(default_value_1);
                                             set_has_errors_1(false);
                                             props.dispatch([
-                                              "filters",
-                                              props.filter,
+                                              "filter_path",
+                                              props.and_filter,
+                                              props.or_filter,
                                               "replace",
                                               apply(props.filter_path, (it) => {
                                                 it.value = [
@@ -7841,8 +7956,9 @@ function FilterPathComponent(props: {
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
-                                      "filters",
-                                      props.filter,
+                                      "filter_path",
+                                      props.and_filter,
+                                      props.or_filter,
                                       "replace",
                                       apply(props.filter_path, (it) => {
                                         it.value = [
@@ -7909,8 +8025,9 @@ function FilterPathComponent(props: {
                                     py={"0.5"}
                                     onPress={() => {
                                       props.dispatch([
-                                        "filters",
-                                        props.filter,
+                                        "filter_path",
+                                        props.and_filter,
+                                        props.or_filter,
                                         "replace",
                                         apply(props.filter_path, (it) => {
                                           it.value = [

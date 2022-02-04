@@ -1,14 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import { Draft } from "immer";
 import { useImmerReducer } from "use-immer";
-import { OrFilter, FilterPath, get_variables } from "./db";
+import { OrFilter, FilterPath, get_variables, AndFilter } from "./db";
 import { PathString, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
 import { apply, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
 import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
 import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
-import { FilterComponent, SortComponent, SortComponentFields } from "./filter";
+import {
+  AndFilterComponent,
+  SortComponent,
+  SortComponentFields,
+} from "./filter";
 import { Portal } from "@gorhom/portal";
 import { Row, Text, Pressable } from "native-base";
 import Checkbox from "expo-checkbox";
@@ -26,7 +30,7 @@ export type ListState = {
   active: boolean;
   level: Decimal | undefined;
   init_filter: OrFilter;
-  filters: HashSet<OrFilter>;
+  filters: HashSet<AndFilter>;
   limit: Decimal;
   offset: Decimal;
   variables: Array<Variable>;
@@ -44,11 +48,14 @@ export type ListAction =
   | ["sort", "add", FilterPath, boolean]
   | ["sort", "remove", FilterPath]
   | ["sort", "up" | "down" | "toggle", FilterPath]
-  | ["filter", "add"]
-  | ["filter", "remove", OrFilter]
-  | ["filter", "replace", OrFilter]
-  | ["filters", OrFilter, "remove", FilterPath]
-  | ["filters", OrFilter, "replace", FilterPath]
+  | ["and_filter", "add"]
+  | ["and_filter", "remove", AndFilter]
+  | ["and_filter", "replace", AndFilter]
+  | ["or_filter", AndFilter, "add"]
+  | ["or_filter", AndFilter, "remove", OrFilter]
+  | ["or_filter", AndFilter, "replace", OrFilter]
+  | ["filter_path", AndFilter, OrFilter, "remove", FilterPath]
+  | ["filter_path", AndFilter, OrFilter, "replace", FilterPath]
   | ["layout", string]
   | ["reload"];
 
@@ -205,15 +212,12 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       state.variables = [];
       break;
     }
-    case "filter": {
+    case "and_filter": {
       switch (action[1]) {
         case "add": {
           state.filters = state.filters.add(
-            new OrFilter(
+            new AndFilter(
               1 + Math.max(-1, ...state.filters.map((x) => x.index).toArray()),
-              [false, undefined],
-              [false, undefined],
-              [false, undefined],
               HashSet.of()
             )
           );
@@ -221,29 +225,34 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
         }
         case "remove": {
           state.filters = state.filters.remove(action[2]);
-          if (
-            action[2].id[0] ||
-            action[2].created_at[0] ||
-            action[2].updated_at[0] ||
-            action[2].filter_paths.anyMatch((x) => x.active)
-          ) {
-            state.offset = new Decimal(0);
-            state.reached_end = false;
-            state.variables = [];
+          for (const or_filter of action[2].filters) {
+            if (
+              or_filter.id[0] ||
+              or_filter.created_at[0] ||
+              or_filter.updated_at[0] ||
+              or_filter.filter_paths.anyMatch((x) => x.active)
+            ) {
+              state.offset = new Decimal(0);
+              state.reached_end = false;
+              state.variables = [];
+            }
           }
           break;
         }
         case "replace": {
           state.filters = state.filters.remove(action[2]);
           state.filters = state.filters.add(action[2]);
-          if (
-            action[2].id[0] ||
-            action[2].created_at[0] ||
-            action[2].updated_at[0]
-          ) {
-            state.offset = new Decimal(0);
-            state.reached_end = false;
-            state.variables = [];
+          for (const or_filter of action[2].filters) {
+            if (
+              or_filter.id[0] ||
+              or_filter.created_at[0] ||
+              or_filter.updated_at[0] ||
+              or_filter.filter_paths.anyMatch((x) => x.active)
+            ) {
+              state.offset = new Decimal(0);
+              state.reached_end = false;
+              state.variables = [];
+            }
           }
           break;
         }
@@ -254,30 +263,133 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       }
       break;
     }
-    case "filters": {
-      const result = state.filters.findAny((x) => x.equals(action[1]));
-      if (result.isSome()) {
-        state.filters = apply(result.get(), (filter) => {
-          switch (action[2]) {
-            case "replace": {
-              filter.filter_paths = filter.filter_paths.add(action[3]);
-              break;
+    case "or_filter": {
+      const and_filter = state.filters.findAny((x) => x.equals(action[1]));
+      if (and_filter.isSome()) {
+        switch (action[2]) {
+          case "add": {
+            state.filters = state.filters.add(
+              apply(and_filter.get(), (it) => {
+                it.filters = it.filters.add(
+                  new OrFilter(
+                    1 +
+                      Math.max(-1, ...it.filters.map((x) => x.index).toArray()),
+                    [false, undefined],
+                    [false, undefined],
+                    [false, undefined],
+                    HashSet.of()
+                  )
+                );
+                return it;
+              })
+            );
+            break;
+          }
+          case "remove": {
+            state.filters = state.filters.add(
+              apply(and_filter.get(), (it) => {
+                it.filters = it.filters.remove(action[3]);
+                for (const or_filter of it.filters) {
+                  if (
+                    or_filter.id[0] ||
+                    or_filter.created_at[0] ||
+                    or_filter.updated_at[0] ||
+                    or_filter.filter_paths.anyMatch((x) => x.active)
+                  ) {
+                    state.offset = new Decimal(0);
+                    state.reached_end = false;
+                    state.variables = [];
+                  }
+                }
+                return it;
+              })
+            );
+            break;
+          }
+          case "replace": {
+            state.filters = state.filters.add(
+              apply(and_filter.get(), (it) => {
+                it.filters = it.filters.add(action[3]);
+                for (const or_filter of it.filters) {
+                  if (
+                    or_filter.id[0] ||
+                    or_filter.created_at[0] ||
+                    or_filter.updated_at[0] ||
+                    or_filter.filter_paths.anyMatch((x) => x.active)
+                  ) {
+                    state.offset = new Decimal(0);
+                    state.reached_end = false;
+                    state.variables = [];
+                  }
+                }
+                return it;
+              })
+            );
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = action[2];
+            return _exhaustiveCheck;
+          }
+        }
+      }
+      break;
+    }
+    case "filter_path": {
+      const and_filter = state.filters.findAny((x) => x.equals(action[1]));
+      if (and_filter.isSome()) {
+        const or_filter = and_filter
+          .get()
+          .filters.findAny((x) => x.equals(action[2]));
+        if (or_filter.isSome()) {
+          const filter_path = or_filter
+            .get()
+            .filter_paths.findAny((x) => x.equals(action[4]));
+          if (filter_path.isSome()) {
+            switch (action[3]) {
+              case "remove": {
+                state.filters = state.filters.add(
+                  apply(and_filter.get(), (and_filter) => {
+                    and_filter.filters = and_filter.filters.add(
+                      apply(or_filter.get(), (or_filter) => {
+                        or_filter.filter_paths = or_filter.filter_paths.remove(
+                          action[4]
+                        );
+                        return or_filter;
+                      })
+                    );
+                    return and_filter;
+                  })
+                );
+                break;
+              }
+              case "replace": {
+                state.filters = state.filters.add(
+                  apply(and_filter.get(), (and_filter) => {
+                    and_filter.filters = and_filter.filters.add(
+                      apply(or_filter.get(), (or_filter) => {
+                        or_filter.filter_paths = or_filter.filter_paths.add(
+                          action[4]
+                        );
+                        return or_filter;
+                      })
+                    );
+                    return and_filter;
+                  })
+                );
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = action[3];
+                return _exhaustiveCheck;
+              }
             }
-            case "remove": {
-              filter.filter_paths = filter.filter_paths.remove(action[3]);
-              break;
-            }
-            default: {
-              const _exhaustiveCheck: never = action[2];
-              return _exhaustiveCheck;
+            if (action[4].active) {
+              state.offset = new Decimal(0);
+              state.reached_end = false;
+              state.variables = [];
             }
           }
-          return state.filters.add(filter);
-        });
-        if (action[3].active) {
-          state.offset = new Decimal(0);
-          state.reached_end = false;
-          state.variables = [];
         }
       }
       break;
@@ -317,7 +429,7 @@ export type RenderListElement = [
 
 export type RenderListVariantProps = {
   init_filter: OrFilter;
-  filters: HashSet<OrFilter>;
+  filters: HashSet<AndFilter>;
   dispatch: React.Dispatch<ListAction>;
   variant: JSX.Element;
   bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
@@ -336,7 +448,7 @@ type ListSpecificProps = CommonProps & {
   struct: Struct;
   active: boolean;
   level: Decimal | undefined;
-  filters: [OrFilter, HashSet<OrFilter>];
+  filters: [OrFilter, HashSet<AndFilter>];
   update_parent_values?: (variable: Variable) => void;
 };
 
@@ -579,13 +691,13 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               />
             </Row>
             <Pressable
-              onPress={() => dispatch(["filter", "add"])}
+              onPress={() => dispatch(["and_filter", "add"])}
               backgroundColor={bs_theme.highlight}
               borderRadius={"xs"}
               px={"2"}
               py={"0.5"}
             >
-              <Text bold>Filter++</Text>
+              <Text bold>Set++</Text>
             </Pressable>
           </Row>
           <BottomSheetFlatList
@@ -597,10 +709,10 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             keyExtractor={(list_item) => list_item.index.toString()}
             renderItem={(list_item) => {
               return (
-                <FilterComponent
+                <AndFilterComponent
                   key={list_item.item.index.toString()}
                   init_filter={state.init_filter}
-                  filter={list_item.item}
+                  and_filter={list_item.item}
                   dispatch={dispatch}
                 />
               );

@@ -12,7 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { PathPermission, get_permissions } from "./permissions";
 import { apply, unwrap, arrow } from "./prelude";
-import { OrFilter, FilterPath } from "./db";
+import { OrFilter, FilterPath, AndFilter } from "./db";
 import {
   Action,
   get_labeled_permissions,
@@ -1566,7 +1566,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
             )
           ),
           HashSet.of(),
-        ] as [OrFilter, HashSet<OrFilter>],
+        ] as [OrFilter, HashSet<AndFilter>],
         update_parent_values: (variable: Variable) =>
           props.dispatch([
             "values",

@@ -99,8 +99,7 @@ function query(
   active: boolean,
   level: Decimal | undefined,
   init_filter: OrFilter,
-  // filters: HashSet<AndFilter>,
-  filters: HashSet<OrFilter>,
+  filters: HashSet<AndFilter>,
   limit: Decimal,
   offset: Decimal
 ): Promise<SQLite.SQLResultSet> {
@@ -110,6 +109,7 @@ function query(
       .toArray()
       .map((filter_path) => filter_path.path[0].length + 1),
     ...filters
+      .flatMap((x) => x.filters)
       .toArray()
       .flatMap((filter) =>
         filter.filter_paths
@@ -332,18 +332,24 @@ function query(
     });
     const filters_stmt = filters
       .toArray()
-      .map((x) => {
-        const [stmt, filter_args] = get_filter_stmt(x);
-        if (stmt !== "") {
-          for (let arg of filter_args) {
-            args.push(arg);
-          }
-        }
-        return stmt;
-      })
-      .filter((x) => x !== "")
+      .map((and_filter) =>
+        and_filter.filters
+          .toArray()
+          .map((or_filter) => {
+            const [stmt, filter_args] = get_filter_stmt(or_filter);
+            if (stmt !== "") {
+              for (let arg of filter_args) {
+                args.push(arg);
+              }
+            }
+            return stmt;
+          })
+          .filter((x) => x !== "")
+          .map((x) => `(${x})`)
+          .join(" \nOR ")
+      )
       .map((x) => `(${x})`)
-      .join(" \nOR ");
+      .join(" \nAND ");
     if (init_filters_stmt !== "") {
       it.push(`(${init_filters_stmt})`);
     }
@@ -1491,7 +1497,7 @@ export async function get_variables(
   active: boolean,
   level: Decimal | undefined,
   init_filter: OrFilter,
-  filters: HashSet<OrFilter>,
+  filters: HashSet<AndFilter>,
   limit: Decimal,
   offset: Decimal
 ): Promise<Result<Array<Variable>>> {
@@ -2077,7 +2083,7 @@ export class AndFilter {
     this.filters = filters;
   }
 
-  equals(other: OrFilter): boolean {
+  equals(other: AndFilter): boolean {
     if (!other) {
       return false;
     }
