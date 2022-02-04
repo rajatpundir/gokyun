@@ -215,6 +215,27 @@ export function AndFilterComponent(props: {
 }): JSX.Element {
   return (
     <Column>
+      <Row justifyContent={"space-between"} alignItems={"center"} mb={"0.5"}>
+        <Row>
+          <Text>Set {props.and_filter.index + 1}</Text>
+          <Pressable
+            onPress={() =>
+              props.dispatch(["and_filter", "remove", props.and_filter])
+            }
+          >
+            <Entypo name="cross" size={24} color={bs_theme.text} />
+          </Pressable>
+        </Row>
+        <Pressable
+          onPress={() => props.dispatch(["or_filter", props.and_filter, "add"])}
+          backgroundColor={bs_theme.primary}
+          borderRadius={"xs"}
+          px={"2"}
+          py={"0.5"}
+        >
+          <Text bold>Filter++</Text>
+        </Pressable>
+      </Row>
       {props.and_filter.filters.toArray().map((or_filter) => (
         <OrFilterComponent {...props} or_filter={or_filter} />
       ))}
