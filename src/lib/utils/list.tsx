@@ -44,7 +44,6 @@ export type ListAction =
   | ["variables", Array<Variable>]
   | ["active", boolean]
   | ["level", Decimal | undefined]
-  | ["offset"]
   | ["sort", "add", FilterPath, boolean]
   | ["sort", "remove", FilterPath]
   | ["sort", "up" | "down" | "toggle", FilterPath]
@@ -57,7 +56,8 @@ export type ListAction =
   | ["filter_path", AndFilter, OrFilter, "remove", FilterPath]
   | ["filter_path", AndFilter, OrFilter, "replace", FilterPath]
   | ["layout", string]
-  | ["reload"];
+  | ["reload"]
+  | ["remove", Array<number>];
 
 export function reducer(state: Draft<ListState>, action: ListAction) {
   switch (action[0]) {
@@ -95,16 +95,6 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       state.offset = new Decimal(0);
       state.reached_end = false;
       state.variables = [];
-      break;
-    }
-    case "offset": {
-      if (!state.refreshing && !state.reached_end) {
-        state.offset = Decimal.add(
-          state.offset.toNumber(),
-          state.limit.toNumber()
-        );
-        state.refreshing = true;
-      }
       break;
     }
     case "sort": {
@@ -414,6 +404,13 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       state.refreshing = true;
       break;
     }
+    case "remove": {
+      state.variables = state.variables.filter((x) => {
+        return !action[1].includes(x.id.toNumber());
+      });
+      state.offset = new Decimal(state.variables.length);
+      break;
+    }
     default: {
       const _exhaustiveCheck: never = action[0];
       return _exhaustiveCheck;
@@ -518,13 +515,11 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
       (broker) => {
         if (state.struct.name in broker) {
           apply(broker[state.struct.name as BrokerKey], (it) => {
-            if (
-              it.create.length !== 0 ||
-              it.update.length !== 0
-              // || it.remove.length !== 0
-              // just remove it from variables and adjust offset
-            ) {
+            if (it.create.length !== 0 || it.update.length !== 0) {
               dispatch(["reload"]);
+            }
+            if (it.remove.length !== 0) {
+              dispatch(["remove", it.remove]);
             }
           });
         }
