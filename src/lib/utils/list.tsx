@@ -402,6 +402,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               it.create.length !== 0 ||
               it.update.length !== 0
               // || it.remove.length !== 0
+              // just remove it from variables and adjust offset
             ) {
               dispatch(["reload"]);
             }

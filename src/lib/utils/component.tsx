@@ -24,7 +24,7 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
-import { Text, Input, Pressable, Row, Column } from "native-base";
+import { Text, Input, Pressable, Row, Column, Spinner } from "native-base";
 import { theme } from "./theme";
 import { BrokerKey, subscribe } from "./store";
 
@@ -174,9 +174,17 @@ export function useComponent(props: {
         );
       } else {
         if (state.found === undefined) {
-          return <Text>Loading...</Text>;
+          return (
+            <Spinner
+              flex={"1"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              size={"lg"}
+              color={theme.primary}
+            />
+          );
         } else if (!state.found) {
-          return <></>;
+          return <Text>Not Found</Text>;
         } else {
           return (
             <props.update
@@ -195,9 +203,17 @@ export function useComponent(props: {
       }
     } else {
       if (state.found === undefined) {
-        return <Text>Loading...</Text>;
+        return (
+          <Spinner
+            flex={"1"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            size={"lg"}
+            color={theme.primary}
+          />
+        );
       } else if (!state.found) {
-        return <></>;
+        return <Text>Not Found</Text>;
       } else {
         return (
           <props.show
