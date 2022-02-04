@@ -236,9 +236,12 @@ export function AndFilterComponent(props: {
           <Text bold>Filter++</Text>
         </Pressable>
       </Row>
-      {props.and_filter.filters.toArray().map((or_filter) => (
-        <OrFilterComponent {...props} or_filter={or_filter} />
-      ))}
+      {props.and_filter.filters
+        .toArray()
+        .sort((a, b) => (a.index > b.index ? 1 : a.index < b.index ? -1 : 0))
+        .map((or_filter) => (
+          <OrFilterComponent {...props} or_filter={or_filter} />
+        ))}
     </Column>
   );
 }

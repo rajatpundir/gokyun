@@ -44,6 +44,7 @@ export type ListAction =
   | ["variables", Array<Variable>]
   | ["active", boolean]
   | ["level", Decimal | undefined]
+  | ["offset"]
   | ["sort", "add", FilterPath, boolean]
   | ["sort", "remove", FilterPath]
   | ["sort", "up" | "down" | "toggle", FilterPath]
@@ -95,6 +96,16 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       state.offset = new Decimal(0);
       state.reached_end = false;
       state.variables = [];
+      break;
+    }
+    case "offset": {
+      if (!state.refreshing && !state.reached_end) {
+        state.offset = Decimal.add(
+          state.offset.toNumber(),
+          state.limit.toNumber()
+        );
+        state.refreshing = true;
+      }
       break;
     }
     case "sort": {
