@@ -42,13 +42,13 @@ function get_theme(theme_name: ThemeName): Theme {
     case "Light": {
       return {
         primary: colors.rose[500],
-        accent: colors.teal[600],
+        accent: colors.rose[600],
         background: colors.zinc[900],
         card: colors.zinc[900],
-        border: colors.zinc[700],
-        placeholder: colors.zinc[300],
-        label: colors.zinc[200],
-        text: colors.zinc[100],
+        border: colors.zinc[300],
+        placeholder: colors.zinc[700],
+        label: colors.zinc[800],
+        text: colors.zinc[900],
         error: colors.sky[600],
         notification: colors.sky[600],
       };
