@@ -658,9 +658,8 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
           <Row
             justifyContent={"space-between"}
             alignItems={"center"}
-            borderBottomColor={bs_theme.primary}
-            borderBottomWidth={"1"}
-            px={"3"}
+            pl={"2"}
+            pr={"3"}
             pb={"2"}
           >
             <Text bold>FILTERS</Text>

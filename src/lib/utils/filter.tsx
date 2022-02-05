@@ -214,10 +214,18 @@ export function AndFilterComponent(props: {
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
   return (
-    <Column>
-      <Row justifyContent={"space-between"} alignItems={"center"} mb={"0.5"}>
+    <Column borderTopWidth={"1"} borderTopColor={bs_theme.primary}>
+      <Row
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        pl={"2"}
+        pr={"3"}
+        py={"2"}
+      >
         <Row>
-          <Text>Set {props.and_filter.index + 1}</Text>
+          <Text bold color={bs_theme.primary}>
+            Set {props.and_filter.index + 1}
+          </Text>
           <Pressable
             onPress={() =>
               props.dispatch(["and_filter", "remove", props.and_filter])
@@ -261,10 +269,10 @@ export function OrFilterComponent(props: {
     <Column
       px={"3"}
       py={"2"}
-      borderBottomWidth={"1"}
+      borderTopWidth={"1"}
       borderColor={bs_theme.border}
     >
-      <Row justifyContent={"space-between"} alignItems={"center"} mb={"0.5"}>
+      <Row justifyContent={"space-between"} alignItems={"center"}>
         <Row>
           <Text>Filter {props.or_filter.index + 1}</Text>
           <Pressable
