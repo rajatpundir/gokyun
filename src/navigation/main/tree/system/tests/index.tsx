@@ -63,7 +63,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
           options={[
             "list",
             {
-              user_paths: [],
+              user_paths: [[[], "user"]],
               borrows: [],
               RenderElement: [
                 (props) => (

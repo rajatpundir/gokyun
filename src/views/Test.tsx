@@ -341,7 +341,7 @@ export default {
     show: common_default_component,
   },
   Card: arrow(() => {
-    const common: ComponentViews[string]["show"] = (props) => {
+    const common: ComponentViews[string]["create"] = (props) => {
       const theme = useTheme();
       const navigation = useNavigation();
       return (
@@ -351,12 +351,7 @@ export default {
           borderWidth={"1"}
           borderRadius={"md"}
           borderColor={theme.border}
-          backgroundColor={arrow(() => {
-            if (props.selected) {
-              return theme.border;
-            }
-            return theme.background;
-          })}
+          backgroundColor={theme.background}
         >
           <Row justifyContent={"space-between"}>
             <Column>
@@ -410,7 +405,6 @@ export default {
                               props.struct.name
                             );
                             if (unwrap(result)) {
-                              //  props.navigation.goBack();
                               return result.value;
                             }
                           }
@@ -428,7 +422,6 @@ export default {
                 alignItems={"center"}
                 px={"3"}
                 py={"2"}
-                mx={"1"}
                 rounded={"sm"}
                 backgroundColor={theme.primary}
               >
@@ -446,7 +439,6 @@ export default {
                 alignItems={"center"}
                 px={"2"}
                 py={"1.5"}
-                mx={"1"}
                 rounded={"sm"}
                 borderWidth={"1"}
                 borderColor={theme.primary}
