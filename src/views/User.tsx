@@ -3,11 +3,12 @@ import { Column, Pressable, Row, Text } from "native-base";
 import { ComponentViews } from "../lib/utils/component";
 import { Template } from "../lib/utils/templates";
 import { arrow } from "../lib/utils/prelude";
-import { theme } from "../lib/utils/theme";
+import { useTheme } from "../lib/utils/theme";
 
 const views = {};
 
 const common_default_component: ComponentViews[string]["show"] = (props) => {
+  const theme = useTheme();
   return (
     <Column
       p={"2"}

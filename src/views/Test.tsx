@@ -13,15 +13,16 @@ import { Template } from "../lib/utils/templates";
 import { apply, arrow, unwrap } from "../lib/utils/prelude";
 import { compare_paths, get_path_string } from "../lib/utils/variable";
 import { get_path } from "../lib/utils/commons";
-import { theme } from "../lib/utils/theme";
 import UserViews from "./User";
 import { RenderListVariantProps, RenderListElement } from "../lib/utils/list";
+import { useTheme } from "../lib/utils/theme";
 
 const views = {
   User: UserViews,
 };
 
 const common_default_component: ComponentViews[string]["create"] = (props) => {
+  const theme = useTheme();
   const navigation = useNavigation();
   return (
     <ScrollView m={"2"}>
@@ -325,6 +326,7 @@ export default {
     create: (props) => <></>,
     update: (props) => <></>,
     show: (props) => {
+      const theme = useTheme();
       const navigation = useNavigation();
       return (
         <Pressable

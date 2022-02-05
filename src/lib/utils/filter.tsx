@@ -22,8 +22,8 @@ import { compare_paths, get_flattened_path } from "./variable";
 import { tw } from "./tailwind";
 import { Column, Pressable, Row, Text, Input, Menu } from "native-base";
 import Checkbox from "expo-checkbox";
-import { bs_theme } from "./theme";
 import { get_decimal_keyboard_type, get_validated_decimal } from "./commons";
+import { useBSTheme } from "./theme";
 
 function op_to_string(op: string): string {
   switch (op) {
@@ -54,7 +54,8 @@ function op_to_string(op: string): string {
 export function SortComponent(props: {
   init_filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
-}) {
+}): JSX.Element {
+  const bs_theme = useBSTheme();
   return (
     <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
       {props.init_filter.filter_paths
@@ -149,7 +150,8 @@ export function SortComponent(props: {
 export function SortComponentFields(props: {
   init_filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
-}) {
+}): JSX.Element {
+  const bs_theme = useBSTheme();
   return (
     <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
       {props.init_filter.filter_paths
@@ -213,6 +215,7 @@ export function AndFilterComponent(props: {
   and_filter: AndFilter;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
+  const bs_theme = useBSTheme();
   return (
     <Column borderTopWidth={"1"} borderTopColor={bs_theme.primary}>
       <Row
@@ -264,6 +267,7 @@ export function OrFilterComponent(props: {
   or_filter: OrFilter;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
+  const bs_theme = useBSTheme();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   return (
     <Column
@@ -2127,6 +2131,7 @@ function FilterPathComponent(props: {
   filter_path: FilterPath;
   dispatch: React.Dispatch<ListAction>;
 }): JSX.Element {
+  const bs_theme = useBSTheme();
   const [showPicker1, setPicker1] = useState(false);
   const [mode1, setMode1] = useState("date");
   let [date1, setDate1] = useState(

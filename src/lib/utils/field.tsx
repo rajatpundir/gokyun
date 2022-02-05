@@ -3,13 +3,14 @@ import { Text } from "native-base";
 import { apply, unwrap, Result, arrow, fold, PartialBy } from "./prelude";
 import { State, get_path, get_label } from "./commons";
 import { PathString } from "./variable";
-import { theme } from "./theme";
 import { ComponentProps, FieldOptions, field_variants } from "./field_variants";
+import { useTheme } from "./theme";
 
 export function Label(props: {
   state: State;
   path: PathString | string;
 }): JSX.Element {
+  const theme = useTheme();
   const label = get_label(props.state, props.path);
   if (label !== "") {
     return (
@@ -26,6 +27,7 @@ export function Check(props: {
   name: string;
   message: string;
 }): JSX.Element {
+  const theme = useTheme();
   const { state } = props;
   if (props.name in state.checks) {
     const result = state.checks[props.name] as Result<boolean>;

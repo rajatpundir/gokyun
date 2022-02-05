@@ -4,8 +4,10 @@ import {
   subscribeWithSelector,
 } from "zustand/middleware";
 import { GetState, SetState } from "zustand";
+import { ThemeName } from "./theme";
 
 type State = {
+  theme: ThemeName;
   broker: Broker;
   announce_message: (
     args: Record<
@@ -28,6 +30,7 @@ export const store = create<
   subscribeWithSelector(
     (set, get) =>
       ({
+        theme: "Dark",
         broker: {
           User: {
             create: [],

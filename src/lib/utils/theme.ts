@@ -5,30 +5,32 @@ import {
 import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { extendTheme } from "native-base";
 import { colors } from "./tailwind";
+import { getState, subscribe } from "./store";
+import { useEffect, useState } from "react";
 
 const color_scheme = "teal";
 
-export const theme = {
-  primary: colors.teal[500],
-  accent: colors.teal[600],
-  background: colors.zinc[900],
-  card: colors.zinc[900],
-  border: colors.zinc[700],
-  placeholder: colors.zinc[300],
-  label: colors.zinc[200],
-  text: colors.zinc[100],
-  error: colors.sky[600],
-  notification: colors.sky[600],
-};
+// export let theme = {
+//   primary: colors.teal[500],
+//   accent: colors.teal[600],
+//   background: colors.zinc[900],
+//   card: colors.zinc[900],
+//   border: colors.zinc[700],
+//   placeholder: colors.zinc[300],
+//   label: colors.zinc[200],
+//   text: colors.zinc[100],
+//   error: colors.sky[600],
+//   notification: colors.sky[600],
+// };
 
-export const bs_theme = {
-  primary: theme.primary,
-  background: theme.background,
-  border: theme.border,
-  placeholder: theme.placeholder,
-  text: theme.text,
-  highlight: colors.teal[500],
-};
+// export let bs_theme = {
+//   primary: theme.primary,
+//   background: theme.background,
+//   border: theme.border,
+//   placeholder: theme.placeholder,
+//   text: theme.text,
+//   highlight: colors.teal[500],
+// };
 
 // export const bs_theme = {
 //   primary: colors.sky[600],
@@ -38,34 +40,6 @@ export const bs_theme = {
 //   text: colors.slate[400],
 //   highlight: colors.blue[500],
 // };
-
-export const theme_rn: ReactNavigationTheme = {
-  dark: true,
-  colors: {
-    ...DarkTheme.colors,
-    primary: theme.primary,
-    background: theme.background,
-    card: theme.card,
-    border: theme.border,
-    text: theme.text,
-    notification: theme.notification,
-  },
-};
-
-export const theme_rnp: ReactNativePaper.Theme = {
-  ...PaperTheme,
-  dark: true,
-  roundness: 5,
-  colors: {
-    ...PaperTheme.colors,
-    primary: theme.primary,
-    accent: theme.accent,
-    background: theme.background,
-    placeholder: theme.placeholder,
-    text: theme.text,
-    error: theme.error,
-  },
-};
 
 const empty_theme = extendTheme({});
 type CustomThemeType = typeof empty_theme;
@@ -150,4 +124,277 @@ export function get_color_scheme(
       return _exhaustiveCheck;
     }
   }
+}
+
+export type ThemeName = "Dark" | "Light" | "Something";
+
+type Theme = {
+  primary: string;
+  accent: string;
+  background: string;
+  card: string;
+  border: string;
+  placeholder: string;
+  label: string;
+  text: string;
+  error: string;
+  notification: string;
+};
+
+function get_theme(theme_name: ThemeName): Theme {
+  switch (theme_name) {
+    case "Dark": {
+      return {
+        primary: colors.teal[500],
+        accent: colors.teal[600],
+        background: colors.zinc[900],
+        card: colors.zinc[900],
+        border: colors.zinc[700],
+        placeholder: colors.zinc[300],
+        label: colors.zinc[200],
+        text: colors.zinc[100],
+        error: colors.sky[600],
+        notification: colors.sky[600],
+      };
+    }
+    case "Light": {
+      return {
+        primary: colors.rose[500],
+        accent: colors.teal[600],
+        background: colors.zinc[900],
+        card: colors.zinc[900],
+        border: colors.zinc[700],
+        placeholder: colors.zinc[300],
+        label: colors.zinc[200],
+        text: colors.zinc[100],
+        error: colors.sky[600],
+        notification: colors.sky[600],
+      };
+    }
+    case "Something": {
+      return {
+        primary: colors.teal[500],
+        accent: colors.teal[600],
+        background: colors.zinc[900],
+        card: colors.zinc[900],
+        border: colors.zinc[700],
+        placeholder: colors.zinc[300],
+        label: colors.zinc[200],
+        text: colors.zinc[100],
+        error: colors.sky[600],
+        notification: colors.sky[600],
+      };
+    }
+    default: {
+      const _exhaustiveCheck: never = theme_name;
+      return _exhaustiveCheck;
+    }
+  }
+}
+
+export function useTheme(): Theme {
+  const [theme, set_theme] = useState(get_theme(getState().theme));
+  useEffect(() => {
+    const unsub = subscribe(
+      (store) => store.theme,
+      (theme_name) => set_theme(get_theme(theme_name))
+    );
+    return unsub;
+  }, []);
+  return theme;
+}
+
+type BS_Theme = {
+  primary: string;
+  background: string;
+  border: string;
+  placeholder: string;
+  text: string;
+  highlight: string;
+};
+
+function get_bs_theme(theme_name: ThemeName): BS_Theme {
+  const theme = useTheme();
+  switch (theme_name) {
+    case "Dark": {
+      return {
+        primary: theme.primary,
+        background: theme.background,
+        border: theme.border,
+        placeholder: theme.placeholder,
+        text: theme.text,
+        highlight: colors.teal[500],
+      };
+    }
+    case "Light": {
+      return {
+        primary: theme.primary,
+        background: theme.background,
+        border: theme.border,
+        placeholder: theme.placeholder,
+        text: theme.text,
+        highlight: colors.teal[500],
+      };
+    }
+    case "Something": {
+      return {
+        primary: theme.primary,
+        background: theme.background,
+        border: theme.border,
+        placeholder: theme.placeholder,
+        text: theme.text,
+        highlight: colors.teal[500],
+      };
+    }
+    default: {
+      const _exhaustiveCheck: never = theme_name;
+      return _exhaustiveCheck;
+    }
+  }
+}
+
+export function useBSTheme(): BS_Theme {
+  const [theme_name, set_theme_name] = useState(getState().theme);
+  useEffect(() => {
+    const unsub = subscribe(
+      (store) => store.theme,
+      (x) => set_theme_name(x)
+    );
+    return unsub;
+  }, []);
+  return get_bs_theme(theme_name);
+}
+
+function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
+  const theme = useTheme();
+  switch (theme_name) {
+    case "Dark": {
+      return {
+        dark: true,
+        colors: {
+          ...DarkTheme.colors,
+          primary: theme.primary,
+          background: theme.background,
+          card: theme.card,
+          border: theme.border,
+          text: theme.text,
+          notification: theme.notification,
+        },
+      };
+    }
+    case "Light": {
+      return {
+        dark: false,
+        colors: {
+          ...DarkTheme.colors,
+          primary: theme.primary,
+          background: theme.background,
+          card: theme.card,
+          border: theme.border,
+          text: theme.text,
+          notification: theme.notification,
+        },
+      };
+    }
+    case "Something": {
+      return {
+        dark: true,
+        colors: {
+          ...DarkTheme.colors,
+          primary: theme.primary,
+          background: theme.background,
+          card: theme.card,
+          border: theme.border,
+          text: theme.text,
+          notification: theme.notification,
+        },
+      };
+    }
+    default: {
+      const _exhaustiveCheck: never = theme_name;
+      return _exhaustiveCheck;
+    }
+  }
+}
+
+export function useRNTheme(): ReactNavigationTheme {
+  const [theme_name, set_theme_name] = useState(getState().theme);
+  useEffect(() => {
+    const unsub = subscribe(
+      (store) => store.theme,
+      (x) => set_theme_name(x)
+    );
+    return unsub;
+  }, []);
+  return get_rn_theme(theme_name);
+}
+
+function get_rnp_theme(theme_name: ThemeName): ReactNativePaper.Theme {
+  const theme = useTheme();
+  switch (theme_name) {
+    case "Dark": {
+      return {
+        ...PaperTheme,
+        dark: true,
+        roundness: 5,
+        colors: {
+          ...PaperTheme.colors,
+          primary: theme.primary,
+          accent: theme.accent,
+          background: theme.background,
+          placeholder: theme.placeholder,
+          text: theme.text,
+          error: theme.error,
+        },
+      };
+    }
+    case "Light": {
+      return {
+        ...PaperTheme,
+        dark: false,
+        roundness: 5,
+        colors: {
+          ...PaperTheme.colors,
+          primary: theme.primary,
+          accent: theme.accent,
+          background: theme.background,
+          placeholder: theme.placeholder,
+          text: theme.text,
+          error: theme.error,
+        },
+      };
+    }
+    case "Something": {
+      return {
+        ...PaperTheme,
+        dark: true,
+        roundness: 5,
+        colors: {
+          ...PaperTheme.colors,
+          primary: theme.primary,
+          accent: theme.accent,
+          background: theme.background,
+          placeholder: theme.placeholder,
+          text: theme.text,
+          error: theme.error,
+        },
+      };
+    }
+    default: {
+      const _exhaustiveCheck: never = theme_name;
+      return _exhaustiveCheck;
+    }
+  }
+}
+
+export function useRNPTheme(): ReactNativePaper.Theme {
+  const [theme_name, set_theme_name] = useState(getState().theme);
+  useEffect(() => {
+    const unsub = subscribe(
+      (store) => store.theme,
+      (x) => set_theme_name(x)
+    );
+    return unsub;
+  }, []);
+  return get_rnp_theme(theme_name);
 }

@@ -25,8 +25,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "./tailwind";
 import { Text, Input, Pressable, Row, Column, Spinner } from "native-base";
-import { theme } from "./theme";
-import { BrokerKey, subscribe } from "./store";
+import { BrokerKey, getState, setState, subscribe } from "./store";
+import { useTheme } from "./theme";
 
 export type ComponentViews = Record<
   string,
@@ -73,6 +73,7 @@ export function useComponent(props: {
   update_parent_values?: () => void;
   found?: boolean | undefined;
 }): [State, React.Dispatch<Action>, JSX.Element] {
+  const theme = useTheme();
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.id),
     active: props.active,
@@ -302,6 +303,7 @@ export function SearchWrapper(
     is_filters_editable?: boolean;
   }
 ): JSX.Element {
+  const theme = useTheme();
   const and_filter = props.filters.findAny((x) => x.index === 0);
   useEffect(() => {
     if (and_filter.isNone()) {
@@ -546,12 +548,39 @@ export function SearchWrapper(
 }
 
 export function AppHeader(props: { title?: string }): JSX.Element {
+  const theme = useTheme();
+  const [app_theme, set_app_theme] = useState(getState().theme);
+  useEffect(() => {
+    const unsub = subscribe(
+      (store) => store.theme,
+      (theme) => {
+        set_app_theme(theme);
+      }
+    );
+    return unsub;
+  }, []);
   return (
-    <>
-      <Text bold p={"2"} fontSize={"lg"} color={theme.primary}>
+    <Row
+      px={"3"}
+      py={"1"}
+      justifyContent={"space-between"}
+      alignItems={"center"}
+    >
+      <Text bold fontSize={"lg"} color={theme.primary}>
         {props.title ? props.title : "AppName"}
       </Text>
-    </>
+      <Pressable
+        onPress={() =>
+          setState({ theme: app_theme === "Dark" ? "Light" : "Dark" })
+        }
+      >
+        {app_theme === "Light" ? (
+          <Feather name="moon" size={24} />
+        ) : (
+          <Feather name="sun" size={24} />
+        )}
+      </Pressable>
+    </Row>
   );
 }
 

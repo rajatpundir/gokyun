@@ -18,10 +18,10 @@ import { Row, Text, Pressable } from "native-base";
 import Checkbox from "expo-checkbox";
 import { Identity, ModalHeader } from "./component";
 import { tw } from "./tailwind";
-import { bs_theme } from "./theme";
 import { ListVariant, ListVariantOptions } from "./list_variants";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { BrokerKey, subscribe } from "./store";
+import { useBSTheme } from "./theme";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -464,6 +464,7 @@ type ListSpecificProps = CommonProps & {
 };
 
 export function List(props: CommonProps & ListSpecificProps): JSX.Element {
+  const bs_theme = useBSTheme();
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
     active: props.active,

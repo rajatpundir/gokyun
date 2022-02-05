@@ -12,9 +12,9 @@ import {
 import { apply, arrow } from "./prelude";
 import { PathString, Variable } from "./variable";
 import { tw } from "./tailwind";
-import { theme, bs_theme } from "./theme";
 import { ListAction, ListState, RenderListElement } from "./list";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { useBSTheme, useTheme } from "./theme";
 
 export function ListVariant(
   props: VariantCommonProps & {
@@ -64,6 +64,7 @@ type FlatlistVariantProps = {
 };
 
 function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
+  const bs_theme = useBSTheme();
   const renderItem = useCallback(
     (list_item: ListRenderItemInfo<Variable>) => {
       const ElementJSX = arrow(() => {
@@ -214,6 +215,7 @@ type MenuVariantProps = {
 };
 
 function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
+  const theme = useTheme();
   return (
     <Menu
       mx={"3"}
@@ -258,6 +260,8 @@ export type SheetVariantProps = {
 };
 
 function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
+  const theme = useTheme();
+  const bs_theme = useBSTheme();
   const bsm_ref_1 = useRef<BottomSheetModal>(null);
   const bsm_ref = apply(props.bsm_ref, (it) => {
     if (it !== undefined) {

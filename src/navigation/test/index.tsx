@@ -8,7 +8,6 @@ import { apply, arrow, unwrap } from "../../lib/utils/prelude";
 import { views } from "../../views";
 import { ModalHeader, useComponent } from "../../lib/utils/component";
 import { Row, Pressable, Text } from "native-base";
-import { theme } from "../../lib/utils/theme";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import {
   get_struct_counter,
@@ -17,10 +16,12 @@ import {
   replace_variable,
 } from "../../lib/utils/db";
 import { Path, Variable } from "../../lib/utils/variable";
+import { useTheme } from "../../lib/utils/theme";
 
 export default function Component(
   props: RootNavigatorProps<"Test">
 ): JSX.Element {
+  const theme = useTheme();
   const struct1 = get_struct("Test");
   const struct2 = get_struct("Test2");
   if (unwrap(struct1) && unwrap(struct2)) {

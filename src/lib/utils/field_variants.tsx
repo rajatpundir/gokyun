@@ -32,11 +32,11 @@ import {
 } from "./variable";
 import { get_struct } from "./schema";
 import { CommonProps, List } from "./list";
-import { theme } from "./theme";
 import { tw } from "./tailwind";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { SheetVariantProps } from "./list_variants";
 import { cloneDeep } from "lodash";
+import { useTheme } from "./theme";
 
 type FieldVariant = {
   str: [
@@ -155,6 +155,7 @@ export type ComponentProps = {
 type StrFieldProps = {};
 
 function Str(props: ComponentProps & StrFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -238,6 +239,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
 type LstrFieldProps = {};
 
 function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -321,6 +323,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
 type ClobFieldProps = {};
 
 function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(strong_enum_to_string(value));
@@ -403,6 +406,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
 type I32FieldProps = {};
 
 function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -514,6 +518,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
 type U32FieldProps = {};
 
 function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -625,6 +630,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
 type I64FieldProps = {};
 
 function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -736,6 +742,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
 type U64FieldProps = {};
 
 function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -847,6 +854,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
 type IDoubleFieldProps = {};
 
 function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -958,6 +966,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
 type UDoubleFieldProps = {};
 
 function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -1069,6 +1078,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
 type IDecimalFieldProps = {};
 
 function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -1180,6 +1190,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
 type UDecimalFieldProps = {};
 
 function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [local_val, set_local_val] = useState(
@@ -1291,6 +1302,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
 type BoolFieldProps = {};
 
 function Bool_Switch(props: ComponentProps & BoolFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const style = tw.style([], {});
@@ -1323,6 +1335,7 @@ function Bool_Switch(props: ComponentProps & BoolFieldProps): JSX.Element {
 }
 
 function Bool_Checkbox(props: ComponentProps & BoolFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const style = tw.style([], {});
@@ -1356,6 +1369,7 @@ function Bool_Checkbox(props: ComponentProps & BoolFieldProps): JSX.Element {
 type DateFieldProps = {};
 
 function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
@@ -1404,6 +1418,7 @@ function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
 type TimeFieldProps = {};
 
 function Time_Field(props: ComponentProps & TimeFieldProps): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
@@ -1450,6 +1465,7 @@ type TimestampFieldProps = {};
 function Timestamp_Field(
   props: ComponentProps & TimestampFieldProps
 ): JSX.Element {
+  const theme = useTheme();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
   const [showPicker, setPicker] = useState(false);
@@ -1539,6 +1555,7 @@ type OtherFieldProps = CommonProps & {
 };
 
 function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
+  const theme = useTheme();
   const navigation = useNavigation();
   const value = props.path.path[1][1];
   const is_writeable = props.path.writeable && props.mode === "write";
