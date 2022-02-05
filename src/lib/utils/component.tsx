@@ -91,6 +91,7 @@ export function useComponent(props: {
     borrows: props.borrows,
     found: props.found,
   });
+
   useLayoutEffect(() => {
     const update_values = async () => {
       if (state.id.equals(-1)) {
@@ -127,18 +128,20 @@ export function useComponent(props: {
     };
     update_values();
   }, [state.id]);
+
   useLayoutEffect(() => {
     if (state.mode === "write") {
       run_triggers(props.struct, state, dispatch);
     }
   }, [state.id, state.mode, state.event_trigger]);
+
   useLayoutEffect(() => {
     if (state.mode === "write") {
       compute_checks(props.struct, state, dispatch);
     }
   }, [state.id, state.mode, state.check_trigger]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!state.id.equals(-1)) {
       const unsub = subscribe(
         (store) => store.broker,
@@ -232,7 +235,7 @@ export function useComponent(props: {
   return [state, dispatch, jsx];
 }
 
-export function useOtherComponent(props: {
+export function OtherComponent(props: {
   struct: Struct;
   user_paths: Array<PathString>;
   borrows: Array<string>;
@@ -240,8 +243,8 @@ export function useOtherComponent(props: {
   selected: boolean;
   update_parent_values: () => void;
   view: ComponentViews[string];
-}): [State, React.Dispatch<Action>, JSX.Element] {
-  const [state, dispatch, jsx] = useComponent({
+}): JSX.Element {
+  const [, , jsx] = useComponent({
     struct: props.struct,
     id: props.variable.id,
     active: props.variable.active,
@@ -263,19 +266,7 @@ export function useOtherComponent(props: {
     update_parent_values: props.update_parent_values,
     found: true,
   });
-  return [state, dispatch, jsx];
-}
-
-export function OtherComponent(props: {
-  struct: Struct;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
-  variable: Variable;
-  selected: boolean;
-  update_parent_values: () => void;
-  view: ComponentViews[string];
-}): JSX.Element {
-  return useOtherComponent(props)[2];
+  return jsx;
 }
 
 export function Identity(props: RenderListVariantProps): JSX.Element {
