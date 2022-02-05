@@ -315,32 +315,32 @@ function useColorScheme(): keyof CustomThemeType["colors"] {
 }
 
 export function useNBTheme(): CustomThemeType {
-  const color_scheme = useColorScheme();
+  const colorScheme = useColorScheme();
   return extendTheme({
     config: {
       initialColorMode: "dark",
     },
     components: {
       Progress: {
-        defaultProps: { colorScheme: color_scheme },
+        defaultProps: { colorScheme },
       },
-      Radio: { defaultProps: { colorScheme: color_scheme } },
-      Switch: { defaultProps: { colorScheme: color_scheme } },
-      Tabs: { defaultProps: { colorScheme: color_scheme } },
-      AppBar: { defaultProps: { colorScheme: color_scheme } },
-      Alert: { defaultProps: { colorScheme: color_scheme } },
-      Badge: { defaultProps: { colorScheme: color_scheme } },
-      Button: { defaultProps: { colorScheme: color_scheme } },
+      Radio: { defaultProps: { colorScheme } },
+      Switch: { defaultProps: { colorScheme } },
+      Tabs: { defaultProps: { colorScheme } },
+      AppBar: { defaultProps: { colorScheme } },
+      Alert: { defaultProps: { colorScheme } },
+      Badge: { defaultProps: { colorScheme } },
+      Button: { defaultProps: { colorScheme } },
       Checkbox: {
-        defaultProps: { colorScheme: color_scheme },
+        defaultProps: { colorScheme },
       },
       CircularProgress: {
-        defaultProps: { colorScheme: color_scheme },
+        defaultProps: { colorScheme },
       },
-      Code: { defaultProps: { colorScheme: color_scheme } },
+      Code: { defaultProps: { colorScheme } },
       FAB: {
         defaultProps: {
-          colorScheme: color_scheme,
+          colorScheme,
           renderInPortal: false,
         },
       },
