@@ -209,19 +209,7 @@ export function useComponent(props: {
           />
         );
       } else {
-        if (state.found === undefined) {
-          return (
-            <Spinner
-              flex={"1"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              size={"lg"}
-              color={theme.primary}
-            />
-          );
-        } else if (!state.found) {
-          return <Text>Not Found</Text>;
-        } else {
+        if (state.found && state.values.length()) {
           return (
             <props.update
               struct={props.struct}
@@ -235,22 +223,22 @@ export function useComponent(props: {
               }
             />
           );
+        } else if (state.found === undefined) {
+          return (
+            <Spinner
+              flex={"1"}
+              justifyContent={"center"}
+              alignItems={"center"}
+              size={"lg"}
+              color={theme.primary}
+            />
+          );
+        } else {
+          return <Text>Not Found</Text>;
         }
       }
     } else {
-      if (state.found === undefined) {
-        return (
-          <Spinner
-            flex={"1"}
-            justifyContent={"center"}
-            alignItems={"center"}
-            size={"lg"}
-            color={theme.primary}
-          />
-        );
-      } else if (!state.found) {
-        return <Text>Not Found</Text>;
-      } else {
+      if (state.found && state.values.length()) {
         return (
           <props.show
             struct={props.struct}
@@ -262,6 +250,18 @@ export function useComponent(props: {
             }
           />
         );
+      } else if (state.found === undefined) {
+        return (
+          <Spinner
+            flex={"1"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            size={"lg"}
+            color={theme.primary}
+          />
+        );
+      } else {
+        return <Text>Not Found</Text>;
       }
     }
   });
