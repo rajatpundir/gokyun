@@ -351,53 +351,48 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
           .get()
           .filters.findAny((x) => x.equals(action[2]));
         if (or_filter.isSome()) {
-          const filter_path = or_filter
-            .get()
-            .filter_paths.findAny((x) => x.equals(action[4]));
-          if (filter_path.isSome()) {
-            switch (action[3]) {
-              case "remove": {
-                state.filters = state.filters.add(
-                  apply(and_filter.get(), (and_filter) => {
-                    and_filter.filters = and_filter.filters.add(
-                      apply(or_filter.get(), (or_filter) => {
-                        or_filter.filter_paths = or_filter.filter_paths.remove(
-                          action[4]
-                        );
-                        return or_filter;
-                      })
-                    );
-                    return and_filter;
-                  })
-                );
-                break;
-              }
-              case "replace": {
-                state.filters = state.filters.add(
-                  apply(and_filter.get(), (and_filter) => {
-                    and_filter.filters = and_filter.filters.add(
-                      apply(or_filter.get(), (or_filter) => {
-                        or_filter.filter_paths = or_filter.filter_paths.add(
-                          action[4]
-                        );
-                        return or_filter;
-                      })
-                    );
-                    return and_filter;
-                  })
-                );
-                break;
-              }
-              default: {
-                const _exhaustiveCheck: never = action[3];
-                return _exhaustiveCheck;
-              }
+          switch (action[3]) {
+            case "remove": {
+              state.filters = state.filters.add(
+                apply(and_filter.get(), (and_filter) => {
+                  and_filter.filters = and_filter.filters.add(
+                    apply(or_filter.get(), (or_filter) => {
+                      or_filter.filter_paths = or_filter.filter_paths.remove(
+                        action[4]
+                      );
+                      return or_filter;
+                    })
+                  );
+                  return and_filter;
+                })
+              );
+              break;
             }
-            if (action[4].active) {
-              state.offset = new Decimal(0);
-              state.reached_end = false;
-              state.variables = [];
+            case "replace": {
+              state.filters = state.filters.add(
+                apply(and_filter.get(), (and_filter) => {
+                  and_filter.filters = and_filter.filters.add(
+                    apply(or_filter.get(), (or_filter) => {
+                      or_filter.filter_paths = or_filter.filter_paths.add(
+                        action[4]
+                      );
+                      return or_filter;
+                    })
+                  );
+                  return and_filter;
+                })
+              );
+              break;
             }
+            default: {
+              const _exhaustiveCheck: never = action[3];
+              return _exhaustiveCheck;
+            }
+          }
+          if (action[4].active) {
+            state.offset = new Decimal(0);
+            state.reached_end = false;
+            state.variables = [];
           }
         }
       }

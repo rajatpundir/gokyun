@@ -240,7 +240,11 @@ export function AndFilterComponent(props: {
         .toArray()
         .sort((a, b) => (a.index > b.index ? 1 : a.index < b.index ? -1 : 0))
         .map((or_filter) => (
-          <OrFilterComponent {...props} or_filter={or_filter} />
+          <OrFilterComponent
+            key={or_filter.index.toString()}
+            {...props}
+            or_filter={or_filter}
+          />
         ))}
     </Column>
   );
