@@ -92,6 +92,31 @@ export const store = create<
 
 export const { getState, setState, subscribe, destroy } = store;
 
+// load params
+// arrow(async () => {
+//   console.log("##################");
+//   const result = await get_param_text("theme");
+//   if (unwrap(result)) {
+//     const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark", "Black"];
+//     if (theme_names.includes(result.value as any)) {
+//       console.log(result.value);
+//       setState({ params: { theme: result.value as ThemeName } });
+//     }
+//   }
+//   console.log("##################");
+// });
+
+// store params
+// subscribe(
+//   (store) => store.params,
+//   (params) => {
+//     console.log("--------------");
+//     console.log(params);
+//     replace_param("theme", { type: "str", value: params.theme });
+//     console.log("--------------");
+//   }
+// );
+
 type Broker = {
   User: {
     create: Array<number>;

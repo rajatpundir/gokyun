@@ -2526,6 +2526,7 @@ async function load_tests() {
 }
 
 export async function load_test_data() {
+  await replace_param("theme", { type: "str", value: "Black" });
   await load_users();
   await load_tests();
   // const x = await execute_transaction("SELECT * FROM VARS;", []);
