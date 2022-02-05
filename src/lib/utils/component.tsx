@@ -561,13 +561,11 @@ export function SearchWrapper(
 
 export function AppHeader(props: { title?: string }): JSX.Element {
   const theme = useTheme();
-  const [app_theme, set_app_theme] = useState(getState().theme);
+  const [theme_name, set_theme_name] = useState(getState().params.theme);
   useEffect(() => {
     const unsub = subscribe(
-      (store) => store.theme,
-      (theme) => {
-        set_app_theme(theme);
-      }
+      (store) => store.params.theme,
+      (x) => set_theme_name(x)
     );
     return unsub;
   }, []);
@@ -579,18 +577,44 @@ export function AppHeader(props: { title?: string }): JSX.Element {
       alignItems={"center"}
     >
       <Text bold fontSize={"lg"} color={theme.primary}>
-        {props.title ? props.title : "AppName"}
+        {props.title ? props.title : "Aakhiri"}
       </Text>
       <Pressable
         onPress={() =>
-          setState({ theme: app_theme === "Dark" ? "Light" : "Dark" })
+          setState({
+            params: {
+              theme: arrow(() => {
+                switch (theme_name) {
+                  case "Light":
+                    return "Dark";
+                  case "Dark":
+                    return "Black";
+                  case "Black":
+                    return "Light";
+                  default: {
+                    const _exhaustiveCheck: never = theme_name;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }),
+            },
+          })
         }
       >
-        {app_theme === "Light" ? (
-          <Feather name="moon" size={24} />
-        ) : (
-          <Feather name="sun" size={24} />
-        )}
+        {arrow(() => {
+          switch (theme_name) {
+            case "Light":
+              return <Feather name="moon" size={24} />;
+            case "Dark":
+              return <Feather name="star" size={24} />;
+            case "Black":
+              return <Feather name="sun" size={24} />;
+            default: {
+              const _exhaustiveCheck: never = theme_name;
+              return _exhaustiveCheck;
+            }
+          }
+        })}
       </Pressable>
     </Row>
   );

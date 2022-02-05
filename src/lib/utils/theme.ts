@@ -9,7 +9,7 @@ import { colors } from "./tailwind";
 import { getState, subscribe } from "./store";
 import { arrow } from "./prelude";
 
-export type ThemeName = "Dark" | "Light";
+export type ThemeName = "Light" | "Dark" | "Black";
 
 type Theme = {
   primary: string;
@@ -26,20 +26,6 @@ type Theme = {
 
 function get_theme(theme_name: ThemeName): Theme {
   switch (theme_name) {
-    case "Dark": {
-      return {
-        primary: colors.teal[500],
-        accent: colors.teal[600],
-        background: colors.zinc[900],
-        card: colors.zinc[900],
-        border: colors.zinc[700],
-        placeholder: colors.zinc[300],
-        label: colors.zinc[200],
-        text: colors.zinc[100],
-        error: colors.sky[600],
-        notification: colors.sky[600],
-      };
-    }
     case "Light": {
       return {
         primary: colors.rose[500],
@@ -54,6 +40,34 @@ function get_theme(theme_name: ThemeName): Theme {
         notification: colors.sky[600],
       };
     }
+    case "Dark": {
+      return {
+        primary: colors.teal[500],
+        accent: colors.teal[600],
+        background: colors.zinc[900],
+        card: colors.zinc[900],
+        border: colors.zinc[700],
+        placeholder: colors.zinc[300],
+        label: colors.zinc[200],
+        text: colors.zinc[100],
+        error: colors.sky[600],
+        notification: colors.sky[600],
+      };
+    }
+    case "Black": {
+      return {
+        primary: colors.red[500],
+        accent: colors.red[600],
+        background: "black",
+        card: "black",
+        border: colors.zinc[700],
+        placeholder: colors.zinc[300],
+        label: colors.zinc[200],
+        text: colors.zinc[100],
+        error: colors.sky[600],
+        notification: colors.sky[600],
+      };
+    }
     default: {
       const _exhaustiveCheck: never = theme_name;
       return _exhaustiveCheck;
@@ -62,10 +76,10 @@ function get_theme(theme_name: ThemeName): Theme {
 }
 
 export function useTheme(): Theme {
-  const [theme, set_theme] = useState(get_theme(getState().theme));
+  const [theme, set_theme] = useState(get_theme(getState().params.theme));
   useEffect(() => {
     const unsub = subscribe(
-      (store) => store.theme,
+      (store) => store.params.theme,
       (theme_name) => set_theme(get_theme(theme_name))
     );
     return unsub;
@@ -94,16 +108,6 @@ type BS_Theme = {
 function get_bs_theme(theme_name: ThemeName): BS_Theme {
   const theme = useTheme();
   switch (theme_name) {
-    case "Dark": {
-      return {
-        primary: theme.primary,
-        background: theme.background,
-        border: theme.border,
-        placeholder: theme.placeholder,
-        text: theme.text,
-        highlight: colors.teal[500],
-      };
-    }
     case "Light": {
       return {
         primary: theme.primary,
@@ -114,6 +118,26 @@ function get_bs_theme(theme_name: ThemeName): BS_Theme {
         highlight: colors.rose[500],
       };
     }
+    case "Dark": {
+      return {
+        primary: theme.primary,
+        background: theme.background,
+        border: theme.border,
+        placeholder: theme.placeholder,
+        text: theme.text,
+        highlight: colors.teal[500],
+      };
+    }
+    case "Black": {
+      return {
+        primary: theme.primary,
+        background: theme.background,
+        border: theme.border,
+        placeholder: theme.placeholder,
+        text: theme.text,
+        highlight: colors.red[500],
+      };
+    }
     default: {
       const _exhaustiveCheck: never = theme_name;
       return _exhaustiveCheck;
@@ -122,10 +146,10 @@ function get_bs_theme(theme_name: ThemeName): BS_Theme {
 }
 
 export function useBSTheme(): BS_Theme {
-  const [theme_name, set_theme_name] = useState(getState().theme);
+  const [theme_name, set_theme_name] = useState(getState().params.theme);
   useEffect(() => {
     const unsub = subscribe(
-      (store) => store.theme,
+      (store) => store.params.theme,
       (x) => set_theme_name(x)
     );
     return unsub;
@@ -136,6 +160,20 @@ export function useBSTheme(): BS_Theme {
 function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
   const theme = useTheme();
   switch (theme_name) {
+    case "Light": {
+      return {
+        dark: false,
+        colors: {
+          ...DarkTheme.colors,
+          primary: theme.primary,
+          background: theme.background,
+          card: theme.card,
+          border: theme.border,
+          text: theme.text,
+          notification: theme.notification,
+        },
+      };
+    }
     case "Dark": {
       return {
         dark: true,
@@ -150,9 +188,9 @@ function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
         },
       };
     }
-    case "Light": {
+    case "Black": {
       return {
-        dark: false,
+        dark: true,
         colors: {
           ...DarkTheme.colors,
           primary: theme.primary,
@@ -172,10 +210,10 @@ function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
 }
 
 export function useRNTheme(): ReactNavigationTheme {
-  const [theme_name, set_theme_name] = useState(getState().theme);
+  const [theme_name, set_theme_name] = useState(getState().params.theme);
   useEffect(() => {
     const unsub = subscribe(
-      (store) => store.theme,
+      (store) => store.params.theme,
       (x) => set_theme_name(x)
     );
     return unsub;
@@ -186,6 +224,22 @@ export function useRNTheme(): ReactNavigationTheme {
 function get_rnp_theme(theme_name: ThemeName): ReactNativePaper.Theme {
   const theme = useTheme();
   switch (theme_name) {
+    case "Light": {
+      return {
+        ...PaperTheme,
+        dark: false,
+        roundness: 5,
+        colors: {
+          ...PaperTheme.colors,
+          primary: theme.primary,
+          accent: theme.accent,
+          background: theme.background,
+          placeholder: theme.placeholder,
+          text: theme.text,
+          error: theme.error,
+        },
+      };
+    }
     case "Dark": {
       return {
         ...PaperTheme,
@@ -202,10 +256,10 @@ function get_rnp_theme(theme_name: ThemeName): ReactNativePaper.Theme {
         },
       };
     }
-    case "Light": {
+    case "Black": {
       return {
         ...PaperTheme,
-        dark: false,
+        dark: true,
         roundness: 5,
         colors: {
           ...PaperTheme.colors,
@@ -226,10 +280,10 @@ function get_rnp_theme(theme_name: ThemeName): ReactNativePaper.Theme {
 }
 
 export function useRNPTheme(): ReactNativePaper.Theme {
-  const [theme_name, set_theme_name] = useState(getState().theme);
+  const [theme_name, set_theme_name] = useState(getState().params.theme);
   useEffect(() => {
     const unsub = subscribe(
-      (store) => store.theme,
+      (store) => store.params.theme,
       (x) => set_theme_name(x)
     );
     return unsub;
@@ -240,10 +294,10 @@ export function useRNPTheme(): ReactNativePaper.Theme {
 const empty_theme = extendTheme({});
 type CustomThemeType = typeof empty_theme;
 function useColorScheme(): [ThemeName, keyof CustomThemeType["colors"]] {
-  const [theme_name, set_theme_name] = useState(getState().theme);
+  const [theme_name, set_theme_name] = useState(getState().params.theme);
   useEffect(() => {
     const unsub = subscribe(
-      (store) => store.theme,
+      (store) => store.params.theme,
       (x) => set_theme_name(x)
     );
     return unsub;
@@ -307,10 +361,12 @@ function useColorScheme(): [ThemeName, keyof CustomThemeType["colors"]] {
     theme_name,
     arrow(() => {
       switch (theme_name) {
-        case "Dark":
-          return convert_scheme("teal");
         case "Light":
           return convert_scheme("rose");
+        case "Dark":
+          return convert_scheme("teal");
+        case "Black":
+          return convert_scheme("red");
         default: {
           const _exhaustiveCheck: never = theme_name;
           return _exhaustiveCheck;
