@@ -2138,31 +2138,31 @@ async function load_users() {
             ]),
           ])
         ),
-        // new Variable(
-        //   struct.value,
-        //   new Decimal(2),
-        //   true,
-        //   new Date(),
-        //   new Date(),
-        //   HashSet.ofIterable([
-        //     new Path("NICKNAME", [
-        //       [],
-        //       ["nickname", { type: "str", value: "NUMBER FOUR" }],
-        //     ]),
-        //     new Path("MOBILE", [
-        //       [],
-        //       ["mobile", { type: "str", value: "5678" }],
-        //     ]),
-        //     new Path("KNOWS ENGLISH", [
-        //       [],
-        //       ["knows_english", { type: "bool", value: false }],
-        //     ]),
-        //     new Path("Product Count", [
-        //       [],
-        //       ["product_count", { type: "u32", value: new Decimal(34) }],
-        //     ]),
-        //   ])
-        // ),
+        new Variable(
+          struct.value,
+          new Decimal(2),
+          true,
+          new Date(),
+          new Date(),
+          HashSet.ofIterable([
+            new Path("NICKNAME", [
+              [],
+              ["nickname", { type: "str", value: "NUMBER FOUR" }],
+            ]),
+            new Path("MOBILE", [
+              [],
+              ["mobile", { type: "str", value: "5678" }],
+            ]),
+            new Path("KNOWS ENGLISH", [
+              [],
+              ["knows_english", { type: "bool", value: false }],
+            ]),
+            new Path("Product Count", [
+              [],
+              ["product_count", { type: "u32", value: new Decimal(34) }],
+            ]),
+          ])
+        ),
         // new Variable(
         //   struct.value,
         //   new Decimal(3),

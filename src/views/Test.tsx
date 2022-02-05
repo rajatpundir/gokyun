@@ -120,13 +120,16 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                                   {...props}
                                   path={[["user"], "nickname"]}
                                 />
-                                <Text> </Text>
+
                                 {props.state.mode === "write" ? (
-                                  <FontAwesome
-                                    name="edit"
-                                    size={24}
-                                    color={theme.placeholder}
-                                  />
+                                  <>
+                                    <Text> </Text>
+                                    <FontAwesome
+                                      name="edit"
+                                      size={24}
+                                      color={theme.placeholder}
+                                    />
+                                  </>
                                 ) : (
                                   <></>
                                 )}
@@ -277,11 +280,14 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                               <Row>
                                 <Text>Select User </Text>
                                 {props.state.mode === "write" ? (
-                                  <FontAwesome
-                                    name="edit"
-                                    size={24}
-                                    color={theme.placeholder}
-                                  />
+                                  <>
+                                    <Text> </Text>
+                                    <FontAwesome
+                                      name="edit"
+                                      size={24}
+                                      color={theme.placeholder}
+                                    />
+                                  </>
                                 ) : (
                                   <></>
                                 )}
@@ -294,13 +300,15 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                                   {...props}
                                   path={[["user"], "nickname"]}
                                 />
-                                <Text> </Text>
                                 {props.state.mode === "write" ? (
-                                  <FontAwesome
-                                    name="edit"
-                                    size={24}
-                                    color={theme.placeholder}
-                                  />
+                                  <>
+                                    <Text> </Text>
+                                    <FontAwesome
+                                      name="edit"
+                                      size={24}
+                                      color={theme.placeholder}
+                                    />
+                                  </>
                                 ) : (
                                   <></>
                                 )}

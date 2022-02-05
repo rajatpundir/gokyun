@@ -132,6 +132,18 @@ export function useComponent(props: {
     };
     if (!state.found) {
       update_values();
+    } else if (props.found) {
+      dispatch([
+        "variable",
+        new Variable(
+          props.struct,
+          state.id as Decimal,
+          state.active,
+          state.created_at,
+          state.updated_at,
+          state.values as HashSet<Path>
+        ),
+      ]);
     }
     return () => {
       mounted = false;

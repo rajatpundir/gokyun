@@ -62,10 +62,10 @@ export type State = Immutable<{
 }>;
 
 export type Action =
-  | ["id", Decimal]
-  | ["active", boolean]
-  | ["created_at", Date]
-  | ["updated_at", Date]
+  // | ["id", Decimal]
+  // | ["active", boolean]
+  // | ["created_at", Date]
+  // | ["updated_at", Date]
   | ["value", Path]
   | ["values", HashSet<Path>]
   | ["variable", Variable]
@@ -89,22 +89,22 @@ export type Action =
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
-    case "id": {
-      state.id = action[1];
-      break;
-    }
-    case "active": {
-      state.active = action[1];
-      break;
-    }
-    case "created_at": {
-      state.created_at = action[1];
-      break;
-    }
-    case "updated_at": {
-      state.updated_at = action[1];
-      break;
-    }
+    // case "id": {
+    //   state.id = action[1];
+    //   break;
+    // }
+    // case "active": {
+    //   state.active = action[1];
+    //   break;
+    // }
+    // case "created_at": {
+    //   state.created_at = action[1];
+    //   break;
+    // }
+    // case "updated_at": {
+    //   state.updated_at = action[1];
+    //   break;
+    // }
     case "value": {
       const result = state.values.findAny((x) => x.equals(action[1]));
       if (result.isSome()) {
