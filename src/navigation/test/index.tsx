@@ -151,7 +151,6 @@ export default function Component(
                                     struct1.value.name
                                   );
                                   if (unwrap(result)) {
-                                    dispatch1(["reload", result.value]);
                                     props.navigation.goBack();
                                     return result.value;
                                   }

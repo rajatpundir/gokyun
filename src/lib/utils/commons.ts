@@ -881,32 +881,33 @@ function run_path_updates(
 export async function run_triggers(
   struct: Struct,
   state: State,
-  dispatch: React.Dispatch<Action>
+  dispatch: React.Dispatch<Action>,
+  mounted: boolean
 ) {
-  for (let trigger_name of Object.keys(struct.triggers)) {
-    const trigger = struct.triggers[trigger_name];
-    if (trigger.operation.op === "update") {
-      // if (state.mode === "write") {
-      if (state.id.equals(-1)) {
-        if (trigger.event.includes("after_creation")) {
-          run_path_updates(
-            state,
-            dispatch,
-            trigger.operation.path_updates,
-            undefined
-          );
-        }
-      } else {
-        if (trigger.event.includes("after_update")) {
-          run_path_updates(
-            state,
-            dispatch,
-            trigger.operation.path_updates,
-            undefined
-          );
+  if (mounted) {
+    for (let trigger_name of Object.keys(struct.triggers)) {
+      const trigger = struct.triggers[trigger_name];
+      if (trigger.operation.op === "update") {
+        if (state.id.equals(-1)) {
+          if (trigger.event.includes("after_creation")) {
+            run_path_updates(
+              state,
+              dispatch,
+              trigger.operation.path_updates,
+              undefined
+            );
+          }
+        } else {
+          if (trigger.event.includes("after_update")) {
+            run_path_updates(
+              state,
+              dispatch,
+              trigger.operation.path_updates,
+              undefined
+            );
+          }
         }
       }
-      // }
     }
   }
 }
@@ -914,25 +915,28 @@ export async function run_triggers(
 export async function compute_checks(
   struct: Struct,
   state: State,
-  dispatch: React.Dispatch<Action>
+  dispatch: React.Dispatch<Action>,
+  mounted: boolean
 ) {
-  for (let check_name of Object.keys(struct.checks)) {
-    let computed_result: Result<boolean> = new Err(
-      new CustomError([errors.ErrUnexpected] as ErrMsg)
-    );
-    const check = struct.checks[check_name];
-    const expr = check[0];
-    const result = get_symbols(state, expr as LispExpression);
-    if (unwrap(result)) {
-      const symbols = result.value;
-      const expr_result = expr.get_result(symbols);
-      if (unwrap(expr_result)) {
-        if (expr_result.value instanceof Bool) {
-          computed_result = new Ok(expr_result.value.value as boolean);
+  if (mounted) {
+    for (let check_name of Object.keys(struct.checks)) {
+      let computed_result: Result<boolean> = new Err(
+        new CustomError([errors.ErrUnexpected] as ErrMsg)
+      );
+      const check = struct.checks[check_name];
+      const expr = check[0];
+      const result = get_symbols(state, expr as LispExpression);
+      if (unwrap(result)) {
+        const symbols = result.value;
+        const expr_result = expr.get_result(symbols);
+        if (unwrap(expr_result)) {
+          if (expr_result.value instanceof Bool) {
+            computed_result = new Ok(expr_result.value.value as boolean);
+          }
         }
       }
+      dispatch(["check", check_name, computed_result]);
     }
-    dispatch(["check", check_name, computed_result]);
   }
 }
 

@@ -93,60 +93,77 @@ export function useComponent(props: {
   });
 
   useLayoutEffect(() => {
+    let mounted = true;
     const update_values = async () => {
-      if (state.id.equals(-1)) {
-        dispatch([
-          "variable",
-          new Variable(
-            props.struct,
-            new Decimal(-1),
-            state.active,
-            state.created_at,
-            state.updated_at,
-            get_creation_paths(props.struct, state)
-          ),
-        ]);
-      } else {
-        const result = await get_variable(
-          props.struct,
-          true,
-          undefined,
-          state.id as Decimal,
-          get_filter_paths(
-            props.struct,
-            state.labels as Array<[string, PathString]>,
-            state.user_paths as Array<PathString>,
-            state.borrows as Array<string>
-          )
-        );
-        if (unwrap(result)) {
-          dispatch(["variable", result.value]);
+      if (mounted) {
+        if (state.id.equals(-1)) {
+          dispatch([
+            "variable",
+            new Variable(
+              props.struct,
+              new Decimal(-1),
+              state.active,
+              state.created_at,
+              state.updated_at,
+              get_creation_paths(props.struct, state)
+            ),
+          ]);
         } else {
-          dispatch(["found", false]);
+          const result = await get_variable(
+            props.struct,
+            true,
+            undefined,
+            state.id as Decimal,
+            get_filter_paths(
+              props.struct,
+              state.labels as Array<[string, PathString]>,
+              state.user_paths as Array<PathString>,
+              state.borrows as Array<string>
+            )
+          );
+          if (unwrap(result)) {
+            dispatch(["variable", result.value]);
+          } else {
+            dispatch(["found", false]);
+          }
         }
       }
     };
-    update_values();
+    if (!state.found) {
+      update_values();
+    }
+    return () => {
+      mounted = false;
+    };
   }, [state.id]);
 
   useLayoutEffect(() => {
+    let mounted = true;
     if (state.mode === "write") {
-      run_triggers(props.struct, state, dispatch);
+      run_triggers(props.struct, state, dispatch, mounted);
     }
+    return () => {
+      mounted = false;
+    };
   }, [state.id, state.mode, state.event_trigger]);
 
   useLayoutEffect(() => {
+    let mounted = true;
     if (state.mode === "write") {
-      compute_checks(props.struct, state, dispatch);
+      compute_checks(props.struct, state, dispatch, mounted);
     }
+    return () => {
+      mounted = false;
+    };
   }, [state.id, state.mode, state.check_trigger]);
 
   useLayoutEffect(() => {
+    let mounted = true;
     if (!state.id.equals(-1)) {
       const unsub = subscribe(
         (store) => store.broker,
         (broker) => {
-          if (props.struct.name in broker) {
+          if (mounted && props.struct.name in broker) {
             apply(broker[props.struct.name as BrokerKey], (it) => {
               if (it.update.includes(state.id.toNumber())) {
                 dispatch(["reload", state.id as Decimal]);
@@ -163,6 +180,9 @@ export function useComponent(props: {
       );
       return unsub;
     }
+    return () => {
+      mounted = false;
+    };
   }, [state.id]);
 
   const jsx: JSX.Element = arrow(() => {
