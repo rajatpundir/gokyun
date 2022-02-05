@@ -33,26 +33,6 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
           <Text>{props.state.id.toString()}</Text>
         </Column>
       </Row>
-      <Row justifyContent={"space-between"}>
-        <Column>
-          <Text bold color={theme.label}>
-            Created At
-          </Text>
-        </Column>
-        <Column>
-          <Text>{props.state.created_at.toString()}</Text>
-        </Column>
-      </Row>
-      <Row justifyContent={"space-between"}>
-        <Column>
-          <Text bold color={theme.label}>
-            Update AT
-          </Text>
-        </Column>
-        <Column>
-          <Text>{props.state.updated_at.toString()}</Text>
-        </Column>
-      </Row>
       <Template
         {...props}
         type={"CLB"}
