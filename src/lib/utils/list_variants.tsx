@@ -254,13 +254,12 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
 
 export type SheetVariantProps = {
   element: JSX.Element;
-  RenderElement: (variable: Variable) => string;
+  RenderElement: (variable: Variable) => (selected: boolean) => JSX.Element;
   title?: string;
   bsm_ref?: React.RefObject<BottomSheetModalMethods>;
 };
 
 function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
-  const theme = useTheme();
   const bs_theme = useBSTheme();
   const bsm_ref_1 = useRef<BottomSheetModal>(null);
   const bsm_ref = apply(props.bsm_ref, (it) => {
@@ -278,16 +277,10 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
             props.update_parent_values(list_item.item);
             bsm_ref.current?.forceClose();
           }}
-          flex={1}
-          flexDirection={"row"}
-          py={"0.5"}
         >
-          {props.selected.equals(list_item.item.id) ? (
-            <Ionicons name="radio-button-on" size={24} color={theme.primary} />
-          ) : (
-            <Ionicons name="radio-button-off" size={24} color={theme.primary} />
+          {props.RenderElement(list_item.item)(
+            props.selected.equals(list_item.item.id)
           )}
-          <Text pl={1}>{props.RenderElement(list_item.item)}</Text>
         </Pressable>
       );
     },

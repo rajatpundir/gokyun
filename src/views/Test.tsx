@@ -26,7 +26,7 @@ import {
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
 import { RenderListVariantProps, RenderListElement } from "../lib/utils/list";
-import { useTheme } from "../lib/utils/theme";
+import { useTheme, useBSTheme } from "../lib/utils/theme";
 import {
   get_struct_counter,
   increment_struct_counter,
@@ -41,6 +41,7 @@ const views = {
 
 const common_default_component: ComponentViews[string]["create"] = (props) => {
   const theme = useTheme();
+  const bs_theme = useBSTheme();
   const navigation = useNavigation();
   return (
     <ScrollView m={"2"}>
@@ -319,18 +320,41 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    RenderElement: (variable) => {
-                      const result = variable.paths.findAny((x) =>
-                        compare_paths(get_path_string(x), [[], "nickname"])
-                      );
-                      if (result.isSome()) {
-                        const path = result.get();
-                        if (path.path[1][1].type === "str") {
-                          return path.path[1][1].value;
-                        }
-                      }
-                      return variable.id.toString();
-                    },
+                    RenderElement: (variable) => (selected: boolean) =>
+                      (
+                        <Row py={"0.5"}>
+                          {selected ? (
+                            <Ionicons
+                              name="radio-button-on"
+                              size={24}
+                              color={bs_theme.primary}
+                            />
+                          ) : (
+                            <Ionicons
+                              name="radio-button-off"
+                              size={24}
+                              color={bs_theme.primary}
+                            />
+                          )}
+                          <Text pl={1}>
+                            {arrow(() => {
+                              const result = variable.paths.findAny((x) =>
+                                compare_paths(get_path_string(x), [
+                                  [],
+                                  "nickname",
+                                ])
+                              );
+                              if (result.isSome()) {
+                                const path = result.get();
+                                if (path.path[1][1].type === "str") {
+                                  return path.path[1][1].value;
+                                }
+                              }
+                              return variable.id.toString();
+                            })}
+                          </Text>
+                        </Row>
+                      ),
                   },
                 ],
               },
