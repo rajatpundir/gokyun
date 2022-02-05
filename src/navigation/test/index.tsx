@@ -135,7 +135,7 @@ export default function Component(
           })}
           RightElement={
             <>
-              {state1.found ? (
+              {state1.found || state1.values.length() !== 0 ? (
                 state1.mode === "write" ? (
                   <Row space={"2"}>
                     <Pressable
