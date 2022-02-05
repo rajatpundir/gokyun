@@ -29,6 +29,8 @@ import {
 import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
 
 import Test from "../test";
+import { HashSet } from "prelude-ts";
+import { Path } from "../../lib/utils/variable";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -37,6 +39,7 @@ export type NavigatorParams = {
   SelectionModal: SelectionModalProps;
   Test: {
     id: number;
+    values?: HashSet<Path>;
   };
 };
 

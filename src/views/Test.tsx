@@ -34,6 +34,7 @@ import {
   replace_variable,
 } from "../lib/utils/db";
 import { HashSet } from "prelude-ts";
+import { cloneDeep } from "lodash";
 
 const views = {
   User: UserViews,
@@ -487,7 +488,10 @@ export default {
             >
               <Pressable
                 onPress={() =>
-                  navigation.navigate("Test", { id: props.state.id.toNumber() })
+                  navigation.navigate("Test", {
+                    id: props.state.id.toNumber(),
+                    values: cloneDeep(props.state.values as HashSet<Path>),
+                  })
                 }
                 flexDirection={"row"}
                 alignItems={"center"}

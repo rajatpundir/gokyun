@@ -209,7 +209,7 @@ export function useComponent(props: {
           />
         );
       } else {
-        if (state.found && state.values.length()) {
+        if (state.values.length() !== 0) {
           return (
             <props.update
               struct={props.struct}
@@ -238,7 +238,7 @@ export function useComponent(props: {
         }
       }
     } else {
-      if (state.found && state.values.length()) {
+      if (state.values.length() !== 0) {
         return (
           <props.show
             struct={props.struct}

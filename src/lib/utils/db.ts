@@ -351,7 +351,6 @@ function query(
       .filter((x) => x !== "")
       .map((x) => `(${x})`)
       .join(" \nAND ");
-    console.log(filters_stmt);
     if (init_filters_stmt !== "") {
       it.push(`(${init_filters_stmt})`);
     }

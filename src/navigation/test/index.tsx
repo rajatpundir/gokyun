@@ -31,7 +31,9 @@ export default function Component(
       active: true,
       created_at: new Date(),
       updated_at: new Date(),
-      values: HashSet.of(),
+      values: props.route.params.values
+        ? props.route.params.values
+        : HashSet.of(),
       init_values: HashSet.of(),
       extensions: {},
       labels: [
