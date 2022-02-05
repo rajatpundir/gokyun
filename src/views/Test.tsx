@@ -11,6 +11,7 @@ import {
 import { ScrollView, Row, Text, Pressable, Column } from "native-base";
 import {
   ComponentViews,
+  DeleteButton,
   OtherComponent,
   SearchWrapper,
 } from "../lib/utils/component";
@@ -521,7 +522,28 @@ export default {
                 </Text>
                 <Feather name="edit-3" size={16} color={theme.text} />
               </Pressable>
-              <Pressable
+              <DeleteButton
+                message="Delete Test?"
+                element={
+                  <Row
+                    justifyContent={"space-between"}
+                    alignItems={"center"}
+                    px={"2"}
+                    py={"1.5"}
+                    rounded={"sm"}
+                    borderWidth={"1"}
+                    borderColor={theme.primary}
+                  >
+                    <Text bold color={theme.text}>
+                      Delete{" "}
+                    </Text>
+                    <MaterialIcons
+                      name="delete-outline"
+                      size={16}
+                      color={theme.text}
+                    />
+                  </Row>
+                }
                 onPress={async () => {
                   await remove_variables_in_db(
                     new Decimal(0),
@@ -529,24 +551,7 @@ export default {
                     [props.state.id as Decimal]
                   );
                 }}
-                flexDirection={"row"}
-                alignItems={"center"}
-                px={"2"}
-                py={"1.5"}
-                mx={"1"}
-                rounded={"sm"}
-                borderWidth={"1"}
-                borderColor={theme.primary}
-              >
-                <Text bold color={theme.text}>
-                  Delete{" "}
-                </Text>
-                <MaterialIcons
-                  name="delete-outline"
-                  size={16}
-                  color={theme.text}
-                />
-              </Pressable>
+              />
             </Row>
           )}
         </Column>

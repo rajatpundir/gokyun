@@ -6,7 +6,11 @@ import { NavigatorProps as RootNavigatorProps } from "../main";
 import { get_struct } from "../../lib/utils/schema";
 import { apply, arrow, unwrap } from "../../lib/utils/prelude";
 import { views } from "../../views";
-import { ModalHeader, useComponent } from "../../lib/utils/component";
+import {
+  DeleteButton,
+  ModalHeader,
+  useComponent,
+} from "../../lib/utils/component";
 import { Row, Pressable, Text } from "native-base";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import {
@@ -204,7 +208,28 @@ export default function Component(
                   </Row>
                 ) : (
                   <Row space={"2"}>
-                    <Pressable
+                    <DeleteButton
+                      message="Delete Test?"
+                      element={
+                        <Row
+                          justifyContent={"space-between"}
+                          alignItems={"center"}
+                          px={"2"}
+                          py={"1.5"}
+                          rounded={"sm"}
+                          borderWidth={"1"}
+                          borderColor={theme.primary}
+                        >
+                          <Text bold color={theme.text}>
+                            Delete{" "}
+                          </Text>
+                          <MaterialIcons
+                            name="delete-outline"
+                            size={16}
+                            color={theme.text}
+                          />
+                        </Row>
+                      }
                       onPress={async () => {
                         await remove_variables_in_db(
                           new Decimal(0),
@@ -213,23 +238,7 @@ export default function Component(
                         );
                         props.navigation.goBack();
                       }}
-                      flexDirection={"row"}
-                      alignItems={"center"}
-                      px={"2"}
-                      py={"1.5"}
-                      rounded={"sm"}
-                      borderWidth={"1"}
-                      borderColor={theme.primary}
-                    >
-                      <Text bold color={theme.text}>
-                        Delete{" "}
-                      </Text>
-                      <MaterialIcons
-                        name="delete-outline"
-                        size={16}
-                        color={theme.text}
-                      />
-                    </Pressable>
+                    />
                     <Pressable
                       onPress={() => dispatch1(["mode", "write"])}
                       flexDirection={"row"}

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
@@ -23,10 +23,12 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { colors } from "./tailwind";
+import { colors, tw } from "./tailwind";
 import { Text, Input, Pressable, Row, Column, Spinner } from "native-base";
 import { BrokerKey, getState, setState, subscribe } from "./store";
-import { useTheme } from "./theme";
+import { useBSTheme, useTheme } from "./theme";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
 
 export type ComponentViews = Record<
   string,
@@ -649,5 +651,71 @@ export function ModalHeader(props: {
       </Pressable>
       {props.RightElement ? props.RightElement : <></>}
     </Row>
+  );
+}
+
+export function DeleteButton(props: {
+  message: string;
+  element: JSX.Element;
+  onPress: () => void;
+}) {
+  const bs_theme = useBSTheme();
+  const bsm_ref = useRef<BottomSheetModal>(null);
+  return (
+    <>
+      <Pressable onPress={() => bsm_ref.current?.present()}>
+        {props.element}
+      </Pressable>
+      <Portal>
+        <BottomSheetModal
+          ref={bsm_ref}
+          snapPoints={["20%"]}
+          index={0}
+          backgroundStyle={tw.style(["border"], {
+            backgroundColor: bs_theme.background,
+            borderColor: bs_theme.primary,
+          })}
+        >
+          <Column px={"4"} py={"1"}>
+            <Text fontSize={"md"}>{props.message}</Text>
+            <Row
+              my={"3"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              space={"3"}
+            >
+              <Pressable
+                flex={1}
+                onPress={() => bsm_ref.current?.forceClose()}
+                borderColor={bs_theme.primary}
+                borderWidth={"1"}
+                borderRadius={"xs"}
+                px={"2"}
+                py={"1"}
+              >
+                <Text fontSize={"lg"} textAlign={"center"}>
+                  Cancel
+                </Text>
+              </Pressable>
+              <Pressable
+                flex={1}
+                onPress={() => {
+                  bsm_ref.current?.forceClose();
+                  props.onPress();
+                }}
+                backgroundColor={bs_theme.primary}
+                borderRadius={"xs"}
+                px={"2"}
+                py={"1"}
+              >
+                <Text fontSize={"lg"} textAlign={"center"}>
+                  Delete
+                </Text>
+              </Pressable>
+            </Row>
+          </Column>
+        </BottomSheetModal>
+      </Portal>
+    </>
   );
 }
