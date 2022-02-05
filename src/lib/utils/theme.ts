@@ -7,6 +7,7 @@ import { extendTheme } from "native-base";
 import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { colors } from "./tailwind";
 import { getState, subscribe } from "./store";
+import { arrow } from "./prelude";
 
 export type ThemeName = "Dark" | "Light";
 
@@ -238,7 +239,7 @@ export function useRNPTheme(): ReactNativePaper.Theme {
 
 const empty_theme = extendTheme({});
 type CustomThemeType = typeof empty_theme;
-function useColorScheme(): keyof CustomThemeType["colors"] {
+function useColorScheme(): [ThemeName, keyof CustomThemeType["colors"]] {
   const [theme_name, set_theme_name] = useState(getState().theme);
   useEffect(() => {
     const unsub = subscribe(
@@ -302,23 +303,28 @@ function useColorScheme(): keyof CustomThemeType["colors"] {
       }
     }
   };
-  switch (theme_name) {
-    case "Dark":
-      return convert_scheme("teal");
-    case "Light":
-      return convert_scheme("rose");
-    default: {
-      const _exhaustiveCheck: never = theme_name;
-      return _exhaustiveCheck;
-    }
-  }
+  return [
+    theme_name,
+    arrow(() => {
+      switch (theme_name) {
+        case "Dark":
+          return convert_scheme("teal");
+        case "Light":
+          return convert_scheme("rose");
+        default: {
+          const _exhaustiveCheck: never = theme_name;
+          return _exhaustiveCheck;
+        }
+      }
+    }),
+  ];
 }
 
 export function useNBTheme(): CustomThemeType {
-  const colorScheme = useColorScheme();
+  const [theme_name, colorScheme] = useColorScheme();
   return extendTheme({
     config: {
-      initialColorMode: "dark",
+      initialColorMode: theme_name === "Light" ? "light" : "dark",
     },
     components: {
       Progress: {

@@ -135,7 +135,7 @@ export default function Component(
             <>
               {state1.found ? (
                 state1.mode === "write" ? (
-                  <Row>
+                  <Row space={"2"}>
                     <Pressable
                       onPress={async () => {
                         try {
@@ -170,7 +170,6 @@ export default function Component(
                       alignItems={"center"}
                       px={"3"}
                       py={"2"}
-                      mx={"1"}
                       rounded={"sm"}
                       backgroundColor={theme.primary}
                     >
@@ -189,7 +188,6 @@ export default function Component(
                       alignItems={"center"}
                       px={"2"}
                       py={"1.5"}
-                      mx={"1"}
                       rounded={"sm"}
                       borderWidth={"1"}
                       borderColor={theme.primary}
@@ -203,7 +201,7 @@ export default function Component(
                     </Pressable>
                   </Row>
                 ) : (
-                  <Row>
+                  <Row space={"2"}>
                     <Pressable
                       onPress={async () => {
                         await remove_variables_in_db(
@@ -217,7 +215,6 @@ export default function Component(
                       alignItems={"center"}
                       px={"2"}
                       py={"1.5"}
-                      mx={"1"}
                       rounded={"sm"}
                       borderWidth={"1"}
                       borderColor={theme.primary}
@@ -237,7 +234,6 @@ export default function Component(
                       alignItems={"center"}
                       px={"2"}
                       py={"1.5"}
-                      mx={"1"}
                       rounded={"sm"}
                       borderWidth={"1"}
                       borderColor={theme.primary}

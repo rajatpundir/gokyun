@@ -1,7 +1,13 @@
 import React from "react";
 import Decimal from "decimal.js";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { ScrollView, Row, Text, Pressable, Column } from "native-base";
 import {
   ComponentViews,
@@ -11,11 +17,23 @@ import {
 import { Field } from "../lib/utils/field";
 import { Template } from "../lib/utils/templates";
 import { apply, arrow, unwrap } from "../lib/utils/prelude";
-import { compare_paths, get_path_string } from "../lib/utils/variable";
+import {
+  compare_paths,
+  get_path_string,
+  Path,
+  Variable,
+} from "../lib/utils/variable";
 import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
 import { RenderListVariantProps, RenderListElement } from "../lib/utils/list";
 import { useTheme } from "../lib/utils/theme";
+import {
+  get_struct_counter,
+  increment_struct_counter,
+  remove_variables_in_db,
+  replace_variable,
+} from "../lib/utils/db";
+import { HashSet } from "prelude-ts";
 
 const views = {
   User: UserViews,
@@ -322,66 +340,194 @@ export default {
     update: common_default_component,
     show: common_default_component,
   },
-  Card: {
-    create: (props) => <></>,
-    update: (props) => <></>,
-    show: (props) => {
+  Card: arrow(() => {
+    const common: ComponentViews[string]["show"] = (props) => {
       const theme = useTheme();
       const navigation = useNavigation();
       return (
-        <Pressable
-          onPress={() =>
-            navigation.navigate("Test", { id: props.state.id.toNumber() })
-          }
+        <Column
+          p={"2"}
+          m={"1"}
+          borderWidth={"1"}
+          borderRadius={"md"}
+          borderColor={theme.border}
+          backgroundColor={arrow(() => {
+            if (props.selected) {
+              return theme.border;
+            }
+            return theme.background;
+          })}
         >
-          <Column
-            p={"2"}
-            m={"1"}
-            borderWidth={"1"}
-            borderRadius={"md"}
-            borderColor={theme.border}
-            backgroundColor={arrow(() => {
-              if (props.selected) {
-                return theme.border;
-              }
-              return theme.background;
-            })}
-          >
-            <Row justifyContent={"space-between"}>
-              <Column>
-                <Text bold color={theme.label}>
-                  Unique ID
-                </Text>
-              </Column>
-              <Column>
-                <Text>{props.state.id.toString()}</Text>
-              </Column>
+          <Row justifyContent={"space-between"}>
+            <Column>
+              <Text bold color={theme.label}>
+                Unique ID
+              </Text>
+            </Column>
+            <Column>
+              <Text>{props.state.id.toString()}</Text>
+            </Column>
+          </Row>
+          <Template
+            {...props}
+            type={"CLB"}
+            fields={[
+              "str",
+              "lstr",
+              "clob",
+              "i32",
+              "u32",
+              "i64",
+              "u64",
+              "idouble",
+              "udouble",
+              "idecimal",
+              "udecimal",
+              "bool",
+              "date",
+              "time",
+              "timestamp",
+              [["user"], "nickname"],
+            ]}
+          />
+          {props.state.mode === "write" ? (
+            <Row
+              justifyContent={"flex-start"}
+              alignItems={"center"}
+              space={"2"}
+            >
+              <Pressable
+                onPress={async () => {
+                  try {
+                    await replace_variable(
+                      new Decimal(0),
+                      new Variable(
+                        props.struct,
+                        await arrow(async () => {
+                          if (props.state.id.equals(-1)) {
+                            await increment_struct_counter(props.struct.name);
+                            const result = await get_struct_counter(
+                              props.struct.name
+                            );
+                            if (unwrap(result)) {
+                              //  props.navigation.goBack();
+                              return result.value;
+                            }
+                          }
+                          return props.state.id as Decimal;
+                        }),
+                        props.state.active,
+                        props.state.created_at,
+                        props.state.updated_at,
+                        props.state.values as HashSet<Path>
+                      )
+                    );
+                  } catch (e) {}
+                }}
+                flexDirection={"row"}
+                alignItems={"center"}
+                px={"3"}
+                py={"2"}
+                mx={"1"}
+                rounded={"sm"}
+                backgroundColor={theme.primary}
+              >
+                <Text fontWeight={"bold"}>Save </Text>
+                <Feather name="check" size={16} color={theme.text} />
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  if (props.state.id.equals(-1)) {
+                  } else {
+                    props.dispatch(["mode", "read"]);
+                  }
+                }}
+                flexDirection={"row"}
+                alignItems={"center"}
+                px={"2"}
+                py={"1.5"}
+                mx={"1"}
+                rounded={"sm"}
+                borderWidth={"1"}
+                borderColor={theme.primary}
+              >
+                <Text>Cancel </Text>
+                <MaterialIcons name="clear" size={16} color={theme.text} />
+              </Pressable>
             </Row>
-            <Template
-              {...props}
-              type={"CLB"}
-              fields={[
-                "str",
-                "lstr",
-                "clob",
-                "i32",
-                "u32",
-                "i64",
-                "u64",
-                "idouble",
-                "udouble",
-                "idecimal",
-                "udecimal",
-                "bool",
-                "date",
-                "time",
-                "timestamp",
-                [["user"], "nickname"],
-              ]}
-            />
-          </Column>
-        </Pressable>
+          ) : (
+            <Row
+              justifyContent={"flex-start"}
+              alignItems={"center"}
+              space={"2"}
+            >
+              <Pressable
+                onPress={() =>
+                  navigation.navigate("Test", { id: props.state.id.toNumber() })
+                }
+                flexDirection={"row"}
+                alignItems={"center"}
+                px={"2"}
+                py={"1.5"}
+                rounded={"sm"}
+                borderWidth={"1"}
+                borderColor={theme.primary}
+              >
+                <Text bold color={theme.text}>
+                  Open{" "}
+                </Text>
+                <Ionicons name="open-outline" size={16} color={theme.text} />
+              </Pressable>
+              <Pressable
+                onPress={() => props.dispatch(["mode", "write"])}
+                flexDirection={"row"}
+                alignItems={"center"}
+                px={"2"}
+                py={"1.5"}
+                rounded={"sm"}
+                borderWidth={"1"}
+                borderColor={theme.primary}
+              >
+                <Text bold color={theme.text}>
+                  Edit{" "}
+                </Text>
+                <Feather name="edit-3" size={16} color={theme.text} />
+              </Pressable>
+              <Pressable
+                onPress={async () => {
+                  await remove_variables_in_db(
+                    new Decimal(0),
+                    props.struct.name,
+                    [props.state.id as Decimal]
+                  );
+                }}
+                flexDirection={"row"}
+                alignItems={"center"}
+                px={"2"}
+                py={"1.5"}
+                mx={"1"}
+                rounded={"sm"}
+                borderWidth={"1"}
+                borderColor={theme.primary}
+              >
+                <Text bold color={theme.text}>
+                  Delete{" "}
+                </Text>
+                <MaterialIcons
+                  name="delete-outline"
+                  size={16}
+                  color={theme.text}
+                />
+              </Pressable>
+            </Row>
+          )}
+        </Column>
       );
-    },
-  },
+    };
+    return {
+      create: (props) => <></>,
+      update: common,
+      show: common,
+    } as ComponentViews[string];
+  }),
 } as ComponentViews;
