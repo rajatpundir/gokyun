@@ -21,10 +21,10 @@ import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
 import {
-  theme_nb,
-  useRNPTheme,
-  useRNTheme,
   useTheme,
+  useRNTheme,
+  useNBTheme,
+  useRNPTheme,
 } from "../../lib/utils/theme";
 import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
 
@@ -42,8 +42,9 @@ export type NavigatorParams = {
 
 function Component() {
   const theme = useTheme();
-  const theme_rnp = useRNPTheme();
   const theme_rn = useRNTheme();
+  const theme_nb = useNBTheme();
+  const theme_rnp = useRNPTheme();
   useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
