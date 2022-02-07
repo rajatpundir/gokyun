@@ -16,7 +16,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import useAssets from "../../lib/hooks/useAssets";
 
-import { Navigator, NavigatorParams as MainTabNavigatorParams } from "./tree";
+import MainNavigator, { NavigatorParams as MainNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
 import { apply } from "../../lib/utils/prelude";
@@ -29,14 +29,16 @@ import {
 import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
 
 import Test from "../test";
+import Loader from "../loader";
 import { HashSet } from "prelude-ts";
 import { Path } from "../../lib/utils/variable";
 
 // Ignore react navigation error related to serializability of props passed
 
 export type NavigatorParams = {
-  Main: NavigatorScreenParams<MainTabNavigatorParams> | undefined;
+  Main: NavigatorScreenParams<MainNavigatorParams> | undefined;
   SelectionModal: SelectionModalProps;
+  Loader: {};
   Test: {
     id: number;
     values?: HashSet<Path>;
@@ -48,6 +50,7 @@ function Component() {
   const theme_rn = useRNTheme();
   const theme_nb = useNBTheme();
   const theme_rnp = useRNPTheme();
+
   useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
@@ -60,13 +63,17 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Main">
+                        <Stack.Navigator initialRouteName="Loader">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
                             }}
                           >
-                            <Stack.Screen name="Main" component={Navigator} />
+                            <Stack.Screen
+                              name="Main"
+                              component={MainNavigator}
+                            />
+                            <Stack.Screen name="Loader" component={Loader} />
                             <Stack.Group
                               screenOptions={{
                                 presentation: "modal",

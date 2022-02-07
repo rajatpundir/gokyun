@@ -10,8 +10,8 @@ import { CompositeScreenProps } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 
 import {
-  NavigatorParams as ParentNavigatorParams,
-  NavigatorProps as ParentNavigatorProps,
+  NavigatorParams as RootNavigatorParams,
+  NavigatorProps as RootNavigatorProps,
 } from "..";
 
 import Clans from "./clans";
@@ -30,7 +30,7 @@ export type NavigatorParams = {
   System: undefined;
 };
 
-export function Navigator(props: ParentNavigatorProps<"Main">) {
+export default function Navigator(props: RootNavigatorProps<"Main">) {
   return (
     <>
       <AppHeader />
@@ -123,7 +123,7 @@ export function Navigator(props: ParentNavigatorProps<"Main">) {
 export type NavigatorProps<Screen extends keyof NavigatorParams> =
   CompositeScreenProps<
     BottomTabScreenProps<NavigatorParams, Screen>,
-    NativeStackScreenProps<ParentNavigatorParams>
+    NativeStackScreenProps<RootNavigatorParams>
   >;
 
 const BottomTab = createBottomTabNavigator<NavigatorParams>();

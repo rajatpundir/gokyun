@@ -12,29 +12,26 @@ import {
   NavigatorProps as ParentNavigatorProps,
 } from "../index";
 
-import { NavigatorParams as RootNavigatorParams } from "../../";
+import { NavigatorParams as RootNavigatorParams } from "../../main";
 
-import Countries from "./countries";
-import Languages from "./languages";
-import Tags from "./tags";
-import Categories from "./categories";
-import Tests from "./tests";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { tw } from "../../../../lib/utils/tailwind";
+import { tw } from "../../../lib/utils/tailwind";
+
+import URL from "./url";
+import Scrapper from "./scrapper";
+import Upload from "./upload";
 
 export type NavigatorParams = {
-  Countries: undefined;
-  Languages: undefined;
-  Tags: undefined;
-  Categories: undefined;
-  Tests: undefined;
+  URL: undefined;
+  Scrapper: undefined;
+  Upload: undefined;
 };
 
-export default function Navigator(props: ParentNavigatorProps<"System">) {
+export default function Navigator(props: ParentNavigatorProps<"Linker">) {
   return (
     <TopTab.Navigator
-      initialRouteName="Tests"
+      initialRouteName="URL"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,
@@ -46,11 +43,9 @@ export default function Navigator(props: ParentNavigatorProps<"System">) {
         }),
       }}
     >
-      <TopTab.Screen name="Countries" component={Countries} />
-      <TopTab.Screen name="Languages" component={Languages} />
-      <TopTab.Screen name="Tags" component={Tags} />
-      <TopTab.Screen name="Categories" component={Categories} />
-      <TopTab.Screen name="Tests" component={Tests} />
+      <TopTab.Screen name="URL" component={URL} />
+      <TopTab.Screen name="Scrapper" component={Scrapper} />
+      <TopTab.Screen name="Upload" component={Upload} />
     </TopTab.Navigator>
   );
 }
