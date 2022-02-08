@@ -18,20 +18,22 @@ import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { tw } from "../../../lib/utils/tailwind";
 
-import Image from "./image";
+import Image from "./images";
+import Video from "./videos";
 import Docs from "./docs";
-import APK from "./apk";
+import Apps from "./apps";
 
 export type NavigatorParams = {
-  Image: undefined;
+  Images: undefined;
+  Videos: undefined;
   Docs: undefined;
-  APK: undefined;
+  Apps: undefined;
 };
 
 export default function Navigator(props: ParentNavigatorProps<"Linker">) {
   return (
     <TopTab.Navigator
-      initialRouteName="Image"
+      initialRouteName="Images"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,
@@ -43,9 +45,10 @@ export default function Navigator(props: ParentNavigatorProps<"Linker">) {
         }),
       }}
     >
-      <TopTab.Screen name="Image" component={Image} />
+      <TopTab.Screen name="Images" component={Image} />
+      <TopTab.Screen name="Videos" component={Video} />
       <TopTab.Screen name="Docs" component={Docs} />
-      <TopTab.Screen name="APK" component={APK} />
+      <TopTab.Screen name="Apps" component={Apps} />
     </TopTab.Navigator>
   );
 }

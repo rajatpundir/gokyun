@@ -2,6 +2,6 @@ import * as React from "react";
 
 import { NavigatorProps as ParentNavigatorProps } from "..";
 
-export default function Component(props: ParentNavigatorProps<"APK">) {
+export default function Component(props: ParentNavigatorProps<"Videos">) {
   return <></>;
 }

@@ -21,11 +21,13 @@ import { tw } from "../../../lib/utils/tailwind";
 import URL from "./url";
 import Scrapper from "./scrapper";
 import Upload from "./upload";
+import Links from "./links";
 
 export type NavigatorParams = {
   URL: undefined;
   Scrapper: undefined;
   Upload: undefined;
+  Links: undefined;
 };
 
 export default function Navigator(props: ParentNavigatorProps<"Linker">) {
@@ -46,6 +48,7 @@ export default function Navigator(props: ParentNavigatorProps<"Linker">) {
       <TopTab.Screen name="URL" component={URL} />
       <TopTab.Screen name="Scrapper" component={Scrapper} />
       <TopTab.Screen name="Upload" component={Upload} />
+      <TopTab.Screen name="Links" component={Links} />
     </TopTab.Navigator>
   );
 }
