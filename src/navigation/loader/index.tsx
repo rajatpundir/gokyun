@@ -29,7 +29,7 @@ export default function Navigator(props: RootNavigatorProps<"Loader">) {
     <>
       <AppHeader />
       <BottomTab.Navigator
-        initialRouteName="Search"
+        initialRouteName="Linker"
         screenOptions={{
           lazy: true,
           headerShown: false,
