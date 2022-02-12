@@ -40,6 +40,7 @@ import { CustomError, Err, Ok, Result } from "./prelude";
 // Resource {
 // 	type: ResourceType
 // 	url: string
+//  name: string
 // }
 
 const schema: Record<

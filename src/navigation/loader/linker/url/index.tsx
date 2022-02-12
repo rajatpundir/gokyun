@@ -116,7 +116,6 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
                             uri: resource.url,
                           },
                           resizeMode: "contain",
-                          // shouldPlay: true,
                         }}
                         fullscreen={{
                           visible: false,
