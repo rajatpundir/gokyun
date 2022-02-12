@@ -111,3 +111,24 @@ export function get_array_item<T>(
     }
   );
 }
+
+export async function check_url(url: string) {
+  const x = await fetch(url, { method: "GET" });
+  console.log(x.status, x.ok, x.url);
+  return x.ok;
+}
+
+import { Image } from "react-native";
+
+export async function get_image_size(url: URL): Promise<[URL, number, number]> {
+  return new Promise((resolve, reject) => {
+    Image.getSize(
+      url.toString().replace(/\/+$/, ""),
+      (width, height) => resolve([url, width, height]),
+      (err) => {
+        console.log("Error loading image: ", err);
+        reject(String(err));
+      }
+    );
+  });
+}
