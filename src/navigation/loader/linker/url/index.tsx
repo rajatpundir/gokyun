@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import VideoPlayer from "expo-video-player";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import {
   Column,
@@ -11,26 +12,14 @@ import {
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../../../lib/utils/theme";
-import {
-  apply,
-  arrow,
-  check_url,
-  get_image_size,
-} from "../../../../lib/utils/prelude";
-
-type ResourceType = undefined | "Image" | "Video";
+import { arrow, get_resource, Resource } from "../../../../lib/utils/prelude";
 
 export default function Component(props: ParentNavigatorProps<"URL">) {
   const theme = useTheme();
   const [local_val, set_local_val] = useState("");
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
-  const [resource_type, set_resource_type] = useState(
-    undefined as ResourceType
-  );
-  const [url, set_url] = useState(undefined as URL | undefined);
-  const [image_width, set_image_width] = useState(0);
-  const [image_height, set_image_height] = useState(0);
+  const [resource, set_resource] = useState(undefined as Resource);
   return (
     <ScrollView>
       <Column p={"2"}>
@@ -49,14 +38,10 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
             isInvalid={has_errors}
             onChangeText={async (x) => {
               try {
-                set_url(undefined);
+                set_resource(undefined);
                 set_local_val(x);
                 set_has_errors(false);
-                apply(await get_image_size(new URL(x)), (it) => {
-                  set_url(it[0]);
-                  set_image_width(it[1]);
-                  set_image_height(it[2]);
-                });
+                set_resource(await get_resource(new URL(x)));
               } catch (e) {
                 set_has_errors(true);
               }
@@ -68,7 +53,7 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
                   onPress={() => {
                     set_local_val(default_value);
                     set_has_errors(false);
-                    set_url(undefined);
+                    set_resource(undefined);
                   }}
                 >
                   <MaterialIcons
@@ -84,26 +69,76 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
             borderColor={theme.border}
           />
         </Row>
-        {url !== undefined ? (
-          <Column my={"4"} bgColor={"amber.100"}>
+        {resource !== undefined ? (
+          <Column
+            my={"4"}
+            borderColor={theme.border}
+            borderWidth={"1"}
+            borderRadius={"xs"}
+          >
             <Row>
-              <Image
-                source={{
-                  uri: url.toString().replace(/\/+$/, ""),
-                }}
-                resizeMode="contain"
-                width={"full"}
-                height={image_height}
-                maxHeight={"80"}
-                alt="*"
-                fallbackElement={
-                  <Text fontSize={"xs"} color={theme.error}>
-                    * Unable to load image, please check url
-                  </Text>
+              {arrow(() => {
+                switch (resource.type) {
+                  case "png":
+                  case "jpg":
+                  case "jpeg":
+                  case "bmp":
+                  case "gif":
+                  case "webp":
+                  case "image": {
+                    return (
+                      <Image
+                        source={{
+                          uri: resource.url,
+                        }}
+                        resizeMode="contain"
+                        width={"full"}
+                        height={resource.height}
+                        maxHeight={"80"}
+                        alt="*"
+                        fallbackElement={
+                          <Text fontSize={"xs"} color={theme.error}>
+                            * Unable to load image, please check url
+                          </Text>
+                        }
+                      />
+                    );
+                  }
+                  case "m4v":
+                  case "mp4":
+                  case "mov":
+                  case "3gp":
+                  case "mp3": {
+                    return (
+                      <VideoPlayer
+                        videoProps={{
+                          source: {
+                            uri: resource.url,
+                          },
+                          resizeMode: "contain",
+                          // shouldPlay: true,
+                        }}
+                        fullscreen={{
+                          visible: false,
+                        }}
+                        style={{
+                          height: 240,
+                          videoBackgroundColor: theme.background,
+                        }}
+                      />
+                    );
+                  }
+                  case "pdf": {
+                    return <></>;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = resource;
+                    return _exhaustiveCheck;
+                  }
                 }
-              />
+              })}
             </Row>
-            <Row justifyContent={"flex-end"} bgColor={"amber.200"}>
+            <Row justifyContent={"flex-end"} m={"2"}>
               <Pressable
                 onPress={() => {}}
                 justifyContent={"center"}

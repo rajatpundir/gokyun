@@ -33,6 +33,15 @@ import { errors, ErrMsg } from "./errors";
 import { Struct, StructPermissions, StructTrigger, WeakEnum } from "./variable";
 import { CustomError, Err, Ok, Result } from "./prelude";
 
+// ResourceType {
+// 	name: string
+// }
+
+// Resource {
+// 	type: ResourceType
+// 	url: string
+// }
+
 const schema: Record<
   string,
   {

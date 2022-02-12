@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { errors, ErrMsg } from "./errors";
+import { Image } from "react-native";
 
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -112,23 +113,81 @@ export function get_array_item<T>(
   );
 }
 
-export async function check_url(url: string) {
-  const x = await fetch(url, { method: "GET" });
-  console.log(x.status, x.ok, x.url);
-  return x.ok;
-}
-
-import { Image } from "react-native";
-
-export async function get_image_size(url: URL): Promise<[URL, number, number]> {
+async function get_image_size(url: string): Promise<[number, number]> {
   return new Promise((resolve, reject) => {
     Image.getSize(
-      url.toString().replace(/\/+$/, ""),
-      (width, height) => resolve([url, width, height]),
+      url,
+      (width, height) => resolve([width, height]),
       (err) => {
         console.log("Error loading image: ", err);
         reject(String(err));
       }
     );
   });
+}
+
+export type Resource =
+  | undefined
+  | ({ url: string } & (
+      | {
+          type: "m4v" | "mp4" | "mov" | "3gp" | "mp3" | "pdf";
+        }
+      | {
+          type: "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" | "image";
+          width: number;
+          height: number;
+        }
+    ));
+
+export async function get_resource(url: URL): Promise<Resource> {
+  const trimmed_url = url.toString().replace(/\/+$/, "");
+  const splitted_url = trimmed_url.split("/").slice(3);
+  if (splitted_url.length !== 0) {
+    const first_path = splitted_url[splitted_url.length - 1]
+      .split("?")[0]
+      .split(".");
+    const file_extension = first_path[first_path.length - 1];
+    console.log("extension", file_extension);
+    switch (file_extension) {
+      case "png":
+      case "jpg":
+      case "jpeg":
+      case "bmp":
+      case "gif":
+      case "webp": {
+        const [width, height] = await get_image_size(trimmed_url);
+        return {
+          url: trimmed_url,
+          type: file_extension,
+          width: width,
+          height: height,
+        } as Resource;
+      }
+      case "m4v":
+      case "mp4":
+      case "mov":
+      case "3gp":
+      case "mp3":
+      case "pdf": {
+        const response = await fetch(trimmed_url, { method: "GET" });
+        if (response.ok) {
+          return {
+            url: trimmed_url,
+            type: file_extension,
+          } as Resource;
+        }
+        break;
+      }
+      default: {
+        const [width, height] = await get_image_size(trimmed_url);
+        return {
+          url: trimmed_url,
+          type: "image",
+          width: width,
+          height: height,
+        } as Resource;
+      }
+    }
+  }
+  return undefined;
 }
