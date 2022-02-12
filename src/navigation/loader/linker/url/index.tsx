@@ -137,10 +137,11 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
                     return (
                       <Column flex={"1"}>
                         <WebView
-                          style={{ height: 240 }}
                           source={{
                             uri: `http://docs.google.com/gview?embedded=true&url=${resource.url}`,
                           }}
+                          nestedScrollEnabled={true}
+                          style={{ height: 240 }}
                         />
                       </Column>
                     );
