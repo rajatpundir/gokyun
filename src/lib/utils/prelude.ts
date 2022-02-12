@@ -147,7 +147,6 @@ export async function get_resource(url: URL): Promise<Resource> {
       .split("?")[0]
       .split(".");
     const file_extension = first_path[first_path.length - 1];
-    console.log("extension", file_extension);
     switch (file_extension) {
       case "png":
       case "jpg":

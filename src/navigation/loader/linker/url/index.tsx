@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import VideoPlayer from "expo-video-player";
+import { WebView } from "react-native-webview";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import {
   Column,
@@ -128,7 +129,16 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
                     );
                   }
                   case "pdf": {
-                    return <></>;
+                    return (
+                      <Column flex={"1"}>
+                        <WebView
+                          style={{ height: 240 }}
+                          source={{
+                            uri: `http://docs.google.com/gview?embedded=true&url=${resource.url}`,
+                          }}
+                        />
+                      </Column>
+                    );
                   }
                   default: {
                     const _exhaustiveCheck: never = resource;
