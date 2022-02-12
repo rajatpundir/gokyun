@@ -13,10 +13,20 @@ import {
 } from "native-base";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { useBSTheme, useTheme } from "../../../../lib/utils/theme";
-import { arrow, get_resource, Resource } from "../../../../lib/utils/prelude";
+import {
+  arrow,
+  get_resource,
+  Resource,
+  unwrap,
+} from "../../../../lib/utils/prelude";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { tw } from "../../../../lib/utils/tailwind";
+import { get_struct } from "../../../../lib/utils/schema";
+import { useComponent } from "../../../../lib/utils/component";
+import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
+import { views } from "../../../../views";
 
 export default function Component(props: ParentNavigatorProps<"URL">) {
   const theme = useTheme();
@@ -211,6 +221,47 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
                     </Pressable>
                   </Row>
                 </Row>
+                {arrow(() => {
+                  const struct = get_struct("Test");
+                  if (unwrap(struct)) {
+                    // const [state1, dispatch1, jsx1] = useComponent({
+                    //   struct: struct.value,
+                    //   id: new Decimal(-1),
+                    //   active: true,
+                    //   created_at: new Date(),
+                    //   updated_at: new Date(),
+                    //   values: HashSet.of(),
+                    //   init_values: HashSet.of(),
+                    //   extensions: {},
+                    //   labels: [
+                    //     ["STR", [[], "str"]],
+                    //     ["LSTR", [[], "lstr"]],
+                    //     ["CLOB", [[], "clob"]],
+                    //     ["U32", [[], "u32"]],
+                    //     ["I32", [[], "i32"]],
+                    //     ["U64", [[], "u64"]],
+                    //     ["I64", [[], "i64"]],
+                    //     ["UDOUBLE", [[], "udouble"]],
+                    //     ["IDOUBLE", [[], "idouble"]],
+                    //     ["UDECIMAL", [[], "udecimal"]],
+                    //     ["IDECIMAL", [[], "idecimal"]],
+                    //     ["BOOL", [[], "bool"]],
+                    //     ["DATE", [[], "date"]],
+                    //     ["TIME", [[], "time"]],
+                    //     ["TIMESTAMP", [[], "timestamp"]],
+                    //     ["USER", [[], "user"]],
+                    //     ["USER NICKNAME", [["user"], "nickname"]],
+                    //   ],
+                    //   higher_structs: [],
+                    //   user_paths: [[[], "user"]],
+                    //   borrows: [],
+                    //   create: views.Test["Default"].create,
+                    //   update: views.Test["Default"].update,
+                    //   show: views.Test["Default"].show,
+                    // });
+                  }
+                  return <></>;
+                })}
               </BottomSheetModal>
             </Portal>
           </Column>

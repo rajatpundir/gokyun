@@ -5,6 +5,8 @@ import {
 } from "zustand/middleware";
 import { GetState, SetState } from "zustand";
 import { ThemeName } from "./theme";
+import { get_param_text, replace_param } from "./db";
+import { arrow, unwrap } from "./prelude";
 
 type State = {
   params: {
@@ -93,29 +95,31 @@ export const store = create<
 export const { getState, setState, subscribe, destroy } = store;
 
 // load params
-// arrow(async () => {
-//   console.log("##################");
-//   const result = await get_param_text("theme");
-//   if (unwrap(result)) {
-//     const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark", "Black"];
-//     if (theme_names.includes(result.value as any)) {
-//       console.log(result.value);
-//       setState({ params: { theme: result.value as ThemeName } });
-//     }
-//   }
-//   console.log("##################");
-// });
+arrow(async () => {
+  // this should run only after load_test_data has finished
+  console.log("##################");
+  const result = await get_param_text("theme");
+  console.log(result);
+  if (unwrap(result)) {
+    const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark", "Black"];
+    if (theme_names.includes(result.value as any)) {
+      console.log(result.value);
+      setState({ params: { theme: result.value as ThemeName } });
+    }
+  }
+  console.log("##################");
+});
 
 // store params
-// subscribe(
-//   (store) => store.params,
-//   (params) => {
-//     console.log("--------------");
-//     console.log(params);
-//     replace_param("theme", { type: "str", value: params.theme });
-//     console.log("--------------");
-//   }
-// );
+subscribe(
+  (store) => store.params,
+  (params) => {
+    console.log("--------------");
+    console.log(params);
+    replace_param("theme", { type: "str", value: params.theme });
+    console.log("--------------");
+  }
+);
 
 type Broker = {
   User: {

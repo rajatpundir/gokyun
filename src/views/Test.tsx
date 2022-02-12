@@ -28,12 +28,11 @@ import { get_path } from "../lib/utils/commons";
 import UserViews from "./User";
 import { RenderListVariantProps, RenderListElement } from "../lib/utils/list";
 import { useTheme, useBSTheme } from "../lib/utils/theme";
+import { get_struct_counter, increment_struct_counter } from "../lib/utils/db";
 import {
-  get_struct_counter,
-  increment_struct_counter,
-  remove_variables_in_db,
   replace_variable,
-} from "../lib/utils/db";
+  remove_variables_in_db,
+} from "../lib/utils/db_variables";
 import { HashSet } from "prelude-ts";
 import { cloneDeep } from "lodash";
 

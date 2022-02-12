@@ -16,9 +16,11 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import {
   get_struct_counter,
   increment_struct_counter,
-  remove_variables_in_db,
-  replace_variable,
 } from "../../lib/utils/db";
+import {
+  replace_variable,
+  remove_variables_in_db,
+} from "../../lib/utils/db_variables";
 import { Path, Variable } from "../../lib/utils/variable";
 import { useTheme } from "../../lib/utils/theme";
 

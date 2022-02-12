@@ -3,7 +3,7 @@ import * as React from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { load_test_data } from "../utils/db";
+import { load_test_data } from "../utils/db_variables";
 
 export default function useAssets() {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
