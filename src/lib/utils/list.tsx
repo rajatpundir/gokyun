@@ -587,14 +587,13 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             pb={"2"}
           >
             <Text bold>SORT</Text>
-            <Row>
+            <Row space={"1"}>
               <Pressable
                 onPress={() => bsm_sorting_fields_ref.current?.present()}
                 backgroundColor={bs_theme.primary}
                 borderRadius={"xs"}
                 px={"2"}
                 py={"0.5"}
-                mx={"1"}
               >
                 <Text bold>Field++</Text>
               </Pressable>

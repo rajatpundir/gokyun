@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import VideoPlayer from "expo-video-player";
 import { WebView } from "react-native-webview";
 import { NavigatorProps as ParentNavigatorProps } from "..";
@@ -11,16 +11,21 @@ import {
   Image,
   ScrollView,
 } from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useTheme } from "../../../../lib/utils/theme";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { useBSTheme, useTheme } from "../../../../lib/utils/theme";
 import { arrow, get_resource, Resource } from "../../../../lib/utils/prelude";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
+import { tw } from "../../../../lib/utils/tailwind";
 
 export default function Component(props: ParentNavigatorProps<"URL">) {
   const theme = useTheme();
+  const bs_theme = useBSTheme();
   const [local_val, set_local_val] = useState("");
   const [has_errors, set_has_errors] = useState(false);
   const default_value = "";
   const [resource, set_resource] = useState(undefined as Resource);
+  const bsm_ref = useRef<BottomSheetModal>(null);
   return (
     <ScrollView>
       <Column p={"2"}>
@@ -149,7 +154,8 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
             </Row>
             <Row justifyContent={"flex-end"} m={"2"}>
               <Pressable
-                onPress={() => {}}
+                onPress={() => bsm_ref.current?.present()}
+                flexDirection={"row"}
                 justifyContent={"center"}
                 alignItems={"center"}
                 backgroundColor={theme.primary}
@@ -158,10 +164,54 @@ export default function Component(props: ParentNavigatorProps<"URL">) {
                 py={"1"}
               >
                 <Text bold fontSize={"md"}>
-                  Add
+                  Link{" "}
                 </Text>
+                <Feather name="link" size={16} color={theme.text} />
               </Pressable>
             </Row>
+            <Portal>
+              <BottomSheetModal
+                ref={bsm_ref}
+                snapPoints={["50%", "82%"]}
+                index={0}
+                backgroundStyle={tw.style(["border"], {
+                  backgroundColor: bs_theme.background,
+                  borderColor: bs_theme.primary,
+                })}
+              >
+                <Row
+                  justifyContent={"space-between"}
+                  alignItems={"center"}
+                  borderBottomColor={bs_theme.primary}
+                  borderBottomWidth={"1"}
+                  px={"3"}
+                  pb={"2"}
+                >
+                  <Text bold>Link Resource</Text>
+                  <Row space={"2"}>
+                    <Pressable
+                      onPress={() => {}}
+                      backgroundColor={bs_theme.primary}
+                      borderRadius={"xs"}
+                      px={"2"}
+                      py={"0.5"}
+                    >
+                      <Text bold>Confirm</Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={() => bsm_ref.current?.close()}
+                      borderColor={bs_theme.primary}
+                      borderWidth={"1"}
+                      borderRadius={"xs"}
+                      px={"2"}
+                      py={"0.5"}
+                    >
+                      <Text>Close</Text>
+                    </Pressable>
+                  </Row>
+                </Row>
+              </BottomSheetModal>
+            </Portal>
           </Column>
         ) : (
           <></>
