@@ -7,10 +7,15 @@ import { GetState, SetState } from "zustand";
 import { ThemeName } from "./theme";
 import { get_param_text, replace_param } from "./db";
 import { arrow, unwrap } from "./prelude";
+import { Language } from "./errors";
+import Decimal from "decimal.js";
+import { useEffect, useState } from "react";
 
 type State = {
   params: {
     theme: ThemeName;
+    lang: Language;
+    user_id: Decimal;
   };
   broker: Broker;
   announce_message: (
@@ -34,7 +39,7 @@ export const store = create<
   subscribeWithSelector(
     (set, get) =>
       ({
-        params: { theme: "Dark" },
+        params: { theme: "Dark", lang: "English", user_id: new Decimal(-1) },
         broker: {
           User: {
             create: [],
@@ -104,7 +109,9 @@ arrow(async () => {
     const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark", "Black"];
     if (theme_names.includes(result.value as any)) {
       console.log(result.value);
-      setState({ params: { theme: result.value as ThemeName } });
+      setState({
+        params: { ...getState().params, theme: result.value as ThemeName },
+      });
     }
   }
   // console.log("##################");
@@ -135,3 +142,15 @@ type Broker = {
 };
 
 export type BrokerKey = keyof Broker;
+
+export function useParams() {
+  const [params, set_params] = useState(getState().params);
+  useEffect(() => {
+    const unsub = subscribe(
+      (store) => store.params,
+      (x) => set_params(x)
+    );
+    return unsub;
+  }, []);
+  return params;
+}

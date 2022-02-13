@@ -312,44 +312,6 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                   </Row>
                 </Row>
                 {arrow(() => {
-                  const struct = get_struct("Test");
-                  if (unwrap(struct)) {
-                    // const [state1, dispatch1, jsx1] = useComponent({
-                    //   struct: struct.value,
-                    //   id: new Decimal(-1),
-                    //   active: true,
-                    //   created_at: new Date(),
-                    //   updated_at: new Date(),
-                    //   values: HashSet.of(),
-                    //   init_values: HashSet.of(),
-                    //   extensions: {},
-                    //   labels: [
-                    //     ["STR", [[], "str"]],
-                    //     ["LSTR", [[], "lstr"]],
-                    //     ["CLOB", [[], "clob"]],
-                    //     ["U32", [[], "u32"]],
-                    //     ["I32", [[], "i32"]],
-                    //     ["U64", [[], "u64"]],
-                    //     ["I64", [[], "i64"]],
-                    //     ["UDOUBLE", [[], "udouble"]],
-                    //     ["IDOUBLE", [[], "idouble"]],
-                    //     ["UDECIMAL", [[], "udecimal"]],
-                    //     ["IDECIMAL", [[], "idecimal"]],
-                    //     ["BOOL", [[], "bool"]],
-                    //     ["DATE", [[], "date"]],
-                    //     ["TIME", [[], "time"]],
-                    //     ["TIMESTAMP", [[], "timestamp"]],
-                    //     ["USER", [[], "user"]],
-                    //     ["USER NICKNAME", [["user"], "nickname"]],
-                    //   ],
-                    //   higher_structs: [],
-                    //   user_paths: [[[], "user"]],
-                    //   borrows: [],
-                    //   create: views.Test["Default"].create,
-                    //   update: views.Test["Default"].update,
-                    //   show: views.Test["Default"].show,
-                    // });
-                  }
                   return <></>;
                 })}
               </BottomSheetModal>
@@ -361,4 +323,32 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
       </Column>
     </ScrollView>
   );
+}
+
+export function ResourceComponent() {
+  const struct = get_struct("Resource");
+  if (unwrap(struct)) {
+    const [state, dispatch, jsx] = useComponent({
+      struct: struct.value,
+      id: new Decimal(-1),
+      active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+      values: HashSet.of(),
+      init_values: HashSet.of(),
+      extensions: {},
+      labels: [
+        ["type", [[], "type"]],
+        ["type name", [["type"], "name"]],
+        ["url", [[], "lstr"]],
+        ["name", [[], "str"]],
+      ],
+      higher_structs: [],
+      user_paths: [[[], "user"]],
+      borrows: [],
+      create: views.Test["Default"].create,
+      update: views.Test["Default"].update,
+      show: views.Test["Default"].show,
+    });
+  }
 }

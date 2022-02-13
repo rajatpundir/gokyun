@@ -33,6 +33,8 @@ import { errors, ErrMsg } from "./errors";
 import { Struct, StructPermissions, StructTrigger, WeakEnum } from "./variable";
 import { CustomError, Err, Ok, Result } from "./prelude";
 
+// All structs are created via Transformers
+
 // ResourceType {
 // 	name: string
 // }
@@ -41,6 +43,7 @@ import { CustomError, Err, Ok, Result } from "./prelude";
 // 	type: ResourceType
 // 	url: string
 //  name: string
+//  user: User
 // }
 
 const schema: Record<

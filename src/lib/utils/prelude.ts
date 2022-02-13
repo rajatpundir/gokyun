@@ -130,12 +130,12 @@ export type Resource =
   | undefined
   | ({ url: string } & (
       | {
-          type: "m4v" | "mp4" | "mov" | "3gp" | "mp3" | "pdf" | "youtube";
-        }
-      | {
           type: "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" | "image";
           width: number;
           height: number;
+        }
+      | {
+          type: "m4v" | "mp4" | "mov" | "3gp" | "mp3" | "pdf" | "youtube";
         }
     ));
 
