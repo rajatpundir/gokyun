@@ -18,22 +18,22 @@ import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { tw } from "../../../lib/utils/tailwind";
 
-import URL from "./url";
-import Scrapper from "./scrapper";
+import Link from "./link";
+import Scrap from "./scrap";
 import Upload from "./upload";
-import Links from "./links";
+import Resources from "./links";
 
 export type NavigatorParams = {
-  URL: undefined;
-  Scrapper: undefined;
-  Upload: undefined;
   Links: undefined;
+  Link: undefined;
+  Scrap: undefined;
+  Upload: undefined;
 };
 
-export default function Navigator(props: ParentNavigatorProps<"Linker">) {
+export default function Navigator(props: ParentNavigatorProps<"Resources">) {
   return (
     <TopTab.Navigator
-      initialRouteName="URL"
+      initialRouteName="Link"
       initialLayout={{ width: Dimensions.get("window").width }}
       screenOptions={{
         lazy: true,
@@ -45,10 +45,14 @@ export default function Navigator(props: ParentNavigatorProps<"Linker">) {
         }),
       }}
     >
-      <TopTab.Screen name="URL" component={URL} />
-      <TopTab.Screen name="Scrapper" component={Scrapper} />
+      <TopTab.Screen
+        name="Links"
+        component={Resources}
+        options={{ tabBarLabel: "Resources" }}
+      />
+      <TopTab.Screen name="Link" component={Link} />
+      <TopTab.Screen name="Scrap" component={Scrap} />
       <TopTab.Screen name="Upload" component={Upload} />
-      <TopTab.Screen name="Links" component={Links} />
     </TopTab.Navigator>
   );
 }

@@ -21,16 +21,16 @@ import { tw } from "../../../lib/utils/tailwind";
 import Image from "./images";
 import Video from "./videos";
 import Docs from "./docs";
-import Apps from "./apps";
+import YouTube from "./youtube";
 
 export type NavigatorParams = {
   Images: undefined;
   Videos: undefined;
   Docs: undefined;
-  Apps: undefined;
+  YouTube: undefined;
 };
 
-export default function Navigator(props: ParentNavigatorProps<"Linker">) {
+export default function Navigator(props: ParentNavigatorProps<"Search">) {
   return (
     <TopTab.Navigator
       initialRouteName="Images"
@@ -48,7 +48,7 @@ export default function Navigator(props: ParentNavigatorProps<"Linker">) {
       <TopTab.Screen name="Images" component={Image} />
       <TopTab.Screen name="Videos" component={Video} />
       <TopTab.Screen name="Docs" component={Docs} />
-      <TopTab.Screen name="Apps" component={Apps} />
+      <TopTab.Screen name="YouTube" component={YouTube} />
     </TopTab.Navigator>
   );
 }

@@ -32,7 +32,7 @@ import { views } from "../../../../views";
 
 // Get to implementing Transformer
 
-export default function Component(props: ParentNavigatorProps<"URL">) {
+export default function Component(props: ParentNavigatorProps<"Link">) {
   const theme = useTheme();
   const bs_theme = useBSTheme();
   const [local_val, set_local_val] = useState("");

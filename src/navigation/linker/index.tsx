@@ -15,21 +15,21 @@ import {
 } from "../main";
 
 import Search from "./search";
-import Linker from "./linker";
-import { AppHeader } from "../../lib/utils/component";
+import Resources from "./resources";
+import { ModalHeader } from "../../lib/utils/component";
 import { tw } from "../../lib/utils/tailwind";
 
 export type NavigatorParams = {
   Search: undefined;
-  Linker: undefined;
+  Resources: undefined;
 };
 
-export default function Navigator(props: RootNavigatorProps<"Loader">) {
+export default function Navigator(props: RootNavigatorProps<"Linker">) {
   return (
     <>
-      <AppHeader />
+      <ModalHeader title="Linker" />
       <BottomTab.Navigator
-        initialRouteName="Linker"
+        initialRouteName="Resources"
         screenOptions={{
           lazy: true,
           headerShown: false,
@@ -46,23 +46,23 @@ export default function Navigator(props: RootNavigatorProps<"Loader">) {
             tabBarIcon: ({ color }) => (
               <Feather
                 name="search"
-                size={30}
+                size={28}
                 color={color}
-                style={tw.style([], { margin: -6 })}
+                style={tw.style([], { marginBottom: -4 })}
               />
             ),
           }}
         />
         <BottomTab.Screen
-          name="Linker"
-          component={Linker}
+          name="Resources"
+          component={Resources}
           options={{
             tabBarIcon: ({ color }) => (
               <Feather
-                name="link"
-                size={30}
+                name="box"
+                size={28}
                 color={color}
-                style={tw.style([], { margin: -6 })}
+                style={tw.style([], { marginBottom: -4 })}
               />
             ),
           }}

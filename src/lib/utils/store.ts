@@ -97,7 +97,7 @@ export const { getState, setState, subscribe, destroy } = store;
 // load params
 arrow(async () => {
   // this should run only after load_test_data has finished
-  console.log("##################");
+  // console.log("##################");
   const result = await get_param_text("theme");
   console.log(result);
   if (unwrap(result)) {
@@ -107,16 +107,16 @@ arrow(async () => {
       setState({ params: { theme: result.value as ThemeName } });
     }
   }
-  console.log("##################");
+  // console.log("##################");
 });
 
 // store params
 subscribe(
   (store) => store.params,
-  (params) => {
+  async (params) => {
     console.log("--------------");
     console.log(params);
-    replace_param("theme", { type: "str", value: params.theme });
+    await replace_param("theme", { type: "str", value: params.theme });
     console.log("--------------");
   }
 );

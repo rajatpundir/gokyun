@@ -29,7 +29,7 @@ import {
 import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
 
 import Test from "../test";
-import Loader from "../loader";
+import Linker from "../linker";
 import { HashSet } from "prelude-ts";
 import { Path } from "../../lib/utils/variable";
 
@@ -38,7 +38,7 @@ import { Path } from "../../lib/utils/variable";
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainNavigatorParams> | undefined;
   SelectionModal: SelectionModalProps;
-  Loader: undefined;
+  Linker: undefined;
   Test: {
     id: number;
     values?: HashSet<Path>;
@@ -63,7 +63,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Main">
+                        <Stack.Navigator initialRouteName="Linker">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
@@ -73,7 +73,7 @@ function Component() {
                               name="Main"
                               component={MainNavigator}
                             />
-                            <Stack.Screen name="Loader" component={Loader} />
+                            <Stack.Screen name="Linker" component={Linker} />
                             <Stack.Group
                               screenOptions={{
                                 presentation: "modal",
