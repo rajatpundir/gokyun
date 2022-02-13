@@ -1,5 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import VideoPlayer from "expo-video-player";
+import * as Clipboard from "expo-clipboard";
 import { WebView } from "react-native-webview";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import {
@@ -40,15 +41,37 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
   const default_value = "";
   const [resource, set_resource] = useState(undefined as Resource);
   const bsm_ref = useRef<BottomSheetModal>(null);
+  const [copied_url, set_copied_url] = React.useState(
+    undefined as string | undefined
+  );
+  useEffect(() => {
+    let mounted = true;
+    const fetch_copied_url = () => {
+      setInterval(async () => {
+        try {
+          if (mounted) {
+            set_copied_url(
+              new URL(await Clipboard.getStringAsync())
+                .toString()
+                .replace(/\/+$/, "")
+            );
+          }
+        } catch (e) {
+          if (mounted) {
+            set_copied_url(undefined);
+          }
+        }
+      }, 100);
+    };
+    fetch_copied_url();
+    return () => {
+      mounted = false;
+    };
+  });
   return (
     <ScrollView>
-      <Column p={"2"}>
-        <Row my={"1"}>
-          <Text fontSize={"md"} color={theme.primary}>
-            Link Resource
-          </Text>
-        </Row>
-        <Row>
+      <Column px={"2"}>
+        <Row my={"4"}>
           <Input
             flex={1}
             size={"md"}
@@ -83,7 +106,34 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                   />
                 </Pressable>
               ) : (
-                <></>
+                arrow(() => {
+                  if (copied_url !== undefined) {
+                    return (
+                      <Pressable
+                        px={1}
+                        onPress={async () => {
+                          try {
+                            set_resource(undefined);
+                            set_local_val(copied_url);
+                            set_has_errors(false);
+                            set_resource(
+                              await get_resource(new URL(copied_url))
+                            );
+                          } catch (e) {
+                            set_has_errors(true);
+                          }
+                        }}
+                      >
+                        <MaterialIcons
+                          name="content-paste"
+                          size={24}
+                          color={theme.primary}
+                        />
+                      </Pressable>
+                    );
+                  }
+                  return <></>;
+                })
               )
             }
             borderColor={theme.border}
@@ -91,7 +141,6 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
         </Row>
         {resource !== undefined ? (
           <Column
-            my={"4"}
             borderColor={theme.border}
             borderWidth={"1"}
             borderRadius={"xs"}
@@ -188,7 +237,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                                   }
                               </style>
                               <body>
-                                <iframe src="https://www.youtube-nocookie.com/embed/${resource.id}?controls=0"></iframe>
+                                <iframe src="https://www.youtube-nocookie.com/embed/${resource.url}?controls=0"></iframe>
                               </body>
                               </html>`,
                           }}

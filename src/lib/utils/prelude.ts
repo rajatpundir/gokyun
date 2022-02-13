@@ -130,16 +130,12 @@ export type Resource =
   | undefined
   | ({ url: string } & (
       | {
-          type: "m4v" | "mp4" | "mov" | "3gp" | "mp3" | "pdf";
+          type: "m4v" | "mp4" | "mov" | "3gp" | "mp3" | "pdf" | "youtube";
         }
       | {
           type: "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" | "image";
           width: number;
           height: number;
-        }
-      | {
-          type: "youtube";
-          id: string;
         }
     ));
 
@@ -191,9 +187,8 @@ export async function get_resource(url: URL): Promise<Resource> {
       }
       case "youtube": {
         return {
-          url: trimmed_url,
+          url: first_path[first_path.length - 1],
           type: "youtube",
-          id: first_path[first_path.length - 1],
         };
       }
       default: {
