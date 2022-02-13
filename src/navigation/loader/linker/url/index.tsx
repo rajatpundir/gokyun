@@ -28,6 +28,10 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { views } from "../../../../views";
 
+// Higher existence for searching via tags
+
+// Get to implementing Transformer
+
 export default function Component(props: ParentNavigatorProps<"URL">) {
   const theme = useTheme();
   const bs_theme = useBSTheme();

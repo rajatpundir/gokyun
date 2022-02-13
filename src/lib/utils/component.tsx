@@ -563,6 +563,7 @@ export function SearchWrapper(
 
 export function AppHeader(props: { title?: string }): JSX.Element {
   const theme = useTheme();
+  const navigation = useNavigation();
   const [theme_name, set_theme_name] = useState(getState().params.theme);
   useEffect(() => {
     const unsub = subscribe(
@@ -578,9 +579,11 @@ export function AppHeader(props: { title?: string }): JSX.Element {
       justifyContent={"space-between"}
       alignItems={"center"}
     >
-      <Text bold fontSize={"lg"} color={theme.primary}>
-        {props.title ? props.title : "Aakhiri"}
-      </Text>
+      <Pressable onPress={() => navigation.navigate("Loader")}>
+        <Text bold fontSize={"lg"} color={theme.primary}>
+          {props.title ? props.title : "Aakhiri"}
+        </Text>
+      </Pressable>
       <Pressable
         onPress={() =>
           setState({

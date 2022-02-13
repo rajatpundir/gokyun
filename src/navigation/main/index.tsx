@@ -38,7 +38,7 @@ import { Path } from "../../lib/utils/variable";
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainNavigatorParams> | undefined;
   SelectionModal: SelectionModalProps;
-  Loader: {};
+  Loader: undefined;
   Test: {
     id: number;
     values?: HashSet<Path>;
@@ -63,7 +63,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Loader">
+                        <Stack.Navigator initialRouteName="Main">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
