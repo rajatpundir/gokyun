@@ -99,7 +99,7 @@ arrow(async () => {
   // this should run only after load_test_data has finished
   // console.log("##################");
   const result = await get_param_text("theme");
-  console.log(result);
+  // console.log(result);
   if (unwrap(result)) {
     const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark", "Black"];
     if (theme_names.includes(result.value as any)) {

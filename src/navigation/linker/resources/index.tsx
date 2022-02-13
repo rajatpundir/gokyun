@@ -19,14 +19,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { tw } from "../../../lib/utils/tailwind";
 
 import Link from "./link";
-import Scrap from "./scrap";
 import Upload from "./upload";
 import Resources from "./links";
 
 export type NavigatorParams = {
   Links: undefined;
   Link: undefined;
-  Scrap: undefined;
   Upload: undefined;
 };
 
@@ -51,7 +49,6 @@ export default function Navigator(props: ParentNavigatorProps<"Resources">) {
         options={{ tabBarLabel: "Resources" }}
       />
       <TopTab.Screen name="Link" component={Link} />
-      <TopTab.Screen name="Scrap" component={Scrap} />
       <TopTab.Screen name="Upload" component={Upload} />
     </TopTab.Navigator>
   );
@@ -67,3 +64,31 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
   >;
 
 const TopTab = createMaterialTopTabNavigator<NavigatorParams>();
+
+// export function Loader(props: RootNavigatorProps<"Search">): JSX.Element {
+//   const api = create({
+//     baseURL: `https://pixabay.com/`,
+//   });
+//   useEffect(() => {
+//     const x = async () => {
+//       console.log("##############################");
+//       const response = await api.get("/");
+//       //   console.log("===============", response.data);
+//       const root = cheerio.load(response.data as string);
+//       root("img").each((index, element) => {
+//         console.log("------------------------");
+//         const x = root(element).attr();
+//         console.log(x["alt"]);
+//         console.log(x["src"]);
+//         console.log("------------------------");
+//       });
+//       console.log("##############################");
+//     };
+//     x();
+//   }, []);
+//   return (
+//     <>
+//       <ModalHeader title={"Linker"} />
+//     </>
+//   );
+// }
