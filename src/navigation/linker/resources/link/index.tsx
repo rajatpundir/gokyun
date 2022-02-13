@@ -188,15 +188,11 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                                   }
                               </style>
                               <body>
-                                  <iframe
-                                  width="100%" height="100%"
-                                  title="YouTube video player"
-                                  src="https://www.youtube-nocookie.com/embed/${resource.id}"
-                                  ></iframe>
+                                <iframe src="https://www.youtube-nocookie.com/embed/${resource.id}?controls=0"></iframe>
                               </body>
                               </html>`,
                           }}
-                          style={{ height: 240 }}
+                          style={{ height: 210 }}
                         />
                       </Column>
                     );

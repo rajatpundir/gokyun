@@ -193,7 +193,7 @@ export async function get_resource(url: URL): Promise<Resource> {
         return {
           url: trimmed_url,
           type: "youtube",
-          id: first_path[0],
+          id: first_path[first_path.length - 1],
         };
       }
       default: {
