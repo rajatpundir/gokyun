@@ -137,6 +137,10 @@ export type Resource =
           width: number;
           height: number;
         }
+      | {
+          type: "youtube";
+          id: string;
+        }
     ));
 
 export async function get_resource(url: URL): Promise<Resource> {
@@ -146,7 +150,15 @@ export async function get_resource(url: URL): Promise<Resource> {
     const first_path = splitted_url[splitted_url.length - 1]
       .split("?")[0]
       .split(".");
-    const file_extension = first_path[first_path.length - 1];
+    const file_extension = apply(
+      trimmed_url.startsWith("https://youtu.be/"),
+      (it) => {
+        if (it) {
+          return "youtube";
+        }
+        return first_path[first_path.length - 1];
+      }
+    );
     switch (file_extension) {
       case "png":
       case "jpg":
@@ -160,7 +172,7 @@ export async function get_resource(url: URL): Promise<Resource> {
           type: file_extension,
           width: width,
           height: height,
-        } as Resource;
+        };
       }
       case "m4v":
       case "mp4":
@@ -173,9 +185,16 @@ export async function get_resource(url: URL): Promise<Resource> {
           return {
             url: trimmed_url,
             type: file_extension,
-          } as Resource;
+          };
         }
         break;
+      }
+      case "youtube": {
+        return {
+          url: trimmed_url,
+          type: "youtube",
+          id: first_path[0],
+        };
       }
       default: {
         const [width, height] = await get_image_size(trimmed_url);
@@ -184,7 +203,7 @@ export async function get_resource(url: URL): Promise<Resource> {
           type: "image",
           width: width,
           height: height,
-        } as Resource;
+        };
       }
     }
   }

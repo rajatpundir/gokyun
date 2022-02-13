@@ -160,6 +160,47 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                       </Column>
                     );
                   }
+                  case "youtube": {
+                    return (
+                      <Column flex={"1"}>
+                        <WebView
+                          originWhitelist={["*"]}
+                          source={{
+                            html: `
+                              <html>
+                              <style>
+                                  html {
+                                  overflow: hidden;
+                                  background-color: black;
+                                  }
+                                  html,
+                                  body,
+                                  div,
+                                  iframe {
+                                  margin: 0px;
+                                  padding: 0px;
+                                  height: 100%;
+                                  border: none;
+                                  display: block;
+                                  width: 100%;
+                                  border: none;
+                                  overflow: hidden;
+                                  }
+                              </style>
+                              <body>
+                                  <iframe
+                                  width="100%" height="100%"
+                                  title="YouTube video player"
+                                  src="https://www.youtube-nocookie.com/embed/${resource.id}"
+                                  ></iframe>
+                              </body>
+                              </html>`,
+                          }}
+                          style={{ height: 240 }}
+                        />
+                      </Column>
+                    );
+                  }
                   default: {
                     const _exhaustiveCheck: never = resource;
                     return _exhaustiveCheck;
