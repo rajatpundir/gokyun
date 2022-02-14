@@ -1,9 +1,11 @@
 import { LispExpression } from "./lisp";
 import { WeakEnum } from "./variable";
 
+// Fx, Tranform, Compose
+
 // Ownership or borrowing over inputs provided will be checked
 // But outputs does not have anything to do with ownership
-export class Transformer {
+export class Fx {
   name: string;
   inputs: Record<string, WeakEnum>;
   // Updates to paths should take place inside 'inputs' instead of 'outputs'
@@ -94,7 +96,7 @@ export class Transformer {
     this.outputs = outputs;
   }
 
-  equals(other: Transformer): boolean {
+  equals(other: Fx): boolean {
     if (!other) {
       return false;
     }
@@ -109,7 +111,3 @@ export class Transformer {
     return String(this.name);
   }
 }
-
-// Mapper
-// Reducer (Only makes sense to be used in Composer after a mapper)
-// Composer

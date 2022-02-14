@@ -3512,7 +3512,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     set_local_val_1(default_value_1);
@@ -3536,7 +3536,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
@@ -3809,7 +3808,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           set_local_val_1(default_value_1);
@@ -3833,7 +3832,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -4108,7 +4106,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           set_local_val_2(default_value_2);
@@ -4132,7 +4130,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -4443,7 +4440,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -4465,7 +4462,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
@@ -4763,7 +4759,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -4785,7 +4781,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -5086,7 +5081,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -5108,7 +5103,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -5337,7 +5331,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -5359,7 +5353,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
@@ -5591,7 +5584,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -5613,7 +5606,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
@@ -5851,7 +5843,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -5873,7 +5865,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -6114,7 +6105,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -6136,7 +6127,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -6379,7 +6369,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -6401,7 +6391,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
@@ -6638,7 +6627,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -6660,7 +6649,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -6900,7 +6888,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -6922,7 +6910,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -7217,7 +7204,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -7239,7 +7226,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
@@ -7528,7 +7514,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -7550,7 +7536,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -7842,7 +7827,7 @@ function FilterPathComponent(props: {
                                     <Text bold color={bs_theme.text}>
                                       Fields
                                     </Text>
-                                    <Row>
+                                    <Row space={"1"}>
                                       <Pressable
                                         onPress={() => {
                                           props.dispatch([
@@ -7864,7 +7849,6 @@ function FilterPathComponent(props: {
                                         borderRadius={"xs"}
                                         px={"2"}
                                         py={"0.5"}
-                                        mx={"1"}
                                       >
                                         <Text color={"white"}>Clear</Text>
                                       </Pressable>
@@ -8153,7 +8137,7 @@ function FilterPathComponent(props: {
                               <Text bold color={bs_theme.text}>
                                 Fields
                               </Text>
-                              <Row>
+                              <Row space={"1"}>
                                 <Pressable
                                   onPress={() => {
                                     props.dispatch([
@@ -8176,7 +8160,6 @@ function FilterPathComponent(props: {
                                   borderRadius={"xs"}
                                   px={"2"}
                                   py={"0.5"}
-                                  mx={"1"}
                                 >
                                   <Text color={"white"}>Clear</Text>
                                 </Pressable>
