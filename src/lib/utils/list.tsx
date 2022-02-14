@@ -597,7 +597,9 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 px={"2"}
                 py={"0.5"}
               >
-                <Text bold>Field++</Text>
+                <Text bold color={"white"}>
+                  Field++
+                </Text>
               </Pressable>
               <Pressable
                 onPress={() => bsm_sorting_ref.current?.close()}
@@ -711,7 +713,9 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               px={"2"}
               py={"0.5"}
             >
-              <Text bold>Set++</Text>
+              <Text bold color={"white"}>
+                Set++
+              </Text>
             </Pressable>
           </Row>
           <BottomSheetFlatList

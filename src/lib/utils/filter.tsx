@@ -221,7 +221,7 @@ export function AndFilterComponent(props: {
 }): JSX.Element {
   const bs_theme = useBSTheme();
   return (
-    <Column borderTopWidth={"1"} borderTopColor={bs_theme.primary}>
+    <Column px={"0.5"} borderTopWidth={"1"} borderTopColor={bs_theme.primary}>
       <Row
         justifyContent={"space-between"}
         alignItems={"center"}
@@ -248,7 +248,9 @@ export function AndFilterComponent(props: {
           px={"2"}
           py={"0.5"}
         >
-          <Text bold>Filter++</Text>
+          <Text bold color={"white"}>
+            Filter++
+          </Text>
         </Pressable>
       </Row>
       {props.and_filter.filters
@@ -303,7 +305,9 @@ export function OrFilterComponent(props: {
           px={"2"}
           py={"0.5"}
         >
-          <Text bold>Field++</Text>
+          <Text bold color={"white"}>
+            Field++
+          </Text>
         </Pressable>
       </Row>
       <Column>
@@ -524,7 +528,7 @@ export function OrFilterComponent(props: {
                       };
                       return (
                         <Menu
-                          mx={"3"}
+                          mx={"3.5"}
                           shouldOverlapWithTrigger={true}
                           backgroundColor={bs_theme.background}
                           borderColor={bs_theme.border}
@@ -552,28 +556,46 @@ export function OrFilterComponent(props: {
                           )}
                         >
                           <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("==")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
+                            <Text color={bs_theme.text}>
+                              <Text color={bs_theme.text}>
+                                {op_to_string("!=")}
+                              </Text>
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op(">=")}>
-                            {op_to_string(">=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string(">=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("<=")}>
-                            {op_to_string("<=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("<=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op(">")}>
-                            {op_to_string(">")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string(">")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("<")}>
-                            {op_to_string("<")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("<")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("between")}>
-                            {op_to_string("between")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("between")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("not_between")}>
-                            {op_to_string("not_between")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("not_between")}
+                            </Text>
                           </Menu.Item>
                         </Menu>
                       );
@@ -1007,7 +1029,7 @@ export function OrFilterComponent(props: {
                       };
                       return (
                         <Menu
-                          mx={"3"}
+                          mx={"3.5"}
                           shouldOverlapWithTrigger={true}
                           backgroundColor={bs_theme.background}
                           borderColor={bs_theme.border}
@@ -1035,28 +1057,44 @@ export function OrFilterComponent(props: {
                           )}
                         >
                           <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("==")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("!=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op(">=")}>
-                            {op_to_string(">=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string(">=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("<=")}>
-                            {op_to_string("<=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("<=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op(">")}>
-                            {op_to_string(">")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string(">")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("<")}>
-                            {op_to_string("<")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("<")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("between")}>
-                            {op_to_string("between")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("between")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("not_between")}>
-                            {op_to_string("not_between")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("not_between")}
+                            </Text>
                           </Menu.Item>
                         </Menu>
                       );
@@ -1505,7 +1543,7 @@ export function OrFilterComponent(props: {
                       };
                       return (
                         <Menu
-                          mx={"3"}
+                          mx={"3.5"}
                           shouldOverlapWithTrigger={true}
                           backgroundColor={bs_theme.background}
                           borderColor={bs_theme.border}
@@ -1533,28 +1571,44 @@ export function OrFilterComponent(props: {
                           )}
                         >
                           <Menu.Item onPress={() => dispatch_op("==")}>
-                            {op_to_string("==")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("==")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("!=")}>
-                            {op_to_string("!=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("!=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op(">=")}>
-                            {op_to_string(">=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string(">=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("<=")}>
-                            {op_to_string("<=")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("<=")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op(">")}>
-                            {op_to_string(">")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string(">")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("<")}>
-                            {op_to_string("<")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("<")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("between")}>
-                            {op_to_string("between")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("between")}
+                            </Text>
                           </Menu.Item>
                           <Menu.Item onPress={() => dispatch_op("not_between")}>
-                            {op_to_string("not_between")}
+                            <Text color={bs_theme.text}>
+                              {op_to_string("not_between")}
+                            </Text>
                           </Menu.Item>
                         </Menu>
                       );
@@ -2758,7 +2812,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
-                      mx={"3"}
+                      mx={"3.5"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -2786,34 +2840,42 @@ function FilterPathComponent(props: {
                       )}
                     >
                       <Menu.Item onPress={() => dispatch_op("like")}>
-                        {op_to_string("like")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("like")}
+                        </Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("glob")}>
-                        {op_to_string("glob")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("glob")}
+                        </Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("==")}>
-                        {op_to_string("==")}
+                        <Text color={bs_theme.text}>{op_to_string("==")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("!=")}>
-                        {op_to_string("!=")}
+                        <Text color={bs_theme.text}>{op_to_string("!=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op(">=")}>
-                        {op_to_string(">=")}
+                        <Text color={bs_theme.text}>{op_to_string(">=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("<=")}>
-                        {op_to_string("<=")}
+                        <Text color={bs_theme.text}>{op_to_string("<=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op(">")}>
-                        {op_to_string(">")}
+                        <Text color={bs_theme.text}>{op_to_string(">")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("<")}>
-                        {op_to_string("<")}
+                        <Text color={bs_theme.text}>{op_to_string("<")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("between")}>
-                        {op_to_string("between")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("between")}
+                        </Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("not_between")}>
-                        {op_to_string("not_between")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("not_between")}
+                        </Text>
                       </Menu.Item>
                     </Menu>
                   );
@@ -2955,7 +3017,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
-                      mx={"3"}
+                      mx={"3.5"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -2983,28 +3045,32 @@ function FilterPathComponent(props: {
                       )}
                     >
                       <Menu.Item onPress={() => dispatch_op("==")}>
-                        {op_to_string("==")}
+                        <Text color={bs_theme.text}>{op_to_string("==")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("!=")}>
-                        {op_to_string("!=")}
+                        <Text color={bs_theme.text}>{op_to_string("!=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op(">=")}>
-                        {op_to_string(">=")}
+                        <Text color={bs_theme.text}>{op_to_string(">=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("<=")}>
-                        {op_to_string("<=")}
+                        <Text color={bs_theme.text}>{op_to_string("<=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op(">")}>
-                        {op_to_string(">")}
+                        <Text color={bs_theme.text}>{op_to_string(">")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("<")}>
-                        {op_to_string("<")}
+                        <Text color={bs_theme.text}>{op_to_string("<")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("between")}>
-                        {op_to_string("between")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("between")}
+                        </Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("not_between")}>
-                        {op_to_string("not_between")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("not_between")}
+                        </Text>
                       </Menu.Item>
                     </Menu>
                   );
@@ -3040,7 +3106,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
-                      mx={"3"}
+                      mx={"3.5"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -3068,10 +3134,10 @@ function FilterPathComponent(props: {
                       )}
                     >
                       <Menu.Item onPress={() => dispatch_op("==")}>
-                        {op_to_string("==")}
+                        <Text color={bs_theme.text}>{op_to_string("==")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("!=")}>
-                        {op_to_string("!=")}
+                        <Text color={bs_theme.text}>{op_to_string("!=")}</Text>
                       </Menu.Item>
                     </Menu>
                   );
@@ -3148,7 +3214,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
-                      mx={"3"}
+                      mx={"3.5"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -3176,28 +3242,32 @@ function FilterPathComponent(props: {
                       )}
                     >
                       <Menu.Item onPress={() => dispatch_op("==")}>
-                        {op_to_string("==")}
+                        <Text color={bs_theme.text}>{op_to_string("==")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("!=")}>
-                        {op_to_string("!=")}
+                        <Text color={bs_theme.text}>{op_to_string("!=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op(">=")}>
-                        {op_to_string(">=")}
+                        <Text color={bs_theme.text}>{op_to_string(">=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("<=")}>
-                        {op_to_string("<=")}
+                        <Text color={bs_theme.text}>{op_to_string("<=")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op(">")}>
-                        {op_to_string(">")}
+                        <Text color={bs_theme.text}>{op_to_string(">")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("<")}>
-                        {op_to_string("<")}
+                        <Text color={bs_theme.text}>{op_to_string("<")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("between")}>
-                        {op_to_string("between")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("between")}
+                        </Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("not_between")}>
-                        {op_to_string("not_between")}
+                        <Text color={bs_theme.text}>
+                          {op_to_string("not_between")}
+                        </Text>
                       </Menu.Item>
                     </Menu>
                   );
@@ -3238,7 +3308,7 @@ function FilterPathComponent(props: {
                   };
                   return (
                     <Menu
-                      mx={"3"}
+                      mx={"3.5"}
                       shouldOverlapWithTrigger={true}
                       backgroundColor={bs_theme.background}
                       borderColor={bs_theme.border}
@@ -3266,10 +3336,10 @@ function FilterPathComponent(props: {
                       )}
                     >
                       <Menu.Item onPress={() => dispatch_op("==")}>
-                        {op_to_string("==")}
+                        <Text color={bs_theme.text}>{op_to_string("==")}</Text>
                       </Menu.Item>
                       <Menu.Item onPress={() => dispatch_op("!=")}>
-                        {op_to_string("!=")}
+                        <Text color={bs_theme.text}>{op_to_string("!=")}</Text>
                       </Menu.Item>
                     </Menu>
                   );
@@ -3464,7 +3534,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
@@ -3760,7 +3830,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -4058,7 +4128,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -4390,7 +4460,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
@@ -4709,7 +4779,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -5031,7 +5101,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -5282,7 +5352,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
@@ -5536,7 +5606,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
@@ -5796,7 +5866,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -6059,7 +6129,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -6324,7 +6394,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
@@ -6583,7 +6653,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -6845,7 +6915,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -7162,7 +7232,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
@@ -7473,7 +7543,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -7787,7 +7857,7 @@ function FilterPathComponent(props: {
                                         py={"0.5"}
                                         mx={"1"}
                                       >
-                                        <Text>Clear</Text>
+                                        <Text color={"white"}>Clear</Text>
                                       </Pressable>
                                       <Pressable
                                         onPress={() =>
@@ -8098,7 +8168,7 @@ function FilterPathComponent(props: {
                                   py={"0.5"}
                                   mx={"1"}
                                 >
-                                  <Text>Clear</Text>
+                                  <Text color={"white"}>Clear</Text>
                                 </Pressable>
                                 <Pressable
                                   onPress={() =>
