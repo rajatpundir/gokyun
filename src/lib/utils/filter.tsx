@@ -681,6 +681,7 @@ export function OrFilterComponent(props: {
                                 <></>
                               )
                             }
+                            color={bs_theme.text}
                             borderColor={bs_theme.border}
                             placeholderTextColor={bs_theme.placeholder}
                           />
@@ -760,6 +761,7 @@ export function OrFilterComponent(props: {
                                   <></>
                                 )
                               }
+                              color={bs_theme.text}
                               borderColor={bs_theme.border}
                               placeholderTextColor={bs_theme.placeholder}
                             />
@@ -833,6 +835,7 @@ export function OrFilterComponent(props: {
                                   <></>
                                 )
                               }
+                              color={bs_theme.text}
                               borderColor={bs_theme.border}
                               placeholderTextColor={bs_theme.placeholder}
                             />
@@ -3450,6 +3453,7 @@ function FilterPathComponent(props: {
                                       <></>
                                     )
                                   }
+                                  color={bs_theme.text}
                                   borderColor={bs_theme.border}
                                   placeholderTextColor={bs_theme.placeholder}
                                 />
@@ -3742,6 +3746,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
+                                        color={bs_theme.text}
                                         borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
@@ -4028,6 +4033,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
+                                        color={bs_theme.text}
                                         borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
@@ -4373,6 +4379,7 @@ function FilterPathComponent(props: {
                                       <></>
                                     )
                                   }
+                                  color={bs_theme.text}
                                   borderColor={bs_theme.border}
                                   placeholderTextColor={bs_theme.placeholder}
                                 />
@@ -4688,6 +4695,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
+                                        color={bs_theme.text}
                                         borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
@@ -5010,6 +5018,7 @@ function FilterPathComponent(props: {
                                             <></>
                                           )
                                         }
+                                        color={bs_theme.text}
                                         borderColor={bs_theme.border}
                                         placeholderTextColor={
                                           bs_theme.placeholder
@@ -8084,6 +8093,7 @@ function FilterPathComponent(props: {
                                       <></>
                                     )
                                   }
+                                  color={bs_theme.text}
                                   borderColor={bs_theme.border}
                                   placeholderTextColor={bs_theme.placeholder}
                                 />

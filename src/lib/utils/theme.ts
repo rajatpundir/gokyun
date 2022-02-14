@@ -53,8 +53,8 @@ function get_theme(theme_name: ThemeName): Theme {
     }
     case "Black": {
       return {
-        primary: colors.red[500],
-        accent: colors.red[600],
+        primary: colors.red[600],
+        accent: colors.red[500],
         background: "black",
         card: "black",
         border: colors.zinc[700],
@@ -93,15 +93,6 @@ type BS_Theme = {
   highlight: string;
 };
 
-// export const bs_theme = {
-//   primary: colors.sky[600],
-//   background: colors.slate[900],
-//   border: colors.slate[600],
-//   placeholder: colors.slate[500],
-//   text: colors.slate[400],
-//   highlight: colors.blue[500],
-// };
-
 function get_bs_theme(theme_name: ThemeName): BS_Theme {
   const theme = useTheme();
   switch (theme_name) {
@@ -112,7 +103,7 @@ function get_bs_theme(theme_name: ThemeName): BS_Theme {
         border: theme.border,
         placeholder: theme.placeholder,
         text: theme.text,
-        highlight: colors.rose[500],
+        highlight: theme.primary,
       };
     }
     case "Dark": {
@@ -122,17 +113,17 @@ function get_bs_theme(theme_name: ThemeName): BS_Theme {
         border: theme.border,
         placeholder: theme.placeholder,
         text: theme.text,
-        highlight: colors.teal[500],
+        highlight: theme.primary,
       };
     }
     case "Black": {
       return {
-        primary: theme.primary,
-        background: theme.background,
-        border: theme.border,
-        placeholder: theme.placeholder,
-        text: theme.text,
-        highlight: colors.red[500],
+        primary: colors.sky[600],
+        background: colors.slate[900],
+        border: colors.slate[600],
+        placeholder: colors.slate[500],
+        text: colors.slate[100],
+        highlight: colors.sky[600],
       };
     }
     default: {

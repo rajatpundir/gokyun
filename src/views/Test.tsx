@@ -408,7 +408,10 @@ export default {
               "lstr",
               "clob",
               "i32",
-              "u32",
+              {
+                path: "u32",
+                checks: [{ name: "u32_is_even", message: "U32 cannot be odd" }],
+              },
               "i64",
               "u64",
               "idouble",
@@ -462,10 +465,10 @@ export default {
                 rounded={"sm"}
                 backgroundColor={theme.primary}
               >
-                <Text fontWeight={"bold"} color={theme.text}>
+                <Text fontWeight={"bold"} color={"white"}>
                   Save{" "}
                 </Text>
-                <Feather name="check" size={16} color={theme.text} />
+                <Feather name="check" size={16} color={"white"} />
               </Pressable>
               <Pressable
                 onPress={() => {

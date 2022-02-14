@@ -181,8 +181,10 @@ export default function Component(
                       rounded={"sm"}
                       backgroundColor={theme.primary}
                     >
-                      <Text fontWeight={"bold"}>Save </Text>
-                      <Feather name="check" size={16} color={theme.text} />
+                      <Text fontWeight={"bold"} color={"white"}>
+                        Save{" "}
+                      </Text>
+                      <Feather name="check" size={16} color={"white"} />
                     </Pressable>
                     <Pressable
                       onPress={() => {

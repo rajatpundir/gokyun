@@ -224,8 +224,9 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -313,8 +314,9 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -401,8 +403,9 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -518,8 +521,9 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -635,8 +639,9 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -752,8 +757,9 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -869,8 +875,9 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -986,8 +993,9 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -1103,8 +1111,9 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -1220,8 +1229,9 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );
@@ -1337,8 +1347,9 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
                 <></>
               )
             }
-            borderColor={theme.border}
             color={theme.text}
+            borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
             style={style}
           />
         );

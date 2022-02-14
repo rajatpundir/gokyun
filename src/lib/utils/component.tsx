@@ -551,6 +551,9 @@ export function SearchWrapper(
                   </Row>
                 </Row>
               }
+              color={theme.text}
+              borderColor={theme.border}
+              placeholderTextColor={theme.placeholder}
             />
           </Row>
           <Column flex={1}>{props.variant}</Column>
@@ -649,7 +652,7 @@ export function ModalHeader(props: {
         <MaterialCommunityIcons
           name="keyboard-backspace"
           size={26}
-          color={colors.zinc[200]}
+          color={theme.text}
         />
         <Text bold px={"2"} fontSize={"lg"} color={theme.text}>
           {props.title}

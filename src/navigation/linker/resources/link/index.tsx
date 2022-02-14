@@ -264,10 +264,10 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                 px={"3"}
                 py={"1"}
               >
-                <Text bold fontSize={"md"}>
+                <Text bold fontSize={"md"} color={"white"}>
                   Link{" "}
                 </Text>
-                <Feather name="link" size={16} color={theme.text} />
+                <Feather name="link" size={16} color={"white"} />
               </Pressable>
             </Row>
             <Portal>
@@ -297,7 +297,9 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                       px={"2"}
                       py={"0.5"}
                     >
-                      <Text bold>Confirm</Text>
+                      <Text bold color={"white"}>
+                        Confirm
+                      </Text>
                     </Pressable>
                     <Pressable
                       onPress={() => bsm_ref.current?.close()}
