@@ -39,7 +39,7 @@ export const store = create<
   subscribeWithSelector(
     (set, get) =>
       ({
-        params: { theme: "Dark", lang: "English", user_id: new Decimal(-1) },
+        params: { theme: "Light", lang: "English", user_id: new Decimal(-1) },
         broker: {
           User: {
             create: [],

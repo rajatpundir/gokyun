@@ -225,11 +225,16 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -309,11 +314,16 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -392,11 +402,16 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -504,11 +519,16 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -616,11 +636,16 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -728,11 +753,16 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -840,11 +870,16 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -952,11 +987,16 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1064,11 +1104,16 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1176,11 +1221,16 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1288,11 +1338,16 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
               )
             }
             borderColor={theme.border}
+            color={theme.text}
             style={style}
           />
         );
       }
-      return <Text style={style}>{local_val}</Text>;
+      return (
+        <Text color={theme.text} style={style}>
+          {local_val}
+        </Text>
+      );
     });
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1328,7 +1383,11 @@ function Bool_Switch(props: ComponentProps & BoolFieldProps): JSX.Element {
         />
       );
     }
-    return <Text style={style}>{value.value ? "Yes" : "No"}</Text>;
+    return (
+      <Text color={theme.text} style={style}>
+        {value.value ? "Yes" : "No"}
+      </Text>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -1360,7 +1419,11 @@ function Bool_Checkbox(props: ComponentProps & BoolFieldProps): JSX.Element {
         />
       );
     }
-    return <Text style={style}>{value.value ? "Yes" : "No"}</Text>;
+    return (
+      <Text color={theme.text} style={style}>
+        {value.value ? "Yes" : "No"}
+      </Text>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -1379,7 +1442,7 @@ function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text style={style}>
+            <Text color={theme.text} style={style}>
               {moment(value.value).format("Do MMM YYYY")}
             </Text>
           </Pressable>
@@ -1408,7 +1471,9 @@ function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
       );
     }
     return (
-      <Text style={style}>{moment(value.value).format("MMM Do YYYY")}</Text>
+      <Text color={theme.text} style={style}>
+        {moment(value.value).format("MMM Do YYYY")}
+      </Text>
     );
   }
   console.log("[ERROR] Invalid path: ", props.path);
@@ -1428,7 +1493,9 @@ function Time_Field(props: ComponentProps & TimeFieldProps): JSX.Element {
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text style={style}>{moment(value.value).format("h:mm A")}</Text>
+            <Text color={theme.text} style={style}>
+              {moment(value.value).format("h:mm A")}
+            </Text>
           </Pressable>
           <>
             {showPicker && (
@@ -1454,7 +1521,11 @@ function Time_Field(props: ComponentProps & TimeFieldProps): JSX.Element {
         </>
       );
     }
-    return <Text style={style}>{moment(value.value).format("h:mm A")}</Text>;
+    return (
+      <Text color={theme.text} style={style}>
+        {moment(value.value).format("h:mm A")}
+      </Text>
+    );
   }
   console.log("[ERROR] Invalid path: ", props.path);
   return <></>;
@@ -1484,7 +1555,7 @@ function Timestamp_Field(
       return (
         <>
           <Pressable onPress={() => setPicker(true)}>
-            <Text style={style}>
+            <Text color={theme.text} style={style}>
               {moment(value.value).format("Do MMM YYYY, h:mm A")}
             </Text>
           </Pressable>
@@ -1541,7 +1612,7 @@ function Timestamp_Field(
       );
     }
     return (
-      <Text style={style}>
+      <Text color={theme.text} style={style}>
         {moment(value.value).format("Do MMM YYYY, h:mm A")}
       </Text>
     );

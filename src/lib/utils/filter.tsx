@@ -107,7 +107,9 @@ export function SortComponent(props: {
                     flexDirection={"row"}
                     alignItems={"center"}
                   >
-                    <Text py={"1"}>{filter_path.label}</Text>
+                    <Text py={"1"} color={bs_theme.text}>
+                      {filter_path.label}
+                    </Text>
                   </Pressable>
                   <Pressable
                     onPress={() =>
@@ -202,7 +204,9 @@ export function SortComponentFields(props: {
                   color={bs_theme.primary}
                 />
               )}
-              <Text pl={1}>{filter_path.label}</Text>
+              <Text pl={1} color={bs_theme.text}>
+                {filter_path.label}
+              </Text>
             </Pressable>
           );
         })}
@@ -278,7 +282,7 @@ export function OrFilterComponent(props: {
     >
       <Row justifyContent={"space-between"} alignItems={"center"}>
         <Row>
-          <Text>Filter {props.or_filter.index + 1}</Text>
+          <Text color={bs_theme.text}>Filter {props.or_filter.index + 1}</Text>
           <Pressable
             onPress={() =>
               props.dispatch([
@@ -1072,7 +1076,7 @@ export function OrFilterComponent(props: {
                       case "<": {
                         return (
                           <Pressable onPress={() => setPicker1(true)}>
-                            <Text>
+                            <Text color={bs_theme.text}>
                               {moment(value[1]).format("Do MMM YYYY, h:mm A")}
                               {showPicker1 && (
                                 <DateTimePicker
@@ -1150,7 +1154,7 @@ export function OrFilterComponent(props: {
                               onPress={() => setPicker1(true)}
                               style={{ flexShrink: 1 }}
                             >
-                              <Text>
+                              <Text color={bs_theme.text}>
                                 {moment(value[1][0]).format(
                                   "Do MMM YYYY, h:mm A"
                                 )}
@@ -1231,7 +1235,7 @@ export function OrFilterComponent(props: {
                               onPress={() => setPicker2(true)}
                               style={{ flexShrink: 1 }}
                             >
-                              <Text>
+                              <Text color={bs_theme.text}>
                                 {moment(value[1][1]).format(
                                   "Do MMM YYYY, h:mm A"
                                 )}
@@ -1570,7 +1574,7 @@ export function OrFilterComponent(props: {
                       case "<": {
                         return (
                           <Pressable onPress={() => setPicker1(true)}>
-                            <Text>
+                            <Text color={bs_theme.text}>
                               {moment(value[1]).format("Do MMM YYYY, h:mm A")}
                               {showPicker1 && (
                                 <DateTimePicker
@@ -1648,7 +1652,7 @@ export function OrFilterComponent(props: {
                               onPress={() => setPicker1(true)}
                               style={{ flexShrink: 1 }}
                             >
-                              <Text>
+                              <Text color={bs_theme.text}>
                                 {moment(value[1][0]).format(
                                   "Do MMM YYYY, h:mm A"
                                 )}
@@ -1729,7 +1733,7 @@ export function OrFilterComponent(props: {
                               onPress={() => setPicker2(true)}
                               style={{ flexShrink: 1 }}
                             >
-                              <Text>
+                              <Text color={bs_theme.text}>
                                 {moment(value[1][1]).format(
                                   "Do MMM YYYY, h:mm A"
                                 )}
@@ -1852,7 +1856,9 @@ export function OrFilterComponent(props: {
           px={"3"}
           pb={"2"}
         >
-          <Text bold>Fields</Text>
+          <Text bold color={bs_theme.text}>
+            Fields
+          </Text>
           <Pressable
             onPress={() => bottomSheetModalRef.current?.forceClose()}
             borderColor={bs_theme.primary}
@@ -1861,7 +1867,7 @@ export function OrFilterComponent(props: {
             px={"2"}
             py={"0.5"}
           >
-            <Text>Close</Text>
+            <Text color={bs_theme.text}>Close</Text>
           </Pressable>
         </Row>
         <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
@@ -1898,7 +1904,9 @@ export function OrFilterComponent(props: {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text pl={1}>Unique ID</Text>
+                <Text pl={1} color={bs_theme.text}>
+                  Unique ID
+                </Text>
               </Pressable>
             );
           })}
@@ -1938,7 +1946,9 @@ export function OrFilterComponent(props: {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text pl={1}>Created</Text>
+                <Text pl={1} color={bs_theme.text}>
+                  Created
+                </Text>
               </Pressable>
             );
           })}
@@ -1978,7 +1988,9 @@ export function OrFilterComponent(props: {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text pl={1}>Updated</Text>
+                <Text pl={1} color={bs_theme.text}>
+                  Updated
+                </Text>
               </Pressable>
             );
           })}
@@ -2114,7 +2126,9 @@ export function OrFilterComponent(props: {
                       color={bs_theme.primary}
                     />
                   )}
-                  <Text pl={1}>{filter_path.label}</Text>
+                  <Text pl={1} color={bs_theme.text}>
+                    {filter_path.label}
+                  </Text>
                 </Pressable>
               );
             })}
@@ -3299,7 +3313,7 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
@@ -3421,7 +3435,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -3460,7 +3476,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -3547,7 +3563,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}
@@ -3574,7 +3592,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef1.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -3711,7 +3731,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -3750,7 +3772,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -3845,7 +3867,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -3949,7 +3971,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef2.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   }
@@ -4005,7 +4029,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -4044,7 +4070,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -4139,7 +4165,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -4191,7 +4217,7 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
@@ -4337,7 +4363,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -4374,7 +4402,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -4466,7 +4494,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}
@@ -4493,7 +4523,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef1.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -4650,7 +4682,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -4687,7 +4721,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -4787,7 +4821,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -4811,7 +4845,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef2.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -4968,7 +5004,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -5005,7 +5043,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -5105,7 +5143,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -5145,7 +5183,7 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
@@ -5217,7 +5255,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -5254,7 +5294,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -5339,7 +5379,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}
@@ -5378,14 +5420,14 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
                               return (
                                 <>
                                   <Pressable onPress={() => setPicker1(true)}>
-                                    <Text>
+                                    <Text color={bs_theme.text}>
                                       {moment(value).format("Do MMM YYYY")}
                                     </Text>
                                   </Pressable>
@@ -5467,7 +5509,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -5504,7 +5548,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -5589,7 +5633,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}
@@ -5615,7 +5661,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef1.current?.present()
                                         }
                                       >
-                                        <Text>{value1[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value1[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -5624,7 +5672,7 @@ function FilterPathComponent(props: {
                                         <Pressable
                                           onPress={() => setPicker1(true)}
                                         >
-                                          <Text>
+                                          <Text color={bs_theme.text}>
                                             {moment(value1).format(
                                               "Do MMM YYYY"
                                             )}
@@ -5721,7 +5769,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -5758,7 +5808,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -5851,7 +5901,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -5874,7 +5924,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef2.current?.present()
                                         }
                                       >
-                                        <Text>{value2[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value2[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -5883,7 +5935,7 @@ function FilterPathComponent(props: {
                                         <Pressable
                                           onPress={() => setPicker2(true)}
                                         >
-                                          <Text>
+                                          <Text color={bs_theme.text}>
                                             {moment(value2).format(
                                               "Do MMM YYYY"
                                             )}
@@ -5980,7 +6032,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -6017,7 +6071,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -6110,7 +6164,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -6154,14 +6208,14 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
                               return (
                                 <>
                                   <Pressable onPress={() => setPicker1(true)}>
-                                    <Text>
+                                    <Text color={bs_theme.text}>
                                       {moment(value).format("h:mm A")}
                                     </Text>
                                   </Pressable>
@@ -6243,7 +6297,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -6280,7 +6336,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -6365,7 +6421,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}
@@ -6392,7 +6450,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef1.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -6401,7 +6461,7 @@ function FilterPathComponent(props: {
                                         <Pressable
                                           onPress={() => setPicker1(true)}
                                         >
-                                          <Text>
+                                          <Text color={bs_theme.text}>
                                             {moment(value).format("h:mm A")}
                                           </Text>
                                         </Pressable>
@@ -6496,7 +6556,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -6533,7 +6595,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -6626,7 +6688,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -6650,7 +6712,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef2.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -6659,7 +6723,7 @@ function FilterPathComponent(props: {
                                         <Pressable
                                           onPress={() => setPicker2(true)}
                                         >
-                                          <Text>
+                                          <Text color={bs_theme.text}>
                                             {moment(value).format("h:mm A")}
                                           </Text>
                                         </Pressable>
@@ -6754,7 +6818,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -6791,7 +6857,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -6884,7 +6950,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -6928,14 +6994,14 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
                               return (
                                 <>
                                   <Pressable onPress={() => setPicker1(true)}>
-                                    <Text>
+                                    <Text color={bs_theme.text}>
                                       {moment(value).format(
                                         "Do MMM YYYY, h:mm A"
                                       )}
@@ -7069,7 +7135,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -7106,7 +7174,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -7191,7 +7259,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}
@@ -7218,7 +7288,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef1.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -7227,7 +7299,7 @@ function FilterPathComponent(props: {
                                         <Pressable
                                           onPress={() => setPicker1(true)}
                                         >
-                                          <Text>
+                                          <Text color={bs_theme.text}>
                                             {moment(value).format(
                                               "Do MMM YYYY, h:mm A"
                                             )}
@@ -7374,7 +7446,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -7411,7 +7485,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -7504,7 +7578,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -7528,7 +7602,9 @@ function FilterPathComponent(props: {
                                           bottomSheetModalRef2.current?.present()
                                         }
                                       >
-                                        <Text>{value[0]}</Text>
+                                        <Text color={bs_theme.text}>
+                                          {value[0]}
+                                        </Text>
                                       </Pressable>
                                     );
                                   } else {
@@ -7537,7 +7613,7 @@ function FilterPathComponent(props: {
                                         <Pressable
                                           onPress={() => setPicker2(true)}
                                         >
-                                          <Text>
+                                          <Text color={bs_theme.text}>
                                             {moment(value).format(
                                               "Do MMM YYYY, h:mm A"
                                             )}
@@ -7684,7 +7760,9 @@ function FilterPathComponent(props: {
                                     px={"3"}
                                     pb={"2"}
                                   >
-                                    <Text bold>Fields</Text>
+                                    <Text bold color={bs_theme.text}>
+                                      Fields
+                                    </Text>
                                     <Row>
                                       <Pressable
                                         onPress={() => {
@@ -7721,7 +7799,7 @@ function FilterPathComponent(props: {
                                         px={"2"}
                                         py={"0.5"}
                                       >
-                                        <Text>Close</Text>
+                                        <Text color={bs_theme.text}>Close</Text>
                                       </Pressable>
                                     </Row>
                                   </Row>
@@ -7814,7 +7892,7 @@ function FilterPathComponent(props: {
                                               );
                                             }
                                           })}
-                                          <Text pl={1}>
+                                          <Text pl={1} color={bs_theme.text}>
                                             {list_item.item.label}
                                           </Text>
                                         </Pressable>
@@ -7855,7 +7933,7 @@ function FilterPathComponent(props: {
                                     bottomSheetModalRef1.current?.present()
                                   }
                                 >
-                                  <Text>{value[0]}</Text>
+                                  <Text color={bs_theme.text}>{value[0]}</Text>
                                 </Pressable>
                               );
                             } else {
@@ -7992,7 +8070,9 @@ function FilterPathComponent(props: {
                               px={"3"}
                               pb={"2"}
                             >
-                              <Text bold>Fields</Text>
+                              <Text bold color={bs_theme.text}>
+                                Fields
+                              </Text>
                               <Row>
                                 <Pressable
                                   onPress={() => {
@@ -8030,7 +8110,7 @@ function FilterPathComponent(props: {
                                   px={"2"}
                                   py={"0.5"}
                                 >
-                                  <Text>Close</Text>
+                                  <Text color={bs_theme.text}>Close</Text>
                                 </Pressable>
                               </Row>
                             </Row>
@@ -8121,7 +8201,9 @@ function FilterPathComponent(props: {
                                         );
                                       }
                                     })}
-                                    <Text pl={1}>{list_item.item.label}</Text>
+                                    <Text pl={1} color={bs_theme.text}>
+                                      {list_item.item.label}
+                                    </Text>
                                   </Pressable>
                                 );
                               }}

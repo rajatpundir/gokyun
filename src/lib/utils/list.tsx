@@ -586,7 +586,9 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             px={"3"}
             pb={"2"}
           >
-            <Text bold>SORT</Text>
+            <Text bold color={bs_theme.text}>
+              SORT
+            </Text>
             <Row space={"1"}>
               <Pressable
                 onPress={() => bsm_sorting_fields_ref.current?.present()}
@@ -605,7 +607,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 px={"2"}
                 py={"0.5"}
               >
-                <Text>Close</Text>
+                <Text color={bs_theme.text}>Close</Text>
               </Pressable>
             </Row>
           </Row>
@@ -627,7 +629,9 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
               px={"3"}
               pb={"2"}
             >
-              <Text bold>Fields</Text>
+              <Text bold color={bs_theme.text}>
+                Fields
+              </Text>
               <Pressable
                 onPress={() => bsm_sorting_fields_ref.current?.close()}
                 borderColor={bs_theme.primary}
@@ -636,7 +640,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                 px={"2"}
                 py={"0.5"}
               >
-                <Text>Close</Text>
+                <Text color={bs_theme.text}>Close</Text>
               </Pressable>
             </Row>
             <SortComponentFields
@@ -662,14 +666,16 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             pr={"3"}
             pb={"2"}
           >
-            <Text bold>FILTERS</Text>
+            <Text bold color={bs_theme.text}>
+              FILTERS
+            </Text>
             <Row>
               <Pressable
                 onPress={() => {
                   dispatch(["active", !state.active]);
                 }}
               >
-                <Text>Active</Text>
+                <Text color={bs_theme.text}>Active</Text>
               </Pressable>
               <Checkbox
                 value={state.active}
@@ -687,7 +693,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
                   ])
                 }
               >
-                <Text>Unsaved</Text>
+                <Text color={bs_theme.text}>Unsaved</Text>
               </Pressable>
               <Checkbox
                 value={!state.level ? true : false}

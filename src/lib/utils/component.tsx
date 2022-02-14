@@ -19,7 +19,7 @@ import { RenderListVariantProps } from "./list";
 import {
   Feather,
   FontAwesome,
-  Ionicons,
+  MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -236,7 +236,7 @@ export function useComponent(props: {
             />
           );
         } else {
-          return <Text>Not Found</Text>;
+          return <Text color={theme.text}>Not Found</Text>;
         }
       }
     } else {
@@ -263,7 +263,7 @@ export function useComponent(props: {
           />
         );
       } else {
-        return <Text>Not Found</Text>;
+        return <Text color={theme.text}>Not Found</Text>;
       }
     }
   });
@@ -588,6 +588,8 @@ export function AppHeader(props: { title?: string }): JSX.Element {
         onPress={() =>
           setState({
             params: {
+              // TODO. check this, might be out of sync
+              ...getState().params,
               theme: arrow(() => {
                 switch (theme_name) {
                   case "Light":
@@ -609,11 +611,11 @@ export function AppHeader(props: { title?: string }): JSX.Element {
         {arrow(() => {
           switch (theme_name) {
             case "Light":
-              return <Feather name="moon" size={24} />;
+              return <Feather name="moon" size={24} color={theme.text} />;
             case "Dark":
-              return <Feather name="star" size={24} />;
+              return <Feather name="star" size={24} color={theme.text} />;
             case "Black":
-              return <Feather name="sun" size={24} />;
+              return <Feather name="sun" size={24} color={theme.text} />;
             default: {
               const _exhaustiveCheck: never = theme_name;
               return _exhaustiveCheck;
@@ -629,6 +631,7 @@ export function ModalHeader(props: {
   title: string;
   RightElement?: JSX.Element;
 }): JSX.Element {
+  const theme = useTheme();
   const navigation = useNavigation();
   return (
     <Row
@@ -643,12 +646,12 @@ export function ModalHeader(props: {
         alignItems={"center"}
         onPress={navigation.goBack}
       >
-        <Ionicons
-          name="arrow-back-outline"
+        <MaterialCommunityIcons
+          name="keyboard-backspace"
           size={26}
           color={colors.zinc[200]}
         />
-        <Text bold px={"2"} fontSize={"lg"}>
+        <Text bold px={"2"} fontSize={"lg"} color={theme.text}>
           {props.title}
         </Text>
       </Pressable>
@@ -680,7 +683,9 @@ export function DeleteButton(props: {
           })}
         >
           <Column px={"4"} py={"1"}>
-            <Text fontSize={"md"}>{props.message}</Text>
+            <Text fontSize={"md"} color={bs_theme.text}>
+              {props.message}
+            </Text>
             <Row
               my={"3"}
               justifyContent={"space-between"}
@@ -696,7 +701,11 @@ export function DeleteButton(props: {
                 px={"2"}
                 py={"1"}
               >
-                <Text fontSize={"lg"} textAlign={"center"}>
+                <Text
+                  fontSize={"lg"}
+                  textAlign={"center"}
+                  color={bs_theme.text}
+                >
                   Cancel
                 </Text>
               </Pressable>
@@ -711,7 +720,11 @@ export function DeleteButton(props: {
                 px={"2"}
                 py={"1"}
               >
-                <Text fontSize={"lg"} textAlign={"center"}>
+                <Text
+                  fontSize={"lg"}
+                  textAlign={"center"}
+                  color={bs_theme.text}
+                >
                   Delete
                 </Text>
               </Pressable>

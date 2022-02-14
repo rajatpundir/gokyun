@@ -30,7 +30,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
           </Text>
         </Column>
         <Column>
-          <Text>{props.state.id.toString()}</Text>
+          <Text color={theme.text}>{props.state.id.toString()}</Text>
         </Column>
       </Row>
       <Template
@@ -49,7 +49,9 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                 backgroundColor={theme.primary}
                 onPress={props.update_parent_values}
               >
-                <Text bold>OK</Text>
+                <Text bold color={theme.text}>
+                  OK
+                </Text>
               </Pressable>
             );
           }

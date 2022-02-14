@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  DarkTheme,
-  Theme as ReactNavigationTheme,
-} from "@react-navigation/native";
+import { Theme as ReactNavigationTheme } from "@react-navigation/native";
 import { extendTheme } from "native-base";
 import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { colors } from "./tailwind";
@@ -30,8 +27,8 @@ function get_theme(theme_name: ThemeName): Theme {
       return {
         primary: colors.rose[500],
         accent: colors.rose[600],
-        background: colors.zinc[900],
-        card: colors.zinc[900],
+        background: "white",
+        card: "white",
         border: colors.zinc[300],
         placeholder: colors.zinc[700],
         label: colors.zinc[800],
@@ -164,7 +161,6 @@ function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
       return {
         dark: false,
         colors: {
-          ...DarkTheme.colors,
           primary: theme.primary,
           background: theme.background,
           card: theme.card,
@@ -178,7 +174,6 @@ function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
       return {
         dark: true,
         colors: {
-          ...DarkTheme.colors,
           primary: theme.primary,
           background: theme.background,
           card: theme.card,
@@ -192,7 +187,6 @@ function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
       return {
         dark: true,
         colors: {
-          ...DarkTheme.colors,
           primary: theme.primary,
           background: theme.background,
           card: theme.card,

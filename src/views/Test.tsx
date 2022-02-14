@@ -103,7 +103,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                           ) {
                             return (
                               <Row>
-                                <Text>Select User </Text>
+                                <Text color={theme.text}>Select User </Text>
                                 {props.state.mode === "write" ? (
                                   <FontAwesome
                                     name="edit"
@@ -201,7 +201,11 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                                   value.value.equals(-1),
                                 (it) => {
                                   if (it) {
-                                    return <Text>Select User </Text>;
+                                    return (
+                                      <Text color={theme.text}>
+                                        Select User{" "}
+                                      </Text>
+                                    );
                                   } else {
                                     return (
                                       <Field
@@ -280,7 +284,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                           ) {
                             return (
                               <Row>
-                                <Text>Select User </Text>
+                                <Text color={theme.text}>Select User </Text>
                                 {props.state.mode === "write" ? (
                                   <>
                                     <Text> </Text>
@@ -337,7 +341,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                               color={bs_theme.primary}
                             />
                           )}
-                          <Text pl={1}>
+                          <Text pl={1} color={theme.text}>
                             {arrow(() => {
                               const result = variable.paths.findAny((x) =>
                                 compare_paths(get_path_string(x), [
@@ -393,7 +397,7 @@ export default {
               </Text>
             </Column>
             <Column>
-              <Text>{props.state.id.toString()}</Text>
+              <Text color={theme.text}>{props.state.id.toString()}</Text>
             </Column>
           </Row>
           <Template
@@ -458,7 +462,9 @@ export default {
                 rounded={"sm"}
                 backgroundColor={theme.primary}
               >
-                <Text fontWeight={"bold"}>Save </Text>
+                <Text fontWeight={"bold"} color={theme.text}>
+                  Save{" "}
+                </Text>
                 <Feather name="check" size={16} color={theme.text} />
               </Pressable>
               <Pressable
@@ -476,7 +482,7 @@ export default {
                 borderWidth={"1"}
                 borderColor={theme.primary}
               >
-                <Text>Cancel </Text>
+                <Text color={theme.text}>Cancel </Text>
                 <MaterialIcons name="clear" size={16} color={theme.text} />
               </Pressable>
             </Row>

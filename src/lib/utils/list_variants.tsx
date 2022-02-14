@@ -94,7 +94,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
   const ListFooterComponent = useCallback(() => {
     if (!props.state.reached_end) {
       return (
-        <Text my={"1"} textAlign={"center"}>
+        <Text my={"1"} textAlign={"center"} color={bs_theme.text}>
           Loading...
         </Text>
       );
@@ -134,7 +134,9 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
             px={"3"}
             pb={"2"}
           >
-            <Text bold>VIEW</Text>
+            <Text bold color={bs_theme.text}>
+              VIEW
+            </Text>
             <Pressable
               onPress={() => props.bsm_view_ref.current?.forceClose()}
               borderColor={bs_theme.primary}
@@ -143,7 +145,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
               px={"2"}
               py={"0.5"}
             >
-              <Text>Close</Text>
+              <Text color={bs_theme.text}>Close</Text>
             </Pressable>
           </Row>
           <BottomSheetScrollView contentContainerStyle={tw.style(["m-2"], {})}>
@@ -171,7 +173,9 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
                   color={bs_theme.primary}
                 />
               )}
-              <Text pl={1}>Default</Text>
+              <Text pl={1} color={bs_theme.text}>
+                Default
+              </Text>
             </Pressable>
             {Object.keys(props.RenderElement[1]).map((layout) => (
               <Pressable
@@ -199,7 +203,9 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
                     color={bs_theme.primary}
                   />
                 )}
-                <Text pl={1}>{layout}</Text>
+                <Text pl={1} color={bs_theme.text}>
+                  {layout}
+                </Text>
               </Pressable>
             ))}
           </BottomSheetScrollView>
@@ -244,7 +250,7 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
             key={variable.id.toString()}
             onPress={() => props.update_parent_values(variable)}
           >
-            <Text>{props.RenderElement(variable)}</Text>
+            <Text color={theme.text}>{props.RenderElement(variable)}</Text>
           </Menu.Item>
         );
       })}
@@ -292,7 +298,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
   const ListFooterComponent = useCallback(() => {
     if (!props.state.reached_end) {
       return (
-        <Text my={"1"} textAlign={"center"}>
+        <Text my={"1"} textAlign={"center"} color={bs_theme.text}>
           Loading...
         </Text>
       );
@@ -319,7 +325,9 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
           px={"3"}
           pb={"2"}
         >
-          <Text bold>{props.title}</Text>
+          <Text bold color={bs_theme.text}>
+            {props.title}
+          </Text>
           <Pressable
             onPress={() => bsm_ref.current?.forceClose()}
             borderColor={bs_theme.primary}
@@ -328,7 +336,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
             px={"2"}
             py={"0.5"}
           >
-            <Text>Close</Text>
+            <Text color={bs_theme.text}>Close</Text>
           </Pressable>
         </Row>
         <BottomSheetFlatList
