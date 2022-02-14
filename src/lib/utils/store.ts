@@ -106,7 +106,7 @@ arrow(async () => {
   const result = await get_param_text("theme");
   // console.log(result);
   if (unwrap(result)) {
-    const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark", "Black"];
+    const theme_names: ReadonlyArray<ThemeName> = ["Light", "Dark"];
     if (theme_names.includes(result.value as any)) {
       console.log(result.value);
       setState({

@@ -595,12 +595,10 @@ export function AppHeader(props: { title?: string }): JSX.Element {
               ...getState().params,
               theme: arrow(() => {
                 switch (theme_name) {
+                  case "Dark":
+                    return "Light";
                   case "Light":
                     return "Dark";
-                  case "Dark":
-                    return "Black";
-                  case "Black":
-                    return "Light";
                   default: {
                     const _exhaustiveCheck: never = theme_name;
                     return _exhaustiveCheck;
@@ -613,12 +611,10 @@ export function AppHeader(props: { title?: string }): JSX.Element {
       >
         {arrow(() => {
           switch (theme_name) {
+            case "Dark":
+              return <Feather name="sun" size={24} color={theme.text} />;
             case "Light":
               return <Feather name="moon" size={24} color={theme.text} />;
-            case "Dark":
-              return <Feather name="star" size={24} color={theme.text} />;
-            case "Black":
-              return <Feather name="sun" size={24} color={theme.text} />;
             default: {
               const _exhaustiveCheck: never = theme_name;
               return _exhaustiveCheck;

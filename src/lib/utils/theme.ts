@@ -6,7 +6,7 @@ import { colors } from "./tailwind";
 import { getState, subscribe } from "./store";
 import { arrow } from "./prelude";
 
-export type ThemeName = "Light" | "Dark" | "Black";
+export type ThemeName = "Light" | "Dark";
 
 type Theme = {
   primary: string;
@@ -43,20 +43,6 @@ function get_theme(theme_name: ThemeName): Theme {
         accent: colors.teal[600],
         background: colors.zinc[900],
         card: colors.zinc[900],
-        border: colors.zinc[700],
-        placeholder: colors.zinc[300],
-        label: colors.zinc[200],
-        text: colors.zinc[100],
-        error: colors.sky[600],
-        notification: colors.sky[600],
-      };
-    }
-    case "Black": {
-      return {
-        primary: colors.red[600],
-        accent: colors.red[500],
-        background: "black",
-        card: "black",
         border: colors.zinc[700],
         placeholder: colors.zinc[300],
         label: colors.zinc[200],
@@ -116,16 +102,6 @@ function get_bs_theme(theme_name: ThemeName): BS_Theme {
         highlight: theme.primary,
       };
     }
-    case "Black": {
-      return {
-        primary: colors.sky[600],
-        background: colors.slate[900],
-        border: colors.slate[600],
-        placeholder: colors.slate[500],
-        text: colors.slate[100],
-        highlight: colors.sky[600],
-      };
-    }
     default: {
       const _exhaustiveCheck: never = theme_name;
       return _exhaustiveCheck;
@@ -162,19 +138,6 @@ function get_rn_theme(theme_name: ThemeName): ReactNavigationTheme {
       };
     }
     case "Dark": {
-      return {
-        dark: true,
-        colors: {
-          primary: theme.primary,
-          background: theme.background,
-          card: theme.card,
-          border: theme.border,
-          text: theme.text,
-          notification: theme.notification,
-        },
-      };
-    }
-    case "Black": {
       return {
         dark: true,
         colors: {
@@ -226,22 +189,6 @@ function get_rnp_theme(theme_name: ThemeName): ReactNativePaper.Theme {
       };
     }
     case "Dark": {
-      return {
-        ...PaperTheme,
-        dark: true,
-        roundness: 5,
-        colors: {
-          ...PaperTheme.colors,
-          primary: theme.primary,
-          accent: theme.accent,
-          background: theme.background,
-          placeholder: theme.placeholder,
-          text: theme.text,
-          error: theme.error,
-        },
-      };
-    }
-    case "Black": {
       return {
         ...PaperTheme,
         dark: true,
@@ -350,8 +297,6 @@ function useColorScheme(): [ThemeName, keyof CustomThemeType["colors"]] {
           return convert_scheme("rose");
         case "Dark":
           return convert_scheme("teal");
-        case "Black":
-          return convert_scheme("red");
         default: {
           const _exhaustiveCheck: never = theme_name;
           return _exhaustiveCheck;
