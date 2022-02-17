@@ -202,7 +202,7 @@ export default function Component(
                       borderWidth={"1"}
                       borderColor={theme.primary}
                     >
-                      <Text>Cancel </Text>
+                      <Text color={theme.text}>Cancel </Text>
                       <MaterialIcons
                         name="clear"
                         size={16}

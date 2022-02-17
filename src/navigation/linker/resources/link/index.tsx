@@ -33,6 +33,8 @@ import { views } from "../../../../views";
 
 // Get to implementing Transformer
 
+// Use MIME types
+
 export default function Component(props: ParentNavigatorProps<"Link">) {
   const theme = useTheme();
   const bs_theme = useBSTheme();
@@ -136,7 +138,9 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                 })
               )
             }
+            color={theme.text}
             borderColor={theme.border}
+            placeholderTextColor={theme.placeholder}
           />
         </Row>
         {resource !== undefined ? (
@@ -288,7 +292,9 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                   px={"3"}
                   pb={"2"}
                 >
-                  <Text bold>Link Resource</Text>
+                  <Text bold color={bs_theme.text}>
+                    Link Resource
+                  </Text>
                   <Row space={"2"}>
                     <Pressable
                       onPress={() => {}}
@@ -309,7 +315,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                       px={"2"}
                       py={"0.5"}
                     >
-                      <Text>Close</Text>
+                      <Text color={bs_theme.text}>Close</Text>
                     </Pressable>
                   </Row>
                 </Row>

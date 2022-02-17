@@ -49,7 +49,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                 backgroundColor={theme.primary}
                 onPress={props.update_parent_values}
               >
-                <Text bold color={theme.text}>
+                <Text bold color={"white"}>
                   OK
                 </Text>
               </Pressable>
