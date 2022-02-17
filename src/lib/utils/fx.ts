@@ -29,9 +29,7 @@ import {
   Path,
   PathString,
   StrongEnum,
-  Struct,
   StructPermissions,
-  Variable,
   WeakEnum,
 } from "./variable";
 
@@ -83,6 +81,13 @@ type FxArgs = Record<
 // In case, a transformer is executed via a Composer, ownership of inputs will not be checked.
 type FxOutputs = Record<
   string,
+  | {
+      op: "value";
+      value: LispExpression;
+      x: Omit<StrongEnum, "value"> & {
+        value: LispExpression;
+      };
+    }
   | {
       // Abort if there is any unique constraint violation
       op: "insert";
@@ -176,9 +181,14 @@ export class Fx {
     // 3. Process outputs
     for (const output_name of Object.keys(this.outputs)) {
       const output = this.outputs[output_name];
-      for (const field_name of Object.keys(output.fields)) {
-        const expr = output.fields[field_name];
+      if (output.op === "value") {
+        const expr = output.value;
         paths = paths.concat(expr.get_paths());
+      } else {
+        for (const field_name of Object.keys(output.fields)) {
+          const expr = output.fields[field_name];
+          paths = paths.concat(expr.get_paths());
+        }
       }
     }
     return apply([] as Array<PathString>, (it) => {
