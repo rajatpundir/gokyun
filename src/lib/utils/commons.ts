@@ -33,6 +33,7 @@ import {
   Struct,
   compare_paths,
   concat_path_strings,
+  WeakEnum,
 } from "./variable";
 
 export type State = Immutable<{
@@ -1112,4 +1113,44 @@ export function get_decimal_keyboard_type(
       return "number-pad";
   }
   return "numbers-and-punctuation";
+}
+
+export function get_path_with_type(
+  struct: Struct,
+  path: PathString
+): Result<
+  [PathString, [Exclude<WeakEnum["type"], "other">] | ["other", Struct]]
+> {
+  const [check, field_name] = [
+    path[0].length !== 0,
+    path[0].length !== 0 ? path[0][0] : path[1],
+  ];
+  if (field_name in struct.fields) {
+    const field = struct.fields[field_name];
+    if (check && field.type === "other") {
+      const other_struct = get_struct(field.other);
+      if (unwrap(other_struct)) {
+        return get_path_with_type(other_struct.value, [
+          path[0].slice(1),
+          path[1],
+        ]);
+      }
+    } else {
+      if (field.type === "other") {
+        const other_struct = get_struct(field.other);
+        if (unwrap(other_struct)) {
+          return new Ok([path, [field.type, other_struct.value]] as [
+            PathString,
+            [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
+          ]);
+        }
+      } else {
+        return new Ok([path, [field.type]] as [
+          PathString,
+          [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
+        ]);
+      }
+    }
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

@@ -1,4 +1,7 @@
 import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
+import { get_path_with_type } from "./commons";
+import { FilterPath, get_variable } from "./db";
 import { ErrMsg, errors } from "./errors";
 import {
   Bool,
@@ -9,12 +12,25 @@ import {
   Symbol,
   Text,
 } from "./lisp";
-import { apply, arrow, CustomError, Err, Ok, Result } from "./prelude";
+import {
+  apply,
+  arrow,
+  CustomError,
+  Err,
+  Ok,
+  Result,
+  unwrap,
+  unwrap_array,
+} from "./prelude";
+import { get_struct } from "./schema";
 import {
   compare_paths,
+  get_flattened_path,
   PathString,
   StrongEnum,
+  Struct,
   StructPermissions,
+  Variable,
   WeakEnum,
 } from "./variable";
 
@@ -181,12 +197,15 @@ export class Fx {
     });
   }
 
-  get_symbols(args: FxArgs): Result<{}> {
+  get_symbols_for_variable(variable: Variable) {}
+
+  async get_symbols(args: FxArgs, level: Decimal): Promise<Result<{}>> {
     const paths = this.get_paths();
     console.log(paths);
     const symbols: Record<string, Symbol> = {};
     for (let input_name of Object.keys(this.inputs)) {
       const input = this.inputs[input_name];
+      // check if input is used in path of any expression
       let check = false;
       for (let path of paths) {
         const first: string = path[0].length !== 0 ? path[0][0] : path[1];
@@ -196,125 +215,184 @@ export class Fx {
         }
       }
       if (check) {
-        symbols[input_name] = arrow(() => {
-          if (input.type !== "other") {
-            switch (input.type) {
-              case "str":
-              case "lstr":
-              case "clob": {
-                return new Symbol({
-                  value: new Ok(
-                    new Text(
-                      arrow(() => {
-                        if (input_name in args) {
-                          const arg = args[input_name];
-                          if (arg.type === input.type) {
-                            return arg.value;
-                          }
+        if (input.type !== "other") {
+          switch (input.type) {
+            case "str":
+            case "lstr":
+            case "clob": {
+              symbols[input_name] = new Symbol({
+                value: new Ok(
+                  new Text(
+                    arrow(() => {
+                      if (input_name in args) {
+                        const arg = args[input_name];
+                        if (arg.type === input.type) {
+                          return arg.value;
                         }
-                        return input.default !== undefined ? input.default : "";
-                      })
-                    )
-                  ),
-                  values: {},
-                });
-              }
-              case "i32":
-              case "u32":
-              case "i64":
-              case "u64": {
-                return new Symbol({
-                  value: new Ok(
-                    new Num(
-                      arrow(() => {
-                        if (input_name in args) {
-                          const arg = args[input_name];
-                          if (arg.type === input.type) {
-                            return arg.value.toNumber();
-                          }
+                      }
+                      return input.default !== undefined ? input.default : "";
+                    })
+                  )
+                ),
+                values: {},
+              });
+              break;
+            }
+            case "i32":
+            case "u32":
+            case "i64":
+            case "u64": {
+              symbols[input_name] = new Symbol({
+                value: new Ok(
+                  new Num(
+                    arrow(() => {
+                      if (input_name in args) {
+                        const arg = args[input_name];
+                        if (arg.type === input.type) {
+                          return arg.value.toNumber();
                         }
-                        return input.default !== undefined
-                          ? input.default.toNumber()
-                          : 0;
-                      })
-                    )
-                  ),
-                  values: {},
-                });
-              }
-              case "idouble":
-              case "udouble":
-              case "idecimal":
-              case "udecimal": {
-                return new Symbol({
-                  value: new Ok(
-                    new Deci(
-                      arrow(() => {
-                        if (input_name in args) {
-                          const arg = args[input_name];
-                          if (arg.type === input.type) {
-                            return arg.value.toNumber();
-                          }
+                      }
+                      return input.default !== undefined
+                        ? input.default.toNumber()
+                        : 0;
+                    })
+                  )
+                ),
+                values: {},
+              });
+              break;
+            }
+            case "idouble":
+            case "udouble":
+            case "idecimal":
+            case "udecimal": {
+              symbols[input_name] = new Symbol({
+                value: new Ok(
+                  new Deci(
+                    arrow(() => {
+                      if (input_name in args) {
+                        const arg = args[input_name];
+                        if (arg.type === input.type) {
+                          return arg.value.toNumber();
                         }
-                        return input.default !== undefined
-                          ? input.default.toNumber()
-                          : 0;
-                      })
-                    )
-                  ),
-                  values: {},
-                });
-              }
-              case "bool": {
-                return new Symbol({
-                  value: new Ok(
-                    new Bool(
-                      arrow(() => {
-                        if (input_name in args) {
-                          const arg = args[input_name];
-                          if (arg.type === input.type) {
-                            return arg.value;
-                          }
+                      }
+                      return input.default !== undefined
+                        ? input.default.toNumber()
+                        : 0;
+                    })
+                  )
+                ),
+                values: {},
+              });
+              break;
+            }
+            case "bool": {
+              symbols[input_name] = new Symbol({
+                value: new Ok(
+                  new Bool(
+                    arrow(() => {
+                      if (input_name in args) {
+                        const arg = args[input_name];
+                        if (arg.type === input.type) {
+                          return arg.value;
                         }
-                        return input.default !== undefined
-                          ? input.default
-                          : false;
-                      })
-                    )
-                  ),
-                  values: {},
-                });
-              }
-              case "date":
-              case "time":
-              case "timestamp": {
-                return new Symbol({
-                  value: new Ok(
-                    new Num(
-                      arrow(() => {
-                        if (input_name in args) {
-                          const arg = args[input_name];
-                          if (arg.type === input.type) {
-                            return arg.value.getTime();
-                          }
+                      }
+                      return input.default !== undefined
+                        ? input.default
+                        : false;
+                    })
+                  )
+                ),
+                values: {},
+              });
+              break;
+            }
+            case "date":
+            case "time":
+            case "timestamp": {
+              symbols[input_name] = new Symbol({
+                value: new Ok(
+                  new Num(
+                    arrow(() => {
+                      if (input_name in args) {
+                        const arg = args[input_name];
+                        if (arg.type === input.type) {
+                          return arg.value.getTime();
                         }
-                        return input.default !== undefined
-                          ? input.default.getTime()
-                          : 0;
-                      })
-                    )
-                  ),
-                  values: {},
-                });
+                      }
+                      return input.default !== undefined
+                        ? input.default.getTime()
+                        : 0;
+                    })
+                  )
+                ),
+                values: {},
+              });
+              break;
+            }
+          }
+        } else {
+          // 1. filter paths which starts with input_name
+          // 2. query db to get values
+          // 3. use values to construct symbol and assign it here
+          const struct = get_struct(input.other);
+          if (unwrap(struct)) {
+            const result = unwrap_array(
+              paths
+                .filter((path) => {
+                  const first: string =
+                    path[0].length !== 0 ? path[0][0] : path[1];
+                  return first === input_name && path[0].length !== 0;
+                })
+                .map((path) =>
+                  get_path_with_type(struct.value, [path[0].slice(1), path[1]])
+                )
+            );
+            if (unwrap(result)) {
+              const filter_paths: HashSet<FilterPath> = HashSet.ofIterable(
+                result.value.map((x) => {
+                  const [path, field_struct_name] = x;
+                  if (field_struct_name[0] !== "other") {
+                    return new FilterPath(
+                      get_flattened_path(path).join("."),
+                      path,
+                      [field_struct_name[0], undefined],
+                      undefined
+                    );
+                  } else {
+                    return new FilterPath(
+                      get_flattened_path(path).join("."),
+                      path,
+                      [field_struct_name[0], undefined, field_struct_name[1]],
+                      undefined
+                    );
+                  }
+                })
+              );
+              if (input_name in args) {
+                const arg = args[input_name];
+                if (arg.type === input.type) {
+                  const variable = await get_variable(
+                    struct.value,
+                    true,
+                    level,
+                    arg.value,
+                    filter_paths
+                  );
+                  if (unwrap(variable)) {
+                  } else {
+                    // err
+                  }
+                }
+              } else {
               }
+            } else {
+              // err
             }
           } else {
-            return new Symbol({
-              value: new Ok(new Num(0)),
-              values: {},
-            });
+            // err
           }
-        });
+        }
       }
     }
     return new Ok({});
