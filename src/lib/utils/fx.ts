@@ -380,18 +380,26 @@ export class Fx {
                     filter_paths
                   );
                   if (unwrap(variable)) {
-                  } else {
-                    // err
+                    // get and set symbols
                   }
                 }
               } else {
+                if (input.default !== undefined) {
+                  const variable = await get_variable(
+                    struct.value,
+                    true,
+                    level,
+                    input.default,
+                    filter_paths
+                  );
+                  if (unwrap(variable)) {
+                    // get and set symbols
+                  }
+                }
               }
-            } else {
-              // err
             }
-          } else {
-            // err
           }
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       }
     }
