@@ -26,6 +26,7 @@ import { get_struct } from "./schema";
 import {
   compare_paths,
   get_flattened_path,
+  Path,
   PathString,
   StrongEnum,
   Struct,
@@ -159,31 +160,31 @@ export class Fx {
   get_paths(): ReadonlyArray<PathString> {
     // 1. Process checks
     let paths: ReadonlyArray<PathString> = [];
-    for (let check_name of Object.keys(this.checks)) {
+    for (const check_name of Object.keys(this.checks)) {
       const expr = this.checks[check_name][0];
       paths = paths.concat(expr.get_paths());
     }
     // 2. Process input updates
-    for (let input_name of Object.keys(this.inputs)) {
+    for (const input_name of Object.keys(this.inputs)) {
       const input = this.inputs[input_name];
       if (input.type === "other" && input.updates !== undefined) {
-        for (let [, expr] of input.updates) {
+        for (const [, expr] of input.updates) {
           paths = paths.concat(expr.get_paths());
         }
       }
     }
     // 3. Process outputs
-    for (let output_name of Object.keys(this.outputs)) {
+    for (const output_name of Object.keys(this.outputs)) {
       const output = this.outputs[output_name];
-      for (let field_name of Object.keys(output.fields)) {
+      for (const field_name of Object.keys(output.fields)) {
         const expr = output.fields[field_name];
         paths = paths.concat(expr.get_paths());
       }
     }
     return apply([] as Array<PathString>, (it) => {
-      for (let path of paths) {
+      for (const path of paths) {
         let check = true;
-        for (let existing_path of it) {
+        for (const existing_path of it) {
           if (compare_paths(path, existing_path)) {
             check = false;
             break;
@@ -197,17 +198,108 @@ export class Fx {
     });
   }
 
-  get_symbols_for_variable(variable: Variable) {}
+  // function to convert array of paths
 
-  async get_symbols(args: FxArgs, level: Decimal): Promise<Result<{}>> {
+  get_symbols_for_paths(paths: HashSet<Path>): Record<string, Symbol> {
+    const symbols: Record<string, Symbol> = {};
+    const firsts: HashSet<string> = paths.map((path) =>
+      path.path[0].length !== 0 ? path.path[0][0][0] : path.path[1][0]
+    );
+    for (const first of firsts) {
+      const filtered_paths = paths.filter(
+        (path) =>
+          first ===
+          (path.path[0].length !== 0 ? path.path[0][0][0] : path.path[1][0])
+      );
+      symbols[first] = arrow(() => {
+        const sub_symbols: Record<string, Symbol> = this.get_symbols_for_paths(
+          filtered_paths
+            .filter((path) => path.path[0].length !== 0)
+            .map(
+              (path) =>
+                new Path(path.label, [path.path[0].slice(1), path.path[1]])
+            )
+        );
+        const filtered_path = filtered_paths.findAny(
+          (path) => path.path[0].length === 0
+        );
+        if (filtered_path.isSome()) {
+          const value = filtered_path.get().path[1][1];
+          switch (value.type) {
+            case "str":
+            case "lstr":
+            case "clob": {
+              return new Symbol({
+                value: new Ok(new Text(value.value)),
+                values: sub_symbols,
+              });
+            }
+            case "i32":
+            case "u32":
+            case "i64":
+            case "u64": {
+              return new Symbol({
+                value: new Ok(new Num(value.value.toNumber())),
+                values: sub_symbols,
+              });
+            }
+            case "idouble":
+            case "udouble":
+            case "idecimal":
+            case "udecimal": {
+              return new Symbol({
+                value: new Ok(new Deci(value.value.toNumber())),
+                values: sub_symbols,
+              });
+            }
+            case "bool": {
+              return new Symbol({
+                value: new Ok(new Bool(value.value)),
+                values: sub_symbols,
+              });
+            }
+            case "date":
+            case "time":
+            case "timestamp": {
+              return new Symbol({
+                value: new Ok(new Num(value.value.getTime())),
+                values: sub_symbols,
+              });
+            }
+            case "other": {
+              return new Symbol({
+                value: new Ok(new Num(value.value.toNumber())),
+                values: sub_symbols,
+              });
+            }
+            default: {
+              const _exhaustiveCheck: never = value;
+              return _exhaustiveCheck;
+            }
+          }
+        } else {
+          return new Symbol({
+            value: undefined,
+            values: sub_symbols,
+          });
+        }
+      });
+    }
+    return symbols;
+  }
+
+  async get_symbols(
+    args: FxArgs,
+    level: Decimal
+  ): Promise<Result<Record<string, Symbol>>> {
     const paths = this.get_paths();
     console.log(paths);
     const symbols: Record<string, Symbol> = {};
-    for (let input_name of Object.keys(this.inputs)) {
+    for (const input_name of Object.keys(this.inputs)) {
       const input = this.inputs[input_name];
       // check if input is used in path of any expression
       let check = false;
-      for (let path of paths) {
+      for (const path of paths) {
         const first: string = path[0].length !== 0 ? path[0][0] : path[1];
         if (first === input_name) {
           check = true;
@@ -369,41 +461,97 @@ export class Fx {
                   }
                 })
               );
-              if (input_name in args) {
-                const arg = args[input_name];
-                if (arg.type === input.type) {
-                  const variable = await get_variable(
-                    struct.value,
-                    true,
-                    level,
-                    arg.value,
-                    filter_paths
-                  );
-                  if (unwrap(variable)) {
-                    // get and set symbols
+              if (filter_paths.length() !== 0) {
+                if (input_name in args) {
+                  const arg = args[input_name];
+                  if (arg.type === input.type) {
+                    const variable = await get_variable(
+                      struct.value,
+                      true,
+                      level,
+                      arg.value,
+                      filter_paths
+                    );
+                    if (unwrap(variable)) {
+                      symbols[input_name] = new Symbol({
+                        value: new Ok(new Num(variable.value.id.toNumber())),
+                        values: this.get_symbols_for_paths(
+                          variable.value.paths
+                        ),
+                      });
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  if (input.default !== undefined) {
+                    const variable = await get_variable(
+                      struct.value,
+                      true,
+                      level,
+                      input.default,
+                      filter_paths
+                    );
+                    if (unwrap(variable)) {
+                      symbols[input_name] = new Symbol({
+                        value: new Ok(new Num(variable.value.id.toNumber())),
+                        values: this.get_symbols_for_paths(
+                          variable.value.paths
+                        ),
+                      });
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
                   }
                 }
               } else {
-                if (input.default !== undefined) {
-                  const variable = await get_variable(
-                    struct.value,
-                    true,
-                    level,
-                    input.default,
-                    filter_paths
-                  );
-                  if (unwrap(variable)) {
-                    // get and set symbols
+                if (input_name in args) {
+                  const arg = args[input_name];
+                  if (arg.type === input.type) {
+                    symbols[input_name] = new Symbol({
+                      value: new Ok(new Num(arg.value.toNumber())),
+                      values: {},
+                    });
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  if (input.default !== undefined) {
+                    symbols[input_name] = new Symbol({
+                      value: new Ok(new Num(input.default.toNumber())),
+                      values: {},
+                    });
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
                   }
                 }
               }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
-          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       }
     }
-    return new Ok({});
+    return new Ok(symbols);
   }
 
   exec(args: FxArgs, level: Decimal) {}
