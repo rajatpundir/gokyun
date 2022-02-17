@@ -20,8 +20,6 @@ import {
 
 // Fx, Tranform, Compose
 
-// Add checks for inputs, and user_invoked args
-
 type FxPermissions = StructPermissions;
 
 type FxInputs = Record<
@@ -112,7 +110,6 @@ export class Fx {
   outputs: FxOutputs;
   checks: FxChecks;
   user_invoked: boolean;
-  private paths: ReadonlyArray<PathString>;
 
   constructor(
     name: string,
@@ -126,7 +123,6 @@ export class Fx {
     this.outputs = outputs;
     this.checks = checks;
     this.user_invoked = user_invoked;
-    this.paths = this.get_paths();
   }
 
   equals(other: Fx): boolean {
@@ -186,12 +182,13 @@ export class Fx {
   }
 
   get_symbols(args: FxArgs): Result<{}> {
-    console.log(this.paths);
+    const paths = this.get_paths();
+    console.log(paths);
     const symbols: Record<string, Symbol> = {};
     for (let input_name of Object.keys(this.inputs)) {
       const input = this.inputs[input_name];
       let check = false;
-      for (let path of this.paths) {
+      for (let path of paths) {
         const first: string = path[0].length !== 0 ? path[0][0] : path[1];
         if (first === input_name) {
           check = true;
