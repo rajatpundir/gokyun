@@ -564,5 +564,51 @@ export class Fx {
     return new Ok(symbols);
   }
 
-  exec(args: FxArgs, level: Decimal) {}
+  // Should return Record<string, StrongEnum>
+  async exec(args: FxArgs, level: Decimal) {
+    const final_outputs = {};
+    const result = await this.get_symbols(args, level);
+    if (unwrap(result)) {
+      const symbols = result.value;
+      // 1. update inputs
+      for (const input_name of Object.keys(this.inputs)) {
+        const input = this.inputs[input_name];
+        if (input.type === "other" && input.updates !== undefined) {
+          for (const [path, expr] of input.updates) {
+            // update paths
+          }
+        }
+      }
+      // 2. generate outputs
+      for (const output_name of Object.keys(this.outputs)) {
+        const output = this.outputs[output_name];
+        switch (output.op) {
+          case "value": {
+            break;
+          }
+          case "insert": {
+            break;
+          }
+          case "insert_ignore": {
+            break;
+          }
+          case "replace": {
+            break;
+          }
+          case "delete": {
+            break;
+          }
+          case "delete_ignore": {
+            break;
+          }
+          default: {
+            const _exhaustiveCheck: never = output;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+    } else {
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+    }
+  }
 }
