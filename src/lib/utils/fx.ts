@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_path_with_type } from "./commons";
 import { FilterPath, get_variable } from "./db";
+import { replace_variable } from "./db_variables";
 import { ErrMsg, errors } from "./errors";
 import {
   Bool,
@@ -31,7 +32,7 @@ import {
   Path,
   PathString,
   StrongEnum,
-  StructPermissions,
+  Variable,
   WeakEnum,
 } from "./variable";
 
@@ -874,8 +875,17 @@ export class Fx {
                       filter_paths
                     );
                     if (unwrap(variable)) {
-                      // update variable
-                      variable;
+                      await replace_variable(
+                        level,
+                        new Variable(
+                          struct.value,
+                          arg.value,
+                          true,
+                          variable.value.created_at,
+                          new Date(),
+                          HashSet.ofIterable(paths)
+                        )
+                      );
                     } else {
                       continue;
                     }
@@ -894,7 +904,17 @@ export class Fx {
                       filter_paths
                     );
                     if (unwrap(variable)) {
-                      // update variable
+                      await replace_variable(
+                        level,
+                        new Variable(
+                          struct.value,
+                          input.default,
+                          true,
+                          variable.value.created_at,
+                          new Date(),
+                          HashSet.ofIterable(paths)
+                        )
+                      );
                     } else {
                       continue;
                     }
