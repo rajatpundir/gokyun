@@ -35,8 +35,6 @@ import {
 
 // Fx, Tranform, Compose
 
-type FxPermissions = StructPermissions;
-
 type FxInputs = Record<
   string,
   | Exclude<
@@ -564,22 +562,139 @@ export class Fx {
     return new Ok(symbols);
   }
 
-  // Should return Record<string, StrongEnum>
-  async exec(args: FxArgs, level: Decimal) {
-    const final_outputs = {};
+  async exec(
+    args: FxArgs,
+    level: Decimal
+  ): Promise<Result<Record<string, StrongEnum>>> {
+    const final_outputs: Record<string, StrongEnum> = {};
     const result = await this.get_symbols(args, level);
     if (unwrap(result)) {
       const symbols = result.value;
-      // 1. update inputs
+      // 1. run checks
+      for (const check_name of Object.keys(this.checks)) {
+        const expr = this.checks[check_name][0];
+        const result = expr.get_result(symbols);
+        if (unwrap(result)) {
+          const expr_result = result.value;
+          if (expr_result instanceof Bool) {
+            if (!expr_result.value) {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
+        } else {
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+        }
+      }
+      // 2. update inputs
       for (const input_name of Object.keys(this.inputs)) {
         const input = this.inputs[input_name];
         if (input.type === "other" && input.updates !== undefined) {
-          for (const [path, expr] of input.updates) {
-            // update paths
+          const struct = get_struct(input.other);
+          if (unwrap(struct)) {
+            const paths: Array<Path> = [];
+            for (const [path_string, expr] of input.updates) {
+              const result = get_path_with_type(struct.value, path_string);
+              if (unwrap(result)) {
+                const field_struct_name = result.value[1];
+                const res = expr.get_result(symbols);
+                if (unwrap(res)) {
+                  const expr_result = res.value;
+                  switch (field_struct_name[0]) {
+                    case "str":
+                    case "lstr":
+                    case "clob": {
+                      if (expr_result instanceof Text) {
+                        expr_result.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "i32":
+                    case "u32":
+                    case "i64":
+                    case "u64": {
+                      if (expr_result instanceof Num) {
+                        expr_result.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "idouble":
+                    case "udouble":
+                    case "idecimal":
+                    case "udecimal": {
+                      if (expr_result instanceof Deci) {
+                        expr_result.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "bool": {
+                      if (expr_result instanceof Bool) {
+                        expr_result.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "date":
+                    case "time":
+                    case "timestamp": {
+                      if (expr_result instanceof Num) {
+                        expr_result.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "other": {
+                      if (expr_result instanceof Num) {
+                        expr_result.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = field_struct_name;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            }
+            // replace variable
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         }
       }
-      // 2. generate outputs
+      // 3. generate outputs
       for (const output_name of Object.keys(this.outputs)) {
         const output = this.outputs[output_name];
         switch (output.op) {
@@ -610,5 +725,6 @@ export class Fx {
     } else {
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
+    return new Ok(final_outputs);
   }
 }
