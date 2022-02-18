@@ -598,89 +598,188 @@ export class Fx {
               const result = get_path_with_type(struct.value, path_string);
               if (unwrap(result)) {
                 const field_struct_name = result.value[1];
-                const res = expr.get_result(symbols);
-                if (unwrap(res)) {
-                  const expr_result = res.value;
-                  switch (field_struct_name[0]) {
-                    case "str":
-                    case "lstr":
-                    case "clob": {
-                      if (expr_result instanceof Text) {
-                        expr_result.value;
+                // fetch single path, ignore path update if it does not exist
+                const path: Result<Path> = await arrow(async () => {
+                  const filter_paths: HashSet<FilterPath> = HashSet.of(
+                    arrow(() => {
+                      if (field_struct_name[0] !== "other") {
+                        return new FilterPath(
+                          get_flattened_path(path_string).join("."),
+                          path_string,
+                          [field_struct_name[0], undefined],
+                          undefined
+                        );
                       } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        return new FilterPath(
+                          get_flattened_path(path_string).join("."),
+                          path_string,
+                          [
+                            field_struct_name[0],
+                            undefined,
+                            field_struct_name[1],
+                          ],
+                          undefined
                         );
                       }
-                      break;
-                    }
-                    case "i32":
-                    case "u32":
-                    case "i64":
-                    case "u64": {
-                      if (expr_result instanceof Num) {
-                        expr_result.value;
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    })
+                  );
+                  if (input_name in args) {
+                    const arg = args[input_name];
+                    if (arg.type === input.type) {
+                      const variable = await get_variable(
+                        struct.value,
+                        true,
+                        level,
+                        arg.value,
+                        filter_paths
+                      );
+                      if (unwrap(variable)) {
+                        const path = variable.value.paths.findAny((x) =>
+                          compare_paths(path_string, [
+                            x.path[0].map((v) => v[0]),
+                            x.path[1][0],
+                          ])
                         );
+                        if (path.isSome()) {
+                          const value = path.get().path[1][1];
+                          if (value.type !== "other") {
+                            if (value.type === field_struct_name[0]) {
+                              path.get();
+                            }
+                          } else {
+                            if (value.type === field_struct_name[0]) {
+                              if (value.other === field_struct_name[1].name) {
+                                return new Ok(path.get());
+                              }
+                            }
+                          }
+                        }
                       }
-                      break;
                     }
-                    case "idouble":
-                    case "udouble":
-                    case "idecimal":
-                    case "udecimal": {
-                      if (expr_result instanceof Deci) {
-                        expr_result.value;
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  } else {
+                    if (input.default !== undefined) {
+                      const variable = await get_variable(
+                        struct.value,
+                        true,
+                        level,
+                        input.default,
+                        filter_paths
+                      );
+                      if (unwrap(variable)) {
+                        const path = variable.value.paths.findAny((x) =>
+                          compare_paths(path_string, [
+                            x.path[0].map((v) => v[0]),
+                            x.path[1][0],
+                          ])
                         );
+                        if (path.isSome()) {
+                          const value = path.get().path[1][1];
+                          if (value.type !== "other") {
+                            if (value.type === field_struct_name[0]) {
+                              path.get();
+                            }
+                          } else {
+                            if (value.type === field_struct_name[0]) {
+                              if (value.other === field_struct_name[1].name) {
+                                return new Ok(path.get());
+                              }
+                            }
+                          }
+                        }
                       }
-                      break;
-                    }
-                    case "bool": {
-                      if (expr_result instanceof Bool) {
-                        expr_result.value;
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
-                        );
-                      }
-                      break;
-                    }
-                    case "date":
-                    case "time":
-                    case "timestamp": {
-                      if (expr_result instanceof Num) {
-                        expr_result.value;
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
-                        );
-                      }
-                      break;
-                    }
-                    case "other": {
-                      if (expr_result instanceof Num) {
-                        expr_result.value;
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
-                        );
-                      }
-                      break;
-                    }
-                    default: {
-                      const _exhaustiveCheck: never = field_struct_name;
-                      return _exhaustiveCheck;
                     }
                   }
-                } else {
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
+                });
+                if (unwrap(path)) {
+                  const res = expr.get_result(symbols);
+                  if (unwrap(res)) {
+                    const expr_result = res.value;
+                    switch (field_struct_name[0]) {
+                      case "str":
+                      case "lstr":
+                      case "clob": {
+                        if (expr_result instanceof Text) {
+                          expr_result.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "i32":
+                      case "u32":
+                      case "i64":
+                      case "u64": {
+                        if (expr_result instanceof Num) {
+                          expr_result.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "idouble":
+                      case "udouble":
+                      case "idecimal":
+                      case "udecimal": {
+                        if (expr_result instanceof Deci) {
+                          expr_result.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "bool": {
+                        if (expr_result instanceof Bool) {
+                          expr_result.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "date":
+                      case "time":
+                      case "timestamp": {
+                        if (expr_result instanceof Num) {
+                          expr_result.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "other": {
+                        if (expr_result instanceof Num) {
+                          expr_result.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = field_struct_name;
+                        return _exhaustiveCheck;
+                      }
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  continue;
                 }
               } else {
                 return new Err(
