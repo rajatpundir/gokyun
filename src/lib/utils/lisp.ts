@@ -410,7 +410,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
   get_paths(): Array<PathString> {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
-      for (let expr of this.value.value[1]) {
+      for (const expr of this.value.value[1]) {
         it = it.concat(expr.get_paths());
       }
       return it;
@@ -420,7 +420,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
   serialize(): any {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
-    for (let arg of this.value.value[1]) {
+    for (const arg of this.value.value[1]) {
       args.push(arg.serialize());
     }
     if (this.value instanceof Add) {
@@ -601,7 +601,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
   get_paths(): Array<PathString> {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
-      for (let expr of this.value.value[1]) {
+      for (const expr of this.value.value[1]) {
         it = it.concat(expr.get_paths());
       }
       return it;
@@ -611,7 +611,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
   serialize(): any {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
-    for (let arg of this.value.value[1]) {
+    for (const arg of this.value.value[1]) {
       args.push(arg.serialize());
     }
     if (this.value instanceof Add) {
@@ -898,7 +898,7 @@ export class NumberComparatorExpression implements ToBoolean {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
       it = it.concat(this.value.value[1].get_paths());
-      for (let expr of this.value.value[2]) {
+      for (const expr of this.value.value[2]) {
         it = it.concat(expr.get_paths());
       }
       return it;
@@ -909,7 +909,7 @@ export class NumberComparatorExpression implements ToBoolean {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
     args.push(this.value.value[1].serialize());
-    for (let arg of this.value.value[2]) {
+    for (const arg of this.value.value[2]) {
       args.push(arg.serialize());
     }
     if (this.value instanceof Equals) {
@@ -1149,7 +1149,7 @@ export class DecimalComparatorExpression implements ToBoolean {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
       it = it.concat(this.value.value[1].get_paths());
-      for (let expr of this.value.value[2]) {
+      for (const expr of this.value.value[2]) {
         it = it.concat(expr.get_paths());
       }
       return it;
@@ -1160,7 +1160,7 @@ export class DecimalComparatorExpression implements ToBoolean {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
     args.push(this.value.value[1].serialize());
-    for (let arg of this.value.value[2]) {
+    for (const arg of this.value.value[2]) {
       args.push(arg.serialize());
     }
     if (this.value instanceof Equals) {
@@ -1400,7 +1400,7 @@ export class TextComparatorExpression implements ToBoolean {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
       it = it.concat(this.value.value[1].get_paths());
-      for (let expr of this.value.value[2]) {
+      for (const expr of this.value.value[2]) {
         it = it.concat(expr.get_paths());
       }
       return it;
@@ -1411,7 +1411,7 @@ export class TextComparatorExpression implements ToBoolean {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
     args.push(this.value.value[1].serialize());
-    for (let arg of this.value.value[2]) {
+    for (const arg of this.value.value[2]) {
       args.push(arg.serialize());
     }
     if (this.value instanceof Equals) {
@@ -1584,7 +1584,7 @@ export class LogicalBinaryExpression implements ToBoolean {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
       it = it.concat(this.value.value[1].get_paths());
-      for (let expr of this.value.value[2]) {
+      for (const expr of this.value.value[2]) {
         it = it.concat(expr.get_paths());
       }
       return it;
@@ -1595,7 +1595,7 @@ export class LogicalBinaryExpression implements ToBoolean {
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
     args.push(this.value.value[1].serialize());
-    for (let arg of this.value.value[2]) {
+    for (const arg of this.value.value[2]) {
       args.push(arg.serialize());
     }
     if (this.value instanceof And) {
@@ -1845,7 +1845,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
     let args: [T, ReadonlyArray<[T, U]>, U] = this.value.value;
     let condition: Result<LispResult> = args[0].get_result(symbols);
     if (unwrap(condition)) {
-      for (let guard of args[1]) {
+      for (const guard of args[1]) {
         let v: Result<LispResult> = guard[0].get_result(symbols);
         if (unwrap(v)) {
           if (condition.value instanceof Num && v.value instanceof Num) {
@@ -1885,7 +1885,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   get_paths(): Array<PathString> {
     return apply([] as Array<PathString>, (it) => {
       it = it.concat(this.value.value[0].get_paths());
-      for (let expr of this.value.value[1]) {
+      for (const expr of this.value.value[1]) {
         it = it.concat(expr[0].get_paths());
         it = it.concat(expr[1].get_paths());
       }
@@ -1898,7 +1898,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
     let args: Array<any> = [];
     args.push(this.value.value[0].serialize());
     let guards: Array<[any, any]> = [];
-    for (let arg of this.value.value[1]) {
+    for (const arg of this.value.value[1]) {
       guards.push([arg[0].serialize(), arg[1].serialize()]);
     }
     args.push(this.value.value[2].serialize());

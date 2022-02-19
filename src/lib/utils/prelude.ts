@@ -40,7 +40,7 @@ export function unwrap_array<T>(
   input: ReadonlyArray<Result<T>>
 ): Result<ReadonlyArray<T>> {
   const results: Array<T> = [];
-  for (let result of input) {
+  for (const result of input) {
     if (unwrap(result)) {
       results.push(result.value);
     } else {
@@ -64,7 +64,7 @@ export function fold<T, U>(
   fn: (acc: T, val: U) => T
 ): T {
   return apply(init, (acc) => {
-    for (let val of values) {
+    for (const val of values) {
       acc = fn(acc, val);
     }
     return acc;
@@ -78,7 +78,7 @@ export function fold_prev<T, U>(
   fn: (acc: T, prev: U, val: U) => T
 ): T {
   return apply(init, (acc) => {
-    for (let val of values) {
+    for (const val of values) {
       acc = fn(acc, prev, val);
       prev = val;
     }

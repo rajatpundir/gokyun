@@ -131,7 +131,7 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "values": {
-      for (let value of action[1]) {
+      for (const value of action[1]) {
         const result = state.values.findAny((x) => x.equals(value));
         if (result.isSome()) {
           const path: Path = result.get();
@@ -191,7 +191,7 @@ export function reducer(state: Draft<State>, action: Action) {
       if (state.mode === "read") {
         state.checks = {};
         // Code for dispatch['values', HashSet<Path>] is repeated for loading initial values
-        for (let value of state.init_values) {
+        for (const value of state.init_values) {
           const result = state.values.findAny((x) => x.equals(value));
           if (result.isSome()) {
             const path: Path = result.get();
@@ -241,16 +241,16 @@ function mark_check_dependency(
   paths: HashSet<Path>
 ): HashSet<Path> {
   let marked_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
+  for (const path of paths) {
     const path_string: PathString = [
       path.path[0].map((x) => x[0]),
       path.path[1][0],
     ];
     let is_check_dependency = false;
-    for (let check_name of Object.keys(struct.checks)) {
+    for (const check_name of Object.keys(struct.checks)) {
       const check = struct.checks[check_name];
       const expr = check[0];
-      for (let ref_path_string of expr.get_paths()) {
+      for (const ref_path_string of expr.get_paths()) {
         if (compare_paths(ref_path_string, path_string)) {
           is_check_dependency = true;
           break;
@@ -275,16 +275,16 @@ function mark_trigger_outputs(
   state: State
 ): HashSet<Path> {
   let marked_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
+  for (const path of paths) {
     const path_string: PathString = [
       path.path[0].map((x) => x[0]),
       path.path[1][0],
     ];
     let is_trigger_output = false;
-    for (let trigger_name of Object.keys(struct.triggers)) {
+    for (const trigger_name of Object.keys(struct.triggers)) {
       const trigger = struct.triggers[trigger_name];
       if (trigger.operation.op === "update") {
-        for (let field of trigger.operation.path_updates) {
+        for (const field of trigger.operation.path_updates) {
           const ref_path_string = field[0];
           if (compare_paths(ref_path_string, path_string)) {
             is_trigger_output = true;
@@ -293,11 +293,11 @@ function mark_trigger_outputs(
         }
       }
     }
-    for (let [higher_struct, higher_path_string] of state.higher_structs) {
-      for (let trigger_name of Object.keys(higher_struct.triggers)) {
+    for (const [higher_struct, higher_path_string] of state.higher_structs) {
+      for (const trigger_name of Object.keys(higher_struct.triggers)) {
         const trigger = higher_struct.triggers[trigger_name];
         if (trigger.operation.op === "update") {
-          for (let field of trigger.operation.path_updates) {
+          for (const field of trigger.operation.path_updates) {
             const ref_path_string = field[0];
             if (
               compare_paths(
@@ -334,18 +334,18 @@ export function mark_trigger_dependencies(
   state: State
 ): HashSet<Path> {
   let marked_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
+  for (const path of paths) {
     const path_string: PathString = [
       path.path[0].map((x) => x[0]),
       path.path[1][0],
     ];
     let is_trigger_dependency = false;
-    for (let trigger_name of Object.keys(struct.triggers)) {
+    for (const trigger_name of Object.keys(struct.triggers)) {
       const trigger = struct.triggers[trigger_name];
       if (trigger.operation.op === "update") {
-        for (let field of trigger.operation.path_updates) {
+        for (const field of trigger.operation.path_updates) {
           const expr = field[1];
-          for (let used_path of expr.get_paths()) {
+          for (const used_path of expr.get_paths()) {
             if (compare_paths(used_path, path_string)) {
               is_trigger_dependency = true;
               break;
@@ -371,8 +371,8 @@ export function get_labeled_permissions(
   labels: Immutable<Array<[string, PathString]>>
 ): HashSet<PathPermission> {
   let path_permissions: HashSet<PathPermission> = HashSet.of();
-  for (let [label, path] of labels) {
-    for (let permission of permissions) {
+  for (const [label, path] of labels) {
+    for (const permission of permissions) {
       if (
         compare_paths(
           [permission.path[0].map((x) => x[0]), permission.path[1][0]],
@@ -405,7 +405,7 @@ export function get_creation_paths(
     state.labels
   );
   let paths: HashSet<Path> = HashSet.of();
-  for (let permission of labeled_permissions) {
+  for (const permission of labeled_permissions) {
     paths = paths.add(
       apply(
         new Path(permission.label, [
@@ -442,8 +442,8 @@ export function get_writeable_paths(
     state.borrows as string[]
   );
   let writeable_paths: HashSet<Path> = HashSet.of();
-  for (let path of paths) {
-    for (let permission of permissions) {
+  for (const path of paths) {
+    for (const permission of permissions) {
       if (
         compare_paths(
           [permission.path[0].map((x) => x[0]), permission.path[1][0]],
@@ -479,7 +479,7 @@ export function get_filter_paths(
     labels
   );
   let filter_paths: HashSet<FilterPath> = HashSet.of();
-  for (let permission of labeled_permissions) {
+  for (const permission of labeled_permissions) {
     const path = apply(
       permission.path[0].map((x) => x[0]),
       (it) => {
@@ -639,7 +639,7 @@ export function get_symbols(
 ): Result<Readonly<Record<string, Symbol>>> {
   let symbols: Record<string, Symbol> = {};
   const dependencies = expr.get_paths();
-  for (let dependency of dependencies) {
+  for (const dependency of dependencies) {
     const result = get_path(state, dependency);
     if (unwrap(result)) {
       const path = result.value;
@@ -661,13 +661,13 @@ function dispatch_result(
   path_string: PathString,
   expr_result: LispResult
 ) {
-  for (let value of state.values) {
+  for (const value of state.values) {
     if (
       value.path[0].length === path_string[0].length &&
       value.path[1][0] === path_string[1]
     ) {
       let check = true;
-      for (let [index, field_name] of path_string[0].entries()) {
+      for (const [index, field_name] of path_string[0].entries()) {
         if (value.path[index][0] !== field_name) {
           check = false;
         }
@@ -836,7 +836,7 @@ function run_path_updates(
       dispatch_result(state, dispatch, path_string, expr_result);
     }
   }
-  for (let path_update of path_updates) {
+  for (const path_update of path_updates) {
     const path_string: PathString = path_update[0];
     const expr = path_update[1];
     const result = get_symbols(state, expr);
@@ -864,7 +864,7 @@ function run_path_updates(
       }
     }
   }
-  for (let [
+  for (const [
     extension_state,
     extension_dispatch,
     path_string,
@@ -886,7 +886,7 @@ export async function run_triggers(
   mounted: boolean
 ) {
   if (mounted) {
-    for (let trigger_name of Object.keys(struct.triggers)) {
+    for (const trigger_name of Object.keys(struct.triggers)) {
       const trigger = struct.triggers[trigger_name];
       if (trigger.operation.op === "update") {
         if (state.id.equals(-1)) {
@@ -920,7 +920,7 @@ export async function compute_checks(
   mounted: boolean
 ) {
   if (mounted) {
-    for (let check_name of Object.keys(struct.checks)) {
+    for (const check_name of Object.keys(struct.checks)) {
       let computed_result: Result<boolean> = new Err(
         new CustomError([errors.ErrUnexpected] as ErrMsg)
       );
@@ -956,13 +956,13 @@ export function get_path(state: State, path_string: PathString): Option<Path> {
     ]);
     if (unwrap(nested_path)) {
       let label = "";
-      for (let [path_label, path] of state.labels) {
+      for (const [path_label, path] of state.labels) {
         if (
           path[0].length === path_string[0].length &&
           path[1] === path_string[1]
         ) {
           let check = true;
-          for (let [index, field_name] of path_string[0].entries()) {
+          for (const [index, field_name] of path_string[0].entries()) {
             if (path[0][index] !== field_name) {
               check = false;
             }
@@ -994,13 +994,13 @@ export function get_path(state: State, path_string: PathString): Option<Path> {
       );
     }
   } else {
-    for (let path of state.values) {
+    for (const path of state.values) {
       if (
         path.path[0].length === path_string[0].length &&
         path.path[1][0] === path_string[1]
       ) {
         let check = true;
-        for (let [index, [field_name, _]] of path.path[0].entries()) {
+        for (const [index, [field_name, _]] of path.path[0].entries()) {
           if (path_string[0][index] !== field_name) {
             check = false;
             break;

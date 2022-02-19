@@ -66,9 +66,9 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       if (state.offset.equals(0)) {
         state.variables = action[1] as any;
       } else {
-        for (let v of action[1]) {
+        for (const v of action[1]) {
           let check = true;
-          for (let v1 of state.variables) {
+          for (const v1 of state.variables) {
             if (v1.equals(v)) {
               check = false;
             }

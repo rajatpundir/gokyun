@@ -444,7 +444,7 @@ export function compare_paths(
     path_string[1] === other_path_string[1]
   ) {
     let check = true;
-    for (let [index, field_name] of path_string[0].entries()) {
+    for (const [index, field_name] of path_string[0].entries()) {
       if (other_path_string[0][index] !== field_name) {
         check = false;
         break;
@@ -463,7 +463,7 @@ export function compare_flattened_paths(
 ): boolean {
   if (path_string.length === other_path_string.length) {
     let check = true;
-    for (let [index, field_name] of path_string.entries()) {
+    for (const [index, field_name] of path_string.entries()) {
       if (other_path_string[index] !== field_name) {
         check = false;
         break;

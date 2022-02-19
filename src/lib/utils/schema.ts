@@ -4717,7 +4717,7 @@ const schema: Record<
 
 export function get_structs(): HashSet<Struct> {
   let structs: HashSet<Struct> = HashSet.of();
-  for (let structName in schema) {
+  for (const structName in schema) {
     const structDef = schema[structName];
     const struct: Struct = new Struct(
       structName,
@@ -4727,7 +4727,7 @@ export function get_structs(): HashSet<Struct> {
       structDef.triggers,
       structDef.checks
     );
-    for (let fieldName in structDef.fields) {
+    for (const fieldName in structDef.fields) {
       struct.fields[fieldName] = structDef.fields[fieldName];
     }
     structs = structs.add(struct);

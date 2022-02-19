@@ -117,10 +117,10 @@ async function replace_variable_in_db(
         }
       }
     }
-    for (let [path, [leaf_field_name, leaf_value]] of paths) {
+    for (const [path, [leaf_field_name, leaf_value]] of paths) {
       let ref_struct_name = struct_name;
       let ref_id: Decimal = id.truncated();
-      for (let [field_name, next_var] of path) {
+      for (const [field_name, next_var] of path) {
         await execute_transaction(
           `REPLACE INTO "VALS"("level", "struct_name", "variable_id", "field_name", "field_struct_name", "integer_value") VALUES (?, ?, ?, ?, ?, ?);`,
           [
@@ -311,14 +311,14 @@ export async function remove_variables_in_db(
 ): Promise<Result<[]>> {
   try {
     if (level.equals(0)) {
-      for (let id of ids) {
+      for (const id of ids) {
         await execute_transaction(
           `DELETE FROM "VARS" WHERE level = 0 AND struct_name = ? AND id = ?;`,
           [struct_name, id.truncated().toString()]
         );
       }
     } else {
-      for (let id of ids) {
+      for (const id of ids) {
         await execute_transaction(
           `REPLACE INTO "REMOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
           [
@@ -445,7 +445,7 @@ export async function replace_variables(
     }
   >;
   try {
-    for (let variable of variables) {
+    for (const variable of variables) {
       const result = await replace_variable(
         level,
         variable,

@@ -1787,11 +1787,11 @@ function get_other_filter_paths(
     const other_struct = get_struct(path.path[1][1].other);
     if (unwrap(other_struct)) {
       let filtered_permissions: HashSet<PathPermission> = HashSet.of();
-      for (let permission of labeled_permissions) {
+      for (const permission of labeled_permissions) {
         const permission_path_prefix: ReadonlyArray<string> =
           permission.path[0].map((x) => x[0]);
         let check = true;
-        for (let [index, field_name] of path_prefix.entries()) {
+        for (const [index, field_name] of path_prefix.entries()) {
           if (permission_path_prefix[index] !== field_name) {
             check = false;
             break;
@@ -1802,7 +1802,7 @@ function get_other_filter_paths(
         }
       }
 
-      for (let permission of filtered_permissions) {
+      for (const permission of filtered_permissions) {
         const path_string: PathString = [
           permission.path[0].slice(path_prefix.length).map((x) => x[0]),
           permission.path[1][0],
@@ -1882,9 +1882,9 @@ function get_upscaled_labels(
     path.path[1][0],
   ];
   let new_labels: Array<[string, PathString]> = [];
-  for (let parent_label of state.labels) {
+  for (const parent_label of state.labels) {
     let new_label = parent_label[0];
-    for (let child_label of labels) {
+    for (const child_label of labels) {
       if (
         compare_paths(
           parent_label[1],
@@ -1897,13 +1897,13 @@ function get_upscaled_labels(
     }
     new_labels.push([new_label, parent_label[1] as PathString]);
   }
-  for (let child_label of labels) {
+  for (const child_label of labels) {
     let check = true;
     let new_label_path = concat_path_strings(
       path_string,
       child_label[1] as PathString
     );
-    for (let parent_label of state.labels) {
+    for (const parent_label of state.labels) {
       if (compare_paths(parent_label[1], new_label_path)) {
         check = false;
         break;
@@ -1926,7 +1926,7 @@ function get_upscaled_paths(
   if (base_value.type === "other") {
     const cloned_variable = cloneDeep(variable);
     if (cloned_variable.struct.name === base_value.other) {
-      for (let path of cloned_variable.paths) {
+      for (const path of cloned_variable.paths) {
         upscaled_paths = upscaled_paths.add(
           apply(path, (it) => {
             it.path = [
@@ -1946,7 +1946,7 @@ function get_upscaled_paths(
               ],
               it.path[1],
             ];
-            for (let label of labels) {
+            for (const label of labels) {
               if (
                 compare_paths(label[1], [
                   it.path[0].map((x) => x[0]),
@@ -1974,7 +1974,7 @@ function get_upscaled_paths(
               },
             ],
           ];
-          for (let label of labels) {
+          for (const label of labels) {
             if (
               compare_paths(label[1], [
                 it.path[0].map((x) => x[0]),

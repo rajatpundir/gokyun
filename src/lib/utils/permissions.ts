@@ -113,7 +113,7 @@ function get_public_permissions(
   prefix: Array<[string, Struct]> = []
 ): HashSet<PathPermission> {
   let path_permissions: HashSet<PathPermission> = HashSet.of();
-  for (let field_name of struct.permissions.public) {
+  for (const field_name of struct.permissions.public) {
     if (field_name in struct.fields) {
       const field = struct.fields[field_name];
       const path_permission = new PathPermission([
@@ -130,7 +130,7 @@ function get_public_permissions(
             next_struct.value,
             [...prefix, [field_name, next_struct.value]]
           );
-          for (let permission of nested_path_permissions) {
+          for (const permission of nested_path_permissions) {
             if (!path_permissions.contains(permission)) {
               path_permissions = path_permissions.add(permission);
             }
@@ -152,7 +152,7 @@ function get_user_path_permissions(
   if (init.length === 0) {
     if (last in struct.fields && last in struct.permissions.ownership) {
       const permissions = struct.permissions.ownership[last];
-      for (let field_name of permissions.write) {
+      for (const field_name of permissions.write) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = apply(
@@ -174,7 +174,7 @@ function get_user_path_permissions(
                 next_struct.value,
                 [...prefix, [field_name, next_struct.value]]
               );
-              for (let permission of nested_path_permissions) {
+              for (const permission of nested_path_permissions) {
                 if (!path_permissions.contains(permission)) {
                   path_permissions = path_permissions.add(permission);
                 }
@@ -183,7 +183,7 @@ function get_user_path_permissions(
           }
         }
       }
-      for (let field_name of permissions.read) {
+      for (const field_name of permissions.read) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = new PathPermission([
@@ -200,7 +200,7 @@ function get_user_path_permissions(
                 next_struct.value,
                 [...prefix, [field_name, next_struct.value]]
               );
-              for (let permission of nested_path_permissions) {
+              for (const permission of nested_path_permissions) {
                 if (!path_permissions.contains(permission)) {
                   path_permissions = path_permissions.add(permission);
                 }
@@ -214,7 +214,7 @@ function get_user_path_permissions(
     const [first, next_struct] = init[0];
     if (first in struct.fields && first in struct.permissions.ownership) {
       const permissions = struct.permissions.ownership[first];
-      for (let field_name of permissions.write) {
+      for (const field_name of permissions.write) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = apply(
@@ -231,7 +231,7 @@ function get_user_path_permissions(
           path_permissions = path_permissions.add(path_permission);
         }
       }
-      for (let field_name of permissions.read) {
+      for (const field_name of permissions.read) {
         if (field_name in struct.fields) {
           const field = struct.fields[field_name];
           const path_permission = new PathPermission([
@@ -260,7 +260,7 @@ function get_user_path_permissions(
       );
     }
   }
-  for (let field_name of struct.permissions.public) {
+  for (const field_name of struct.permissions.public) {
     if (field_name in struct.fields) {
       const field = struct.fields[field_name];
       const path_permission = new PathPermission([
@@ -277,7 +277,7 @@ function get_user_path_permissions(
             next_struct.value,
             [...prefix, [field_name, next_struct.value]]
           );
-          for (let permission of nested_path_permissions) {
+          for (const permission of nested_path_permissions) {
             if (!path_permissions.contains(permission)) {
               path_permissions = path_permissions.add(permission);
             }
@@ -298,13 +298,13 @@ export function get_permissions(
     get_public_permissions(struct);
   const result = unwrap_array(
     apply([], (it: Array<[PathString, boolean]>) => {
-      for (let borrow_name of borrows) {
+      for (const borrow_name of borrows) {
         if (borrow_name in struct.permissions.borrow) {
           const borrow = struct.permissions.borrow[borrow_name];
           it.push([borrow.user_path, true]);
         }
       }
-      for (let path of user_paths) {
+      for (const path of user_paths) {
         it.push([path, false]);
       }
       return it;
@@ -312,7 +312,7 @@ export function get_permissions(
   );
   if (unwrap(result)) {
     const valid_user_paths = result.value;
-    for (let valid_user_path of valid_user_paths) {
+    for (const valid_user_path of valid_user_paths) {
       path_permissions = path_permissions.addAll(
         get_user_path_permissions(struct, valid_user_path)
       );
@@ -331,12 +331,12 @@ export function log_permissions(
   console.log("STRUCT: ", struct.name);
   console.log("\n=======================");
   console.log("READ PERMISSIONS");
-  for (let permission of path_permissions.filter((x) => !x.writeable)) {
+  for (const permission of path_permissions.filter((x) => !x.writeable)) {
     console.log(permission.toString());
   }
   console.log("\n=======================");
   console.log("WRITE PERMISSIONS");
-  for (let permission of path_permissions.filter((x) => x.writeable)) {
+  for (const permission of path_permissions.filter((x) => x.writeable)) {
     console.log(permission.toString());
   }
   console.log("\n=======================");

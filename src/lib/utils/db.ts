@@ -323,7 +323,7 @@ function query(
     const init_filters_stmt = apply(get_filter_stmt(init_filter), (it) => {
       const [stmt, filter_args] = it;
       if (stmt !== "") {
-        for (let arg of filter_args) {
+        for (const arg of filter_args) {
           args.push(arg);
         }
       }
@@ -337,7 +337,7 @@ function query(
           .map((or_filter) => {
             const [stmt, filter_args] = get_filter_stmt(or_filter);
             if (stmt !== "") {
-              for (let arg of filter_args) {
+              for (const arg of filter_args) {
                 args.push(arg);
               }
             }
@@ -402,7 +402,7 @@ function query(
         return 0;
       }),
     (path_filters) => {
-      for (let path_filter of path_filters) {
+      for (const path_filter of path_filters) {
         if (path_filter.sort_option !== undefined) {
           const path: ReadonlyArray<string> = path_filter.path;
           const sort_order = path_filter.sort_option[1] ? "DESC" : "ASC";
@@ -536,12 +536,12 @@ function get_filter_stmt(
       append_to_filter_stmt(stmt);
     }
   }
-  for (let filter_path of filter.filter_paths) {
+  for (const filter_path of filter.filter_paths) {
     if (filter_path.active) {
       const [stmt, filter_path_args] = get_filter_path_stmt(filter_path);
       if (stmt !== "") {
         append_to_filter_stmt(stmt);
-        for (let arg of filter_path_args) {
+        for (const arg of filter_path_args) {
           args.push(arg);
         }
       }
@@ -1163,10 +1163,10 @@ export async function get_variables(
       offset
     );
     console.log(result_set);
-    for (let result of result_set.rows._array) {
+    for (const result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
-        for (let filter_path of init_filter.filter_paths) {
+        for (const filter_path of init_filter.filter_paths) {
           const label = filter_path.label;
           const path: ReadonlyArray<string> = get_flattened_path(
             filter_path.path
@@ -1186,7 +1186,7 @@ export async function get_variables(
                 }
               ]
             > = [];
-            for (let [index, field_name] of init.entries()) {
+            for (const [index, field_name] of init.entries()) {
               const ref: string = init.slice(0, index + 1).join(".");
               const ref_struct_name = new String(
                 result[`${ref}._struct_name`]
