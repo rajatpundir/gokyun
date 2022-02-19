@@ -9,7 +9,7 @@ import {
   increment_struct_counter,
   OrFilter,
 } from "./db";
-import { replace_variable } from "./db_variables";
+import { remove_variables_in_db, replace_variable } from "./db_variables";
 import { ErrMsg, errors } from "./errors";
 import {
   Bool,
@@ -44,6 +44,10 @@ import {
 } from "./variable";
 
 // Fx, Tranform, Compose
+
+// TODO. For insert, insert_ignore, replace ops, besides insertion/replace, also delete removal records on same level
+
+// TODO. For delete, delete_ignore ops, besides deletion, also create removal records
 
 type FxInputs = Record<
   string,
@@ -479,6 +483,7 @@ export class Fx {
     args: FxArgs,
     level: Decimal
   ): Promise<Result<Record<string, StrongEnum>>> {
+    // computed_outputs will not include ids of deleted variables since they cannot be referenced anyway
     const computed_outputs: Record<string, StrongEnum> = {};
     const result = await this.get_symbols(args, level);
     if (unwrap(result)) {
@@ -1388,17 +1393,189 @@ export class Fx {
             }
             break;
           }
-          case "delete": {
-            const struct = get_struct(output.struct);
-            if (unwrap(struct)) {
-            } else {
-              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-            }
-            break;
-          }
+          case "delete":
           case "delete_ignore": {
+            // variable(s) found -> deletes, create removal record
+            // variable(s) not found -> skip
             const struct = get_struct(output.struct);
             if (unwrap(struct)) {
+              const filter_paths: Array<FilterPath> = [];
+              // 1. process paths
+              for (const field_name in Object.keys(output.fields)) {
+                if (field_name in struct.value.fields) {
+                  const field = struct.value.fields[field_name];
+                  const result = output.fields[field_name].get_result(symbols);
+                  if (unwrap(result)) {
+                    const expr_result = result.value;
+                    switch (field.type) {
+                      case "str":
+                      case "lstr":
+                      case "clob": {
+                        if (expr_result instanceof Text) {
+                          filter_paths.push(
+                            new FilterPath(
+                              output_name,
+                              [[], output_name],
+                              [field.type, ["==", expr_result.value]],
+                              undefined
+                            )
+                          );
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "i32":
+                      case "u32":
+                      case "i64":
+                      case "u64": {
+                        if (expr_result instanceof Num) {
+                          filter_paths.push(
+                            new FilterPath(
+                              output_name,
+                              [[], output_name],
+                              [
+                                field.type,
+                                ["==", new Decimal(expr_result.value)],
+                              ],
+                              undefined
+                            )
+                          );
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "idouble":
+                      case "udouble":
+                      case "idecimal":
+                      case "udecimal": {
+                        if (expr_result instanceof Deci) {
+                          filter_paths.push(
+                            new FilterPath(
+                              output_name,
+                              [[], output_name],
+                              [
+                                field.type,
+                                ["==", new Decimal(expr_result.value)],
+                              ],
+                              undefined
+                            )
+                          );
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "bool": {
+                        if (expr_result instanceof Bool) {
+                          filter_paths.push(
+                            new FilterPath(
+                              output_name,
+                              [[], output_name],
+                              [field.type, ["==", expr_result.value]],
+                              undefined
+                            )
+                          );
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "date":
+                      case "time":
+                      case "timestamp": {
+                        if (expr_result instanceof Num) {
+                          filter_paths.push(
+                            new FilterPath(
+                              output_name,
+                              [[], output_name],
+                              [field.type, ["==", new Date(expr_result.value)]],
+                              undefined
+                            )
+                          );
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      case "other": {
+                        if (expr_result instanceof Num) {
+                          const other_struct = get_struct(field.other);
+                          if (unwrap(other_struct)) {
+                            filter_paths.push(
+                              new FilterPath(
+                                output_name,
+                                [[], output_name],
+                                [
+                                  field.type,
+                                  ["==", new Decimal(expr_result.value)],
+                                  other_struct.value,
+                                ],
+                                undefined
+                              )
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                        break;
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = field;
+                        return _exhaustiveCheck;
+                      }
+                    }
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+              // 2. remove variable(s)
+              const result = await get_variables(
+                struct.value,
+                true,
+                level,
+                new OrFilter(
+                  0,
+                  [false, undefined],
+                  [false, undefined],
+                  [false, undefined],
+                  HashSet.ofIterable(filter_paths)
+                ),
+                HashSet.of(),
+                new Decimal(10000),
+                new Decimal(0)
+              );
+              if (unwrap(result)) {
+                await remove_variables_in_db(
+                  level,
+                  struct.value.name,
+                  result.value.map((x) => x.id)
+                );
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
             } else {
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }

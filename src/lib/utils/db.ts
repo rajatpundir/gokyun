@@ -26,6 +26,8 @@ import { get_structs } from "./schema";
 
 // We will also need functions for activating or deactivating variable in a layer
 
+// Active column is not useful, could be decalred as normal field instead
+
 const db_name: string = "test1.db";
 
 const db = apply(SQLite.openDatabase(db_name), (db) => {
