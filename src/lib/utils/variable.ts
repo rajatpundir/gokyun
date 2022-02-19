@@ -78,7 +78,7 @@ export type StructTrigger = {
 export class Struct {
   name: string;
   fields: Record<string, WeakEnum>;
-  uniqueness: ReadonlyArray<PathString>;
+  uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
   permissions: StructPermissions;
   triggers: Record<string, StructTrigger>;
   checks: Record<string, [BooleanLispExpression, ErrMsg]>;
@@ -86,7 +86,7 @@ export class Struct {
   constructor(
     name: string,
     fields: Record<string, WeakEnum>,
-    uniqueness: ReadonlyArray<PathString>,
+    uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>,
     permissions: StructPermissions,
     triggers: Record<string, StructTrigger>,
     checks: Record<string, [BooleanLispExpression, ErrMsg]>
