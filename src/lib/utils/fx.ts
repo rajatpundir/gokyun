@@ -1084,20 +1084,68 @@ export class Fx {
               }
               // 2. try to fetch variable based on one set of unique constraint at a time
               for (const unique_constraint of unique_constraints) {
-                const unique_constraint_paths: Array<Path> = [];
+                const unique_constraint_filter_paths: Array<FilterPath> = [];
                 for (const field_name of unique_constraint) {
                   const filter_paths = paths.filter((x) =>
                     compare_paths(get_path_string(x), [[], field_name])
                   );
                   if (filter_paths.length === 1) {
-                    unique_constraint_paths.push(paths[0]);
+                    const path = paths[0];
+                    if (path.path[1][1].type !== "other") {
+                      unique_constraint_filter_paths.push(
+                        new FilterPath(
+                          path.label,
+                          get_path_string(path),
+                          [path.path[1][1].type, undefined],
+                          undefined
+                        )
+                      );
+                    } else {
+                      const other_struct = get_struct(path.path[1][1].other);
+                      if (unwrap(other_struct)) {
+                        unique_constraint_filter_paths.push(
+                          new FilterPath(
+                            path.label,
+                            get_path_string(path),
+                            [
+                              path.path[1][1].type,
+                              undefined,
+                              other_struct.value,
+                            ],
+                            undefined
+                          )
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    }
                   } else {
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 }
-                // get_variables(struct.value, true, level, new OrFilter(0, ))
+                const result = await get_variables(
+                  struct.value,
+                  true,
+                  level,
+                  new OrFilter(
+                    0,
+                    [false, undefined],
+                    [false, undefined],
+                    [false, undefined],
+                    HashSet.ofIterable(unique_constraint_filter_paths)
+                  ),
+                  HashSet.of(),
+                  new Decimal(1),
+                  new Decimal(0)
+                );
+                if (unwrap(result)) {
+                  const variable = result.value;
+                  // do something
+                }
               }
               // 3. Process keys not present in uniqueness constraints
               for (const field_name in Object.keys(struct.value.fields)) {
