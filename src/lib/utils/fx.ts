@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_path_with_type, get_symbols_for_paths } from "./commons";
-import { FilterPath, get_variable } from "./db";
+import { FilterPath, get_variable, get_variables, OrFilter } from "./db";
 import { replace_variable } from "./db_variables";
 import { ErrMsg, errors } from "./errors";
 import {
@@ -911,34 +911,23 @@ export class Fx {
             const struct = get_struct(output.struct);
             if (unwrap(struct)) {
               const paths: Array<Path> = [];
-              const unique_constraint_fields = HashSet.ofIterable(
-                struct.value.uniqueness.flatMap((uniqueness) => {
+              const unique_constraints: ReadonlyArray<ReadonlyArray<string>> =
+                struct.value.uniqueness.map((uniqueness) => {
                   return apply([uniqueness[1]], (it) =>
                     it.concat(uniqueness[0])
                   );
-                })
+                });
+              const unique_constraint_fields = HashSet.ofIterable(
+                unique_constraints.flatMap((x) => x)
               );
               // 1. Process keys present in uniqueness constraints
               for (const field_name of unique_constraint_fields) {
-                const result = get_path_with_type(struct.value, [
-                  [],
-                  field_name,
-                ]);
-                if (unwrap(result)) {
-                  const [path, field_struct_name] = result.value;
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
-              }
-              // 2. Process keys not present in uniqueness constraints
-              for (const field_name in Object.keys(struct.value.fields)) {
-                if (!unique_constraint_fields.contains(field_name)) {
+                if (field_name in output.fields) {
                   const field = struct.value.fields[field_name];
-                  if (field_name in output.fields) {
-                    const expr_result =
-                      output.fields[field_name].get_result(symbols);
+                  const expr_result =
+                    output.fields[field_name].get_result(symbols);
+                  if (unwrap(expr_result)) {
+                    const expr_result = result.value;
                     switch (field.type) {
                       case "str":
                       case "lstr":
@@ -949,7 +938,10 @@ export class Fx {
                               [],
                               [
                                 output_name,
-                                { type: field.type, value: expr_result.value },
+                                {
+                                  type: field.type,
+                                  value: expr_result.value,
+                                },
                               ],
                             ])
                           );
@@ -1015,7 +1007,10 @@ export class Fx {
                               [],
                               [
                                 output_name,
-                                { type: field.type, value: expr_result.value },
+                                {
+                                  type: field.type,
+                                  value: expr_result.value,
+                                },
                               ],
                             ])
                           );
@@ -1074,6 +1069,187 @@ export class Fx {
                       default: {
                         const _exhaustiveCheck: never = field;
                         return _exhaustiveCheck;
+                      }
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+              // 2. try to fetch variable based on one set of unique constraint at a time
+              for (const unique_constraint of unique_constraints) {
+                const unique_constraint_paths: Array<Path> = [];
+                for (const field_name of unique_constraint) {
+                  const filter_paths = paths.filter((x) =>
+                    compare_paths(get_path_string(x), [[], field_name])
+                  );
+                  if (filter_paths.length === 1) {
+                    unique_constraint_paths.push(paths[0]);
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                }
+                // get_variables(struct.value, true, level, new OrFilter(0, ))
+              }
+              // 3. Process keys not present in uniqueness constraints
+              for (const field_name in Object.keys(struct.value.fields)) {
+                if (!unique_constraint_fields.contains(field_name)) {
+                  const field = struct.value.fields[field_name];
+                  if (field_name in output.fields) {
+                    const result =
+                      output.fields[field_name].get_result(symbols);
+                    if (unwrap(result)) {
+                      const expr_result = result.value;
+                      switch (field.type) {
+                        case "str":
+                        case "lstr":
+                        case "clob": {
+                          if (expr_result instanceof Text) {
+                            paths.push(
+                              new Path(output_name, [
+                                [],
+                                [
+                                  output_name,
+                                  {
+                                    type: field.type,
+                                    value: expr_result.value,
+                                  },
+                                ],
+                              ])
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "i32":
+                        case "u32":
+                        case "i64":
+                        case "u64": {
+                          if (expr_result instanceof Num) {
+                            paths.push(
+                              new Path(output_name, [
+                                [],
+                                [
+                                  output_name,
+                                  {
+                                    type: field.type,
+                                    value: new Decimal(expr_result.value),
+                                  },
+                                ],
+                              ])
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "idouble":
+                        case "udouble":
+                        case "idecimal":
+                        case "udecimal": {
+                          if (expr_result instanceof Deci) {
+                            paths.push(
+                              new Path(output_name, [
+                                [],
+                                [
+                                  output_name,
+                                  {
+                                    type: field.type,
+                                    value: new Decimal(expr_result.value),
+                                  },
+                                ],
+                              ])
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "bool": {
+                          if (expr_result instanceof Bool) {
+                            paths.push(
+                              new Path(output_name, [
+                                [],
+                                [
+                                  output_name,
+                                  {
+                                    type: field.type,
+                                    value: expr_result.value,
+                                  },
+                                ],
+                              ])
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "date":
+                        case "time":
+                        case "timestamp": {
+                          if (expr_result instanceof Num) {
+                            paths.push(
+                              new Path(output_name, [
+                                [],
+                                [
+                                  output_name,
+                                  {
+                                    type: field.type,
+                                    value: new Date(expr_result.value),
+                                  },
+                                ],
+                              ])
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "other": {
+                          if (expr_result instanceof Num) {
+                            paths.push(
+                              new Path(output_name, [
+                                [],
+                                [
+                                  output_name,
+                                  {
+                                    type: field.type,
+                                    other: field.other,
+                                    value: new Decimal(expr_result.value),
+                                  },
+                                ],
+                              ])
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        default: {
+                          const _exhaustiveCheck: never = field;
+                          return _exhaustiveCheck;
+                        }
                       }
                     }
                   } else {
