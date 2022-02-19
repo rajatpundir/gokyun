@@ -1,7 +1,14 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_path_with_type, get_symbols_for_paths } from "./commons";
-import { FilterPath, get_variable, get_variables, OrFilter } from "./db";
+import {
+  FilterPath,
+  get_struct_counter,
+  get_variable,
+  get_variables,
+  increment_struct_counter,
+  OrFilter,
+} from "./db";
 import { replace_variable } from "./db_variables";
 import { ErrMsg, errors } from "./errors";
 import {
@@ -907,9 +914,12 @@ export class Fx {
             }
             break;
           }
-          case "insert": {
+          case "insert":
+          case "insert_ignore":
+          case "replace": {
             const struct = get_struct(output.struct);
             if (unwrap(struct)) {
+              let variable: Variable | undefined = undefined;
               const paths: Array<Path> = [];
               const unique_constraints: ReadonlyArray<ReadonlyArray<string>> =
                 struct.value.uniqueness.map((uniqueness) => {
@@ -1082,7 +1092,7 @@ export class Fx {
                   );
                 }
               }
-              // 2. try to fetch variable based on one set of unique constraint at a time
+              // 2. Try to fetch variable based on one set of unique constraint at a time
               for (const unique_constraint of unique_constraints) {
                 const unique_constraint_filter_paths: Array<FilterPath> = [];
                 for (const field_name of unique_constraint) {
@@ -1143,8 +1153,10 @@ export class Fx {
                   new Decimal(0)
                 );
                 if (unwrap(result)) {
-                  const variable = result.value;
-                  // do something
+                  if (result.value.length === 1) {
+                    variable = result.value[0];
+                    break;
+                  }
                 }
               }
               // 3. Process keys not present in uniqueness constraints
@@ -1307,16 +1319,73 @@ export class Fx {
                   }
                 }
               }
-              // 3. Save variable
+              // 4. Replace variable
+              if (variable !== undefined) {
+                // insert -> fails
+                // insert_ignore -> skips
+                // replace -> replace
+                switch (output.op) {
+                  case "insert": {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  case "insert_ignore": {
+                    continue;
+                  }
+                  case "replace": {
+                    await replace_variable(
+                      level,
+                      apply(variable, (it) => {
+                        it.paths = HashSet.ofIterable(paths);
+                        return it;
+                      })
+                    );
+                    break;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = output;
+                    return _exhaustiveCheck;
+                  }
+                }
+              } else {
+                // insert -> insert
+                // insert_ignore -> insert
+                // replace -> skips
+                switch (output.op) {
+                  case "insert":
+                  case "insert_ignore": {
+                    const result = await get_struct_counter(output.struct);
+                    await increment_struct_counter(output.struct);
+                    if (unwrap(result)) {
+                      const variable = new Variable(
+                        struct.value,
+                        result.value,
+                        true,
+                        new Date(),
+                        new Date(),
+                        HashSet.ofIterable(paths)
+                      );
+                      await replace_variable(level, variable);
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                    break;
+                  }
+                  case "replace": {
+                    continue;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = output;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }
             } else {
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
-            break;
-          }
-          case "insert_ignore": {
-            break;
-          }
-          case "replace": {
             break;
           }
           case "delete": {
