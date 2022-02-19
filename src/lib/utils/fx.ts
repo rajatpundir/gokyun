@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { get_path_with_type } from "./commons";
+import { get_path_with_type, get_symbols_for_paths } from "./commons";
 import { FilterPath, get_variable } from "./db";
 import { replace_variable } from "./db_variables";
 import { ErrMsg, errors } from "./errors";
@@ -162,145 +162,55 @@ export class Fx {
     return String(this.name);
   }
 
-  get_paths(): ReadonlyArray<PathString> {
-    // 1. Process checks
-    let paths: ReadonlyArray<PathString> = [];
-    for (const check_name of Object.keys(this.checks)) {
-      const expr = this.checks[check_name][0];
-      paths = paths.concat(expr.get_paths());
-    }
-    // 2. Process input updates
-    for (const input_name of Object.keys(this.inputs)) {
-      const input = this.inputs[input_name];
-      if (input.type === "other" && input.updates !== undefined) {
-        for (const [, expr] of input.updates) {
-          paths = paths.concat(expr.get_paths());
-        }
-      }
-    }
-    // 3. Process outputs
-    for (const output_name of Object.keys(this.outputs)) {
-      const output = this.outputs[output_name];
-      if (output.op === "value") {
-        const expr = output.value.value;
-        paths = paths.concat(expr.get_paths());
-      } else {
-        for (const field_name of Object.keys(output.fields)) {
-          const expr = output.fields[field_name];
-          paths = paths.concat(expr.get_paths());
-        }
-      }
-    }
-    return apply([] as Array<PathString>, (it) => {
-      for (const path of paths) {
-        let check = true;
-        for (const existing_path of it) {
-          if (compare_paths(path, existing_path)) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          it.push(path);
-        }
-      }
-      return it;
-    });
-  }
-
-  get_symbols_for_paths(paths: HashSet<Path>): Record<string, Symbol> {
-    const symbols: Record<string, Symbol> = {};
-    const firsts: HashSet<string> = paths.map((path) =>
-      path.path[0].length !== 0 ? path.path[0][0][0] : path.path[1][0]
-    );
-    for (const first of firsts) {
-      const filtered_paths = paths.filter(
-        (path) =>
-          first ===
-          (path.path[0].length !== 0 ? path.path[0][0][0] : path.path[1][0])
-      );
-      symbols[first] = arrow(() => {
-        const sub_symbols: Record<string, Symbol> = this.get_symbols_for_paths(
-          filtered_paths
-            .filter((path) => path.path[0].length !== 0)
-            .map(
-              (path) =>
-                new Path(path.label, [path.path[0].slice(1), path.path[1]])
-            )
-        );
-        const filtered_path = filtered_paths.findAny(
-          (path) => path.path[0].length === 0
-        );
-        if (filtered_path.isSome()) {
-          const value = filtered_path.get().path[1][1];
-          switch (value.type) {
-            case "str":
-            case "lstr":
-            case "clob": {
-              return new Symbol({
-                value: new Ok(new Text(value.value)),
-                values: sub_symbols,
-              });
-            }
-            case "i32":
-            case "u32":
-            case "i64":
-            case "u64": {
-              return new Symbol({
-                value: new Ok(new Num(value.value.toNumber())),
-                values: sub_symbols,
-              });
-            }
-            case "idouble":
-            case "udouble":
-            case "idecimal":
-            case "udecimal": {
-              return new Symbol({
-                value: new Ok(new Deci(value.value.toNumber())),
-                values: sub_symbols,
-              });
-            }
-            case "bool": {
-              return new Symbol({
-                value: new Ok(new Bool(value.value)),
-                values: sub_symbols,
-              });
-            }
-            case "date":
-            case "time":
-            case "timestamp": {
-              return new Symbol({
-                value: new Ok(new Num(value.value.getTime())),
-                values: sub_symbols,
-              });
-            }
-            case "other": {
-              return new Symbol({
-                value: new Ok(new Num(value.value.toNumber())),
-                values: sub_symbols,
-              });
-            }
-            default: {
-              const _exhaustiveCheck: never = value;
-              return _exhaustiveCheck;
-            }
-          }
-        } else {
-          return new Symbol({
-            value: undefined,
-            values: sub_symbols,
-          });
-        }
-      });
-    }
-    return symbols;
-  }
-
   async get_symbols(
     args: FxArgs,
     level: Decimal
   ): Promise<Result<Record<string, Symbol>>> {
-    const paths = this.get_paths();
+    const paths: ReadonlyArray<PathString> = arrow(() => {
+      // 1. Process checks
+      let paths: ReadonlyArray<PathString> = [];
+      for (const check_name of Object.keys(this.checks)) {
+        const expr = this.checks[check_name][0];
+        paths = paths.concat(expr.get_paths());
+      }
+      // 2. Process input updates
+      for (const input_name of Object.keys(this.inputs)) {
+        const input = this.inputs[input_name];
+        if (input.type === "other" && input.updates !== undefined) {
+          for (const [, expr] of input.updates) {
+            paths = paths.concat(expr.get_paths());
+          }
+        }
+      }
+      // 3. Process outputs
+      for (const output_name of Object.keys(this.outputs)) {
+        const output = this.outputs[output_name];
+        if (output.op === "value") {
+          const expr = output.value.value;
+          paths = paths.concat(expr.get_paths());
+        } else {
+          for (const field_name of Object.keys(output.fields)) {
+            const expr = output.fields[field_name];
+            paths = paths.concat(expr.get_paths());
+          }
+        }
+      }
+      return apply([] as Array<PathString>, (it) => {
+        for (const path of paths) {
+          let check = true;
+          for (const existing_path of it) {
+            if (compare_paths(path, existing_path)) {
+              check = false;
+              break;
+            }
+          }
+          if (check) {
+            it.push(path);
+          }
+        }
+        return it;
+      });
+    });
     console.log(paths);
     const symbols: Record<string, Symbol> = {};
     for (const input_name of Object.keys(this.inputs)) {
@@ -483,9 +393,7 @@ export class Fx {
                     if (unwrap(variable)) {
                       symbols[input_name] = new Symbol({
                         value: new Ok(new Num(variable.value.id.toNumber())),
-                        values: this.get_symbols_for_paths(
-                          variable.value.paths
-                        ),
+                        values: get_symbols_for_paths(variable.value.paths),
                       });
                     } else {
                       return new Err(
@@ -509,9 +417,7 @@ export class Fx {
                     if (unwrap(variable)) {
                       symbols[input_name] = new Symbol({
                         value: new Ok(new Num(variable.value.id.toNumber())),
-                        values: this.get_symbols_for_paths(
-                          variable.value.paths
-                        ),
+                        values: get_symbols_for_paths(variable.value.paths),
                       });
                     } else {
                       return new Err(
@@ -635,10 +541,7 @@ export class Fx {
                       );
                       if (unwrap(variable)) {
                         const path = variable.value.paths.findAny((x) =>
-                          compare_paths(path_string, [
-                            x.path[0].map((v) => v[0]),
-                            x.path[1][0],
-                          ])
+                          compare_paths(path_string, get_path_string(x))
                         );
                         if (path.isSome()) {
                           const value = path.get().path[1][1];
@@ -667,10 +570,7 @@ export class Fx {
                       );
                       if (unwrap(variable)) {
                         const path = variable.value.paths.findAny((x) =>
-                          compare_paths(path_string, [
-                            x.path[0].map((v) => v[0]),
-                            x.path[1][0],
-                          ])
+                          compare_paths(path_string, get_path_string(x))
                         );
                         if (path.isSome()) {
                           const value = path.get().path[1][1];
@@ -834,92 +734,60 @@ export class Fx {
               }
             }
             // replace variable
-            if (paths.length !== 0) {
-              const first = paths[0];
-              const result = get_path_with_type(
-                struct.value,
-                get_path_string(first)
-              );
-              if (unwrap(result)) {
-                const field_struct_name = result.value[1];
-                const filter_paths: HashSet<FilterPath> = HashSet.of(
-                  arrow(() => {
-                    if (field_struct_name[0] !== "other") {
-                      return new FilterPath(
-                        get_flattened_path(get_path_string(first)).join("."),
-                        get_path_string(first),
-                        [field_struct_name[0], undefined],
-                        undefined
-                      );
-                    } else {
-                      return new FilterPath(
-                        get_flattened_path(get_path_string(first)).join("."),
-                        get_path_string(first),
-                        [field_struct_name[0], undefined, field_struct_name[1]],
-                        undefined
-                      );
-                    }
-                  })
+            // TODO. Variable could be fetched even filter_paths are empty
+            if (input_name in args) {
+              const arg = args[input_name];
+              if (arg.type === input.type) {
+                const variable = await get_variable(
+                  struct.value,
+                  true,
+                  level,
+                  arg.value,
+                  HashSet.of()
                 );
-                if (input_name in args) {
-                  const arg = args[input_name];
-                  if (arg.type === input.type) {
-                    const variable = await get_variable(
+                if (unwrap(variable)) {
+                  await replace_variable(
+                    level,
+                    new Variable(
                       struct.value,
-                      true,
-                      level,
                       arg.value,
-                      filter_paths
-                    );
-                    if (unwrap(variable)) {
-                      await replace_variable(
-                        level,
-                        new Variable(
-                          struct.value,
-                          arg.value,
-                          true,
-                          variable.value.created_at,
-                          new Date(),
-                          HashSet.ofIterable(paths)
-                        )
-                      );
-                    } else {
-                      continue;
-                    }
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
-                } else {
-                  if (input.default !== undefined) {
-                    const variable = await get_variable(
-                      struct.value,
                       true,
-                      level,
+                      variable.value.created_at,
+                      new Date(),
+                      HashSet.ofIterable(paths)
+                    )
+                  );
+                } else {
+                  continue;
+                }
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            } else {
+              if (input.default !== undefined) {
+                const variable = await get_variable(
+                  struct.value,
+                  true,
+                  level,
+                  input.default,
+                  HashSet.of()
+                );
+                if (unwrap(variable)) {
+                  await replace_variable(
+                    level,
+                    new Variable(
+                      struct.value,
                       input.default,
-                      filter_paths
-                    );
-                    if (unwrap(variable)) {
-                      await replace_variable(
-                        level,
-                        new Variable(
-                          struct.value,
-                          input.default,
-                          true,
-                          variable.value.created_at,
-                          new Date(),
-                          HashSet.ofIterable(paths)
-                        )
-                      );
-                    } else {
-                      continue;
-                    }
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
+                      true,
+                      variable.value.created_at,
+                      new Date(),
+                      HashSet.ofIterable(paths)
+                    )
+                  );
+                } else {
+                  continue;
                 }
               } else {
                 return new Err(

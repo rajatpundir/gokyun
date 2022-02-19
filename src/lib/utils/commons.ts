@@ -1154,3 +1154,93 @@ export function get_path_with_type(
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
+
+export function get_symbols_for_paths(
+  paths: HashSet<Path>
+): Record<string, Symbol> {
+  const symbols: Record<string, Symbol> = {};
+  const firsts: HashSet<string> = paths.map((path) =>
+    path.path[0].length !== 0 ? path.path[0][0][0] : path.path[1][0]
+  );
+  for (const first of firsts) {
+    const filtered_paths = paths.filter(
+      (path) =>
+        first ===
+        (path.path[0].length !== 0 ? path.path[0][0][0] : path.path[1][0])
+    );
+    symbols[first] = arrow(() => {
+      const sub_symbols: Record<string, Symbol> = get_symbols_for_paths(
+        filtered_paths
+          .filter((path) => path.path[0].length !== 0)
+          .map(
+            (path) =>
+              new Path(path.label, [path.path[0].slice(1), path.path[1]])
+          )
+      );
+      const filtered_path = filtered_paths.findAny(
+        (path) => path.path[0].length === 0
+      );
+      if (filtered_path.isSome()) {
+        const value = filtered_path.get().path[1][1];
+        switch (value.type) {
+          case "str":
+          case "lstr":
+          case "clob": {
+            return new Symbol({
+              value: new Ok(new Text(value.value)),
+              values: sub_symbols,
+            });
+          }
+          case "i32":
+          case "u32":
+          case "i64":
+          case "u64": {
+            return new Symbol({
+              value: new Ok(new Num(value.value.toNumber())),
+              values: sub_symbols,
+            });
+          }
+          case "idouble":
+          case "udouble":
+          case "idecimal":
+          case "udecimal": {
+            return new Symbol({
+              value: new Ok(new Deci(value.value.toNumber())),
+              values: sub_symbols,
+            });
+          }
+          case "bool": {
+            return new Symbol({
+              value: new Ok(new Bool(value.value)),
+              values: sub_symbols,
+            });
+          }
+          case "date":
+          case "time":
+          case "timestamp": {
+            return new Symbol({
+              value: new Ok(new Num(value.value.getTime())),
+              values: sub_symbols,
+            });
+          }
+          case "other": {
+            return new Symbol({
+              value: new Ok(new Num(value.value.toNumber())),
+              values: sub_symbols,
+            });
+          }
+          default: {
+            const _exhaustiveCheck: never = value;
+            return _exhaustiveCheck;
+          }
+        }
+      } else {
+        return new Symbol({
+          value: undefined,
+          values: sub_symbols,
+        });
+      }
+    });
+  }
+  return symbols;
+}
