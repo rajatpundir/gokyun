@@ -84,8 +84,7 @@ type FxOutputs = Record<
   string,
   | {
       op: "value";
-      value: LispExpression;
-      x: Omit<StrongEnum, "value"> & {
+      value: StrongEnum & {
         value: LispExpression;
       };
     }
@@ -183,7 +182,7 @@ export class Fx {
     for (const output_name of Object.keys(this.outputs)) {
       const output = this.outputs[output_name];
       if (output.op === "value") {
-        const expr = output.value;
+        const expr = output.value.value;
         paths = paths.concat(expr.get_paths());
       } else {
         for (const field_name of Object.keys(output.fields)) {
@@ -208,8 +207,6 @@ export class Fx {
       return it;
     });
   }
-
-  // function to convert array of paths
 
   get_symbols_for_paths(paths: HashSet<Path>): Record<string, Symbol> {
     const symbols: Record<string, Symbol> = {};
@@ -569,7 +566,7 @@ export class Fx {
     args: FxArgs,
     level: Decimal
   ): Promise<Result<Record<string, StrongEnum>>> {
-    const final_outputs: Record<string, StrongEnum> = {};
+    const computed_outputs: Record<string, StrongEnum> = {};
     const result = await this.get_symbols(args, level);
     if (unwrap(result)) {
       const symbols = result.value;
@@ -940,6 +937,106 @@ export class Fx {
         const output = this.outputs[output_name];
         switch (output.op) {
           case "value": {
+            const expr_result = output.value.value.get_result(symbols);
+            if (unwrap(expr_result)) {
+              switch (output.value.type) {
+                case "str":
+                case "lstr":
+                case "clob": {
+                  if (expr_result instanceof Text) {
+                    computed_outputs[output_name] = {
+                      type: output.value.type,
+                      value: expr_result.value,
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  break;
+                }
+                case "i32":
+                case "u32":
+                case "i64":
+                case "u64": {
+                  if (expr_result instanceof Num) {
+                    computed_outputs[output_name] = {
+                      type: output.value.type,
+                      value: new Decimal(expr_result.value),
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  break;
+                }
+                case "idouble":
+                case "udouble":
+                case "idecimal":
+                case "udecimal": {
+                  if (expr_result instanceof Deci) {
+                    computed_outputs[output_name] = {
+                      type: output.value.type,
+                      value: new Decimal(expr_result.value),
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  break;
+                }
+                case "bool": {
+                  if (expr_result instanceof Bool) {
+                    computed_outputs[output_name] = {
+                      type: output.value.type,
+                      value: expr_result.value,
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  break;
+                }
+                case "date":
+                case "time":
+                case "timestamp": {
+                  if (expr_result instanceof Num) {
+                    computed_outputs[output_name] = {
+                      type: output.value.type,
+                      value: new Date(expr_result.value),
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  break;
+                }
+                case "other": {
+                  if (expr_result instanceof Num) {
+                    computed_outputs[output_name] = {
+                      type: output.value.type,
+                      other: output.value.other,
+                      value: new Decimal(expr_result.value),
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = output.value;
+                  return _exhaustiveCheck;
+                }
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
             break;
           }
           case "insert": {
@@ -966,6 +1063,6 @@ export class Fx {
     } else {
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
-    return new Ok(final_outputs);
+    return new Ok(computed_outputs);
   }
 }
