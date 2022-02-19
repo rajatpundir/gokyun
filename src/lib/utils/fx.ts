@@ -83,10 +83,11 @@ type FxArgs = Record<
     }
 >;
 
-// Updates to paths should take place inside 'inputs' instead of 'outputs'
 // 'outputs' should be used to insert, replace and delete variables, as well as primitive value forwarding for use in composer computations
-// Additionally, a transformer mat be marked as such that it cannot be run directly by the user
+
+// Additionally, a transformer may be marked as such that it cannot be run directly by the user
 // In case, a transformer is executed via a Composer, ownership of inputs will not be checked.
+
 type FxOutputs = Record<
   string,
   | {
@@ -114,17 +115,17 @@ type FxOutputs = Record<
       fields: { [index: string]: LispExpression };
     }
   | {
-      // Abort if variable cannot be deleted (maybe referenced somewhere)
+      // Abort if variable(s) cannot be deleted (maybe referenced somewhere)
       op: "delete";
       struct: string;
-      // the variable(s) is/are looked up on basis of matched fields
+      // the variable(s) is/are queried on basis of matched fields
       fields: { [index: string]: LispExpression };
     }
   | {
-      // Ignore the operation if variable cannot be deleted
+      // Ignore the operation if variable(s) cannot be deleted
       op: "delete_ignore";
       struct: string;
-      // the variable(s) is/are looked up on basis of matched fields
+      // the variable(s) is/are queried on basis of matched fields
       fields: { [index: string]: LispExpression };
     }
 >;
@@ -138,20 +139,17 @@ export class Fx {
   inputs: FxInputs;
   outputs: FxOutputs;
   checks: FxChecks;
-  user_invoked: boolean;
 
   constructor(
     name: string,
     inputs: FxInputs,
     outputs: FxOutputs,
-    checks: FxChecks,
-    user_invoked: boolean = true
+    checks: FxChecks
   ) {
     this.name = name;
     this.inputs = inputs;
     this.outputs = outputs;
     this.checks = checks;
-    this.user_invoked = user_invoked;
   }
 
   equals(other: Fx): boolean {
