@@ -1040,6 +1040,160 @@ export class Fx {
             break;
           }
           case "insert": {
+            const struct = get_struct(output.struct);
+            if (unwrap(struct)) {
+              const paths: Array<Path> = [];
+              for (const field_name in Object.keys(struct.value.fields)) {
+                const field = struct.value.fields[field_name];
+                if (field_name in output.fields) {
+                  const expr_result =
+                    output.fields[field_name].get_result(symbols);
+                  switch (field.type) {
+                    case "str":
+                    case "lstr":
+                    case "clob": {
+                      if (expr_result instanceof Text) {
+                        paths.push(
+                          new Path(output_name, [
+                            [],
+                            [
+                              output_name,
+                              { type: field.type, value: expr_result.value },
+                            ],
+                          ])
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "i32":
+                    case "u32":
+                    case "i64":
+                    case "u64": {
+                      if (expr_result instanceof Num) {
+                        paths.push(
+                          new Path(output_name, [
+                            [],
+                            [
+                              output_name,
+                              {
+                                type: field.type,
+                                value: new Decimal(expr_result.value),
+                              },
+                            ],
+                          ])
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "idouble":
+                    case "udouble":
+                    case "idecimal":
+                    case "udecimal": {
+                      if (expr_result instanceof Deci) {
+                        paths.push(
+                          new Path(output_name, [
+                            [],
+                            [
+                              output_name,
+                              {
+                                type: field.type,
+                                value: new Decimal(expr_result.value),
+                              },
+                            ],
+                          ])
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "bool": {
+                      if (expr_result instanceof Bool) {
+                        paths.push(
+                          new Path(output_name, [
+                            [],
+                            [
+                              output_name,
+                              { type: field.type, value: expr_result.value },
+                            ],
+                          ])
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "date":
+                    case "time":
+                    case "timestamp": {
+                      if (expr_result instanceof Num) {
+                        paths.push(
+                          new Path(output_name, [
+                            [],
+                            [
+                              output_name,
+                              {
+                                type: field.type,
+                                value: new Date(expr_result.value),
+                              },
+                            ],
+                          ])
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "other": {
+                      if (expr_result instanceof Num) {
+                        paths.push(
+                          new Path(output_name, [
+                            [],
+                            [
+                              output_name,
+                              {
+                                type: field.type,
+                                other: field.other,
+                                value: new Decimal(expr_result.value),
+                              },
+                            ],
+                          ])
+                        );
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = field;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
             break;
           }
           case "insert_ignore": {
@@ -1049,9 +1203,19 @@ export class Fx {
             break;
           }
           case "delete": {
+            const struct = get_struct(output.struct);
+            if (unwrap(struct)) {
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
             break;
           }
           case "delete_ignore": {
+            const struct = get_struct(output.struct);
+            if (unwrap(struct)) {
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
             break;
           }
           default: {
