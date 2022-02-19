@@ -24,9 +24,15 @@ import { ErrMsg, errors } from "./errors";
 import { HashSet, Option as OptionTS } from "prelude-ts";
 import { get_structs } from "./schema";
 
-// We will also need functions for activating or deactivating variable in a layer
+// TODO. Active column is not useful, could be decalred as normal field instead
 
-// Active column is not useful, could be decalred as normal field instead
+// TODO. Replacing variable at any level should remove any removal
+
+// TODO. Deletion at any level other than base should add removal
+
+// TODO. Add Existence functionality
+
+// We will also need functions for activating or deactivating variable in a layer
 
 const db_name: string = "test1.db";
 

@@ -45,10 +45,6 @@ import {
 
 // Fx, Tranform, Compose
 
-// TODO. For insert, insert_ignore, replace ops, besides insertion/replace, also delete removal records on same level
-
-// TODO. For delete, delete_ignore ops, besides deletion, also create removal records
-
 type FxInputs = Record<
   string,
   | Exclude<
