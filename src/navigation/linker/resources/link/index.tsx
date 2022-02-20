@@ -29,11 +29,13 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { views } from "../../../../views";
 
-// Higher existence for searching via tags
+// Higher existence for searching via keywords
 
 // Get to implementing Transformer
 
 // Use MIME types
+
+// Distinct structs for private and public resources
 
 export default function Component(props: ParentNavigatorProps<"Link">) {
   const theme = useTheme();
