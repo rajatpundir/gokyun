@@ -23,10 +23,9 @@ type CommonProps = {
   >;
 };
 
-type CLBProps = CommonProps;
+type CH_Props = CommonProps;
 
-// Column - Label Beside
-function CLB(props: CLBProps): JSX.Element {
+function CH(props: CH_Props): JSX.Element {
   return (
     <Column>
       {props.fields
@@ -97,10 +96,9 @@ function CLB(props: CLBProps): JSX.Element {
   );
 }
 
-type CLAProps = CommonProps;
+type CV_Props = CommonProps;
 
-// Column - Label Above
-function CLA(props: CLAProps): JSX.Element {
+function CV(props: CV_Props): JSX.Element {
   return (
     <Column>
       {props.fields
@@ -163,10 +161,9 @@ function CLA(props: CLAProps): JSX.Element {
   );
 }
 
-type RLAProps = CommonProps;
+type RV_Props = CommonProps;
 
-// Row - Label Above
-function RLA(props: RLAProps): JSX.Element {
+function RV(props: RV_Props): JSX.Element {
   return (
     <Row space={2} my={"1"}>
       {props.fields
@@ -227,10 +224,9 @@ function RLA(props: RLAProps): JSX.Element {
   );
 }
 
-type RLBProps = CommonProps;
+type RH_Props = CommonProps;
 
-// Row - Label Beside
-function RLB(props: RLBProps): JSX.Element {
+function RH(props: RH_Props): JSX.Element {
   return (
     <Row
       space={2}
@@ -301,22 +297,22 @@ function RLB(props: RLBProps): JSX.Element {
 }
 
 type TemplateProps = CommonProps & {
-  type: "CLB" | "CLA" | "RLA" | "RLB";
+  type: "CH" | "CV" | "RV" | "RH";
 };
 
 export function Template(props: TemplateProps): JSX.Element {
   switch (props.type) {
-    case "CLA": {
-      return <CLA {...props} />;
+    case "CV": {
+      return <CV {...props} />;
     }
-    case "CLB": {
-      return <CLB {...props} />;
+    case "CH": {
+      return <CH {...props} />;
     }
-    case "RLA": {
-      return <RLA {...props} />;
+    case "RV": {
+      return <RV {...props} />;
     }
-    case "RLB": {
-      return <RLB {...props} />;
+    case "RH": {
+      return <RH {...props} />;
     }
     default: {
       const _exhaustiveCheck: never = props.type;

@@ -48,12 +48,12 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
     <ScrollView m={"2"}>
       <Template
         {...props}
-        type={"CLA"}
+        type={"CV"}
         fields={["str", [["z"], "str"], "lstr", "clob"]}
       />
       <Template
         {...props}
-        type={"CLB"}
+        type={"CH"}
         fields={[
           "i32",
           {
@@ -68,11 +68,11 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
           "udecimal",
         ]}
       />
-      <Template {...props} type={"RLB"} fields={["bool", "date"]} />
-      <Template {...props} type={"RLA"} fields={["time", "timestamp"]} />
+      <Template {...props} type={"RH"} fields={["bool", "date"]} />
+      <Template {...props} type={"RV"} fields={["time", "timestamp"]} />
       <Template
         {...props}
-        type={"CLB"}
+        type={"CH"}
         fields={[
           {
             path: "user",
@@ -171,7 +171,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
       />
       <Template
         {...props}
-        type={"CLB"}
+        type={"CH"}
         fields={[
           {
             path: "user",
@@ -255,7 +255,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
       />
       <Template
         {...props}
-        type={"CLB"}
+        type={"CH"}
         fields={[
           {
             path: "user",
@@ -402,7 +402,7 @@ export default {
           </Row>
           <Template
             {...props}
-            type={"CLB"}
+            type={"CH"}
             fields={[
               "str",
               "lstr",

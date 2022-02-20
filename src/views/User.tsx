@@ -35,7 +35,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       </Row>
       <Template
         {...props}
-        type={"CLB"}
+        type={"CH"}
         fields={["nickname", "knows_english", "mobile", "product_count"]}
       />
       <Row justifyContent={"flex-end"}>
