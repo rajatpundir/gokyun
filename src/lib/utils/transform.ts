@@ -13,7 +13,6 @@ import {
   get_path_string,
   PathString,
   StrongEnum,
-  WeakEnum,
 } from "./variable";
 
 type TrandformQuery =
@@ -68,7 +67,10 @@ export class Tranform {
     return String(this.name);
   }
 
-  async exec(args: TransformArgs, level: Decimal) {
+  async exec(
+    args: TransformArgs,
+    level: Decimal
+  ): Promise<Result<ReadonlyArray<Record<string, StrongEnum>>>> {
     const computed_outputs: Array<Record<string, StrongEnum>> = [];
     const result: Result<Fx> = arrow(() => {
       switch (this.type) {
@@ -354,7 +356,6 @@ export class Tranform {
             // 4. construct args and invoke fx
             for (const [index, variable] of variables.value.entries()) {
               const fx_args: FxArgs = {};
-
               for (const input_name of Object.keys(fx.inputs)) {
                 const input = fx.inputs[input_name];
                 if (input_name in query.map) {
@@ -491,12 +492,124 @@ export class Tranform {
         }
       } else {
         // use args.base
-        for (const input_name of Object.keys(fx.inputs)) {
-          const input = fx.inputs[input_name];
+        for (const [index, arg] of args.base.entries()) {
+          for (const input_name of Object.keys(fx.inputs)) {
+            const fx_args: FxArgs = {};
+            const input = fx.inputs[input_name];
+            if (input_name in arg) {
+              const value = arg[input_name];
+              if (value.type !== "other") {
+                if (value.type === input.type) {
+                  fx_args[input_name] = value;
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              } else {
+                if (value.type === input.type && value.other === input.other) {
+                  fx_args[input_name] = {
+                    ...value,
+                    user_paths: [],
+                    borrows: [],
+                  };
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+            } else if (
+              index < args.base.length &&
+              input_name in args.base[index]
+            ) {
+              const value = args.base[index][input_name];
+              if (value.type !== "other") {
+                fx_args[input_name] = value;
+              } else {
+                fx_args[input_name] = {
+                  ...value,
+                  user_paths: [],
+                  borrows: [],
+                };
+              }
+            } else if (input.default !== undefined) {
+              if (input.type !== "other") {
+                switch (input.type) {
+                  case "str":
+                  case "lstr":
+                  case "clob": {
+                    fx_args[input_name] = {
+                      type: input.type,
+                      value: input.default,
+                    };
+                    break;
+                  }
+                  case "i32":
+                  case "u32":
+                  case "i64":
+                  case "u64": {
+                    fx_args[input_name] = {
+                      type: input.type,
+                      value: input.default,
+                    };
+                    break;
+                  }
+                  case "idouble":
+                  case "udouble":
+                  case "idecimal":
+                  case "udecimal": {
+                    fx_args[input_name] = {
+                      type: input.type,
+                      value: input.default,
+                    };
+                    break;
+                  }
+                  case "bool": {
+                    fx_args[input_name] = {
+                      type: input.type,
+                      value: input.default,
+                    };
+                    break;
+                  }
+                  case "date":
+                  case "time":
+                  case "timestamp": {
+                    fx_args[input_name] = {
+                      type: input.type,
+                      value: input.default,
+                    };
+                    break;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = input;
+                    return _exhaustiveCheck;
+                  }
+                }
+              } else {
+                fx_args[input_name] = {
+                  type: input.type,
+                  other: input.other,
+                  value: input.default,
+                  user_paths: [],
+                  borrows: [],
+                };
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+            const computed_output = await fx.exec(fx_args, level);
+            if (unwrap(computed_output)) {
+              computed_outputs.push(computed_output.value);
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          }
         }
       }
     } else {
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
+    return new Ok(computed_outputs);
   }
 }
