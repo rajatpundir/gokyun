@@ -29,27 +29,22 @@ type TransformArgs = {
   query: FxArgs;
 };
 
-type TransformChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
-
 export class Tranform {
   name: string;
   type: "fx" | "compose";
   invoke: string;
   query: TrandformQuery;
-  checks: TransformChecks;
 
   constructor(
     name: string,
     type: "fx" | "compose",
     invoke: string,
-    query: TrandformQuery,
-    checks: TransformChecks
+    query: TrandformQuery
   ) {
     this.name = name;
     this.type = type;
     this.invoke = invoke;
     this.query = query;
-    this.checks = checks;
   }
 
   equals(other: Tranform): boolean {
