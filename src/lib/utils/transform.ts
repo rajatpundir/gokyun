@@ -4,7 +4,6 @@ import { get_path_with_type } from "./commons";
 import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { Fx, FxArgs, get_fx } from "./fx";
-import { BooleanLispExpression } from "./lisp";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { get_struct } from "./schema";
 import {
