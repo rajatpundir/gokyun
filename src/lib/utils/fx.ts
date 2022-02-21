@@ -63,7 +63,7 @@ type FxInputs = Record<
     }
 >;
 
-type FxArgs = Record<
+export type FxArgs = Record<
   string,
   | Exclude<
       StrongEnum,
@@ -1586,4 +1586,8 @@ export class Fx {
     }
     return new Ok(computed_outputs);
   }
+}
+
+export function get_fx(fx_name: string): Result<Fx> {
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
