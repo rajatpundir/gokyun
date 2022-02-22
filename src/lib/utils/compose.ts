@@ -98,6 +98,12 @@ type ComposeStep =
       };
     };
 
+type StepOutputs = ReadonlyArray<
+  | Record<string, StrongEnum>
+  | ReadonlyArray<Record<string, StrongEnum>>
+  | Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
+>;
+
 type ComposeOutputs = Record<
   string,
   | { type: "input"; value: string }
@@ -139,7 +145,7 @@ export class Compose {
   }
 
   exec(args: ComposeArgs, level: Decimal) {
-    const computed_outputs = [];
+    const step_outputs: StepOutputs = [];
     // 1. perform steps
     for (const [index, step] of this.steps.entries()) {
       switch (step.type) {
@@ -303,6 +309,12 @@ export class Compose {
                   }
                   case "fx": {
                     const [step_index, output_name] = step_map.value;
+                    if (step_index > 0 && step_index < index) {
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
                     break;
                   }
                   case "compose": {
