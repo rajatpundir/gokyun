@@ -23,7 +23,7 @@ type TrandformQuery =
     }
   | undefined;
 
-type TransformArgs = {
+export type TransformArgs = {
   base: ReadonlyArray<FxArgs>;
   query: FxArgs;
 };
@@ -387,19 +387,38 @@ export class Tranform {
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
-                } else if (
-                  index < args.base.length &&
-                  input_name in args.base[index]
-                ) {
-                  const value = args.base[index][input_name];
-                  if (value.type !== "other") {
-                    fx_args[input_name] = value;
+                } else if (args.base.length !== 0) {
+                  if (
+                    index < args.base.length &&
+                    input_name in args.base[index]
+                  ) {
+                    const value = args.base[index][input_name];
+                    if (value.type !== "other") {
+                      fx_args[input_name] = value;
+                    } else {
+                      fx_args[input_name] = {
+                        ...value,
+                        user_paths: [],
+                        borrows: [],
+                      };
+                    }
+                  }
+                  // fields with same value can be mentioned in last arg only
+                  else if (input_name in args.base[args.base.length - 1]) {
+                    const value = args.base[index][args.base.length - 1];
+                    if (value.type !== "other") {
+                      fx_args[input_name] = value;
+                    } else {
+                      fx_args[input_name] = {
+                        ...value,
+                        user_paths: [],
+                        borrows: [],
+                      };
+                    }
                   } else {
-                    fx_args[input_name] = {
-                      ...value,
-                      user_paths: [],
-                      borrows: [],
-                    };
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
                   }
                 } else if (input.default !== undefined) {
                   if (input.type !== "other") {
