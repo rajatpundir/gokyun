@@ -72,6 +72,7 @@ export class Tranform {
           return get_fx(this.invoke);
         }
         case "compose": {
+          // TODO.
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         default: {

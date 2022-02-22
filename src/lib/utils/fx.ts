@@ -345,6 +345,10 @@ export class Fx {
               });
               break;
             }
+            default: {
+              const _exhaustiveCheck: never = input;
+              return _exhaustiveCheck;
+            }
           }
         } else {
           // 1. filter paths which starts with input_name
