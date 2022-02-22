@@ -98,11 +98,22 @@ type ComposeStep =
       };
     };
 
-type StepOutputs = ReadonlyArray<
-  | Record<string, StrongEnum>
-  | ReadonlyArray<Record<string, StrongEnum>>
-  | Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
->;
+type StepOutput =
+  | {
+      type: "fx";
+      value: Record<string, StrongEnum>;
+    }
+  | {
+      type: "transform";
+      value: ReadonlyArray<Record<string, StrongEnum>>;
+    }
+  | {
+      type: "compose";
+      value: Record<
+        string,
+        StrongEnum | ReadonlyArray<Record<string, StrongEnum>>
+      >;
+    };
 
 type ComposeOutputs = Record<
   string,
@@ -145,7 +156,7 @@ export class Compose {
   }
 
   exec(args: ComposeArgs, level: Decimal) {
-    const step_outputs: StepOutputs = [];
+    const step_outputs: ReadonlyArray<StepOutput> = [];
     // 1. perform steps
     for (const [index, step] of this.steps.entries()) {
       switch (step.type) {
@@ -308,8 +319,102 @@ export class Compose {
                     break;
                   }
                   case "fx": {
-                    const [step_index, output_name] = step_map.value;
-                    if (step_index > 0 && step_index < index) {
+                    const [step_index, output_name] = step_map.value as [
+                      number,
+                      string
+                    ];
+                    if (step_index > 0 && step_index < step_outputs.length) {
+                      const step_output: StepOutput = step_outputs[step_index];
+                      if (step.type === step_output.type) {
+                        if (input_name in step_output.value) {
+                          const arg = step_output.value[input_name];
+                          if (arg.type !== "other") {
+                            if (arg.type === input.type) {
+                              fx_args[input_name] = arrow(() => {
+                                switch (arg.type) {
+                                  case "str":
+                                  case "lstr":
+                                  case "clob": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "i32":
+                                  case "u32":
+                                  case "i64":
+                                  case "u64": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "idouble":
+                                  case "udouble":
+                                  case "idecimal":
+                                  case "udecimal": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "bool": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "date":
+                                  case "time":
+                                  case "timestamp": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  default: {
+                                    const _exhaustiveCheck: never = arg;
+                                    return _exhaustiveCheck;
+                                  }
+                                }
+                              });
+                            } else {
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                          } else {
+                            if (
+                              arg.type === input.type &&
+                              arg.other === input.other
+                            ) {
+                              fx_args[input_name] = {
+                                type: input.type,
+                                other: input.other,
+                                value: arg.value,
+                                user_paths: [],
+                                borrows: [],
+                              };
+                            } else {
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                          }
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
                     } else {
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
