@@ -18,7 +18,7 @@ type ComposeInputs = Record<
     }
 >;
 
-type ComposeArgs =
+export type ComposeArgs =
   | FxArgs
   | Record<
       string,
