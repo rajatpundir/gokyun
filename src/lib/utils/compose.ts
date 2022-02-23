@@ -2,10 +2,13 @@ import Decimal from "decimal.js";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_fx } from "./fx";
+import { BooleanLispExpression } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { get_struct } from "./schema";
 import { get_transform, TransformArgs } from "./transform";
-import { PathString, StrongEnum, WeakEnum } from "./variable";
+import { StrongEnum, WeakEnum } from "./variable";
+
+// TODO. Add ComposeChecks similar to FxChecks on ComposeArgs, ignore args with 'list' type
 
 type ComposeInputs = Record<
   string,
@@ -15,29 +18,15 @@ type ComposeInputs = Record<
     }
 >;
 
-type ComposeArgs = Record<
-  string,
-  | Exclude<
-      StrongEnum,
+type ComposeArgs =
+  | FxArgs
+  | Record<
+      string,
       {
-        type: "other";
-        other: string;
-        value: Decimal;
+        type: "list";
+        value: ReadonlyArray<FxArgs>;
       }
-    >
-  | {
-      type: "other";
-      other: string;
-      value: Decimal;
-      // There must be atleast one read path permission, obtained after using user_paths / borrows
-      user_paths: Array<PathString>;
-      borrows: Array<string>;
-    }
-  | {
-      type: "list";
-      value: ReadonlyArray<FxArgs>;
-    }
->;
+    >;
 
 type ComposeStep =
   | {
@@ -128,6 +117,8 @@ type ComposeOutputs = Record<
   | { type: "fx" | "compose"; value: [number, string] }
   | { type: "transform"; value: number }
 >;
+
+type ComposeChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
 
 export class Compose {
   name: string;
