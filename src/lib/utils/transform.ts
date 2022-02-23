@@ -28,7 +28,7 @@ export type TransformArgs = {
   query: FxArgs;
 };
 
-export class Tranform {
+export class Transform {
   name: string;
   type: "fx" | "compose";
   invoke: string;
@@ -46,7 +46,7 @@ export class Tranform {
     this.query = query;
   }
 
-  equals(other: Tranform): boolean {
+  equals(other: Transform): boolean {
     if (!other) {
       return false;
     }
@@ -626,4 +626,8 @@ export class Tranform {
     }
     return new Ok(computed_outputs);
   }
+}
+
+export function get_transform(fx_name: string): Result<Transform> {
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
