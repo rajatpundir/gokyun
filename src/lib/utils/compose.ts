@@ -1041,15 +1041,107 @@ export class Compose {
           const result = get_transform(step.invoke);
           if (unwrap(result)) {
             const transform = result.value;
-            const transform_base: TransformArgs["base"] = [];
+            const transform_base: Array<FxArgs> = [];
             switch (step.map.base.type) {
               case "input": {
+                const arg_name: string = step.map.base.value;
+                if (arg_name in args) {
+                  const arg = args[arg_name];
+                  if (arg.type === "list") {
+                    for (const value of arg.value) {
+                      transform_base.push(value);
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                }
                 break;
               }
               case "compose": {
+                const [step_index, output_name] = step.map.base.value as [
+                  number,
+                  string
+                ];
+                if (step_index > 0 && step_index < step_outputs.length) {
+                  const step_output: StepOutput = step_outputs[step_index];
+                  if (step.map.base.type === step_output.type) {
+                    if (output_name in step_output.value) {
+                      const value = step_output.value[output_name];
+                      if (Array.isArray(value)) {
+                        const arg = value as ReadonlyArray<
+                          Record<string, StrongEnum>
+                        >;
+                        for (const arg_value of arg) {
+                          const fx_args: FxArgs = {};
+                          for (const field_name of Object.keys(arg_value)) {
+                            const field = arg_value[field_name];
+                            if (field.type !== "other") {
+                              fx_args[field_name] = field;
+                            } else {
+                              fx_args[field_name] = {
+                                ...field,
+                                user_paths: [],
+                                borrows: [],
+                              };
+                            }
+                          }
+                          transform_base.push(fx_args);
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
                 break;
               }
               case "transform": {
+                const step_index = step.map.base.value;
+                if (step_index > 0 && step_index < step_outputs.length) {
+                  const step_output: StepOutput = step_outputs[step_index];
+                  if (step.map.base.type === step_output.type) {
+                    for (const arg of step_output.value) {
+                      const fx_args: FxArgs = {};
+                      for (const field_name of Object.keys(arg)) {
+                        const field = arg[field_name];
+                        if (field.type !== "other") {
+                          fx_args[field_name] = field;
+                        } else {
+                          fx_args[field_name] = {
+                            ...field,
+                            user_paths: [],
+                            borrows: [],
+                          };
+                        }
+                      }
+                      transform_base.push(fx_args);
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
                 break;
               }
               default: {
