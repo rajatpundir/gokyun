@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_fx } from "./fx";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { get_transform, TransformArgs } from "./transform";
 import { PathString, StrongEnum, WeakEnum } from "./variable";
 
 type ComposeInputs = Record<
@@ -977,6 +978,42 @@ export class Compose {
                   break;
                 }
                 case "transform": {
+                  const step_index = step_map.value;
+                  if (step_index > 0 && step_index < step_outputs.length) {
+                    const step_output: StepOutput = step_outputs[step_index];
+                    if (step_map.type === step_output.type) {
+                      compose_args[input_name] = {
+                        type: "list",
+                        value: apply([] as Array<FxArgs>, (it) => {
+                          for (const arg of step_output.value) {
+                            const fx_args: FxArgs = {};
+                            for (const field_name of Object.keys(arg)) {
+                              const field = arg[field_name];
+                              if (field.type !== "other") {
+                                fx_args[field_name] = field;
+                              } else {
+                                fx_args[field_name] = {
+                                  ...field,
+                                  user_paths: [],
+                                  borrows: [],
+                                };
+                              }
+                            }
+                            it.push(fx_args);
+                          }
+                          return it;
+                        }),
+                      };
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
                   break;
                 }
                 default: {
@@ -1001,6 +1038,31 @@ export class Compose {
           break;
         }
         case "transform": {
+          const result = get_transform(step.invoke);
+          if (unwrap(result)) {
+            const transform = result.value;
+            const transform_base: TransformArgs["base"] = [];
+            switch (step.map.base.type) {
+              case "input": {
+                break;
+              }
+              case "compose": {
+                break;
+              }
+              case "transform": {
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = step.map.base;
+                return _exhaustiveCheck;
+              }
+            }
+            const transform_query: TransformArgs["query"] = {};
+            for (const field_name of Object.keys(step.map.query)) {
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
           break;
         }
         default: {
