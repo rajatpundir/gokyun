@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_fx } from "./fx";
-import { arrow, CustomError, Err, Result, unwrap } from "./prelude";
+import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { PathString, StrongEnum, WeakEnum } from "./variable";
 
 type ComposeInputs = Record<
@@ -159,7 +159,18 @@ export class Compose {
     return String(this.name);
   }
 
-  async exec(args: ComposeArgs, level: Decimal) {
+  async exec(
+    args: ComposeArgs,
+    level: Decimal
+  ): Promise<
+    Result<
+      Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
+    >
+  > {
+    const computed_outputs: Record<
+      string,
+      StrongEnum | ReadonlyArray<Record<string, StrongEnum>>
+    > = {};
     const step_outputs: Array<StepOutput> = [];
     // 1. perform steps
     for (const [index, step] of this.steps.entries()) {
@@ -552,7 +563,7 @@ export class Compose {
             const computed_output = await fx.exec(fx_args, level);
             if (unwrap(computed_output)) {
               step_outputs.push({
-                type: "fx",
+                type: step.type,
                 value: computed_output.value,
               });
             } else {
@@ -564,6 +575,203 @@ export class Compose {
           break;
         }
         case "compose": {
+          const result = get_compose(step.invoke);
+          if (unwrap(result)) {
+            const compose = result.value;
+            const compose_args: ComposeArgs = {};
+            for (const input_name of Object.keys(compose.inputs)) {
+              const input = compose.inputs[input_name];
+              const step_map = step.map[input_name];
+              switch (step_map.type) {
+                case "input": {
+                  const arg_name: string = step_map.value;
+                  if (arg_name in args) {
+                    const arg = args[arg_name];
+                    if (arg.type !== "other") {
+                      if (arg.type === input.type) {
+                        compose_args[input_name] = arrow(() => {
+                          switch (arg.type) {
+                            case "str":
+                            case "lstr":
+                            case "clob": {
+                              return {
+                                type: arg.type,
+                                value: arg.value,
+                              };
+                            }
+                            case "i32":
+                            case "u32":
+                            case "i64":
+                            case "u64": {
+                              return {
+                                type: arg.type,
+                                value: arg.value,
+                              };
+                            }
+                            case "idouble":
+                            case "udouble":
+                            case "idecimal":
+                            case "udecimal": {
+                              return {
+                                type: arg.type,
+                                value: arg.value,
+                              };
+                            }
+                            case "bool": {
+                              return {
+                                type: arg.type,
+                                value: arg.value,
+                              };
+                            }
+                            case "date":
+                            case "time":
+                            case "timestamp": {
+                              return {
+                                type: arg.type,
+                                value: arg.value,
+                              };
+                            }
+                            case "list": {
+                              return {
+                                type: arg.type,
+                                value: arg.value,
+                              };
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = arg;
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        });
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      if (
+                        arg.type === input.type &&
+                        arg.other === input.other
+                      ) {
+                        compose_args[input_name] = {
+                          type: input.type,
+                          other: input.other,
+                          value: arg.value,
+                          user_paths: arg.user_paths,
+                          borrows: arg.borrows,
+                        };
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    }
+                  } else {
+                    if (input.type !== "list") {
+                      if (input.default !== undefined) {
+                        if (input.type !== "other") {
+                          switch (input.type) {
+                            case "str":
+                            case "lstr":
+                            case "clob": {
+                              compose_args[input_name] = {
+                                type: input.type,
+                                value: input.default,
+                              };
+                              break;
+                            }
+                            case "i32":
+                            case "u32":
+                            case "i64":
+                            case "u64": {
+                              compose_args[input_name] = {
+                                type: input.type,
+                                value: input.default,
+                              };
+                              break;
+                            }
+                            case "idouble":
+                            case "udouble":
+                            case "idecimal":
+                            case "udecimal": {
+                              compose_args[input_name] = {
+                                type: input.type,
+                                value: input.default,
+                              };
+                              break;
+                            }
+                            case "bool": {
+                              compose_args[input_name] = {
+                                type: input.type,
+                                value: input.default,
+                              };
+                              break;
+                            }
+                            case "date":
+                            case "time":
+                            case "timestamp": {
+                              compose_args[input_name] = {
+                                type: input.type,
+                                value: input.default,
+                              };
+                              break;
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = input;
+                              return _exhaustiveCheck;
+                            }
+                          }
+                        } else {
+                          compose_args[input_name] = {
+                            type: input.type,
+                            other: input.other,
+                            value: input.default,
+                            user_paths: [],
+                            borrows: [],
+                          };
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      compose_args[input_name] = {
+                        type: input.type,
+                        value: [],
+                      };
+                    }
+                  }
+                  break;
+                }
+                case "fx": {
+                  break;
+                }
+                case "compose": {
+                  break;
+                }
+                case "transform": {
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = step_map;
+                  return _exhaustiveCheck;
+                }
+              }
+            }
+            // invoke compose
+            const computed_output = await compose.exec(compose_args, level);
+            if (unwrap(computed_output)) {
+              step_outputs.push({
+                type: step.type,
+                value: computed_output.value,
+              });
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
           break;
         }
         case "transform": {
@@ -579,6 +787,7 @@ export class Compose {
     for (const output_name of Object.keys(this.outputs)) {
       const output = this.outputs[output_name];
     }
+    return new Ok(computed_outputs);
   }
 }
 
