@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_fx } from "./fx";
-import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { PathString, StrongEnum, WeakEnum } from "./variable";
 
 type ComposeInputs = Record<
@@ -745,9 +745,235 @@ export class Compose {
                   break;
                 }
                 case "fx": {
+                  const [step_index, output_name] = step_map.value as [
+                    number,
+                    string
+                  ];
+                  if (step_index > 0 && step_index < step_outputs.length) {
+                    const step_output: StepOutput = step_outputs[step_index];
+                    if (step_map.type === step_output.type) {
+                      if (output_name in step_output.value) {
+                        const arg = step_output.value[output_name];
+                        if (arg.type !== "other") {
+                          if (arg.type === input.type) {
+                            compose_args[input_name] = arrow(() => {
+                              switch (arg.type) {
+                                case "str":
+                                case "lstr":
+                                case "clob": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "bool": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "date":
+                                case "time":
+                                case "timestamp": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = arg;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            });
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                        } else {
+                          if (
+                            arg.type === input.type &&
+                            arg.other === input.other
+                          ) {
+                            compose_args[input_name] = {
+                              type: input.type,
+                              other: input.other,
+                              value: arg.value,
+                              user_paths: [],
+                              borrows: [],
+                            };
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
                   break;
                 }
                 case "compose": {
+                  const [step_index, output_name] = step_map.value as [
+                    number,
+                    string
+                  ];
+                  if (step_index > 0 && step_index < step_outputs.length) {
+                    const step_output: StepOutput = step_outputs[step_index];
+                    if (step_map.type === step_output.type) {
+                      if (output_name in step_output.value) {
+                        const value = step_output.value[output_name];
+                        if (!Array.isArray(value)) {
+                          const arg: StrongEnum = value as StrongEnum;
+                          if (arg.type !== "other") {
+                            if (arg.type === input.type) {
+                              compose_args[input_name] = arrow(() => {
+                                switch (arg.type) {
+                                  case "str":
+                                  case "lstr":
+                                  case "clob": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "i32":
+                                  case "u32":
+                                  case "i64":
+                                  case "u64": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "idouble":
+                                  case "udouble":
+                                  case "idecimal":
+                                  case "udecimal": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "bool": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  case "date":
+                                  case "time":
+                                  case "timestamp": {
+                                    return {
+                                      type: arg.type,
+                                      value: arg.value,
+                                    };
+                                  }
+                                  default: {
+                                    const _exhaustiveCheck: never = arg;
+                                    return _exhaustiveCheck;
+                                  }
+                                }
+                              });
+                            } else {
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                          } else {
+                            if (
+                              arg.type === input.type &&
+                              arg.other === input.other
+                            ) {
+                              compose_args[input_name] = {
+                                type: input.type,
+                                other: input.other,
+                                value: arg.value,
+                                user_paths: [],
+                                borrows: [],
+                              };
+                            } else {
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                          }
+                        } else {
+                          compose_args[input_name] = {
+                            type: "list",
+                            value: apply([] as Array<FxArgs>, (it) => {
+                              for (const arg of value as ReadonlyArray<
+                                Record<string, StrongEnum>
+                              >) {
+                                const fx_args: FxArgs = {};
+                                for (const field_name of Object.keys(arg)) {
+                                  const field = arg[field_name];
+                                  if (field.type !== "other") {
+                                    fx_args[field_name] = field;
+                                  } else {
+                                    fx_args[field_name] = {
+                                      ...field,
+                                      user_paths: [],
+                                      borrows: [],
+                                    };
+                                  }
+                                }
+                                it.push(fx_args);
+                              }
+                              return it;
+                            }),
+                          };
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
                   break;
                 }
                 case "transform": {
