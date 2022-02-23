@@ -1531,6 +1531,135 @@ export class Compose {
     // 2. generate outputs
     for (const output_name of Object.keys(this.outputs)) {
       const output = this.outputs[output_name];
+      switch (output.type) {
+        case "input": {
+          const input_name: string = output.value;
+          if (input_name in this.inputs) {
+            const input = this.inputs[input_name];
+            if (input_name in args) {
+              const arg = args[input_name];
+              if (arg.type === "list") {
+                if (arg.type === input.type) {
+                  computed_outputs[output_name] = arg.value;
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              } else {
+                if (arg.type !== "other") {
+                  if (arg.type === input.type) {
+                    computed_outputs[output_name] = {
+                      type: arg.type,
+                      value: arg.value,
+                    } as StrongEnum;
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  if (arg.type === input.type && arg.other === input.other) {
+                    computed_outputs[output_name] = {
+                      type: input.type,
+                      other: input.other,
+                      value: arg.value,
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                }
+              }
+            } else {
+              if (input.type === "list") {
+                computed_outputs[output_name] = [];
+              } else {
+                if (input.default !== undefined) {
+                  if (input.type !== "other") {
+                    switch (input.type) {
+                      case "str":
+                      case "lstr":
+                      case "clob": {
+                        computed_outputs[output_name] = {
+                          type: input.type,
+                          value: input.default,
+                        };
+                        break;
+                      }
+                      case "i32":
+                      case "u32":
+                      case "i64":
+                      case "u64": {
+                        computed_outputs[output_name] = {
+                          type: input.type,
+                          value: input.default,
+                        };
+                        break;
+                      }
+                      case "idouble":
+                      case "udouble":
+                      case "idecimal":
+                      case "udecimal": {
+                        computed_outputs[output_name] = {
+                          type: input.type,
+                          value: input.default,
+                        };
+                        break;
+                      }
+                      case "bool": {
+                        computed_outputs[output_name] = {
+                          type: input.type,
+                          value: input.default,
+                        };
+                        break;
+                      }
+                      case "date":
+                      case "time":
+                      case "timestamp": {
+                        computed_outputs[output_name] = {
+                          type: input.type,
+                          value: input.default,
+                        };
+                        break;
+                      }
+                      default: {
+                        const _exhaustiveCheck: never = input;
+                        return _exhaustiveCheck;
+                      }
+                    }
+                  } else {
+                    computed_outputs[output_name] = {
+                      type: input.type,
+                      other: input.other,
+                      value: input.default,
+                    };
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+            }
+          }
+          break;
+        }
+        case "fx": {
+          break;
+        }
+        case "compose": {
+          break;
+        }
+        case "transform": {
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = output;
+          return _exhaustiveCheck;
+        }
+      }
     }
     return new Ok(computed_outputs);
   }
