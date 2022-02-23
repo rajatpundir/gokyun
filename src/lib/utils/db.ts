@@ -1,3 +1,5 @@
+import Decimal from "decimal.js";
+import { HashSet, Option as OptionTS } from "prelude-ts";
 import * as SQLite from "expo-sqlite";
 import {
   apply,
@@ -9,7 +11,6 @@ import {
   Result,
   unwrap,
 } from "./prelude";
-import Decimal from "decimal.js";
 import {
   compare_flattened_paths,
   compare_paths,
@@ -21,10 +22,7 @@ import {
   Variable,
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import { HashSet, Option as OptionTS } from "prelude-ts";
 import { get_structs } from "./schema";
-
-// TODO. Active column is not useful, could be decalred as normal field instead
 
 // TODO. Replacing variable at any level should remove any removal
 
@@ -32,7 +30,7 @@ import { get_structs } from "./schema";
 
 // TODO. Add Existence functionality
 
-// We will also need functions for activating or deactivating variable in a layer
+// TODO. Active column is not useful, could be decalred as normal field instead
 
 const db_name: string = "test1.db";
 
