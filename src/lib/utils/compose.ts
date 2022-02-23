@@ -1,7 +1,9 @@
 import Decimal from "decimal.js";
+import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_fx } from "./fx";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { get_struct } from "./schema";
 import { get_transform, TransformArgs } from "./transform";
 import { PathString, StrongEnum, WeakEnum } from "./variable";
 
@@ -1150,21 +1152,125 @@ export class Compose {
               }
             }
             const transform_query: TransformArgs["query"] = {};
-            for (const field_name of Object.keys(step.map.query)) {
-              const field = step.map.query[field_name];
-              switch (field.type) {
-                case "input": {
-                  break;
-                }
-                case "fx": {
-                  break;
-                }
-                case "compose": {
-                  break;
-                }
-                default: {
-                  const _exhaustiveCheck: never = field;
-                  return _exhaustiveCheck;
+            if (transform.query !== undefined) {
+              for (const input_name of Object.keys(transform.query.map)) {
+                const struct = get_struct(transform.query.struct);
+                if (unwrap(struct)) {
+                  const result = get_path_with_type(
+                    struct.value,
+                    transform.query.map[input_name]
+                  );
+                  if (unwrap(result)) {
+                    const field_struct_name = result.value[1];
+                    if (input_name in step.map.query) {
+                      const step_map = step.map.query[input_name];
+                      switch (step_map.type) {
+                        case "input": {
+                          const arg_name: string = step_map.value;
+                          if (arg_name in args) {
+                            const arg = args[arg_name];
+                            if (arg.type !== "other") {
+                              if (arg.type === field_struct_name[0]) {
+                                transform_query[input_name] = arrow(() => {
+                                  switch (arg.type) {
+                                    case "str":
+                                    case "lstr":
+                                    case "clob": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "bool": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "date":
+                                    case "time":
+                                    case "timestamp": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    default: {
+                                      const _exhaustiveCheck: never = arg;
+                                      return _exhaustiveCheck;
+                                    }
+                                  }
+                                });
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
+                              }
+                            } else {
+                              if (
+                                arg.type === field_struct_name[0] &&
+                                arg.other === field_struct_name[1].name
+                              ) {
+                                transform_query[input_name] = {
+                                  type: field_struct_name[0],
+                                  other: field_struct_name[1].name,
+                                  value: arg.value,
+                                  user_paths: arg.user_paths,
+                                  borrows: arg.borrows,
+                                };
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
+                              }
+                            }
+                          } else {
+                          }
+                          break;
+                        }
+                        case "fx": {
+                          break;
+                        }
+                        case "compose": {
+                          break;
+                        }
+                        default: {
+                          const _exhaustiveCheck: never = step_map;
+                          return _exhaustiveCheck;
+                        }
+                      }
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
                 }
               }
             }
