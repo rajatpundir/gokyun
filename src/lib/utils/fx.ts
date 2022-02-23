@@ -43,7 +43,7 @@ import {
   WeakEnum,
 } from "./variable";
 
-// Fx, Tranform, Compose
+// TODO. Also return something that announces creation, updation, deletion of variables in store
 
 type FxInputs = Record<
   string,
