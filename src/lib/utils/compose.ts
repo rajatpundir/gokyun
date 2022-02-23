@@ -1673,10 +1673,55 @@ export class Compose {
         }
         case "compose": {
           const [step_index, compose_output_name] = output.value;
+          if (step_index > 0 && step_index < step_outputs.length) {
+            const step_output: StepOutput = step_outputs[step_index];
+            if (output.type === step_output.type) {
+              if (compose_output_name in step_output.value) {
+                const value = step_output.value[compose_output_name];
+                if (!Array.isArray(value)) {
+                  const arg: StrongEnum = value as StrongEnum;
+                  if (arg.type !== "other") {
+                    computed_outputs[output_name] = {
+                      type: arg.type,
+                      value: arg.value,
+                    } as StrongEnum;
+                  } else {
+                    computed_outputs[output_name] = {
+                      type: arg.type,
+                      other: arg.other,
+                      value: arg.value,
+                    };
+                  }
+                } else {
+                  computed_outputs[output_name] = value as ReadonlyArray<
+                    Record<string, StrongEnum>
+                  >;
+                }
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
           break;
         }
         case "transform": {
           const step_index = output.value;
+          if (step_index > 0 && step_index < step_outputs.length) {
+            const step_output: StepOutput = step_outputs[step_index];
+            if (output.type === step_output.type) {
+              computed_outputs[output_name] = step_output.value;
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
           break;
         }
         default: {
@@ -1689,6 +1734,6 @@ export class Compose {
   }
 }
 
-export function get_compose(fx_name: string): Result<Compose> {
+export function get_compose(compose_name: string): Result<Compose> {
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

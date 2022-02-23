@@ -628,6 +628,6 @@ export class Transform {
   }
 }
 
-export function get_transform(fx_name: string): Result<Transform> {
+export function get_transform(transform_name: string): Result<Transform> {
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
