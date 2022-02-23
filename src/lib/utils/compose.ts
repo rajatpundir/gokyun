@@ -337,15 +337,15 @@ export class Compose {
                     break;
                   }
                   case "fx": {
-                    const [step_index, output_name] = step_map.value as [
+                    const [step_index, fx_output_name] = step_map.value as [
                       number,
                       string
                     ];
                     if (step_index > 0 && step_index < step_outputs.length) {
                       const step_output: StepOutput = step_outputs[step_index];
                       if (step_map.type === step_output.type) {
-                        if (output_name in step_output.value) {
-                          const arg = step_output.value[output_name];
+                        if (fx_output_name in step_output.value) {
+                          const arg = step_output.value[fx_output_name];
                           if (arg.type !== "other") {
                             if (arg.type === input.type) {
                               fx_args[input_name] = arrow(() => {
@@ -441,15 +441,13 @@ export class Compose {
                     break;
                   }
                   case "compose": {
-                    const [step_index, output_name] = step_map.value as [
-                      number,
-                      string
-                    ];
+                    const [step_index, compose_output_name] =
+                      step_map.value as [number, string];
                     if (step_index > 0 && step_index < step_outputs.length) {
                       const step_output: StepOutput = step_outputs[step_index];
                       if (step_map.type === step_output.type) {
-                        if (output_name in step_output.value) {
-                          const value = step_output.value[output_name];
+                        if (compose_output_name in step_output.value) {
+                          const value = step_output.value[compose_output_name];
                           if (!Array.isArray(value)) {
                             const arg: StrongEnum = value as StrongEnum;
                             if (arg.type !== "other") {
@@ -748,15 +746,15 @@ export class Compose {
                   break;
                 }
                 case "fx": {
-                  const [step_index, output_name] = step_map.value as [
+                  const [step_index, fx_output_name] = step_map.value as [
                     number,
                     string
                   ];
                   if (step_index > 0 && step_index < step_outputs.length) {
                     const step_output: StepOutput = step_outputs[step_index];
                     if (step_map.type === step_output.type) {
-                      if (output_name in step_output.value) {
-                        const arg = step_output.value[output_name];
+                      if (fx_output_name in step_output.value) {
+                        const arg = step_output.value[fx_output_name];
                         if (arg.type !== "other") {
                           if (arg.type === input.type) {
                             compose_args[input_name] = arrow(() => {
@@ -848,15 +846,15 @@ export class Compose {
                   break;
                 }
                 case "compose": {
-                  const [step_index, output_name] = step_map.value as [
+                  const [step_index, compose_output_name] = step_map.value as [
                     number,
                     string
                   ];
                   if (step_index > 0 && step_index < step_outputs.length) {
                     const step_output: StepOutput = step_outputs[step_index];
                     if (step_map.type === step_output.type) {
-                      if (output_name in step_output.value) {
-                        const value = step_output.value[output_name];
+                      if (compose_output_name in step_output.value) {
+                        const value = step_output.value[compose_output_name];
                         if (!Array.isArray(value)) {
                           const arg: StrongEnum = value as StrongEnum;
                           if (arg.type !== "other") {
@@ -1062,15 +1060,13 @@ export class Compose {
                 break;
               }
               case "compose": {
-                const [step_index, output_name] = step.map.base.value as [
-                  number,
-                  string
-                ];
+                const [step_index, compose_output_name] = step.map.base
+                  .value as [number, string];
                 if (step_index > 0 && step_index < step_outputs.length) {
                   const step_output: StepOutput = step_outputs[step_index];
                   if (step.map.base.type === step_output.type) {
-                    if (output_name in step_output.value) {
-                      const value = step_output.value[output_name];
+                    if (compose_output_name in step_output.value) {
+                      const value = step_output.value[compose_output_name];
                       if (Array.isArray(value)) {
                         const arg = value as ReadonlyArray<
                           Record<string, StrongEnum>
@@ -1251,10 +1247,8 @@ export class Compose {
                           break;
                         }
                         case "fx": {
-                          const [step_index, output_name] = step_map.value as [
-                            number,
-                            string
-                          ];
+                          const [step_index, fx_output_name] =
+                            step_map.value as [number, string];
                           if (
                             step_index > 0 &&
                             step_index < step_outputs.length
@@ -1262,8 +1256,8 @@ export class Compose {
                             const step_output: StepOutput =
                               step_outputs[step_index];
                             if (step_map.type === step_output.type) {
-                              if (output_name in step_output.value) {
-                                const arg = step_output.value[output_name];
+                              if (fx_output_name in step_output.value) {
+                                const arg = step_output.value[fx_output_name];
                                 if (arg.type !== "other") {
                                   if (arg.type === field_struct_name[0]) {
                                     transform_query[input_name] = arrow(() => {
@@ -1363,10 +1357,8 @@ export class Compose {
                           break;
                         }
                         case "compose": {
-                          const [step_index, output_name] = step_map.value as [
-                            number,
-                            string
-                          ];
+                          const [step_index, compose_output_name] =
+                            step_map.value as [number, string];
                           if (
                             step_index > 0 &&
                             step_index < step_outputs.length
@@ -1374,8 +1366,9 @@ export class Compose {
                             const step_output: StepOutput =
                               step_outputs[step_index];
                             if (step_map.type === step_output.type) {
-                              if (output_name in step_output.value) {
-                                const value = step_output.value[output_name];
+                              if (compose_output_name in step_output.value) {
+                                const value =
+                                  step_output.value[compose_output_name];
                                 if (!Array.isArray(value)) {
                                   const arg: StrongEnum = value as StrongEnum;
                                   if (arg.type !== "other") {
@@ -1647,12 +1640,43 @@ export class Compose {
           break;
         }
         case "fx": {
+          const [step_index, fx_output_name] = output.value;
+          if (step_index > 0 && step_index < step_outputs.length) {
+            const step_output: StepOutput = step_outputs[step_index];
+            if (output.type === step_output.type) {
+              if (fx_output_name in step_output.value) {
+                const arg = step_output.value[fx_output_name];
+                if (arg.type !== "other") {
+                  computed_outputs[output_name] = {
+                    type: arg.type,
+                    value: arg.value,
+                  } as StrongEnum;
+                } else {
+                  computed_outputs[output_name] = {
+                    type: arg.type,
+                    other: arg.other,
+                    value: arg.value,
+                  };
+                }
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
           break;
         }
         case "compose": {
+          const [step_index, compose_output_name] = output.value;
           break;
         }
         case "transform": {
+          const step_index = output.value;
           break;
         }
         default: {
