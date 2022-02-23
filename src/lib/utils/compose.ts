@@ -1059,6 +1059,35 @@ export class Compose {
             }
             const transform_query: TransformArgs["query"] = {};
             for (const field_name of Object.keys(step.map.query)) {
+              const field = step.map.query[field_name];
+              switch (field.type) {
+                case "input": {
+                  break;
+                }
+                case "fx": {
+                  break;
+                }
+                case "compose": {
+                  break;
+                }
+                default: {
+                  const _exhaustiveCheck: never = field;
+                  return _exhaustiveCheck;
+                }
+              }
+            }
+            // invoke transform
+            const computed_output = await transform.exec(
+              { base: transform_base, query: transform_query },
+              level
+            );
+            if (unwrap(computed_output)) {
+              step_outputs.push({
+                type: step.type,
+                value: computed_output.value,
+              });
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
