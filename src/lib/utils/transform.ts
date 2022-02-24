@@ -1,10 +1,10 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_path_with_type } from "./commons";
-import { ComposeArgs, get_compose } from "./compose";
+import { ComposeArgs } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
-import { Fx, FxArgs, get_fx } from "./fx";
+import { FxArgs } from "./fx";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { get_struct } from "../../schema/struct";
 import {
@@ -14,6 +14,8 @@ import {
   PathString,
   StrongEnum,
 } from "./variable";
+import { get_compose } from "../../schema/compose";
+import { get_fx } from "../../schema/fx";
 
 // TODO. Implement compose branch
 
@@ -30,6 +32,10 @@ export type TransformArgs = {
   base: ReadonlyArray<FxArgs>;
   query: FxArgs;
 };
+
+export type TransformResult = ReadonlyArray<
+  Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
+>;
 
 export class Transform {
   name: string;
@@ -67,13 +73,7 @@ export class Transform {
   async exec(
     args: TransformArgs,
     level: Decimal
-  ): Promise<
-    Result<
-      ReadonlyArray<
-        Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
-      >
-    >
-  > {
+  ): Promise<Result<TransformResult>> {
     const computed_outputs: Array<
       Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
     > = [];

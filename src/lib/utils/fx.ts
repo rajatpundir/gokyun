@@ -132,6 +132,8 @@ type FxOutputs = Record<
 
 type FxChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
 
+export type FxResult = Record<string, StrongEnum>;
+
 // Ownership or borrowing over inputs provided will be checked
 // But outputs does not have anything to do with ownership
 export class Fx {
@@ -477,10 +479,7 @@ export class Fx {
     return new Ok(symbols);
   }
 
-  async exec(
-    args: FxArgs,
-    level: Decimal
-  ): Promise<Result<Record<string, StrongEnum>>> {
+  async exec(args: FxArgs, level: Decimal): Promise<Result<FxResult>> {
     // computed_outputs will not include ids of deleted variables since they cannot be referenced anyway
     const computed_outputs: Record<string, StrongEnum> = {};
     const result = await this.get_symbols(args, level);

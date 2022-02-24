@@ -123,6 +123,10 @@ type ComposeOutputs = Record<
 
 type ComposeChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
 
+export interface ComposeResult {
+  [index: string]: StrongEnum | ReadonlyArray<Record<string, StrongEnum>>;
+}
+
 export class Compose {
   name: string;
   inputs: ComposeInputs;
@@ -159,11 +163,7 @@ export class Compose {
   async exec(
     args: ComposeArgs,
     level: Decimal
-  ): Promise<
-    Result<
-      Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
-    >
-  > {
+  ): Promise<Result<ComposeResult>> {
     const computed_outputs: Record<
       string,
       StrongEnum | ReadonlyArray<Record<string, StrongEnum>>
