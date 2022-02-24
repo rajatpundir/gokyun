@@ -23,7 +23,7 @@ import {
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { tw } from "../../../../lib/utils/tailwind";
-import { get_struct } from "../../../../lib/utils/schema";
+import { get_struct } from "../../../../schema/struct";
 import { useComponent } from "../../../../lib/utils/component";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";

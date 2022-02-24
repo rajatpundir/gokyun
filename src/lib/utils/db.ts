@@ -22,7 +22,7 @@ import {
   Variable,
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import { get_structs } from "./schema";
+import { get_structs } from "../../schema/struct";
 
 // TODO. Replacing variable at any level should remove any removal
 

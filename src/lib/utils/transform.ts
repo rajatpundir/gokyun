@@ -6,7 +6,7 @@ import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { Fx, FxArgs, get_fx } from "./fx";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_struct } from "./schema";
+import { get_struct } from "../../schema/struct";
 import {
   compare_paths,
   get_flattened_path,
@@ -1226,8 +1226,4 @@ export class Transform {
     }
     return new Ok(computed_outputs);
   }
-}
-
-export function get_transform(transform_name: string): Result<Transform> {
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

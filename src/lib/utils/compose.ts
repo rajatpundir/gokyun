@@ -1,12 +1,15 @@
 import Decimal from "decimal.js";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
-import { FxArgs, get_fx } from "./fx";
+import { FxArgs } from "./fx";
 import { BooleanLispExpression } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_struct } from "./schema";
-import { get_transform, TransformArgs } from "./transform";
+import { get_struct } from "../../schema/struct";
+import { TransformArgs } from "./transform";
 import { StrongEnum, WeakEnum } from "./variable";
+import { get_compose } from "../../schema/compose";
+import { get_fx } from "../../schema/fx";
+import { get_transform } from "../../schema/transform";
 
 // TODO. Add ComposeChecks similar to FxChecks on ComposeArgs, ignore args with 'list' type
 
@@ -1723,8 +1726,4 @@ export class Compose {
     }
     return new Ok(computed_outputs);
   }
-}
-
-export function get_compose(compose_name: string): Result<Compose> {
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

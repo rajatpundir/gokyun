@@ -4,7 +4,7 @@ import Decimal from "decimal.js";
 import { Path, StrongEnum, Variable } from "./variable";
 import { ErrMsg, errors } from "./errors";
 import { HashSet } from "prelude-ts";
-import { get_struct } from "./schema";
+import { get_struct } from "../../schema/struct";
 import { execute_transaction, replace_param } from "./db";
 
 async function replace_variable_in_db(

@@ -11,7 +11,7 @@ import {
 import { OrFilter } from "../../../../../lib/utils/db";
 import { List } from "../../../../../lib/utils/list";
 import { unwrap } from "../../../../../lib/utils/prelude";
-import { get_struct } from "../../../../../lib/utils/schema";
+import { get_struct } from "../../../../../schema/struct";
 import { views } from "../../../../../views";
 import { Fab, Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";

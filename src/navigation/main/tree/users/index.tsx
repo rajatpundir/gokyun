@@ -2,7 +2,7 @@ import * as React from "react";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import { List } from "../../../../lib/utils/list";
 import { unwrap } from "../../../../lib/utils/prelude";
-import { get_struct } from "../../../../lib/utils/schema";
+import { get_struct } from "../../../../schema/struct";
 import { OrFilter } from "../../../../lib/utils/db";
 import { get_filter_paths } from "../../../../lib/utils/commons";
 import { HashSet } from "prelude-ts";

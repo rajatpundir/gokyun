@@ -31,7 +31,7 @@ import {
   unwrap,
   unwrap_array,
 } from "./prelude";
-import { get_struct } from "./schema";
+import { get_struct } from "../../schema/struct";
 import {
   compare_paths,
   get_flattened_path,
@@ -1590,8 +1590,4 @@ export class Fx {
     }
     return new Ok(computed_outputs);
   }
-}
-
-export function get_fx(fx_name: string): Result<Fx> {
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
