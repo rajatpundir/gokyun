@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_path_with_type } from "./commons";
-import { ComposeArgs } from "./compose";
+import { ComposeArgs, ComposeResult } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs } from "./fx";
@@ -34,7 +34,7 @@ export type TransformArgs = {
 };
 
 export type TransformResult = ReadonlyArray<
-  Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
+  Record<string, StrongEnum> | ComposeResult
 >;
 
 export class Transform {
@@ -74,9 +74,8 @@ export class Transform {
     args: TransformArgs,
     level: Decimal
   ): Promise<Result<TransformResult>> {
-    const computed_outputs: Array<
-      Record<string, StrongEnum | ReadonlyArray<Record<string, StrongEnum>>>
-    > = [];
+    const computed_outputs: Array<Record<string, StrongEnum> | ComposeResult> =
+      [];
     switch (this.type) {
       case "fx": {
         const result = get_fx(this.invoke);

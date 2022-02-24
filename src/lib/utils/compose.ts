@@ -5,7 +5,7 @@ import { FxArgs } from "./fx";
 import { BooleanLispExpression } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { get_struct } from "../../schema/struct";
-import { TransformArgs } from "./transform";
+import { TransformArgs, TransformResult } from "./transform";
 import { StrongEnum, WeakEnum } from "./variable";
 import { get_compose } from "../../schema/compose";
 import { get_fx } from "../../schema/fx";
@@ -104,14 +104,11 @@ type StepOutput =
     }
   | {
       type: "transform";
-      value: ReadonlyArray<Record<string, StrongEnum>>;
+      value: TransformResult;
     }
   | {
       type: "compose";
-      value: Record<
-        string,
-        StrongEnum | ReadonlyArray<Record<string, StrongEnum>>
-      >;
+      value: ComposeResult;
     };
 
 type ComposeOutputs = Record<
@@ -124,7 +121,7 @@ type ComposeOutputs = Record<
 type ComposeChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
 
 export interface ComposeResult {
-  [index: string]: StrongEnum | ReadonlyArray<Record<string, StrongEnum>>;
+  [index: string]: StrongEnum | TransformResult;
 }
 
 export class Compose {
@@ -164,10 +161,7 @@ export class Compose {
     args: ComposeArgs,
     level: Decimal
   ): Promise<Result<ComposeResult>> {
-    const computed_outputs: Record<
-      string,
-      StrongEnum | ReadonlyArray<Record<string, StrongEnum>>
-    > = {};
+    const computed_outputs: Record<string, StrongEnum | TransformResult> = {};
     const step_outputs: Array<StepOutput> = [];
     // 1. perform steps
     for (const [index, step] of this.steps.entries()) {
