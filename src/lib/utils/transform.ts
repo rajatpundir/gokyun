@@ -29,7 +29,7 @@ type TrandformQuery =
   | undefined;
 
 export type TransformArgs = {
-  base: ReadonlyArray<FxArgs>;
+  base: TransformResult;
   query: FxArgs;
 };
 

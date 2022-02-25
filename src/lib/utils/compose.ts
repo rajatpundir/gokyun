@@ -27,7 +27,7 @@ export type ComposeArgs =
       string,
       {
         type: "list";
-        value: ReadonlyArray<FxArgs>;
+        value: TransformResult;
       }
     >;
 
@@ -972,25 +972,7 @@ export class Compose {
                     if (step_map.type === step_output.type) {
                       compose_args[input_name] = {
                         type: "list",
-                        value: apply([] as Array<FxArgs>, (it) => {
-                          for (const arg of step_output.value) {
-                            const fx_args: FxArgs = {};
-                            for (const field_name of Object.keys(arg)) {
-                              const field = arg[field_name];
-                              if (field.type !== "other") {
-                                fx_args[field_name] = field;
-                              } else {
-                                fx_args[field_name] = {
-                                  ...field,
-                                  user_paths: [],
-                                  borrows: [],
-                                };
-                              }
-                            }
-                            it.push(fx_args);
-                          }
-                          return it;
-                        }),
+                        value: step_output.value,
                       };
                     } else {
                       return new Err(
@@ -1029,7 +1011,9 @@ export class Compose {
           const result = get_transform(step.invoke);
           if (unwrap(result)) {
             const transform = result.value;
-            const transform_base: Array<FxArgs> = [];
+            const transform_base: Array<
+              Record<string, StrongEnum> | ComposeResult
+            > = [];
             switch (step.map.base.type) {
               case "input": {
                 const arg_name: string = step.map.base.value;
@@ -1103,20 +1087,7 @@ export class Compose {
                   const step_output: StepOutput = step_outputs[step_index];
                   if (step.map.base.type === step_output.type) {
                     for (const arg of step_output.value) {
-                      const fx_args: FxArgs = {};
-                      for (const field_name of Object.keys(arg)) {
-                        const field = arg[field_name];
-                        if (field.type !== "other") {
-                          fx_args[field_name] = field;
-                        } else {
-                          fx_args[field_name] = {
-                            ...field,
-                            user_paths: [],
-                            borrows: [],
-                          };
-                        }
-                      }
-                      transform_base.push(fx_args);
+                      transform_base.push(arg);
                     }
                   } else {
                     return new Err(
