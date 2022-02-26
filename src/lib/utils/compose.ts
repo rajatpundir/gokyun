@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
-import { Bool, BooleanLispExpression } from "./lisp";
+import { Bool, BooleanLispExpression, Symbol } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { get_struct } from "../../schema/struct";
 import { TransformArgs, TransformResult } from "./transform";
@@ -10,8 +10,6 @@ import { compare_paths, PathString, StrongEnum, WeakEnum } from "./variable";
 import { get_compose } from "../../schema/compose";
 import { get_fx } from "../../schema/fx";
 import { get_transform } from "../../schema/transform";
-
-// TODO. Add ComposeChecks similar to FxChecks on ComposeArgs, ignore args with 'list' type
 
 // Make ComposeStep conditional and recursive
 
@@ -33,7 +31,24 @@ export type ComposeArgs =
       }
     >;
 
-type ComposeStep =
+class ComposeStep {
+  predicate:
+    | [BooleanLispExpression, ReadonlyArray<Step | ComposeStep> | undefined]
+    | undefined;
+  steps: ReadonlyArray<Step | ComposeStep>;
+
+  constructor(
+    predicate:
+      | [BooleanLispExpression, ReadonlyArray<Step | ComposeStep> | undefined]
+      | undefined,
+    steps: ReadonlyArray<Step | ComposeStep>
+  ) {
+    this.predicate = predicate;
+    this.steps = steps;
+  }
+}
+
+type Step =
   | {
       type: "fx";
       invoke: string;
@@ -48,6 +63,7 @@ type ComposeStep =
             value: [number, string];
           }
       >;
+      output: [string, string] | undefined;
     }
   | {
       type: "compose";
@@ -67,6 +83,7 @@ type ComposeStep =
             value: number;
           }
       >;
+      output: [string, string] | undefined;
     }
   | {
       type: "transform";
@@ -97,6 +114,7 @@ type ComposeStep =
             }
         >;
       };
+      output: string | undefined;
     };
 
 type StepOutput =
@@ -113,12 +131,12 @@ type StepOutput =
       value: ComposeResult;
     };
 
-type ComposeOutputs = Record<
-  string,
-  | { type: "input"; value: string }
-  | { type: "fx" | "compose"; value: [number, string] }
-  | { type: "transform"; value: number }
->;
+// type ComposeOutputs = Record<
+//   string,
+//   | { type: "input"; value: string }
+//   | { type: "fx" | "compose"; value: [number, string] }
+//   | { type: "transform"; value: number }
+// >;
 
 type ComposeChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
 
@@ -129,21 +147,21 @@ export interface ComposeResult {
 export class Compose {
   name: string;
   inputs: ComposeInputs;
-  steps: ReadonlyArray<ComposeStep>;
-  outputs: ComposeOutputs;
+  step: ComposeStep;
+  // outputs: ComposeOutputs;
   checks: ComposeChecks;
 
   constructor(
     name: string,
     inputs: ComposeInputs,
-    steps: ReadonlyArray<ComposeStep>,
-    outputs: ComposeOutputs,
+    steps: ComposeStep,
+    // outputs: ComposeOutputs,
     checks: ComposeChecks
   ) {
     this.name = name;
     this.inputs = inputs;
-    this.steps = steps;
-    this.outputs = outputs;
+    this.step = steps;
+    // this.outputs = outputs;
     this.checks = checks;
   }
 
@@ -160,6 +178,116 @@ export class Compose {
 
   toString(): string {
     return String(this.name);
+  }
+
+  async traverse_steps(
+    compose_step: ComposeStep,
+    symbols: Readonly<Record<string, Symbol>>,
+    step_outputs: Array<StepOutput>,
+    computed_outputs: Record<string, StrongEnum | TransformResult>,
+    index: number
+  ): Promise<Result<ComposeResult>> {
+    if (compose_step.predicate !== undefined) {
+      const expr = compose_step.predicate[0];
+      const result = expr.get_result(symbols);
+      if (unwrap(result)) {
+        const expr_result = result.value;
+        if (expr_result instanceof Bool) {
+          if (expr_result.value) {
+            for (const step of compose_step.steps) {
+              if (step instanceof ComposeStep) {
+                const result = await this.traverse_steps(
+                  step,
+                  symbols,
+                  step_outputs,
+                  computed_outputs,
+                  index
+                );
+                if (!unwrap(result)) {
+                  return result;
+                }
+              } else {
+                const result = await this.exec_step(
+                  step,
+                  step_outputs,
+                  computed_outputs,
+                  index
+                );
+                if (!unwrap(result)) {
+                  return result;
+                }
+              }
+            }
+          } else {
+            if (compose_step.predicate[1] !== undefined) {
+              for (const step of compose_step.predicate[1]) {
+                if (step instanceof ComposeStep) {
+                  const result = await this.traverse_steps(
+                    step,
+                    symbols,
+                    step_outputs,
+                    computed_outputs,
+                    index
+                  );
+                  if (!unwrap(result)) {
+                    return result;
+                  }
+                } else {
+                  const result = await this.exec_step(
+                    step,
+                    step_outputs,
+                    computed_outputs,
+                    index
+                  );
+                  if (!unwrap(result)) {
+                    return result;
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+        }
+      } else {
+        return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+      }
+    } else {
+      for (const step of compose_step.steps) {
+        if (step instanceof ComposeStep) {
+          const result = await this.traverse_steps(
+            step,
+            symbols,
+            step_outputs,
+            computed_outputs,
+            index
+          );
+          if (!unwrap(result)) {
+            return result;
+          }
+        } else {
+          const result = await this.exec_step(
+            step,
+            step_outputs,
+            computed_outputs,
+            index
+          );
+          if (!unwrap(result)) {
+            return result;
+          }
+        }
+      }
+    }
+    return new Ok(computed_outputs);
+  }
+
+  async exec_step(
+    step: Step,
+    step_outputs: Array<StepOutput>,
+    computed_outputs: Record<string, StrongEnum | TransformResult>,
+    index: number
+  ): Promise<Result<ComposeResult>> {
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
   async exec(
@@ -215,7 +343,7 @@ export class Compose {
       const computed_outputs: Record<string, StrongEnum | TransformResult> = {};
       const step_outputs: Array<StepOutput> = [];
       // 1. perform steps
-      for (const [index, step] of this.steps.entries()) {
+      for (const [index, step] of this.step.entries()) {
         switch (step.type) {
           case "fx": {
             const result = get_fx(step.invoke);
@@ -1552,220 +1680,220 @@ export class Compose {
         }
       }
       // 2. generate outputs
-      for (const output_name of Object.keys(this.outputs)) {
-        const output = this.outputs[output_name];
-        switch (output.type) {
-          case "input": {
-            const input_name: string = output.value;
-            if (input_name in this.inputs) {
-              const input = this.inputs[input_name];
-              if (input_name in args) {
-                const arg = args[input_name];
-                if (arg.type === "list") {
-                  if (arg.type === input.type) {
-                    computed_outputs[output_name] = arg.value;
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
-                } else {
-                  if (arg.type !== "other") {
-                    if (arg.type === input.type) {
-                      computed_outputs[output_name] = {
-                        type: arg.type,
-                        value: arg.value,
-                      } as StrongEnum;
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
-                  } else {
-                    if (arg.type === input.type && arg.other === input.other) {
-                      computed_outputs[output_name] = {
-                        type: input.type,
-                        other: input.other,
-                        value: arg.value,
-                      };
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
-                  }
-                }
-              } else {
-                if (input.type === "list") {
-                  computed_outputs[output_name] = [];
-                } else {
-                  if (input.default !== undefined) {
-                    if (input.type !== "other") {
-                      switch (input.type) {
-                        case "str":
-                        case "lstr":
-                        case "clob": {
-                          computed_outputs[output_name] = {
-                            type: input.type,
-                            value: input.default,
-                          };
-                          break;
-                        }
-                        case "i32":
-                        case "u32":
-                        case "i64":
-                        case "u64": {
-                          computed_outputs[output_name] = {
-                            type: input.type,
-                            value: input.default,
-                          };
-                          break;
-                        }
-                        case "idouble":
-                        case "udouble":
-                        case "idecimal":
-                        case "udecimal": {
-                          computed_outputs[output_name] = {
-                            type: input.type,
-                            value: input.default,
-                          };
-                          break;
-                        }
-                        case "bool": {
-                          computed_outputs[output_name] = {
-                            type: input.type,
-                            value: input.default,
-                          };
-                          break;
-                        }
-                        case "date":
-                        case "time":
-                        case "timestamp": {
-                          computed_outputs[output_name] = {
-                            type: input.type,
-                            value: input.default,
-                          };
-                          break;
-                        }
-                        default: {
-                          const _exhaustiveCheck: never = input;
-                          return _exhaustiveCheck;
-                        }
-                      }
-                    } else {
-                      computed_outputs[output_name] = {
-                        type: input.type,
-                        other: input.other,
-                        value: input.default,
-                      };
-                    }
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
-                }
-              }
-            }
-            break;
-          }
-          case "fx": {
-            const [step_index, fx_output_name] = output.value;
-            if (step_index > 0 && step_index < step_outputs.length) {
-              const step_output: StepOutput = step_outputs[step_index];
-              if (output.type === step_output.type) {
-                if (fx_output_name in step_output.value) {
-                  const arg = step_output.value[fx_output_name];
-                  if (arg.type !== "other") {
-                    computed_outputs[output_name] = {
-                      type: arg.type,
-                      value: arg.value,
-                    } as StrongEnum;
-                  } else {
-                    computed_outputs[output_name] = {
-                      type: arg.type,
-                      other: arg.other,
-                      value: arg.value,
-                    };
-                  }
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
-              }
-            } else {
-              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-            }
-            break;
-          }
-          case "compose": {
-            const [step_index, compose_output_name] = output.value;
-            if (step_index > 0 && step_index < step_outputs.length) {
-              const step_output: StepOutput = step_outputs[step_index];
-              if (output.type === step_output.type) {
-                if (compose_output_name in step_output.value) {
-                  const value = step_output.value[compose_output_name];
-                  if (!Array.isArray(value)) {
-                    const arg: StrongEnum = value as StrongEnum;
-                    if (arg.type !== "other") {
-                      computed_outputs[output_name] = {
-                        type: arg.type,
-                        value: arg.value,
-                      } as StrongEnum;
-                    } else {
-                      computed_outputs[output_name] = {
-                        type: arg.type,
-                        other: arg.other,
-                        value: arg.value,
-                      };
-                    }
-                  } else {
-                    computed_outputs[output_name] = value as ReadonlyArray<
-                      Record<string, StrongEnum>
-                    >;
-                  }
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
-              }
-            } else {
-              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-            }
-            break;
-          }
-          case "transform": {
-            const step_index = output.value;
-            if (step_index > 0 && step_index < step_outputs.length) {
-              const step_output: StepOutput = step_outputs[step_index];
-              if (output.type === step_output.type) {
-                computed_outputs[output_name] = step_output.value;
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
-              }
-            } else {
-              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-            }
-            break;
-          }
-          default: {
-            const _exhaustiveCheck: never = output;
-            return _exhaustiveCheck;
-          }
-        }
-      }
+      // for (const output_name of Object.keys(this.outputs)) {
+      //   const output = this.outputs[output_name];
+      //   switch (output.type) {
+      //     case "input": {
+      //       const input_name: string = output.value;
+      //       if (input_name in this.inputs) {
+      //         const input = this.inputs[input_name];
+      //         if (input_name in args) {
+      //           const arg = args[input_name];
+      //           if (arg.type === "list") {
+      //             if (arg.type === input.type) {
+      //               computed_outputs[output_name] = arg.value;
+      //             } else {
+      //               return new Err(
+      //                 new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //               );
+      //             }
+      //           } else {
+      //             if (arg.type !== "other") {
+      //               if (arg.type === input.type) {
+      //                 computed_outputs[output_name] = {
+      //                   type: arg.type,
+      //                   value: arg.value,
+      //                 } as StrongEnum;
+      //               } else {
+      //                 return new Err(
+      //                   new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //                 );
+      //               }
+      //             } else {
+      //               if (arg.type === input.type && arg.other === input.other) {
+      //                 computed_outputs[output_name] = {
+      //                   type: input.type,
+      //                   other: input.other,
+      //                   value: arg.value,
+      //                 };
+      //               } else {
+      //                 return new Err(
+      //                   new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //                 );
+      //               }
+      //             }
+      //           }
+      //         } else {
+      //           if (input.type === "list") {
+      //             computed_outputs[output_name] = [];
+      //           } else {
+      //             if (input.default !== undefined) {
+      //               if (input.type !== "other") {
+      //                 switch (input.type) {
+      //                   case "str":
+      //                   case "lstr":
+      //                   case "clob": {
+      //                     computed_outputs[output_name] = {
+      //                       type: input.type,
+      //                       value: input.default,
+      //                     };
+      //                     break;
+      //                   }
+      //                   case "i32":
+      //                   case "u32":
+      //                   case "i64":
+      //                   case "u64": {
+      //                     computed_outputs[output_name] = {
+      //                       type: input.type,
+      //                       value: input.default,
+      //                     };
+      //                     break;
+      //                   }
+      //                   case "idouble":
+      //                   case "udouble":
+      //                   case "idecimal":
+      //                   case "udecimal": {
+      //                     computed_outputs[output_name] = {
+      //                       type: input.type,
+      //                       value: input.default,
+      //                     };
+      //                     break;
+      //                   }
+      //                   case "bool": {
+      //                     computed_outputs[output_name] = {
+      //                       type: input.type,
+      //                       value: input.default,
+      //                     };
+      //                     break;
+      //                   }
+      //                   case "date":
+      //                   case "time":
+      //                   case "timestamp": {
+      //                     computed_outputs[output_name] = {
+      //                       type: input.type,
+      //                       value: input.default,
+      //                     };
+      //                     break;
+      //                   }
+      //                   default: {
+      //                     const _exhaustiveCheck: never = input;
+      //                     return _exhaustiveCheck;
+      //                   }
+      //                 }
+      //               } else {
+      //                 computed_outputs[output_name] = {
+      //                   type: input.type,
+      //                   other: input.other,
+      //                   value: input.default,
+      //                 };
+      //               }
+      //             } else {
+      //               return new Err(
+      //                 new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //               );
+      //             }
+      //           }
+      //         }
+      //       }
+      //       break;
+      //     }
+      //     case "fx": {
+      //       const [step_index, fx_output_name] = output.value;
+      //       if (step_index > 0 && step_index < step_outputs.length) {
+      //         const step_output: StepOutput = step_outputs[step_index];
+      //         if (output.type === step_output.type) {
+      //           if (fx_output_name in step_output.value) {
+      //             const arg = step_output.value[fx_output_name];
+      //             if (arg.type !== "other") {
+      //               computed_outputs[output_name] = {
+      //                 type: arg.type,
+      //                 value: arg.value,
+      //               } as StrongEnum;
+      //             } else {
+      //               computed_outputs[output_name] = {
+      //                 type: arg.type,
+      //                 other: arg.other,
+      //                 value: arg.value,
+      //               };
+      //             }
+      //           } else {
+      //             return new Err(
+      //               new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //             );
+      //           }
+      //         } else {
+      //           return new Err(
+      //             new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //           );
+      //         }
+      //       } else {
+      //         return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+      //       }
+      //       break;
+      //     }
+      //     case "compose": {
+      //       const [step_index, compose_output_name] = output.value;
+      //       if (step_index > 0 && step_index < step_outputs.length) {
+      //         const step_output: StepOutput = step_outputs[step_index];
+      //         if (output.type === step_output.type) {
+      //           if (compose_output_name in step_output.value) {
+      //             const value = step_output.value[compose_output_name];
+      //             if (!Array.isArray(value)) {
+      //               const arg: StrongEnum = value as StrongEnum;
+      //               if (arg.type !== "other") {
+      //                 computed_outputs[output_name] = {
+      //                   type: arg.type,
+      //                   value: arg.value,
+      //                 } as StrongEnum;
+      //               } else {
+      //                 computed_outputs[output_name] = {
+      //                   type: arg.type,
+      //                   other: arg.other,
+      //                   value: arg.value,
+      //                 };
+      //               }
+      //             } else {
+      //               computed_outputs[output_name] = value as ReadonlyArray<
+      //                 Record<string, StrongEnum>
+      //               >;
+      //             }
+      //           } else {
+      //             return new Err(
+      //               new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //             );
+      //           }
+      //         } else {
+      //           return new Err(
+      //             new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //           );
+      //         }
+      //       } else {
+      //         return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+      //       }
+      //       break;
+      //     }
+      //     case "transform": {
+      //       const step_index = output.value;
+      //       if (step_index > 0 && step_index < step_outputs.length) {
+      //         const step_output: StepOutput = step_outputs[step_index];
+      //         if (output.type === step_output.type) {
+      //           computed_outputs[output_name] = step_output.value;
+      //         } else {
+      //           return new Err(
+      //             new CustomError([errors.ErrUnexpected] as ErrMsg)
+      //           );
+      //         }
+      //       } else {
+      //         return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+      //       }
+      //       break;
+      //     }
+      //     default: {
+      //       const _exhaustiveCheck: never = output;
+      //       return _exhaustiveCheck;
+      //     }
+      //   }
+      // }
       return new Ok(computed_outputs);
     } else {
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
