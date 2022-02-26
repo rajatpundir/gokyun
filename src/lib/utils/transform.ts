@@ -17,8 +17,6 @@ import {
 import { get_compose } from "../../schema/compose";
 import { get_fx } from "../../schema/fx";
 
-// TODO. Implement compose branch
-
 type TrandformQuery =
   | {
       struct: string;
@@ -398,28 +396,46 @@ export class Transform {
                         index < args.base.length &&
                         input_name in args.base[index]
                       ) {
-                        const value = args.base[index][input_name];
-                        if (value.type !== "other") {
-                          fx_args[input_name] = value;
+                        if (!Array.isArray(args.base[index][input_name])) {
+                          const value = args.base[index][
+                            input_name
+                          ] as StrongEnum;
+                          if (value.type !== "other") {
+                            fx_args[input_name] = value;
+                          } else {
+                            fx_args[input_name] = {
+                              ...value,
+                              user_paths: [],
+                              borrows: [],
+                            };
+                          }
                         } else {
-                          fx_args[input_name] = {
-                            ...value,
-                            user_paths: [],
-                            borrows: [],
-                          };
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
                         }
                       }
                       // fields with same value can be mentioned in last arg only
                       else if (input_name in args.base[args.base.length - 1]) {
-                        const value = args.base[index][args.base.length - 1];
-                        if (value.type !== "other") {
-                          fx_args[input_name] = value;
+                        if (
+                          !Array.isArray(args.base[index][args.base.length - 1])
+                        ) {
+                          const value = args.base[index][
+                            args.base.length - 1
+                          ] as StrongEnum;
+                          if (value.type !== "other") {
+                            fx_args[input_name] = value;
+                          } else {
+                            fx_args[input_name] = {
+                              ...value,
+                              user_paths: [],
+                              borrows: [],
+                            };
+                          }
                         } else {
-                          fx_args[input_name] = {
-                            ...value,
-                            user_paths: [],
-                            borrows: [],
-                          };
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
                         }
                       } else {
                         return new Err(
@@ -518,44 +534,56 @@ export class Transform {
                 const fx_args: FxArgs = {};
                 const input = fx.inputs[input_name];
                 if (input_name in arg) {
-                  const value = arg[input_name];
-                  if (value.type !== "other") {
-                    if (value.type === input.type) {
-                      fx_args[input_name] = value;
+                  if (!Array.isArray(arg[input_name])) {
+                    const value = arg[input_name] as StrongEnum;
+                    if (value.type !== "other") {
+                      if (value.type === input.type) {
+                        fx_args[input_name] = value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
                     } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
+                      if (
+                        value.type === input.type &&
+                        value.other === input.other
+                      ) {
+                        fx_args[input_name] = {
+                          ...value,
+                          user_paths: [],
+                          borrows: [],
+                        };
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
                     }
                   } else {
-                    if (
-                      value.type === input.type &&
-                      value.other === input.other
-                    ) {
-                      fx_args[input_name] = {
-                        ...value,
-                        user_paths: [],
-                        borrows: [],
-                      };
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
                   }
                 } else if (
                   index < args.base.length &&
                   input_name in args.base[index]
                 ) {
-                  const value = args.base[index][input_name];
-                  if (value.type !== "other") {
-                    fx_args[input_name] = value;
+                  if (!Array.isArray(args.base[index][input_name])) {
+                    const value = args.base[index][input_name] as StrongEnum;
+                    if (value.type !== "other") {
+                      fx_args[input_name] = value;
+                    } else {
+                      fx_args[input_name] = {
+                        ...value,
+                        user_paths: [],
+                        borrows: [],
+                      };
+                    }
                   } else {
-                    fx_args[input_name] = {
-                      ...value,
-                      user_paths: [],
-                      borrows: [],
-                    };
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
                   }
                 } else if (input.default !== undefined) {
                   if (input.type !== "other") {
@@ -961,27 +989,53 @@ export class Transform {
                         index < args.base.length &&
                         input_name in args.base[index]
                       ) {
-                        const value = args.base[index][input_name];
-                        if (value.type !== "other") {
-                          compose_args[input_name] = value;
+                        if (!Array.isArray(args.base[index][input_name])) {
+                          const value = args.base[index][
+                            input_name
+                          ] as StrongEnum;
+                          if (value.type !== "other") {
+                            compose_args[input_name] = value;
+                          } else {
+                            compose_args[input_name] = {
+                              ...value,
+                              user_paths: [],
+                              borrows: [],
+                            };
+                          }
                         } else {
+                          const value = args.base[index][
+                            input_name
+                          ] as TransformResult;
                           compose_args[input_name] = {
-                            ...value,
-                            user_paths: [],
-                            borrows: [],
+                            type: "list",
+                            value: value,
                           };
                         }
                       }
                       // fields with same value can be mentioned in last arg only
                       else if (input_name in args.base[args.base.length - 1]) {
-                        const value = args.base[index][args.base.length - 1];
-                        if (value.type !== "other") {
-                          compose_args[input_name] = value;
+                        if (
+                          !Array.isArray(args.base[index][args.base.length - 1])
+                        ) {
+                          const value = args.base[index][
+                            args.base.length - 1
+                          ] as StrongEnum;
+                          if (value.type !== "other") {
+                            compose_args[input_name] = value;
+                          } else {
+                            compose_args[input_name] = {
+                              ...value,
+                              user_paths: [],
+                              borrows: [],
+                            };
+                          }
                         } else {
+                          const value = args.base[index][
+                            args.base.length - 1
+                          ] as TransformResult;
                           compose_args[input_name] = {
-                            ...value,
-                            user_paths: [],
-                            borrows: [],
+                            type: "list",
+                            value: value,
                           };
                         }
                       } else {
@@ -1090,43 +1144,61 @@ export class Transform {
                 const compose_args: ComposeArgs = {};
                 const input = compose.inputs[input_name];
                 if (input_name in arg) {
-                  const value = arg[input_name];
-                  if (value.type !== "other") {
-                    if (value.type === input.type) {
-                      compose_args[input_name] = value;
+                  if (!Array.isArray(arg[input_name])) {
+                    const value = arg[input_name] as StrongEnum;
+                    if (value.type !== "other") {
+                      if (value.type === input.type) {
+                        compose_args[input_name] = value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
                     } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
+                      if (
+                        value.type === input.type &&
+                        value.other === input.other
+                      ) {
+                        compose_args[input_name] = {
+                          ...value,
+                          user_paths: [],
+                          borrows: [],
+                        };
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
                     }
                   } else {
-                    if (
-                      value.type === input.type &&
-                      value.other === input.other
-                    ) {
-                      compose_args[input_name] = {
-                        ...value,
-                        user_paths: [],
-                        borrows: [],
-                      };
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
+                    const value = arg[input_name] as TransformResult;
+                    compose_args[input_name] = {
+                      type: "list",
+                      value: value,
+                    };
                   }
                 } else if (
                   index < args.base.length &&
                   input_name in args.base[index]
                 ) {
-                  const value = args.base[index][input_name];
-                  if (value.type !== "other") {
-                    compose_args[input_name] = value;
+                  if (!Array.isArray(args.base[index][input_name])) {
+                    const value = args.base[index][input_name] as StrongEnum;
+                    if (value.type !== "other") {
+                      compose_args[input_name] = value;
+                    } else {
+                      compose_args[input_name] = {
+                        ...value,
+                        user_paths: [],
+                        borrows: [],
+                      };
+                    }
                   } else {
+                    const value = args.base[index][
+                      input_name
+                    ] as TransformResult;
                     compose_args[input_name] = {
-                      ...value,
-                      user_paths: [],
-                      borrows: [],
+                      type: "list",
+                      value: value,
                     };
                   }
                 } else {
