@@ -15,10 +15,14 @@ import { get_transform } from "../../schema/transform";
 
 export type ComposeInputs = Record<
   string,
-  | WeakEnum
-  | {
-      type: "list";
-    }
+  (
+    | WeakEnum
+    | {
+        type: "list";
+      }
+  ) & {
+    output: string | undefined;
+  }
 >;
 
 export type ComposeArgs =
@@ -148,20 +152,17 @@ export class Compose {
   name: string;
   inputs: ComposeInputs;
   step: ComposeStep;
-  // outputs: ComposeOutputs;
   checks: ComposeChecks;
 
   constructor(
     name: string,
     inputs: ComposeInputs,
     steps: ComposeStep,
-    // outputs: ComposeOutputs,
     checks: ComposeChecks
   ) {
     this.name = name;
     this.inputs = inputs;
     this.step = steps;
-    // this.outputs = outputs;
     this.checks = checks;
   }
 
