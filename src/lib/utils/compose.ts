@@ -13,6 +13,8 @@ import { get_transform } from "../../schema/transform";
 
 // TODO. Append to computed_outputs
 
+// TODO. Steps should be named and refered via their names (searched in array from back)
+
 export type ComposeInputs = Record<
   string,
   (
@@ -35,7 +37,7 @@ export type ComposeArgs =
       }
     >;
 
-class ComposeStep {
+export class ComposeStep {
   predicate:
     | [BooleanLispExpression, ReadonlyArray<Step | ComposeStep> | undefined]
     | undefined;
@@ -54,6 +56,7 @@ class ComposeStep {
 
 type Step =
   | {
+      name: string | undefined;
       type: "fx";
       invoke: string;
       map: Record<
@@ -70,6 +73,7 @@ type Step =
       output: [string, string] | undefined;
     }
   | {
+      name: string | undefined;
       type: "compose";
       invoke: string;
       map: Record<
@@ -90,6 +94,7 @@ type Step =
       output: [string, string] | undefined;
     }
   | {
+      name: string | undefined;
       type: "transform";
       invoke: string;
       map: {
@@ -231,7 +236,96 @@ export class Compose {
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       }
-      return this.traverse_steps(this.step, symbols, [], {}, 0, args, level);
+      const computed_outputs: Record<string, StrongEnum | TransformResult> = {};
+      // process inputs that will forwarded to outputs
+      for (const input_name of Object.keys(this.inputs)) {
+        const input = this.inputs[input_name];
+        if (input.output !== undefined) {
+          if (input_name in args) {
+            const arg = args[input_name];
+            if (arg.type === "list") {
+              if (arg.type === input.type) {
+                computed_outputs[input_name] = arg.value;
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            } else {
+              if (arg.type !== "other") {
+                if (arg.type === input.type) {
+                  computed_outputs[input_name] = {
+                    type: arg.type,
+                    value: arg.value,
+                  } as StrongEnum;
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              } else {
+                if (arg.type === input.type && arg.other === input.other) {
+                  const other_struct = get_struct(input.other);
+                  if (unwrap(other_struct)) {
+                    computed_outputs[input_name] = {
+                      type: arg.type,
+                      other: other_struct.value.name,
+                      value: arg.value,
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+            }
+          } else {
+            if (input.type === "list") {
+              computed_outputs[input_name] = [];
+            } else {
+              if (input.default !== undefined) {
+                if (input.type !== "other") {
+                  computed_outputs[input_name] = {
+                    type: input.type,
+                    value: input.default,
+                  } as StrongEnum;
+                } else {
+                  const other_struct = get_struct(input.other);
+                  if (unwrap(other_struct)) {
+                    computed_outputs[input_name] = {
+                      type: input.type,
+                      other: other_struct.value.name,
+                      value: input.default,
+                    };
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                }
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            }
+          }
+        }
+      }
+      return this.traverse_steps(
+        this.step,
+        symbols,
+        [],
+        computed_outputs,
+        0,
+        args,
+        level
+      );
       // generate outputs
       // for (const output_name of Object.keys(this.outputs)) {
       //   const output = this.outputs[output_name];
