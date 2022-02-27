@@ -337,7 +337,6 @@ export class Transform {
               // 3. query db
               const variables = await get_variables(
                 struct,
-                true,
                 level,
                 new OrFilter(
                   0,
@@ -348,7 +347,8 @@ export class Transform {
                 ),
                 HashSet.of(),
                 new Decimal(10000),
-                new Decimal(0)
+                new Decimal(0),
+                []
               );
               if (unwrap(variables)) {
                 // 4. construct args and invoke fx
@@ -930,7 +930,6 @@ export class Transform {
               // 3. query db
               const variables = await get_variables(
                 struct,
-                true,
                 level,
                 new OrFilter(
                   0,
@@ -941,7 +940,8 @@ export class Transform {
                 ),
                 HashSet.of(),
                 new Decimal(10000),
-                new Decimal(0)
+                new Decimal(0),
+                []
               );
               if (unwrap(variables)) {
                 // 4. construct args and invoke compose

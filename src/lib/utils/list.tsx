@@ -482,7 +482,8 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             state.init_filter,
             state.filters,
             state.limit,
-            state.offset
+            state.offset,
+            []
           );
           if (request_count === request_counter.current) {
             if (unwrap(variables)) {

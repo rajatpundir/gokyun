@@ -278,10 +278,10 @@ export class Fx {
                     if (arg.type === input.type) {
                       const variable = await get_variable(
                         struct.value,
-                        true,
                         level,
                         arg.value,
-                        filter_paths
+                        filter_paths,
+                        []
                       );
                       if (unwrap(variable)) {
                         const path = variable.value.paths.findAny((x) =>
@@ -307,10 +307,10 @@ export class Fx {
                     if (input.default !== undefined) {
                       const variable = await get_variable(
                         struct.value,
-                        true,
                         level,
                         input.default,
-                        filter_paths
+                        filter_paths,
+                        []
                       );
                       if (unwrap(variable)) {
                         const path = variable.value.paths.findAny((x) =>
@@ -484,10 +484,10 @@ export class Fx {
               if (arg.type === input.type) {
                 const variable = await get_variable(
                   struct.value,
-                  true,
                   level,
                   arg.value,
-                  HashSet.of()
+                  HashSet.of(),
+                  []
                 );
                 if (unwrap(variable)) {
                   await replace_variable(
@@ -495,7 +495,6 @@ export class Fx {
                     new Variable(
                       struct.value,
                       arg.value,
-                      true,
                       variable.value.created_at,
                       new Date(),
                       HashSet.ofIterable(paths)
@@ -513,10 +512,10 @@ export class Fx {
               if (input.default !== undefined) {
                 const variable = await get_variable(
                   struct.value,
-                  true,
                   level,
                   input.default,
-                  HashSet.of()
+                  HashSet.of(),
+                  []
                 );
                 if (unwrap(variable)) {
                   await replace_variable(
@@ -524,7 +523,6 @@ export class Fx {
                     new Variable(
                       struct.value,
                       input.default,
-                      true,
                       variable.value.created_at,
                       new Date(),
                       HashSet.ofIterable(paths)
@@ -878,7 +876,6 @@ export class Fx {
                 }
                 const result = await get_variables(
                   struct.value,
-                  true,
                   level,
                   new OrFilter(
                     0,
@@ -889,7 +886,8 @@ export class Fx {
                   ),
                   HashSet.of(),
                   new Decimal(1),
-                  new Decimal(0)
+                  new Decimal(0),
+                  []
                 );
                 if (unwrap(result)) {
                   if (result.value.length === 1) {
@@ -1100,7 +1098,6 @@ export class Fx {
                       const variable = new Variable(
                         struct.value,
                         result.value,
-                        true,
                         new Date(),
                         new Date(),
                         HashSet.ofIterable(paths)
@@ -1286,7 +1283,6 @@ export class Fx {
               // 2. remove variable(s)
               const result = await get_variables(
                 struct.value,
-                true,
                 level,
                 new OrFilter(
                   0,
@@ -1297,7 +1293,8 @@ export class Fx {
                 ),
                 HashSet.of(),
                 new Decimal(10000),
-                new Decimal(0)
+                new Decimal(0),
+                []
               );
               if (unwrap(result)) {
                 await remove_variables_in_db(
@@ -1513,10 +1510,10 @@ export async function get_symbols_for_fx_compose_paths(
                   if (arg.type === input.type) {
                     const variable = await get_variable(
                       struct.value,
-                      true,
                       level,
                       arg.value,
-                      filter_paths
+                      filter_paths,
+                      []
                     );
                     if (unwrap(variable)) {
                       symbols[input_name] = new Symbol({
@@ -1537,10 +1534,10 @@ export async function get_symbols_for_fx_compose_paths(
                   if (input.default !== undefined) {
                     const variable = await get_variable(
                       struct.value,
-                      true,
                       level,
                       input.default,
-                      filter_paths
+                      filter_paths,
+                      []
                     );
                     if (unwrap(variable)) {
                       symbols[input_name] = new Symbol({

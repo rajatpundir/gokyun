@@ -118,7 +118,8 @@ export function useComponent(props: {
               state.labels as Array<[string, PathString]>,
               state.user_paths as Array<PathString>,
               state.borrows as Array<string>
-            )
+            ),
+            []
           );
           if (unwrap(result)) {
             dispatch(["variable", result.value]);

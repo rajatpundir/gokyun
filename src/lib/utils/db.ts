@@ -24,13 +24,11 @@ import {
 import { ErrMsg, errors } from "./errors";
 import { get_structs } from "../../schema/struct";
 
-// TODO. Replacing variable at any level should remove any removal
+// TODO. Replacing variable at some level should remove any removal at that level
 
-// TODO. Deletion at any level other than base should add removal
+// TODO. Deletion at some level other than base should add removal at that level
 
 // TODO. Add Existence functionality
-
-// TODO. Active column is not useful, could be decalred as normal field instead
 
 const db_name: string = "test1.db";
 
@@ -105,7 +103,8 @@ function query(
   init_filter: OrFilter,
   filters: HashSet<AndFilter>,
   limit: Decimal,
-  offset: Decimal
+  offset: Decimal,
+  existences: ReadonlyArray<Existence>
 ): Promise<SQLite.SQLResultSet> {
   const join_count: number = Math.max(
     0,
@@ -1150,7 +1149,8 @@ export async function get_variables(
   init_filter: OrFilter,
   filters: HashSet<AndFilter>,
   limit: Decimal,
-  offset: Decimal
+  offset: Decimal,
+  existences: ReadonlyArray<Existence>
 ): Promise<Result<Array<Variable>>> {
   try {
     const variables: Array<Variable> = [];
@@ -1160,7 +1160,8 @@ export async function get_variables(
       init_filter,
       filters,
       limit,
-      offset
+      offset,
+      existences
     );
     console.log(result_set);
     for (const result of result_set.rows._array) {
@@ -1353,7 +1354,8 @@ export async function get_variable(
   struct: Struct,
   level: Decimal | undefined,
   id: Decimal,
-  filter_paths: HashSet<FilterPath>
+  filter_paths: HashSet<FilterPath>,
+  existences: ReadonlyArray<Existence>
 ): Promise<Result<Variable>> {
   try {
     const result = await get_variables(
@@ -1368,7 +1370,8 @@ export async function get_variable(
       ),
       HashSet.of(),
       new Decimal(1),
-      new Decimal(0)
+      new Decimal(0),
+      existences
     );
     if (unwrap(result)) {
       if (result.value.length === 1) {
@@ -1621,3 +1624,9 @@ export class AndFilter {
     return new AndFilter(this.index, this.filters);
   }
 }
+
+type Existence = {
+  struct: Struct;
+  init_filter: OrFilter;
+  filters: HashSet<AndFilter>;
+};
