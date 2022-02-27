@@ -70,7 +70,7 @@ type Step =
             value: [number, string];
           }
       >;
-      output: [string, string] | undefined;
+      output: Record<string, string> | undefined;
     }
   | {
       name: string | undefined;
@@ -91,7 +91,7 @@ type Step =
             value: number;
           }
       >;
-      output: [string, string] | undefined;
+      output: Record<string, string> | undefined;
     }
   | {
       name: string | undefined;
@@ -833,6 +833,18 @@ export class Compose {
               type: step.type,
               value: computed_output.value,
             });
+            if (step.output !== undefined) {
+              for (const output_name of Object.keys(step.output)) {
+                const value: string = step.output[output_name];
+                if (value in computed_output.value) {
+                  computed_outputs[output_name] = computed_output.value[value];
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+            }
           } else {
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
@@ -1270,6 +1282,18 @@ export class Compose {
               type: step.type,
               value: computed_output.value,
             });
+            if (step.output !== undefined) {
+              for (const output_name of Object.keys(step.output)) {
+                const value: string = step.output[output_name];
+                if (value in computed_output.value) {
+                  computed_outputs[output_name] = computed_output.value[value];
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              }
+            }
           } else {
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
@@ -1734,6 +1758,9 @@ export class Compose {
               type: step.type,
               value: computed_output.value,
             });
+            if (step.output !== undefined) {
+              computed_outputs[step.output] = computed_output.value;
+            }
           } else {
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
