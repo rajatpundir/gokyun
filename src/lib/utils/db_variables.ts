@@ -67,7 +67,7 @@ async function replace_variable_in_db(
     );
     try {
       await execute_transaction(
-        `INSERT INTO "VARS"("level", "struct_name", "id", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+        `INSERT INTO "VARS"("level", "struct_name", "id", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?);`,
         [
           level.abs().truncated().toString(),
           struct_name,
@@ -143,7 +143,7 @@ async function replace_variable_in_db(
         );
         try {
           await execute_transaction(
-            `INSERT INTO "VARS"("level", "struct_name", "id", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?, ?);`,
+            `INSERT INTO "VARS"("level", "struct_name", "id", "created_at", "updated_at", "requested_at") VALUES (?, ?, ?, ?, ?, ?);`,
             [
               level.abs().truncated().toString(),
               ref_struct_name,
