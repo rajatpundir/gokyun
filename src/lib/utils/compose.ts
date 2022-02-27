@@ -11,8 +11,6 @@ import { get_compose } from "../../schema/compose";
 import { get_fx } from "../../schema/fx";
 import { get_transform } from "../../schema/transform";
 
-// TODO. Steps should be named and refered via their names (searched in array from back)
-
 export type ComposeInputs = Record<
   string,
   (
@@ -311,7 +309,6 @@ export class Compose {
       return this.traverse_steps(
         this.step,
         symbols,
-        {},
         computed_outputs,
         args,
         level
@@ -324,10 +321,10 @@ export class Compose {
   async traverse_steps(
     compose_step: ComposeStep,
     symbols: Readonly<Record<string, Symbol>>,
-    step_outputs: Record<string, StepOutput>,
     computed_outputs: Record<string, StrongEnum | TransformResult>,
     args: ComposeArgs,
-    level: Decimal
+    level: Decimal,
+    step_outputs: Record<string, StepOutput> = {}
   ): Promise<Result<ComposeResult>> {
     if (compose_step.predicate !== undefined) {
       const expr = compose_step.predicate[0];
@@ -341,10 +338,10 @@ export class Compose {
                 const result = await this.traverse_steps(
                   step,
                   symbols,
-                  step_outputs,
                   computed_outputs,
                   args,
-                  level
+                  level,
+                  step_outputs
                 );
                 if (!unwrap(result)) {
                   return result;
@@ -369,10 +366,10 @@ export class Compose {
                   const result = await this.traverse_steps(
                     step,
                     symbols,
-                    step_outputs,
                     computed_outputs,
                     args,
-                    level
+                    level,
+                    step_outputs
                   );
                   if (!unwrap(result)) {
                     return result;
@@ -404,10 +401,10 @@ export class Compose {
           const result = await this.traverse_steps(
             step,
             symbols,
-            step_outputs,
             computed_outputs,
             args,
-            level
+            level,
+            step_outputs
           );
           if (!unwrap(result)) {
             return result;
@@ -596,12 +593,12 @@ export class Compose {
                   break;
                 }
                 case "fx": {
-                  const [step_index, fx_output_name] = step_map.value as [
-                    number,
+                  const [step_ref, fx_output_name] = step_map.value as [
+                    string,
                     string
                   ];
-                  if (step_index > 0 && step_index < step_outputs.length) {
-                    const step_output: StepOutput = step_outputs[step_index];
+                  if (step_ref in step_outputs) {
+                    const step_output: StepOutput = step_outputs[step_ref];
                     if (step_map.type === step_output.type) {
                       if (fx_output_name in step_output.value) {
                         const arg = step_output.value[fx_output_name];
@@ -696,12 +693,12 @@ export class Compose {
                   break;
                 }
                 case "compose": {
-                  const [step_index, compose_output_name] = step_map.value as [
-                    number,
+                  const [step_ref, compose_output_name] = step_map.value as [
+                    string,
                     string
                   ];
-                  if (step_index > 0 && step_index < step_outputs.length) {
-                    const step_output: StepOutput = step_outputs[step_index];
+                  if (step_ref in step_outputs) {
+                    const step_output: StepOutput = step_outputs[step_ref];
                     if (step_map.type === step_output.type) {
                       if (compose_output_name in step_output.value) {
                         const value = step_output.value[compose_output_name];
@@ -1012,12 +1009,12 @@ export class Compose {
                 break;
               }
               case "fx": {
-                const [step_index, fx_output_name] = step_map.value as [
-                  number,
+                const [step_ref, fx_output_name] = step_map.value as [
+                  string,
                   string
                 ];
-                if (step_index > 0 && step_index < step_outputs.length) {
-                  const step_output: StepOutput = step_outputs[step_index];
+                if (step_ref in step_outputs) {
+                  const step_output: StepOutput = step_outputs[step_ref];
                   if (step_map.type === step_output.type) {
                     if (fx_output_name in step_output.value) {
                       const arg = step_output.value[fx_output_name];
@@ -1112,12 +1109,12 @@ export class Compose {
                 break;
               }
               case "compose": {
-                const [step_index, compose_output_name] = step_map.value as [
-                  number,
+                const [step_ref, compose_output_name] = step_map.value as [
+                  string,
                   string
                 ];
-                if (step_index > 0 && step_index < step_outputs.length) {
-                  const step_output: StepOutput = step_outputs[step_index];
+                if (step_ref in step_outputs) {
+                  const step_output: StepOutput = step_outputs[step_ref];
                   if (step_map.type === step_output.type) {
                     if (compose_output_name in step_output.value) {
                       const value = step_output.value[compose_output_name];
@@ -1240,9 +1237,9 @@ export class Compose {
                 break;
               }
               case "transform": {
-                const step_index = step_map.value;
-                if (step_index > 0 && step_index < step_outputs.length) {
-                  const step_output: StepOutput = step_outputs[step_index];
+                const step_ref: string = step_map.value;
+                if (step_ref in step_outputs) {
+                  const step_output: StepOutput = step_outputs[step_ref];
                   if (step_map.type === step_output.type) {
                     compose_args[input_name] = {
                       type: "list",
@@ -1320,12 +1317,12 @@ export class Compose {
               break;
             }
             case "compose": {
-              const [step_index, compose_output_name] = step.map.base.value as [
-                number,
+              const [step_ref, compose_output_name] = step.map.base.value as [
+                string,
                 string
               ];
-              if (step_index > 0 && step_index < step_outputs.length) {
-                const step_output: StepOutput = step_outputs[step_index];
+              if (step_ref in step_outputs) {
+                const step_output: StepOutput = step_outputs[step_ref];
                 if (step.map.base.type === step_output.type) {
                   if (compose_output_name in step_output.value) {
                     const value = step_output.value[compose_output_name];
@@ -1372,9 +1369,9 @@ export class Compose {
               break;
             }
             case "transform": {
-              const step_index = step.map.base.value;
-              if (step_index > 0 && step_index < step_outputs.length) {
-                const step_output: StepOutput = step_outputs[step_index];
+              const step_ref = step.map.base.value;
+              if (step_ref in step_outputs) {
+                const step_output: StepOutput = step_outputs[step_ref];
                 if (step.map.base.type === step_output.type) {
                   for (const arg of step_output.value) {
                     transform_base.push(arg);
@@ -1496,16 +1493,13 @@ export class Compose {
                         break;
                       }
                       case "fx": {
-                        const [step_index, fx_output_name] = step_map.value as [
-                          number,
+                        const [step_ref, fx_output_name] = step_map.value as [
+                          string,
                           string
                         ];
-                        if (
-                          step_index > 0 &&
-                          step_index < step_outputs.length
-                        ) {
+                        if (step_ref in step_outputs) {
                           const step_output: StepOutput =
-                            step_outputs[step_index];
+                            step_outputs[step_ref];
                           if (step_map.type === step_output.type) {
                             if (fx_output_name in step_output.value) {
                               const arg = step_output.value[fx_output_name];
@@ -1606,14 +1600,11 @@ export class Compose {
                         break;
                       }
                       case "compose": {
-                        const [step_index, compose_output_name] =
-                          step_map.value as [number, string];
-                        if (
-                          step_index > 0 &&
-                          step_index < step_outputs.length
-                        ) {
+                        const [step_ref, compose_output_name] =
+                          step_map.value as [string, string];
+                        if (step_ref in step_outputs) {
                           const step_output: StepOutput =
-                            step_outputs[step_index];
+                            step_outputs[step_ref];
                           if (step_map.type === step_output.type) {
                             if (compose_output_name in step_output.value) {
                               const value =

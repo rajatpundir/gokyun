@@ -44,8 +44,6 @@ import {
 } from "./variable";
 import { ComposeArgs, ComposeInputs } from "./compose";
 
-// TODO. Also return something that announces creation, updation, deletion of variables in store
-
 type FxInputs = Record<
   string,
   | Exclude<
