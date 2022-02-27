@@ -27,7 +27,6 @@ import { useBSTheme } from "./theme";
 
 export type ListState = {
   struct: Struct;
-  active: boolean;
   level: Decimal | undefined;
   init_filter: OrFilter;
   filters: HashSet<AndFilter>;
@@ -42,7 +41,6 @@ export type ListState = {
 
 export type ListAction =
   | ["variables", Array<Variable>]
-  | ["active", boolean]
   | ["level", Decimal | undefined]
   | ["offset"]
   | ["sort", "add", FilterPath, boolean]
@@ -82,13 +80,6 @@ export function reducer(state: Draft<ListState>, action: ListAction) {
       if (!state.limit.equals(action[1].length)) {
         state.reached_end = true;
       }
-      break;
-    }
-    case "active": {
-      state.active = action[1];
-      state.offset = new Decimal(0);
-      state.reached_end = false;
-      state.variables = [];
       break;
     }
     case "level": {
@@ -457,7 +448,6 @@ export type CommonProps = {
 type ListSpecificProps = CommonProps & {
   selected: Decimal;
   struct: Struct;
-  active: boolean;
   level: Decimal | undefined;
   filters: [OrFilter, HashSet<AndFilter>];
   update_parent_values?: (variable: Variable) => void;
@@ -467,7 +457,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   const bs_theme = useBSTheme();
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
-    active: props.active,
     level: props.level,
     init_filter: props.filters[0],
     filters: props.filters[1],
@@ -489,7 +478,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         if (request_count === request_counter.current) {
           const variables = await get_variables(
             state.struct,
-            state.active,
             state.level,
             state.init_filter,
             state.filters,
@@ -507,7 +495,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     get_vars();
   }, [
     state.struct,
-    state.active,
     state.level,
     state.init_filter,
     state.filters,
@@ -671,21 +658,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Text bold color={bs_theme.text}>
               FILTERS
             </Text>
-            <Row>
-              <Pressable
-                onPress={() => {
-                  dispatch(["active", !state.active]);
-                }}
-              >
-                <Text color={bs_theme.text}>Active</Text>
-              </Pressable>
-              <Checkbox
-                value={state.active}
-                onValueChange={() => dispatch(["active", !state.active])}
-                color={state.active ? bs_theme.primary : undefined}
-                style={tw.style(["mx-1"], {})}
-              />
-            </Row>
             <Row>
               <Pressable
                 onPress={() =>

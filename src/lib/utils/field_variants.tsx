@@ -1649,7 +1649,6 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
         ...props,
         selected: value.value,
         struct: struct.value,
-        active: true,
         level: undefined,
         filters: [
           new OrFilter(
@@ -1937,7 +1936,6 @@ function get_upscaled_paths(
                   {
                     struct: cloned_variable.struct,
                     id: cloned_variable.id,
-                    active: cloned_variable.active,
                     created_at: cloned_variable.created_at,
                     updated_at: cloned_variable.updated_at,
                   },

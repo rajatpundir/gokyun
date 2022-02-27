@@ -34,7 +34,6 @@ export default function Component(
     const [state1, dispatch1, jsx1] = useComponent({
       struct: struct1.value,
       id: new Decimal(props.route.params.id),
-      active: true,
       created_at: new Date(),
       updated_at: new Date(),
       values: props.route.params.values
@@ -72,7 +71,6 @@ export default function Component(
     const [state2, dispatch2, jsx2] = useComponent({
       struct: struct2.value,
       id: new Decimal(props.route.params.id),
-      active: true,
       created_at: new Date(),
       updated_at: new Date(),
       values: HashSet.of(),
@@ -166,7 +164,6 @@ export default function Component(
                                 }
                                 return state1.id as Decimal;
                               }),
-                              state1.active,
                               state1.created_at,
                               state1.updated_at,
                               state1.values as HashSet<Path>

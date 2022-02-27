@@ -38,7 +38,6 @@ import {
 
 export type State = Immutable<{
   id: Decimal;
-  active: boolean;
   created_at: Date;
   updated_at: Date;
   values: HashSet<Path>;
@@ -63,10 +62,6 @@ export type State = Immutable<{
 }>;
 
 export type Action =
-  // | ["id", Decimal]
-  // | ["active", boolean]
-  // | ["created_at", Date]
-  // | ["updated_at", Date]
   | ["value", Path]
   | ["values", HashSet<Path>]
   | ["variable", Variable]
@@ -90,22 +85,6 @@ export type Action =
 
 export function reducer(state: Draft<State>, action: Action) {
   switch (action[0]) {
-    // case "id": {
-    //   state.id = action[1];
-    //   break;
-    // }
-    // case "active": {
-    //   state.active = action[1];
-    //   break;
-    // }
-    // case "created_at": {
-    //   state.created_at = action[1];
-    //   break;
-    // }
-    // case "updated_at": {
-    //   state.updated_at = action[1];
-    //   break;
-    // }
     case "value": {
       const result = state.values.findAny((x) => x.equals(action[1]));
       if (result.isSome()) {
@@ -156,7 +135,6 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "variable": {
-      state.active = action[1].active;
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = get_writeable_paths(
@@ -414,7 +392,6 @@ export function get_creation_paths(
             {
               struct: x[1],
               id: new Decimal(-1),
-              active: true,
               created_at: new Date(),
               updated_at: new Date(),
             },
@@ -982,7 +959,6 @@ export function get_path(state: State, path_string: PathString): Option<Path> {
                 {
                   struct: extension.struct as Struct,
                   id: extension.state.id as Decimal,
-                  active: extension.state.active,
                   created_at: extension.state.created_at,
                   updated_at: extension.state.updated_at,
                 },

@@ -341,7 +341,6 @@ export function ResourceComponent() {
     const [state, dispatch, jsx] = useComponent({
       struct: struct.value,
       id: new Decimal(-1),
-      active: true,
       created_at: new Date(),
       updated_at: new Date(),
       values: HashSet.of(),

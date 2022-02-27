@@ -54,7 +54,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
         args: [],
       },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "id" INTEGER NOT NULL, "active" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, "updated_at" INTEGER NOT NULL, "requested_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVELS"("id") ON DELETE CASCADE);`,
+        sql: `CREATE TABLE IF NOT EXISTS "VARS" ("level" INTEGER NOT NULL, "struct_name" TEXT NOT NULL COLLATE BINARY, "id" INTEGER NOT NULL, "created_at" INTEGER NOT NULL, "updated_at" INTEGER NOT NULL, "requested_at" INTEGER NOT NULL, CONSTRAINT "PK" UNIQUE("level","struct_name","id"), CONSTRAINT "FK" FOREIGN KEY("level") REFERENCES "LEVELS"("id") ON DELETE CASCADE);`,
         args: [],
       },
       {
@@ -101,7 +101,6 @@ export function execute_transaction(
 
 function query(
   struct: Struct,
-  active: boolean,
   level: Decimal | undefined,
   init_filter: OrFilter,
   filters: HashSet<AndFilter>,
@@ -137,7 +136,6 @@ function query(
     append_to_select_stmt("v1.level AS _level");
     append_to_select_stmt("v1.struct_name AS _struct_name");
     append_to_select_stmt("v1.id AS _id");
-    append_to_select_stmt("v1.active AS _active");
     append_to_select_stmt("v1.created_at AS _created_at");
     append_to_select_stmt("v1.updated_at AS _updated_at");
     append_to_select_stmt("v1.requested_at AS _requested_at");
@@ -242,7 +240,6 @@ function query(
           }.${z[0]}) END) AS '${path_header.join(".")}${z[1]}'`;
         append_to_select_stmt(gen_stmt(["id", ""]));
         append_to_select_stmt(gen_stmt(["struct_name", "._struct_name"]));
-        append_to_select_stmt(gen_stmt(["active", "._active"]));
         append_to_select_stmt(gen_stmt(["created_at", "._created_at"]));
         append_to_select_stmt(gen_stmt(["updated_at", "._updated_at"]));
       }
@@ -266,7 +263,6 @@ function query(
     append_to_where_stmt(stmt);
   }
   append_to_where_stmt(`v1.struct_name = '${struct.name}'`);
-  append_to_where_stmt(`v1.active = ${active ? "1" : "0"}`);
 
   let from_stmt: string =
     "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level <= v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
@@ -1150,7 +1146,6 @@ export async function increment_struct_counter(
 
 export async function get_variables(
   struct: Struct,
-  active: boolean,
   level: Decimal | undefined,
   init_filter: OrFilter,
   filters: HashSet<AndFilter>,
@@ -1161,7 +1156,6 @@ export async function get_variables(
     const variables: Array<Variable> = [];
     const result_set = await query(
       struct,
-      active,
       level,
       init_filter,
       filters,
@@ -1186,7 +1180,6 @@ export async function get_variables(
                 {
                   struct: Struct;
                   id: Decimal;
-                  active: boolean;
                   created_at: Date;
                   updated_at: Date;
                 }
@@ -1206,7 +1199,6 @@ export async function get_variables(
                   {
                     struct: ref_struct.get(),
                     id: new Decimal(result[`${ref}`]).truncated(),
-                    active: new Decimal(result[`${ref}._active`]).equals(1),
                     created_at: new Date(result[`${ref}._created_at`]),
                     updated_at: new Date(result[`${ref}._updated_at`]),
                   },
@@ -1341,7 +1333,6 @@ export async function get_variables(
           new Variable(
             struct,
             new Decimal(result["_id"]).truncated(),
-            new Decimal(result["_active"]).equals(1),
             new Date(result["_created_at"]),
             new Date(result["_updated_at"]),
             HashSet.ofIterable(paths)
@@ -1360,7 +1351,6 @@ export async function get_variables(
 
 export async function get_variable(
   struct: Struct,
-  active: boolean,
   level: Decimal | undefined,
   id: Decimal,
   filter_paths: HashSet<FilterPath>
@@ -1368,7 +1358,6 @@ export async function get_variable(
   try {
     const result = await get_variables(
       struct,
-      active,
       level,
       new OrFilter(
         0,

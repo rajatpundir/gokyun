@@ -258,7 +258,6 @@ export class Path {
         {
           struct: Struct;
           id: Decimal;
-          active: boolean;
           created_at: Date;
           updated_at: Date;
         }
@@ -281,7 +280,6 @@ export class Path {
           {
             struct: Struct;
             id: Decimal;
-            active: boolean;
             created_at: Date;
             updated_at: Date;
           }
@@ -338,7 +336,6 @@ export class Path {
 export class Variable {
   struct: Struct;
   id: Decimal;
-  active: boolean;
   created_at: Date;
   updated_at: Date;
   paths: HashSet<Path>;
@@ -346,14 +343,12 @@ export class Variable {
   constructor(
     struct: Struct,
     id: Decimal,
-    active: boolean,
     created_at: Date,
     updated_at: Date,
     paths: HashSet<Path>
   ) {
     this.struct = struct;
     this.id = id;
-    this.active = active;
     this.created_at = created_at;
     this.updated_at = updated_at;
     this.paths = paths;
@@ -374,7 +369,6 @@ export class Variable {
     return String({
       struct: this.struct.name,
       id: this.id.toString(),
-      active: this.active.valueOf(),
       created_at: this.created_at,
       updated_at: this.updated_at,
       paths: this.paths.toArray(),

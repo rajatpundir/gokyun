@@ -58,7 +58,6 @@ export type ComponentViews = Record<
 export function useComponent(props: {
   struct: Struct;
   id: Decimal;
-  active: boolean;
   created_at: Date;
   updated_at: Date;
   values: HashSet<Path>;
@@ -78,7 +77,6 @@ export function useComponent(props: {
   const theme = useTheme();
   const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
     id: new Decimal(props.id),
-    active: props.active,
     created_at: props.created_at,
     updated_at: props.updated_at,
     values: props.values,
@@ -105,7 +103,6 @@ export function useComponent(props: {
             new Variable(
               props.struct,
               new Decimal(-1),
-              state.active,
               state.created_at,
               state.updated_at,
               get_creation_paths(props.struct, state)
@@ -114,7 +111,6 @@ export function useComponent(props: {
         } else {
           const result = await get_variable(
             props.struct,
-            true,
             undefined,
             state.id as Decimal,
             get_filter_paths(
@@ -140,7 +136,6 @@ export function useComponent(props: {
         new Variable(
           props.struct,
           state.id as Decimal,
-          state.active,
           state.created_at,
           state.updated_at,
           state.values as HashSet<Path>
@@ -282,7 +277,6 @@ export function OtherComponent(props: {
   const [, , jsx] = useComponent({
     struct: props.struct,
     id: props.variable.id,
-    active: props.variable.active,
     created_at: props.variable.created_at,
     updated_at: props.variable.updated_at,
     values: props.variable.paths,

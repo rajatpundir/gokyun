@@ -24,7 +24,6 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
         <List
           selected={new Decimal(-1)}
           struct={struct.value}
-          active={true}
           level={undefined}
           filters={[
             new OrFilter(

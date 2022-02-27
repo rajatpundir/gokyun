@@ -20,7 +20,6 @@ export default function Component(
         <List
           selected={new Decimal(-1)}
           struct={struct.value}
-          active={true}
           level={undefined}
           filters={[
             new OrFilter(

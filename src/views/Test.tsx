@@ -450,7 +450,6 @@ export default {
                           }
                           return props.state.id as Decimal;
                         }),
-                        props.state.active,
                         props.state.created_at,
                         props.state.updated_at,
                         props.state.values as HashSet<Path>
