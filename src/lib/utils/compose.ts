@@ -11,8 +11,6 @@ import { get_compose } from "../../schema/compose";
 import { get_fx } from "../../schema/fx";
 import { get_transform } from "../../schema/transform";
 
-// TODO. Append to computed_outputs
-
 // TODO. Steps should be named and refered via their names (searched in array from back)
 
 export type ComposeInputs = Record<
@@ -67,7 +65,7 @@ type Step =
           }
         | {
             type: "fx" | "compose";
-            value: [number, string];
+            value: [string, string];
           }
       >;
       output: Record<string, string> | undefined;
@@ -84,11 +82,11 @@ type Step =
           }
         | {
             type: "fx" | "compose";
-            value: [number, string];
+            value: [string, string];
           }
         | {
             type: "transform";
-            value: number;
+            value: string;
           }
       >;
       output: Record<string, string> | undefined;
@@ -105,11 +103,11 @@ type Step =
             }
           | {
               type: "compose";
-              value: [number, string];
+              value: [string, string];
             }
           | {
               type: "transform";
-              value: number;
+              value: string;
             };
         query: Record<
           string,
@@ -119,7 +117,7 @@ type Step =
             }
           | {
               type: "fx" | "compose";
-              value: [number, string];
+              value: [string, string];
             }
         >;
       };
@@ -313,9 +311,8 @@ export class Compose {
       return this.traverse_steps(
         this.step,
         symbols,
-        [],
+        {},
         computed_outputs,
-        0,
         args,
         level
       );
@@ -327,9 +324,8 @@ export class Compose {
   async traverse_steps(
     compose_step: ComposeStep,
     symbols: Readonly<Record<string, Symbol>>,
-    step_outputs: Array<StepOutput>,
+    step_outputs: Record<string, StepOutput>,
     computed_outputs: Record<string, StrongEnum | TransformResult>,
-    base_index: number,
     args: ComposeArgs,
     level: Decimal
   ): Promise<Result<ComposeResult>> {
@@ -340,14 +336,13 @@ export class Compose {
         const expr_result = result.value;
         if (expr_result instanceof Bool) {
           if (expr_result.value) {
-            for (const [index, step] of compose_step.steps.entries()) {
+            for (const step of compose_step.steps) {
               if (step instanceof ComposeStep) {
                 const result = await this.traverse_steps(
                   step,
                   symbols,
                   step_outputs,
                   computed_outputs,
-                  base_index + index,
                   args,
                   level
                 );
@@ -359,7 +354,6 @@ export class Compose {
                   step,
                   step_outputs,
                   computed_outputs,
-                  base_index + index,
                   args,
                   level
                 );
@@ -370,14 +364,13 @@ export class Compose {
             }
           } else {
             if (compose_step.predicate[1] !== undefined) {
-              for (const [index, step] of compose_step.predicate[1].entries()) {
+              for (const step of compose_step.predicate[1]) {
                 if (step instanceof ComposeStep) {
                   const result = await this.traverse_steps(
                     step,
                     symbols,
                     step_outputs,
                     computed_outputs,
-                    base_index + index,
                     args,
                     level
                   );
@@ -389,7 +382,6 @@ export class Compose {
                     step,
                     step_outputs,
                     computed_outputs,
-                    base_index + index,
                     args,
                     level
                   );
@@ -407,14 +399,13 @@ export class Compose {
         return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
       }
     } else {
-      for (const [index, step] of compose_step.steps.entries()) {
+      for (const step of compose_step.steps) {
         if (step instanceof ComposeStep) {
           const result = await this.traverse_steps(
             step,
             symbols,
             step_outputs,
             computed_outputs,
-            base_index + index,
             args,
             level
           );
@@ -426,7 +417,6 @@ export class Compose {
             step,
             step_outputs,
             computed_outputs,
-            base_index + index,
             args,
             level
           );
@@ -441,9 +431,8 @@ export class Compose {
 
   async exec_step(
     step: Step,
-    step_outputs: Array<StepOutput>,
+    step_outputs: Record<string, StepOutput>,
     computed_outputs: Record<string, StrongEnum | TransformResult>,
-    index: number,
     args: ComposeArgs,
     level: Decimal
   ): Promise<Result<ComposeResult>> {
@@ -829,10 +818,12 @@ export class Compose {
           // invoke fx
           const computed_output = await fx.exec(fx_args, level);
           if (unwrap(computed_output)) {
-            step_outputs.push({
-              type: step.type,
-              value: computed_output.value,
-            });
+            if (step.name !== undefined) {
+              step_outputs[step.name] = {
+                type: step.type,
+                value: computed_output.value,
+              };
+            }
             if (step.output !== undefined) {
               for (const output_name of Object.keys(step.output)) {
                 const value: string = step.output[output_name];
@@ -1278,10 +1269,12 @@ export class Compose {
           // invoke compose
           const computed_output = await compose.exec(compose_args, level);
           if (unwrap(computed_output)) {
-            step_outputs.push({
-              type: step.type,
-              value: computed_output.value,
-            });
+            if (step.name !== undefined) {
+              step_outputs[step.name] = {
+                type: step.type,
+                value: computed_output.value,
+              };
+            }
             if (step.output !== undefined) {
               for (const output_name of Object.keys(step.output)) {
                 const value: string = step.output[output_name];
@@ -1754,10 +1747,12 @@ export class Compose {
             level
           );
           if (unwrap(computed_output)) {
-            step_outputs.push({
-              type: step.type,
-              value: computed_output.value,
-            });
+            if (step.name !== undefined) {
+              step_outputs[step.name] = {
+                type: step.type,
+                value: computed_output.value,
+              };
+            }
             if (step.output !== undefined) {
               computed_outputs[step.output] = computed_output.value;
             }
