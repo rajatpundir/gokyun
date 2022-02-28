@@ -187,6 +187,7 @@ const schema: Record<
       ],
     },
   },
+
   Test2: {
     fields: {
       str: { type: "str" },
@@ -313,6 +314,7 @@ const schema: Record<
       ],
     },
   },
+
   Product_Category: {
     fields: {
       parent: { type: "other", other: "Product_Category" },
@@ -343,6 +345,7 @@ const schema: Record<
       ],
     },
   },
+
   Product_Category_Translation: {
     fields: {
       product_category: { type: "other", other: "Product_Category" },
@@ -428,6 +431,7 @@ const schema: Record<
       ],
     },
   },
+
   Service_Category: {
     fields: {
       parent: { type: "other", other: "Service_Category" },
@@ -458,6 +462,7 @@ const schema: Record<
       ],
     },
   },
+
   Service_Category_Translation: {
     fields: {
       service_category: { type: "other", other: "Service_Category" },
@@ -543,6 +548,7 @@ const schema: Record<
       ],
     },
   },
+
   // Tag is same for all languages
   Tag: {
     fields: {
@@ -572,6 +578,7 @@ const schema: Record<
       ],
     },
   },
+
   Country: {
     fields: {
       name: { type: "str" },
@@ -600,6 +607,7 @@ const schema: Record<
       ],
     },
   },
+
   // Also need to store pincode stats for each guild
   // This is to give a high level comparison of efficiency of various guilds
   // In real world, each guild may represent a supply line of a specific compant like FedEx, UPS, etc
@@ -663,6 +671,7 @@ const schema: Record<
       ],
     },
   },
+
   PincodeStats: {
     fields: {
       from: { type: "other", other: "Pincode" },
@@ -694,6 +703,7 @@ const schema: Record<
       ],
     },
   },
+
   Language: {
     fields: {
       code: { type: "str" },
@@ -722,6 +732,7 @@ const schema: Record<
       ],
     },
   },
+
   User: {
     fields: {
       //Note. name can be overwritten via separate api endpoint
@@ -786,6 +797,7 @@ const schema: Record<
       ],
     },
   },
+
   Wallet: {
     fields: {
       user: { type: "other", other: "User" },
@@ -837,6 +849,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance: {
     fields: {
       name: { type: "str" },
@@ -914,6 +927,7 @@ const schema: Record<
       ],
     },
   },
+
   Guild: {
     fields: {
       name: { type: "str" },
@@ -987,6 +1001,7 @@ const schema: Record<
       ],
     },
   },
+
   Clan: {
     fields: {
       name: { type: "str" },
@@ -1060,6 +1075,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Member_Request: {
     // This is consumed by a function and converted to AllianceMember or just deleted by another.
     fields: {
@@ -1084,6 +1100,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Guild_Member_Request: {
     fields: {
       guild: { type: "other", other: "Guild" },
@@ -1107,6 +1124,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Clan_Member_Invite: {
     // Produced by Clan leader and consumed by a User to produce ClanMember
     fields: {
@@ -1131,6 +1149,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Alliance_Member: {
     fields: {
       alliance: { type: "other", other: "Alliance" },
@@ -1240,6 +1259,7 @@ const schema: Record<
     },
     checks: {},
   },
+
   Guild_Member: {
     fields: {
       guild: { type: "other", other: "Guild" },
@@ -1347,6 +1367,7 @@ const schema: Record<
     },
     checks: {},
   },
+
   Clan_Member: {
     fields: {
       clan: { type: "other", other: "Clan" },
@@ -1454,6 +1475,7 @@ const schema: Record<
     },
     checks: {},
   },
+
   Alliance_Product_Family: {
     fields: {
       alliance: { type: "other", other: "Alliance" },
@@ -1588,6 +1610,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Translation: {
     fields: {
       alliance_product_family: {
@@ -1681,6 +1704,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Property: {
     fields: {
       alliance_product_family: {
@@ -1761,6 +1785,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Property_Translation: {
     fields: {
       alliance_product_family_property: {
@@ -1860,6 +1885,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Property_Value: {
     fields: {
       alliance_product_family_property: {
@@ -1943,6 +1969,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Property_Value_Translation: {
     fields: {
       alliance_product_family_property_value: {
@@ -2042,6 +2069,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product: {
     fields: {
       alliance_product_family: {
@@ -2147,6 +2175,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Translation: {
     fields: {
       alliance_product: {
@@ -2241,6 +2270,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Tag: {
     fields: {
       alliance_product: {
@@ -2300,6 +2330,7 @@ const schema: Record<
     },
     checks: {},
   },
+
   Alliance_Product_Family_Variant: {
     fields: {
       alliance_product: {
@@ -2446,6 +2477,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Variant_Translation: {
     fields: {
       alliance_product_family_variant: {
@@ -2545,6 +2577,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Product_Family_Variant_Property_Value: {
     fields: {
       alliance_product_family_variant: {
@@ -2670,6 +2703,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product_Family: {
     fields: {
       user: { type: "other", other: "User" },
@@ -2799,6 +2833,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product_Family_Property: {
     fields: {
       user_product_family: {
@@ -2879,6 +2914,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product_Family_Property_Value: {
     fields: {
       user_product_family_property: {
@@ -2962,6 +2998,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product: {
     fields: {
       user_product_family: {
@@ -3067,6 +3104,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product_Translation: {
     fields: {
       user_product: {
@@ -3161,6 +3199,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product_Family_Variant: {
     fields: {
       user_product: {
@@ -3251,6 +3290,7 @@ const schema: Record<
       ],
     },
   },
+
   User_Product_Family_Variant_Property_Value: {
     fields: {
       user_product_family_variant: {
@@ -3370,6 +3410,7 @@ const schema: Record<
       ],
     },
   },
+
   Listed_Alliance_Product_Family_Variant_Request: {
     // This struct represents a request sent to user to allow/deny linking
     // This will be consumed by a function and transformed into a Listed_Alliance_Product
@@ -3501,6 +3542,7 @@ const schema: Record<
       ],
     },
   },
+
   Listed_Alliance_Product_Family_Variant: {
     // This will be created after Listed_Alliance_Product_Family_Variant_Request is consumed by a function
     fields: {
@@ -3714,6 +3756,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Virtual_Product: {
     fields: {
       alliance: { type: "other", other: "Alliance" },
@@ -3796,6 +3839,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service: {
     fields: {
       alliance: { type: "other", other: "Alliance" },
@@ -3892,6 +3936,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service_Translation: {
     fields: {
       alliance_service: { type: "other", other: "Alliance_Service" },
@@ -3983,6 +4028,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service_Task: {
     fields: {
       alliance_service: { type: "other", other: "Alliance_Service" },
@@ -4020,6 +4066,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service_Task_Translation: {
     fields: {
       alliance_service_task: { type: "other", other: "Alliance_Service_Task" },
@@ -4111,6 +4158,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service_Milestone: {
     fields: {
       alliance_service: { type: "other", other: "Alliance_Service" },
@@ -4151,6 +4199,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service_Milestone_Translation: {
     fields: {
       alliance_service_milsestone: {
@@ -4256,6 +4305,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Service_Milestone_Task: {
     fields: {
       alliance_service_milestone: {
@@ -4282,6 +4332,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Alliance_Service_Provider: {
     fields: {
       alliance_service: { type: "other", other: "Alliance_Service" },
@@ -4397,6 +4448,7 @@ const schema: Record<
       ],
     },
   },
+
   Alliance_Coupon: {
     fields: {
       alliance: { type: "other", other: "Alliance" },
@@ -4478,6 +4530,7 @@ const schema: Record<
       ],
     },
   },
+
   // TODO. Define Alliance_Voucher here, acts like a partial wallet after applying coupon if any
   // Could be used certain number of times as defined, owner tracks what what exactly was bought with voucher
   // The one using voucher needs to provide its code, which may not be randomly generated, unique(alliance, clan, code)
@@ -4512,6 +4565,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   // TODO. To Reassess below structs
   Clan_Product_Order_Draft: {
     // Clan_Product_Order_Draft and Clan_Product_Order_Draft_Item are consumed by a function
@@ -4536,6 +4590,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Clan_Product_Order_Draft_Item: {
     // Also think about variations that can be applied to a product
     fields: {
@@ -4567,6 +4622,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Clan_Product_Order: {
     fields: {
       clan: { type: "other", other: "Clan" },
@@ -4587,6 +4643,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Clan_Product_Order_Item: {
     fields: {
       clan_product_order: { type: "other", other: "Clan_Product_Order_Draft" },
@@ -4615,6 +4672,7 @@ const schema: Record<
     triggers: {},
     checks: {},
   },
+
   Clan_Service_Order: {
     fields: {
       clan: { type: "other", other: "Clan" },
