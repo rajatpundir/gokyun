@@ -13,18 +13,13 @@ import {
   ScrollView,
 } from "native-base";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { useBSTheme, useTheme } from "../../../../lib/utils/theme";
-import {
-  arrow,
-  get_resource,
-  Resource,
-  unwrap,
-} from "../../../../lib/utils/prelude";
+import { useBSTheme, useTheme } from "../../../../lib/theme";
+import { arrow, get_resource, Resource, unwrap } from "../../../../lib/prelude";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
-import { tw } from "../../../../lib/utils/tailwind";
+import { tw } from "../../../../lib/tailwind";
 import { get_struct } from "../../../../schema/struct";
-import { useComponent } from "../../../../lib/utils/component";
+import { useComponent } from "../../../../lib/component";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { views } from "../../../../views";

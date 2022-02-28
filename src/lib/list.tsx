@@ -6,7 +6,7 @@ import { PathString, Struct, Variable } from "./variable";
 import Decimal from "decimal.js";
 import { apply, fold, unwrap } from "./prelude";
 import { HashSet } from "prelude-ts";
-import { NavigatorProps as RootNavigatorProps } from "../../navigation/main";
+import { NavigatorProps as RootNavigatorProps } from "../navigation/main";
 import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
 import {
   AndFilterComponent,

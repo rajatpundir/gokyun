@@ -19,8 +19,8 @@ import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
-import { AppHeader } from "../../../lib/utils/component";
-import { tw } from "../../../lib/utils/tailwind";
+import { AppHeader } from "../../../lib/component";
+import { tw } from "../../../lib/tailwind";
 
 export type NavigatorParams = {
   Clans: undefined;

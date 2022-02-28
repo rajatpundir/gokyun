@@ -1,13 +1,13 @@
 import * as React from "react";
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import { List } from "../../../../lib/utils/list";
-import { unwrap } from "../../../../lib/utils/prelude";
+import { List } from "../../../../lib/list";
+import { unwrap } from "../../../../lib/prelude";
 import { get_struct } from "../../../../schema/struct";
-import { OrFilter } from "../../../../lib/utils/db";
-import { get_filter_paths } from "../../../../lib/utils/commons";
+import { OrFilter } from "../../../../lib/db";
+import { get_filter_paths } from "../../../../lib/commons";
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
-import { OtherComponent, SearchWrapper } from "../../../../lib/utils/component";
+import { OtherComponent, SearchWrapper } from "../../../../lib/component";
 import { views } from "../../../../views";
 
 export default function Component(

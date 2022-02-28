@@ -30,7 +30,7 @@ import {
   Struct,
   Variable,
 } from "./variable";
-import { get_struct } from "../../schema/struct";
+import { get_struct } from "../schema/struct";
 import { CommonProps, List } from "./list";
 import { tw } from "./tailwind";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";

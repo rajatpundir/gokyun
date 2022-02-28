@@ -28,15 +28,15 @@ import {
   ToDeci,
   ToNum,
   ToText,
-} from "../lib/utils/lisp";
-import { errors, ErrMsg } from "../lib/utils/errors";
+} from "../lib/lisp";
+import { errors, ErrMsg } from "../lib/errors";
 import {
   Struct,
   StructPermissions,
   StructTrigger,
   WeakEnum,
-} from "../lib/utils/variable";
-import { CustomError, Err, Ok, Result } from "../lib/utils/prelude";
+} from "../lib/variable";
+import { CustomError, Err, Ok, Result } from "../lib/prelude";
 
 // All structs are created via Transformers
 

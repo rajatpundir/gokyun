@@ -16,8 +16,8 @@ import {
 
 import Search from "./search";
 import Resources from "./resources";
-import { ModalHeader } from "../../lib/utils/component";
-import { tw } from "../../lib/utils/tailwind";
+import { ModalHeader } from "../../lib/component";
+import { tw } from "../../lib/tailwind";
 
 export type NavigatorParams = {
   Search: undefined;

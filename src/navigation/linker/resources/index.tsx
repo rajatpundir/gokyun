@@ -16,7 +16,7 @@ import { NavigatorParams as RootNavigatorParams } from "../../main";
 
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { tw } from "../../../lib/utils/tailwind";
+import { tw } from "../../../lib/tailwind";
 
 import Link from "./link";
 import Upload from "./upload";

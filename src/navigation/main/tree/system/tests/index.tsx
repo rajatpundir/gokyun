@@ -3,14 +3,11 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import { get_filter_paths } from "../../../../../lib/utils/commons";
-import {
-  OtherComponent,
-  SearchWrapper,
-} from "../../../../../lib/utils/component";
-import { OrFilter } from "../../../../../lib/utils/db";
-import { List } from "../../../../../lib/utils/list";
-import { unwrap } from "../../../../../lib/utils/prelude";
+import { get_filter_paths } from "../../../../../lib/commons";
+import { OtherComponent, SearchWrapper } from "../../../../../lib/component";
+import { OrFilter } from "../../../../../lib/db";
+import { List } from "../../../../../lib/list";
+import { unwrap } from "../../../../../lib/prelude";
 import { get_struct } from "../../../../../schema/struct";
 import { views } from "../../../../../views";
 import { Fab, Icon } from "native-base";

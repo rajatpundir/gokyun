@@ -1,6 +1,6 @@
-import { Compose } from "../lib/utils/compose";
-import { errors, ErrMsg } from "../lib/utils/errors";
-import { Result, Err, CustomError, Ok } from "../lib/utils/prelude";
+import { Compose } from "../lib/compose";
+import { errors, ErrMsg } from "../lib/errors";
+import { Result, Err, CustomError, Ok } from "../lib/prelude";
 
 const schema: Record<string, Compose> = {};
 

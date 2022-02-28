@@ -4,25 +4,18 @@ import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as RootNavigatorProps } from "../main";
 import { get_struct } from "../../schema/struct";
-import { apply, arrow, unwrap } from "../../lib/utils/prelude";
+import { apply, arrow, unwrap } from "../../lib/prelude";
 import { views } from "../../views";
-import {
-  DeleteButton,
-  ModalHeader,
-  useComponent,
-} from "../../lib/utils/component";
+import { DeleteButton, ModalHeader, useComponent } from "../../lib/component";
 import { Row, Pressable, Text } from "native-base";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import {
-  get_struct_counter,
-  increment_struct_counter,
-} from "../../lib/utils/db";
+import { get_struct_counter, increment_struct_counter } from "../../lib/db";
 import {
   replace_variable,
   remove_variables_in_db,
-} from "../../lib/utils/db_variables";
-import { Path, Variable } from "../../lib/utils/variable";
-import { useTheme } from "../../lib/utils/theme";
+} from "../../lib/db_variables";
+import { Path, Variable } from "../../lib/variable";
+import { useTheme } from "../../lib/theme";
 
 export default function Component(
   props: RootNavigatorProps<"Test">

@@ -16,25 +16,20 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import MainNavigator, { NavigatorParams as MainNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
-import { tw } from "../../lib/utils/tailwind";
-import { apply } from "../../lib/utils/prelude";
-import {
-  useTheme,
-  useRNTheme,
-  useNBTheme,
-  useRNPTheme,
-} from "../../lib/utils/theme";
-import { SelectionModal, SelectionModalProps } from "../../lib/utils/list";
+import { tw } from "../../lib/tailwind";
+import { apply } from "../../lib/prelude";
+import { useTheme, useRNTheme, useNBTheme, useRNPTheme } from "../../lib/theme";
+import { SelectionModal, SelectionModalProps } from "../../lib/list";
 
 import Test from "../test";
 import Linker from "../linker";
 import { HashSet } from "prelude-ts";
-import { Path } from "../../lib/utils/variable";
+import { Path } from "../../lib/variable";
 
 import { FontAwesome } from "@expo/vector-icons";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { load_test_data } from "../../lib/utils/db_variables";
+import { load_test_data } from "../../lib/db_variables";
 
 // Ignore react navigation error related to serializability of props passed
 

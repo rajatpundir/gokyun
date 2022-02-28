@@ -31,7 +31,7 @@ import {
   unwrap,
   unwrap_array,
 } from "./prelude";
-import { get_struct } from "../../schema/struct";
+import { get_struct } from "../schema/struct";
 import {
   compare_paths,
   get_flattened_path,

@@ -4,12 +4,12 @@ import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
 import { Bool, BooleanLispExpression, Symbol } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_struct } from "../../schema/struct";
+import { get_struct } from "../schema/struct";
 import { TransformArgs, TransformResult } from "./transform";
 import { compare_paths, PathString, StrongEnum, WeakEnum } from "./variable";
-import { get_compose } from "../../schema/compose";
-import { get_fx } from "../../schema/fx";
-import { get_transform } from "../../schema/transform";
+import { get_compose } from "../schema/compose";
+import { get_fx } from "../schema/fx";
+import { get_transform } from "../schema/transform";
 
 export type ComposeInputs = Record<
   string,
