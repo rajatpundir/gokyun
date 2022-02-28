@@ -543,10 +543,10 @@ const schema: Record<
       ],
     },
   },
+  // Tag is same for all languages
   Tag: {
     fields: {
       name: { type: "str" },
-      translation_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [[[], "name"]],
     permissions: {
@@ -563,87 +563,6 @@ const schema: Record<
               new Equals<ToText>([
                 new DotExpression(new Dot(["name"])),
                 new Text(""),
-                [],
-              ])
-            )
-          )
-        ),
-        [errors.ErrEmptyField] as ErrMsg,
-      ],
-    },
-  },
-  Tag_Translation: {
-    fields: {
-      tag: { type: "other", other: "Tag" },
-      language: { type: "other", other: "Language" },
-      name: { type: "str" },
-    },
-    uniqueness: [[["tag"], "language"]],
-    permissions: {
-      borrow: {},
-      ownership: {},
-      public: ["language", "name"],
-    },
-    triggers: {
-      increment_count_in_tag: {
-        event: ["after_creation", "after_update"],
-        monitor: [[[], "tag"]],
-        operation: {
-          op: "update",
-          path_updates: [
-            [
-              [["tag"], "translation_count"],
-              new NumberArithmeticExpression(
-                new Add<ToNum>([
-                  new DotExpression(new Dot(["tag", "translation_count"])),
-                  [new Num(1)],
-                ])
-              ),
-            ],
-          ],
-        },
-      },
-      decrement_count_in_tag: {
-        event: ["before_deletion", "before_update"],
-        monitor: [[[], "tag"]],
-        operation: {
-          op: "update",
-          path_updates: [
-            [
-              [["tag"], "translation_count"],
-              new NumberArithmeticExpression(
-                new Subtract<ToNum>([
-                  new DotExpression(new Dot(["tag", "translation_count"])),
-                  [new Num(1)],
-                ])
-              ),
-            ],
-          ],
-        },
-      },
-    },
-    checks: {
-      name_cannot_be_empty: [
-        new LogicalUnaryExpression(
-          new Not(
-            new TextComparatorExpression(
-              new Equals<ToText>([
-                new DotExpression(new Dot(["name"])),
-                new Text(""),
-                [],
-              ])
-            )
-          )
-        ),
-        [errors.ErrEmptyField] as ErrMsg,
-      ],
-      language_is_not_english: [
-        new LogicalUnaryExpression(
-          new Not(
-            new TextComparatorExpression(
-              new Equals<ToText>([
-                new DotExpression(new Dot(["language", "code"])),
-                new Text("en"),
                 [],
               ])
             )

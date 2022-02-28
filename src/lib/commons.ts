@@ -1013,20 +1013,6 @@ export function get_label(state: State, path: PathString | string): string {
 //   isSmallDevice: Dimensions.get("window").width < 375,
 // };
 
-type X = [
-  (
-    | "i32"
-    | "u32"
-    | "i64"
-    | "u64"
-    | "idouble"
-    | "udouble"
-    | "idecimal"
-    | "udecimal"
-  ),
-  string
-];
-
 export function get_validated_decimal(
   field_struct_name:
     | "i32"

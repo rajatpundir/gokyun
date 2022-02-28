@@ -130,75 +130,86 @@ export type Resource =
   | undefined
   | ({ url: string } & (
       | {
-          type: "png" | "jpg" | "jpeg" | "bmp" | "gif" | "webp" | "image";
+          type: "image";
+          subtype: "png" | "jpeg" | "bmp" | "gif" | "webp";
           width: number;
           height: number;
         }
-      | {
-          type: "m4v" | "mp4" | "mov" | "3gp" | "mp3" | "pdf" | "youtube";
-        }
+      | { type: "video"; subtype: "mp4" }
+      | { type: "application"; subtype: "pdf" }
+      | { type: "text"; subtype: "youtube" }
     ));
 
 export async function get_resource(url: URL): Promise<Resource> {
   const trimmed_url = url.toString().replace(/\/+$/, "");
-  const splitted_url = trimmed_url.split("/").slice(3);
-  if (splitted_url.length !== 0) {
-    const first_path = splitted_url[splitted_url.length - 1]
-      .split("?")[0]
-      .split(".");
-    const file_extension = apply(
-      trimmed_url.startsWith("https://youtu.be/"),
-      (it) => {
-        if (it) {
-          return "youtube";
-        }
-        return first_path[first_path.length - 1];
-      }
-    );
-    switch (file_extension) {
-      case "png":
-      case "jpg":
-      case "jpeg":
-      case "bmp":
-      case "gif":
-      case "webp": {
-        const [width, height] = await get_image_size(trimmed_url);
-        return {
-          url: trimmed_url,
-          type: file_extension,
-          width: width,
-          height: height,
-        };
-      }
-      case "m4v":
-      case "mp4":
-      case "mov":
-      case "3gp":
-      case "mp3":
-      case "pdf": {
-        const response = await fetch(trimmed_url, { method: "GET" });
-        if (response.ok) {
-          return {
-            url: trimmed_url,
-            type: file_extension,
-          };
+  const response = await fetch(trimmed_url, { method: "GET" });
+  const content_type: string | null = response.headers.get("content-type");
+  if (content_type !== null && content_type.split("/").length === 2) {
+    const [mime_type, mime_subtype] = content_type.split("/");
+    console.log("--", mime_type, "--", mime_subtype);
+    switch (mime_type) {
+      case "image": {
+        switch (mime_subtype) {
+          case "png":
+          case "jpeg":
+          case "bmp":
+          case "gif":
+          case "webp": {
+            const [width, height] = await get_image_size(trimmed_url);
+            return {
+              url: trimmed_url,
+              type: mime_type,
+              subtype: mime_subtype,
+              width: width,
+              height: height,
+            };
+          }
         }
         break;
       }
-      case "youtube": {
-        return {
-          url: first_path[first_path.length - 1],
-          type: "youtube",
-        };
+      case "video": {
+        switch (mime_subtype) {
+          case "mp4": {
+            return {
+              url: trimmed_url,
+              type: mime_type,
+              subtype: mime_subtype,
+            };
+          }
+        }
+        break;
       }
-      default: {
-        const [width, height] = await get_image_size(trimmed_url);
-        return {
-          url: trimmed_url,
-          type: "image",
-          width: width,
-          height: height,
-        };
+      case "application": {
+        switch (mime_subtype) {
+          case "pdf": {
+            return {
+              url: trimmed_url,
+              type: mime_type,
+              subtype: mime_subtype,
+            };
+          }
+        }
+        break;
+      }
+      case "text": {
+        switch (mime_subtype) {
+          case "html; charset=utf-8": {
+            if (trimmed_url.startsWith("https://youtu.be/")) {
+              return apply(trimmed_url.split("https://youtu.be/"), (it) => {
+                if (it.length === 2) {
+                  return {
+                    url: it[1],
+                    type: mime_type,
+                    subtype: "youtube",
+                  };
+                }
+                return undefined;
+              });
+            }
+            break;
+          }
+        }
+        break;
       }
     }
   }
