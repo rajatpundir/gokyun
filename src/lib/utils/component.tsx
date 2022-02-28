@@ -23,7 +23,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { colors, tw } from "./tailwind";
+import { tw } from "./tailwind";
 import { Text, Input, Pressable, Row, Column, Spinner } from "native-base";
 import { BrokerKey, getState, setState, subscribe } from "./store";
 import { useBSTheme, useTheme } from "./theme";

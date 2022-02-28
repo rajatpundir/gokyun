@@ -14,8 +14,6 @@ import { NavigationContainer } from "@react-navigation/native";
 import { NavigatorScreenParams } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import useAssets from "../../lib/hooks/useAssets";
-
 import MainNavigator, { NavigatorParams as MainNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 import { tw } from "../../lib/utils/tailwind";
@@ -32,6 +30,11 @@ import Test from "../test";
 import Linker from "../linker";
 import { HashSet } from "prelude-ts";
 import { Path } from "../../lib/utils/variable";
+
+import { FontAwesome } from "@expo/vector-icons";
+import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { load_test_data } from "../../lib/utils/db_variables";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -63,7 +66,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Linker">
+                        <Stack.Navigator initialRouteName="Main">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
@@ -114,3 +117,33 @@ export type NavigatorProps<Screen extends keyof NavigatorParams> =
 const Stack = createNativeStackNavigator<NavigatorParams>();
 
 registerRootComponent(Component);
+
+function useAssets() {
+  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
+
+  // Load any resources or data that we need prior to rendering the app
+  React.useEffect(() => {
+    async function loadResourcesAndDataAsync() {
+      try {
+        SplashScreen.preventAutoHideAsync();
+
+        // Load fonts
+        await Font.loadAsync({
+          ...FontAwesome.font,
+          "space-mono": require("../../../assets/fonts/SpaceMono-Regular.ttf"),
+        });
+        await load_test_data();
+      } catch (e) {
+        // We might want to provide this error information to an error reporting service
+        console.warn(e);
+      } finally {
+        setLoadingComplete(true);
+        SplashScreen.hideAsync();
+      }
+    }
+
+    loadResourcesAndDataAsync();
+  }, []);
+
+  return isLoadingComplete;
+}
