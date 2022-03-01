@@ -1,4 +1,4 @@
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 export default {
   // Produced by Clan leader and consumed by a User to produce ClanMember

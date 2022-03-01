@@ -1,4 +1,4 @@
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 // TODO. To Reassess below structs
 export default {

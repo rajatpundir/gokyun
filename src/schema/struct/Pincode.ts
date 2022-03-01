@@ -16,7 +16,7 @@ import {
   LogicalBinaryExpression,
   ToDeci,
 } from "../../lib/lisp";
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 // Also need to store pincode stats for each guild
 // This is to give a high level comparison of efficiency of various guilds

@@ -14,7 +14,7 @@ import {
   Subtract,
   ToNum,
 } from "../../lib/lisp";
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 export default {
   // This will be created after Listed_Alliance_Product_Family_Variant_Request is consumed by a function

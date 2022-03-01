@@ -1,4 +1,4 @@
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 export default {
   // This is consumed by a function and converted to AllianceMember or just deleted by another.

@@ -1,4 +1,4 @@
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 export default {
   // Also think about variations that can be applied to a product

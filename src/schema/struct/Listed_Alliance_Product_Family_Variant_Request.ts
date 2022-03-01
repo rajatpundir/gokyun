@@ -10,7 +10,7 @@ import {
   NumberComparatorExpression,
   ToNum,
 } from "../../lib/lisp";
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 export default {
   // This struct represents a request sent to user to allow/deny linking

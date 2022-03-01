@@ -19,7 +19,7 @@ import {
   ToDeci,
   ToNum,
 } from "../../lib/lisp";
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 export default {
   fields: {

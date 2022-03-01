@@ -9,7 +9,7 @@ import {
   ToText,
   Text,
 } from "../../lib/lisp";
-import { StructSchema } from "../struct";
+import { StructSchema } from ".";
 
 // Tag is same for all languages
 export default {
