@@ -1,4 +1,3 @@
-import { HashSet } from "prelude-ts";
 import { BooleanLispExpression } from "../../lib/lisp";
 import { errors, ErrMsg } from "../../lib/errors";
 import {
