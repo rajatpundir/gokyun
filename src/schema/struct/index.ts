@@ -173,11 +173,10 @@ const schema: Record<string, StructSchema> = {
 };
 
 export function get_struct(struct_name: string): Result<Struct> {
-  let structs: HashSet<Struct> = HashSet.of();
-  for (const structName in schema) {
-    const structDef = schema[structName];
+  if (struct_name in schema) {
+    const structDef = schema[struct_name];
     const struct: Struct = new Struct(
-      structName,
+      struct_name,
       {},
       structDef.uniqueness,
       structDef.permissions,
@@ -187,11 +186,7 @@ export function get_struct(struct_name: string): Result<Struct> {
     for (const fieldName in structDef.fields) {
       struct.fields[fieldName] = structDef.fields[fieldName];
     }
-    structs = structs.add(struct);
-  }
-  const struct = structs.filter((s) => s.name === struct_name).single();
-  if (struct.isSome()) {
-    return new Ok(struct.get());
+    return new Ok(struct);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
