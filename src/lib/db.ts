@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { HashSet, Option as OptionTS } from "prelude-ts";
+import { HashSet } from "prelude-ts";
 import * as SQLite from "expo-sqlite";
 import {
   apply,
@@ -22,7 +22,7 @@ import {
   Variable,
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import { get_structs } from "../schema/struct";
+import { get_struct } from "../schema/struct";
 
 // TODO. Replacing variable at some level should remove any removal at that level
 
@@ -1191,14 +1191,12 @@ export async function get_variables(
               const ref_struct_name = new String(
                 result[`${ref}._struct_name`]
               ).valueOf();
-              const ref_struct: OptionTS<Struct> = get_structs()
-                .filter((x) => x.name === ref_struct_name)
-                .single();
-              if (ref_struct.isSome()) {
+              const ref_struct = get_struct(ref_struct_name);
+              if (unwrap(ref_struct)) {
                 init_path.push([
                   field_name,
                   {
-                    struct: ref_struct.get(),
+                    struct: ref_struct.value,
                     id: new Decimal(result[`${ref}`]).truncated(),
                     created_at: new Date(result[`${ref}._created_at`]),
                     updated_at: new Date(result[`${ref}._updated_at`]),
