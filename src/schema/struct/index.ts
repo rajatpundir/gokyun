@@ -98,26 +98,32 @@ export type StructSchema = {
 const schema: Record<string, StructSchema> = {
   Test: Test,
   Test2: Test2,
-  Product_Category: Product_Category,
-  Product_Category_Translation: Product_Category_Translation,
-  Service_Category: Service_Category,
-  Service_Category_Translation: Service_Category_Translation,
-  Tag: Tag,
+
   Country: Country,
   Pincode: Pincode,
   PincodeStats: PincodeStats,
   Language: Language,
+  Tag: Tag,
   User: User,
+
+  Product_Category: Product_Category,
+  Product_Category_Translation: Product_Category_Translation,
+  Service_Category: Service_Category,
+  Service_Category_Translation: Service_Category_Translation,
+
   Wallet: Wallet,
+  User_Product_Family: User_Product_Family,
+  User_Product_Family_Property: User_Product_Family_Property,
+  User_Product_Family_Property_Value: User_Product_Family_Property_Value,
+  User_Product: User_Product,
+  User_Product_Translation: User_Product_Translation,
+  User_Product_Family_Variant: User_Product_Family_Variant,
+  User_Product_Family_Variant_Property_Value:
+    User_Product_Family_Variant_Property_Value,
+
   Alliance: Alliance,
-  Guild: Guild,
-  Clan: Clan,
   Alliance_Member_Request: Alliance_Member_Request,
-  Guild_Member_Request: Guild_Member_Request,
-  Clan_Member_Invite: Clan_Member_Invite,
   Alliance_Member: Alliance_Member,
-  Guild_Member: Guild_Member,
-  Clan_Member: Clan_Member,
   Alliance_Product_Family: Alliance_Product_Family,
   Alliance_Product_Family_Translation: Alliance_Product_Family_Translation,
   Alliance_Product_Family_Property: Alliance_Product_Family_Property,
@@ -135,14 +141,6 @@ const schema: Record<string, StructSchema> = {
     Alliance_Product_Family_Variant_Translation,
   Alliance_Product_Family_Variant_Property_Value:
     Alliance_Product_Family_Variant_Property_Value,
-  User_Product_Family: User_Product_Family,
-  User_Product_Family_Property: User_Product_Family_Property,
-  User_Product_Family_Property_Value: User_Product_Family_Property_Value,
-  User_Product: User_Product,
-  User_Product_Translation: User_Product_Translation,
-  User_Product_Family_Variant: User_Product_Family_Variant,
-  User_Product_Family_Variant_Property_Value:
-    User_Product_Family_Variant_Property_Value,
   Listed_Alliance_Product_Family_Variant_Request:
     Listed_Alliance_Product_Family_Variant_Request,
   Listed_Alliance_Product_Family_Variant:
@@ -159,6 +157,14 @@ const schema: Record<string, StructSchema> = {
   Alliance_Service_Provider: Alliance_Service_Provider,
   Alliance_Coupon: Alliance_Coupon,
   Alliance_Customer: Alliance_Customer,
+
+  Guild: Guild,
+  Guild_Member_Request: Guild_Member_Request,
+  Guild_Member: Guild_Member,
+
+  Clan: Clan,
+  Clan_Member_Invite: Clan_Member_Invite,
+  Clan_Member: Clan_Member,
   Clan_Product_Order_Draft: Clan_Product_Order_Draft,
   Clan_Product_Order_Draft_Item: Clan_Product_Order_Draft_Item,
   Clan_Product_Order: Clan_Product_Order,
