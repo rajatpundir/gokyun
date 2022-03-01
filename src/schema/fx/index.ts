@@ -1,6 +1,6 @@
-import { errors, ErrMsg } from "../lib/errors";
-import { Fx } from "../lib/fx";
-import { Result, Err, CustomError, Ok } from "../lib/prelude";
+import { errors, ErrMsg } from "../../lib/errors";
+import { Fx } from "../../lib/fx";
+import { Result, Err, CustomError, Ok } from "../../lib/prelude";
 
 const schema: Record<string, Fx> = {};
 
