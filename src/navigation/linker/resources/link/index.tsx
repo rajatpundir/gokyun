@@ -26,10 +26,6 @@ import { views } from "../../../../views";
 
 // Higher existence for searching via keywords
 
-// Get to implementing Transformer
-
-// Use MIME types
-
 // Distinct structs for private and public resources
 
 export default function Component(props: ParentNavigatorProps<"Link">) {
@@ -153,8 +149,6 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                     switch (resource.subtype) {
                       case "png":
                       case "jpeg":
-                      case "bmp":
-                      case "gif":
                       case "webp": {
                         return (
                           <Image

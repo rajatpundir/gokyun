@@ -131,7 +131,7 @@ export type Resource =
   | ({ url: string } & (
       | {
           type: "image";
-          subtype: "png" | "jpeg" | "bmp" | "gif" | "webp";
+          subtype: "png" | "jpeg" | "webp";
           width: number;
           height: number;
         }
@@ -152,8 +152,6 @@ export async function get_resource(url: URL): Promise<Resource> {
         switch (mime_subtype) {
           case "png":
           case "jpeg":
-          case "bmp":
-          case "gif":
           case "webp": {
             const [width, height] = await get_image_size(trimmed_url);
             return {
