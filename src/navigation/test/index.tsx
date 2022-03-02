@@ -3,7 +3,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as RootNavigatorProps } from "../main";
-import { get_struct } from "../../schema/struct";
+import { get_struct } from "../../schema";
 import { apply, arrow, unwrap } from "../../lib/prelude";
 import { views } from "../../views";
 import { DeleteButton, ModalHeader, useComponent } from "../../lib/component";

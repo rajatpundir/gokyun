@@ -24,7 +24,7 @@ import {
   Option,
   arrow,
 } from "./prelude";
-import { get_struct } from "../schema/struct";
+import { get_struct } from "../schema";
 import {
   Path,
   Variable,

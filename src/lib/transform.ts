@@ -6,7 +6,7 @@ import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs } from "./fx";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_struct } from "../schema/struct";
+import { get_struct } from "../schema";
 import {
   compare_paths,
   get_flattened_path,
@@ -14,8 +14,8 @@ import {
   PathString,
   StrongEnum,
 } from "./variable";
-import { get_compose } from "../schema/compose";
-import { get_fx } from "../schema/fx";
+import { get_compose } from "../schema";
+import { get_fx } from "../schema";
 
 type TrandformQuery =
   | {

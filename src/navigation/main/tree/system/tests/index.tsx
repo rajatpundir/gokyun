@@ -8,7 +8,7 @@ import { OtherComponent, SearchWrapper } from "../../../../../lib/component";
 import { OrFilter } from "../../../../../lib/db";
 import { List } from "../../../../../lib/list";
 import { unwrap } from "../../../../../lib/prelude";
-import { get_struct } from "../../../../../schema/struct";
+import { get_struct } from "../../../../../schema";
 import { views } from "../../../../../views";
 import { Fab, Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
