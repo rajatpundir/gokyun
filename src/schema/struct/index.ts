@@ -5,11 +5,11 @@ import {
   BooleanLispExpression,
   ErrMsg,
   Result,
-  Struct,
   Ok,
   Err,
   CustomError,
   errors,
+  Struct,
 } from "../../lib";
 
 import Test from "./test/Test";
@@ -21,6 +21,7 @@ import PincodeStats from "./system/PincodeStats";
 import Language from "./system/Language";
 import Tag from "./system/Tag";
 import User from "./system/User";
+import Resource_Type from "./system/Resource_Type";
 
 import Product_Category from "./user/Product_Category";
 import Product_Category_Translation from "./user/Product_Category_Translation";
@@ -34,6 +35,10 @@ import User_Product from "./user/User_Product";
 import User_Product_Translation from "./user/User_Product_Translation";
 import User_Product_Family_Variant from "./user/User_Product_Family_Variant";
 import User_Product_Family_Variant_Property_Value from "./user/User_Product_Family_Variant_Property_Value";
+import Private_Resource from "./user/Private_Resource";
+import Private_Resource_Tag from "./user/Private_Resource_Tag";
+import Public_Resource from "./user/Public_Resource";
+import Public_Resource_Tag from "./user/Public_Resource_Tag";
 
 import Alliance from "./alliance/Alliance";
 import Alliance_Member_Request from "./alliance/Alliance_Member_Request";
@@ -77,37 +82,6 @@ import Clan_Product_Order from "./clan/Clan_Product_Order";
 import Clan_Product_Order_Item from "./clan/Clan_Product_Order_Item";
 import Clan_Service_Order from "./clan/Clan_Service_Order";
 
-// All structs are created via Fx
-
-// Resource_Type {
-// 	type: string
-// 	subtype: string
-// }
-
-// Public_Resource {
-// 	resource_type: Resource_Type
-// 	url: string
-// 	user: User
-// }
-
-// Public_Resource_Tag {
-// 	public_resource: Public_Resource
-// 	tag: Tag
-// }
-
-// Private_Resource {
-// 	resource_type: Resource_Type
-// 	url: string
-// 	user: User
-// }
-
-// Private_Resource_Tag {
-// 	private_resource: Private_Resource
-// 	tag: Tag
-// }
-
-// fx to convert public resource to private resource and vice versa, along with their tags
-
 export type StructSchema = {
   fields: Record<string, WeakEnum>;
   uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
@@ -116,7 +90,7 @@ export type StructSchema = {
   checks: Record<string, [BooleanLispExpression, ErrMsg]>;
 };
 
-const schema: Record<string, StructSchema> = {
+const structs = {
   Test: Test,
   Test2: Test2,
 
@@ -126,6 +100,7 @@ const schema: Record<string, StructSchema> = {
   Language: Language,
   Tag: Tag,
   User: User,
+  Resource_Type: Resource_Type,
 
   Product_Category: Product_Category,
   Product_Category_Translation: Product_Category_Translation,
@@ -141,6 +116,10 @@ const schema: Record<string, StructSchema> = {
   User_Product_Family_Variant: User_Product_Family_Variant,
   User_Product_Family_Variant_Property_Value:
     User_Product_Family_Variant_Property_Value,
+  Private_Resource: Private_Resource,
+  Private_Resource_Tag: Private_Resource_Tag,
+  Public_Resource: Public_Resource,
+  Public_Resource_Tag: Public_Resource_Tag,
 
   Alliance: Alliance,
   Alliance_Member_Request: Alliance_Member_Request,
@@ -193,7 +172,11 @@ const schema: Record<string, StructSchema> = {
   Clan_Service_Order: Clan_Service_Order,
 };
 
-export function get_struct(struct_name: string): Result<Struct> {
+export type StructName = keyof typeof structs;
+
+const schema: Record<string, StructSchema> = structs;
+
+export function get_struct(struct_name: StructName): Result<Struct> {
   if (struct_name in schema) {
     const structDef = schema[struct_name];
     const struct: Struct = new Struct(

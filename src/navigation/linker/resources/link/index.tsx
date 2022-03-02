@@ -357,7 +357,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
 }
 
 export function ResourceComponent() {
-  const struct = get_struct("Resource");
+  const struct = get_struct("Resource_Type");
   if (unwrap(struct)) {
     const [state, dispatch, jsx] = useComponent({
       struct: struct.value,

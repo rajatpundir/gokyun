@@ -31,7 +31,7 @@ import {
   unwrap,
   unwrap_array,
 } from "./prelude";
-import { get_struct } from "../schema";
+import { get_struct, StructName } from "../schema";
 import {
   compare_paths,
   get_flattened_path,
@@ -241,7 +241,7 @@ export class Fx {
       for (const input_name of Object.keys(this.inputs)) {
         const input = this.inputs[input_name];
         if (input.type === "other" && input.updates !== undefined) {
-          const struct = get_struct(input.other);
+          const struct = get_struct(input.other as StructName);
           if (unwrap(struct)) {
             const paths: Array<Path> = [];
             for (const [path_string, expr] of input.updates) {
@@ -654,7 +654,7 @@ export class Fx {
           case "insert":
           case "insert_ignore":
           case "replace": {
-            const struct = get_struct(output.struct);
+            const struct = get_struct(output.struct as StructName);
             if (unwrap(struct)) {
               let variable: Variable | undefined = undefined;
               const paths: Array<Path> = [];
@@ -848,7 +848,9 @@ export class Fx {
                         )
                       );
                     } else {
-                      const other_struct = get_struct(path.path[1][1].other);
+                      const other_struct = get_struct(
+                        path.path[1][1].other as StructName
+                      );
                       if (unwrap(other_struct)) {
                         unique_constraint_filter_paths.push(
                           new FilterPath(
@@ -1092,7 +1094,9 @@ export class Fx {
                 switch (output.op) {
                   case "insert":
                   case "insert_ignore": {
-                    const result = await get_struct_counter(output.struct);
+                    const result = await get_struct_counter(
+                      output.struct as StructName
+                    );
                     await increment_struct_counter(output.struct);
                     if (unwrap(result)) {
                       const variable = new Variable(
@@ -1128,7 +1132,7 @@ export class Fx {
           case "delete_ignore": {
             // variable(s) found -> deletes, create removal record
             // variable(s) not found -> skip
-            const struct = get_struct(output.struct);
+            const struct = get_struct(output.struct as StructName);
             if (unwrap(struct)) {
               const filter_paths: Array<FilterPath> = [];
               // 1. process paths
@@ -1242,7 +1246,9 @@ export class Fx {
                       }
                       case "other": {
                         if (expr_result instanceof Num) {
-                          const other_struct = get_struct(field.other);
+                          const other_struct = get_struct(
+                            field.other as StructName
+                          );
                           if (unwrap(other_struct)) {
                             filter_paths.push(
                               new FilterPath(
@@ -1470,7 +1476,7 @@ export async function get_symbols_for_fx_compose_paths(
           // 1. filter paths which starts with input_name
           // 2. query db to get values
           // 3. use values to construct symbol and assign it here
-          const struct = get_struct(input.other);
+          const struct = get_struct(input.other as StructName);
           if (unwrap(struct)) {
             const result = unwrap_array(
               paths

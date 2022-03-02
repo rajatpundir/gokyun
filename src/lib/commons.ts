@@ -24,7 +24,7 @@ import {
   Option,
   arrow,
 } from "./prelude";
-import { get_struct } from "../schema";
+import { get_struct, StructName } from "../schema";
 import {
   Path,
   Variable,
@@ -502,7 +502,7 @@ export function get_filter_paths(
         break;
       }
       case "other": {
-        const other_struct = get_struct(field.other);
+        const other_struct = get_struct(field.other as StructName);
         if (unwrap(other_struct)) {
           filter_paths = filter_paths.add(
             apply(
@@ -1090,7 +1090,7 @@ export function get_path_with_type(
   if (field_name in struct.fields) {
     const field = struct.fields[field_name];
     if (check && field.type === "other") {
-      const other_struct = get_struct(field.other);
+      const other_struct = get_struct(field.other as StructName);
       if (unwrap(other_struct)) {
         return get_path_with_type(other_struct.value, [
           path[0].slice(1),
@@ -1099,7 +1099,7 @@ export function get_path_with_type(
       }
     } else {
       if (field.type === "other") {
-        const other_struct = get_struct(field.other);
+        const other_struct = get_struct(field.other as StructName);
         if (unwrap(other_struct)) {
           return new Ok([path, [field.type, other_struct.value]] as [
             PathString,

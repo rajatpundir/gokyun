@@ -22,7 +22,7 @@ import {
   Variable,
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import { get_struct } from "../schema";
+import { get_struct, StructName } from "../schema";
 
 // TODO. Replacing variable at some level should remove any removal at that level
 
@@ -1191,7 +1191,7 @@ export async function get_variables(
               const ref_struct_name = new String(
                 result[`${ref}._struct_name`]
               ).valueOf();
-              const ref_struct = get_struct(ref_struct_name);
+              const ref_struct = get_struct(ref_struct_name as StructName);
               if (unwrap(ref_struct)) {
                 init_path.push([
                   field_name,

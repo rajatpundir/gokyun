@@ -30,7 +30,7 @@ import {
   Struct,
   Variable,
 } from "./variable";
-import { get_struct } from "../schema";
+import { get_struct, StructName } from "../schema";
 import { CommonProps, List } from "./list";
 import { tw } from "./tailwind";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -1643,7 +1643,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const is_writeable = props.path.writeable && props.mode === "write";
   const sheet_ref = useRef<BottomSheetModal>(null);
   if (value.type === "other") {
-    const struct = get_struct(value.other);
+    const struct = get_struct(value.other as StructName);
     if (unwrap(struct)) {
       const list_props = {
         ...props,
@@ -1783,7 +1783,7 @@ function get_other_filter_paths(
   ];
   let filter_paths: HashSet<FilterPath> = HashSet.of();
   if (path.path[1][1].type === "other") {
-    const other_struct = get_struct(path.path[1][1].other);
+    const other_struct = get_struct(path.path[1][1].other as StructName);
     if (unwrap(other_struct)) {
       let filtered_permissions: HashSet<PathPermission> = HashSet.of();
       for (const permission of labeled_permissions) {
@@ -1840,7 +1840,7 @@ function get_other_filter_paths(
             break;
           }
           case "other": {
-            const other_struct = get_struct(field.other);
+            const other_struct = get_struct(field.other as StructName);
             if (unwrap(other_struct)) {
               filter_paths = filter_paths.add(
                 apply(

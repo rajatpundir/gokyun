@@ -9,7 +9,7 @@ import {
   unwrap_array,
   apply,
 } from "./prelude";
-import { get_struct } from "../schema";
+import { get_struct, StructName } from "../schema";
 import { get_strong_enum, PathString, StrongEnum, Struct } from "./variable";
 
 // Cache computed permissions for same input
@@ -82,7 +82,7 @@ function get_valid_user_path(
     if (field_name in struct.fields) {
       const field = struct.fields[field_name];
       if (field.type == "other") {
-        const next_struct = get_struct(field.other);
+        const next_struct = get_struct(field.other as StructName);
         if (unwrap(next_struct)) {
           const result = get_valid_user_path(
             next_struct.value,
@@ -124,7 +124,7 @@ function get_public_permissions(
         path_permissions = path_permissions.add(path_permission);
       }
       if (field.type === "other") {
-        const next_struct = get_struct(field.other);
+        const next_struct = get_struct(field.other as StructName);
         if (unwrap(next_struct)) {
           const nested_path_permissions = get_public_permissions(
             next_struct.value,
@@ -168,7 +168,7 @@ function get_user_path_permissions(
           path_permissions = path_permissions.remove(path_permission);
           path_permissions = path_permissions.add(path_permission);
           if (field.type === "other") {
-            const next_struct = get_struct(field.other);
+            const next_struct = get_struct(field.other as StructName);
             if (unwrap(next_struct)) {
               const nested_path_permissions = get_public_permissions(
                 next_struct.value,
@@ -194,7 +194,7 @@ function get_user_path_permissions(
             path_permissions = path_permissions.add(path_permission);
           }
           if (field.type === "other") {
-            const next_struct = get_struct(field.other);
+            const next_struct = get_struct(field.other as StructName);
             if (unwrap(next_struct)) {
               const nested_path_permissions = get_public_permissions(
                 next_struct.value,
@@ -271,7 +271,7 @@ function get_user_path_permissions(
         path_permissions = path_permissions.add(path_permission);
       }
       if (field.type === "other") {
-        const next_struct = get_struct(field.other);
+        const next_struct = get_struct(field.other as StructName);
         if (unwrap(next_struct)) {
           const nested_path_permissions = get_public_permissions(
             next_struct.value,

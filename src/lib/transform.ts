@@ -1,6 +1,6 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { get_fx, get_struct, get_compose } from "../schema";
+import { get_fx, get_struct, get_compose, StructName } from "../schema";
 import { get_path_with_type } from "./commons";
 import { ComposeArgs, ComposeResult } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";
@@ -81,7 +81,7 @@ export class Transform {
             // use query to get fields, spread args fields except those provided via query
             // spread args fields must be proven ownership over
             const query = this.query;
-            const result = get_struct(query.struct);
+            const result = get_struct(query.struct as StructName);
             if (unwrap(result)) {
               const struct = result.value;
               const filter_paths: Array<FilterPath> = [];
@@ -163,7 +163,9 @@ export class Transform {
                         arg.type === field.type &&
                         arg.other === field.other
                       ) {
-                        const other_struct = get_struct(field.other);
+                        const other_struct = get_struct(
+                          field.other as StructName
+                        );
                         if (unwrap(other_struct)) {
                           filter_paths.push(
                             new FilterPath(
@@ -254,7 +256,9 @@ export class Transform {
                         }
                         case "other": {
                           field.other;
-                          const other_struct = get_struct(field.other);
+                          const other_struct = get_struct(
+                            field.other as StructName
+                          );
                           if (unwrap(other_struct)) {
                             filter_paths.push(
                               new FilterPath(
@@ -674,7 +678,7 @@ export class Transform {
             // use query to get fields, spread args fields except those provided via query
             // spread args fields must be proven ownership over
             const query = this.query;
-            const result = get_struct(query.struct);
+            const result = get_struct(query.struct as StructName);
             if (unwrap(result)) {
               const struct = result.value;
               const filter_paths: Array<FilterPath> = [];
@@ -756,7 +760,9 @@ export class Transform {
                         arg.type === field.type &&
                         arg.other === field.other
                       ) {
-                        const other_struct = get_struct(field.other);
+                        const other_struct = get_struct(
+                          field.other as StructName
+                        );
                         if (unwrap(other_struct)) {
                           filter_paths.push(
                             new FilterPath(
@@ -847,7 +853,9 @@ export class Transform {
                         }
                         case "other": {
                           field.other;
-                          const other_struct = get_struct(field.other);
+                          const other_struct = get_struct(
+                            field.other as StructName
+                          );
                           if (unwrap(other_struct)) {
                             filter_paths.push(
                               new FilterPath(

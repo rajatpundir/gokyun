@@ -1,5 +1,11 @@
 import Decimal from "decimal.js";
-import { get_struct, get_fx, get_compose, get_transform } from "../schema";
+import {
+  get_struct,
+  get_fx,
+  get_compose,
+  get_transform,
+  StructName,
+} from "../schema";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
@@ -251,7 +257,7 @@ export class Compose {
                 }
               } else {
                 if (arg.type === input.type && arg.other === input.other) {
-                  const other_struct = get_struct(input.other);
+                  const other_struct = get_struct(input.other as StructName);
                   if (unwrap(other_struct)) {
                     computed_outputs[input_name] = {
                       type: arg.type,
@@ -281,7 +287,7 @@ export class Compose {
                     value: input.default,
                   } as StrongEnum;
                 } else {
-                  const other_struct = get_struct(input.other);
+                  const other_struct = get_struct(input.other as StructName);
                   if (unwrap(other_struct)) {
                     computed_outputs[input_name] = {
                       type: input.type,
@@ -1393,7 +1399,7 @@ export class Compose {
           const transform_query: TransformArgs["query"] = {};
           if (transform.query !== undefined) {
             for (const input_name of Object.keys(transform.query.map)) {
-              const struct = get_struct(transform.query.struct);
+              const struct = get_struct(transform.query.struct as StructName);
               if (unwrap(struct)) {
                 const result = get_path_with_type(
                   struct.value,
