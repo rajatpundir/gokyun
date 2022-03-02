@@ -1624,6 +1624,7 @@ export class AndFilter {
 }
 
 type Existence = {
+  path: PathString;
   struct: Struct;
   init_filter: OrFilter;
   filters: HashSet<AndFilter>;

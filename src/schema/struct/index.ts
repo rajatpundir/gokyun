@@ -75,16 +75,34 @@ import Clan_Service_Order from "./clan/Clan_Service_Order";
 
 // All structs are created via Fx
 
-// ResourceType {
-// 	name: string
+// Resource_Type {
+// 	type: string
+// 	subtype: string
 // }
 
-// Resource {
-// 	type: ResourceType
+// Public_Resource {
+// 	resource_type: Resource_Type
 // 	url: string
-//  name: string
-//  user: User
+// 	user: User
 // }
+
+// Public_Resource_Tag {
+// 	public_resource: Public_Resource
+// 	tag: Tag
+// }
+
+// Private_Resource {
+// 	resource_type: Resource_Type
+// 	url: string
+// 	user: User
+// }
+
+// Private_Resource_Tag {
+// 	private_resource: Private_Resource
+// 	tag: Tag
+// }
+
+// fx to convert public resource to private resource and vice versa, along with their tags
 
 export type StructSchema = {
   fields: Record<string, WeakEnum>;
