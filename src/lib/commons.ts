@@ -503,22 +503,20 @@ export function get_filter_paths(
       }
       case "other": {
         const other_struct = get_struct(field.other as StructName);
-        if (unwrap(other_struct)) {
-          filter_paths = filter_paths.add(
-            apply(
-              new FilterPath(
-                permission.label,
-                path_string,
-                [field.type, undefined, other_struct.value],
-                undefined
-              ),
-              (it) => {
-                it.active = true;
-                return it;
-              }
-            )
-          );
-        }
+        filter_paths = filter_paths.add(
+          apply(
+            new FilterPath(
+              permission.label,
+              path_string,
+              [field.type, undefined, other_struct],
+              undefined
+            ),
+            (it) => {
+              it.active = true;
+              return it;
+            }
+          )
+        );
         break;
       }
       default: {
@@ -1091,21 +1089,14 @@ export function get_path_with_type(
     const field = struct.fields[field_name];
     if (check && field.type === "other") {
       const other_struct = get_struct(field.other as StructName);
-      if (unwrap(other_struct)) {
-        return get_path_with_type(other_struct.value, [
-          path[0].slice(1),
-          path[1],
-        ]);
-      }
+      return get_path_with_type(other_struct, [path[0].slice(1), path[1]]);
     } else {
       if (field.type === "other") {
         const other_struct = get_struct(field.other as StructName);
-        if (unwrap(other_struct)) {
-          return new Ok([path, [field.type, other_struct.value]] as [
-            PathString,
-            [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
-          ]);
-        }
+        return new Ok([path, [field.type, other_struct]] as [
+          PathString,
+          [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
+        ]);
       } else {
         return new Ok([path, [field.type]] as [
           PathString,

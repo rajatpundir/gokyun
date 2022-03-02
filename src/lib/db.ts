@@ -1192,21 +1192,15 @@ export async function get_variables(
                 result[`${ref}._struct_name`]
               ).valueOf();
               const ref_struct = get_struct(ref_struct_name as StructName);
-              if (unwrap(ref_struct)) {
-                init_path.push([
-                  field_name,
-                  {
-                    struct: ref_struct.value,
-                    id: new Decimal(result[`${ref}`]).truncated(),
-                    created_at: new Date(result[`${ref}._created_at`]),
-                    updated_at: new Date(result[`${ref}._updated_at`]),
-                  },
-                ]);
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
-              }
+              init_path.push([
+                field_name,
+                {
+                  struct: ref_struct,
+                  id: new Decimal(result[`${ref}`]).truncated(),
+                  created_at: new Date(result[`${ref}._created_at`]),
+                  updated_at: new Date(result[`${ref}._updated_at`]),
+                },
+              ]);
             }
             const leaf: [string, StrongEnum] = arrow(() => {
               const ref: string = init.join(".");

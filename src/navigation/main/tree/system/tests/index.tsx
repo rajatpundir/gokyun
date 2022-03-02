@@ -8,7 +8,6 @@ import { views } from "../../../../../views";
 import { Fab, Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
 import {
-  unwrap,
   OrFilter,
   get_filter_paths,
   List,
@@ -18,80 +17,77 @@ import {
 
 export default function Component(props: ParentNavigatorProps<"Tests">) {
   const struct = get_struct("Test");
-  if (unwrap(struct)) {
-    return (
-      <>
-        <List
-          selected={new Decimal(-1)}
-          struct={struct.value}
-          level={undefined}
-          filters={[
-            new OrFilter(
-              0,
-              [false, undefined],
-              [false, undefined],
-              [false, undefined],
-              get_filter_paths(
-                struct.value,
-                [
-                  ["STR", [[], "str"]],
-                  ["LSTR", [[], "lstr"]],
-                  ["CLOB", [[], "clob"]],
-                  ["I32", [[], "i32"]],
-                  ["U32", [[], "u32"]],
-                  ["I64", [[], "i64"]],
-                  ["U64", [[], "u64"]],
-                  ["IDOUBLE", [[], "idouble"]],
-                  ["UDOUBLE", [[], "udouble"]],
-                  ["IDECIMAL", [[], "idecimal"]],
-                  ["UDECIMAL", [[], "udecimal"]],
-                  ["BOOL", [[], "bool"]],
-                  ["DATE", [[], "date"]],
-                  ["TIME", [[], "time"]],
-                  ["TIMESTAMP", [[], "timestamp"]],
-                  ["USER", [[], "user"]],
-                  ["USER NICKNAME", [["user"], "nickname"]],
-                ],
-                [],
-                []
-              )
-            ),
-            HashSet.of(),
-          ]}
-          limit={new Decimal(10)}
-          options={[
-            "list",
-            {
-              user_paths: [[[], "user"]],
-              borrows: [],
-              RenderElement: [
-                (props) => (
-                  <OtherComponent {...props} view={views.Test["Card"]} />
-                ),
-                {},
+  return (
+    <>
+      <List
+        selected={new Decimal(-1)}
+        struct={struct}
+        level={undefined}
+        filters={[
+          new OrFilter(
+            0,
+            [false, undefined],
+            [false, undefined],
+            [false, undefined],
+            get_filter_paths(
+              struct,
+              [
+                ["STR", [[], "str"]],
+                ["LSTR", [[], "lstr"]],
+                ["CLOB", [[], "clob"]],
+                ["I32", [[], "i32"]],
+                ["U32", [[], "u32"]],
+                ["I64", [[], "i64"]],
+                ["U64", [[], "u64"]],
+                ["IDOUBLE", [[], "idouble"]],
+                ["UDOUBLE", [[], "udouble"]],
+                ["IDECIMAL", [[], "idecimal"]],
+                ["UDECIMAL", [[], "udecimal"]],
+                ["BOOL", [[], "bool"]],
+                ["DATE", [[], "date"]],
+                ["TIME", [[], "time"]],
+                ["TIMESTAMP", [[], "timestamp"]],
+                ["USER", [[], "user"]],
+                ["USER NICKNAME", [["user"], "nickname"]],
               ],
-            },
-          ]}
-          RenderVariant={(props) => (
-            <SearchWrapper
-              {...props}
-              placeholder="STR"
-              path={[[], "str"]}
-              is_sorting_editable
-              is_filters_editable
-            />
-          )}
-        />
-        <Fab
-          onPress={() => props.navigation.navigate("Test", { id: -1 })}
-          icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
-          placement="bottom-right"
-          size={"md"}
-          p={"4"}
-          m={"2"}
-        />
-      </>
-    );
-  }
-  return <></>;
+              [],
+              []
+            )
+          ),
+          HashSet.of(),
+        ]}
+        limit={new Decimal(10)}
+        options={[
+          "list",
+          {
+            user_paths: [[[], "user"]],
+            borrows: [],
+            RenderElement: [
+              (props) => (
+                <OtherComponent {...props} view={views.Test["Card"]} />
+              ),
+              {},
+            ],
+          },
+        ]}
+        RenderVariant={(props) => (
+          <SearchWrapper
+            {...props}
+            placeholder="STR"
+            path={[[], "str"]}
+            is_sorting_editable
+            is_filters_editable
+          />
+        )}
+      />
+      <Fab
+        onPress={() => props.navigation.navigate("Test", { id: -1 })}
+        icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
+        placement="bottom-right"
+        size={"md"}
+        p={"4"}
+        m={"2"}
+      />
+    </>
+  );
 }

@@ -176,21 +176,18 @@ export type StructName = keyof typeof structs;
 
 const schema: Record<string, StructSchema> = structs;
 
-export function get_struct(struct_name: StructName): Result<Struct> {
-  if (struct_name in schema) {
-    const structDef = schema[struct_name];
-    const struct: Struct = new Struct(
-      struct_name,
-      {},
-      structDef.uniqueness,
-      structDef.permissions,
-      structDef.triggers,
-      structDef.checks
-    );
-    for (const fieldName in structDef.fields) {
-      struct.fields[fieldName] = structDef.fields[fieldName];
-    }
-    return new Ok(struct);
+export function get_struct(struct_name: StructName): Struct {
+  const structDef = schema[struct_name];
+  const struct: Struct = new Struct(
+    struct_name,
+    {},
+    structDef.uniqueness,
+    structDef.permissions,
+    structDef.triggers,
+    structDef.checks
+  );
+  for (const fieldName in structDef.fields) {
+    struct.fields[fieldName] = structDef.fields[fieldName];
   }
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+  return struct;
 }

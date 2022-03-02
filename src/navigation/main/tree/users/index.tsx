@@ -5,7 +5,6 @@ import { NavigatorProps as ParentNavigatorProps } from "..";
 import { get_struct } from "../../../../schema";
 import { views } from "../../../../views";
 import {
-  unwrap,
   OrFilter,
   get_filter_paths,
   OtherComponent,
@@ -17,67 +16,64 @@ export default function Component(
   props: ParentNavigatorProps<"Users">
 ): JSX.Element {
   const struct = get_struct("User");
-  if (unwrap(struct)) {
-    return (
-      <>
-        <List
-          selected={new Decimal(-1)}
-          struct={struct.value}
-          level={undefined}
-          filters={[
-            new OrFilter(
-              0,
-              [false, undefined],
-              [false, undefined],
-              [false, undefined],
-              get_filter_paths(
-                struct.value,
-                [
-                  ["Nickname", [[], "nickname"]],
-                  ["Knows english", [[], "knows_english"]],
-                  ["Mobile", [[], "mobile"]],
-                  ["Product Count", [[], "product_count"]],
-                ],
-                [],
-                []
-              )
-            ),
-            HashSet.of(),
-          ]}
-          limit={new Decimal(10)}
-          options={[
-            "list",
-            {
-              user_paths: [],
-              borrows: [],
-              RenderElement: [
-                (props) => (
+  return (
+    <>
+      <List
+        selected={new Decimal(-1)}
+        struct={struct}
+        level={undefined}
+        filters={[
+          new OrFilter(
+            0,
+            [false, undefined],
+            [false, undefined],
+            [false, undefined],
+            get_filter_paths(
+              struct,
+              [
+                ["Nickname", [[], "nickname"]],
+                ["Knows english", [[], "knows_english"]],
+                ["Mobile", [[], "mobile"]],
+                ["Product Count", [[], "product_count"]],
+              ],
+              [],
+              []
+            )
+          ),
+          HashSet.of(),
+        ]}
+        limit={new Decimal(10)}
+        options={[
+          "list",
+          {
+            user_paths: [],
+            borrows: [],
+            RenderElement: [
+              (props) => (
+                <OtherComponent {...props} view={views.User["Default"]} />
+              ),
+              {
+                ABC: (props) => (
                   <OtherComponent {...props} view={views.User["Default"]} />
                 ),
-                {
-                  ABC: (props) => (
-                    <OtherComponent {...props} view={views.User["Default"]} />
-                  ),
-                  DEF: (props) => (
-                    <OtherComponent {...props} view={views.User["Default"]} />
-                  ),
-                },
-              ],
-            },
-          ]}
-          RenderVariant={(props) => (
-            <SearchWrapper
-              {...props}
-              placeholder="Nickname"
-              path={[[], "nickname"]}
-              is_views_editable
-              is_sorting_editable
-              is_filters_editable
-            />
-          )}
-        />
-      </>
-    );
-  }
-  return <></>;
+                DEF: (props) => (
+                  <OtherComponent {...props} view={views.User["Default"]} />
+                ),
+              },
+            ],
+          },
+        ]}
+        RenderVariant={(props) => (
+          <SearchWrapper
+            {...props}
+            placeholder="Nickname"
+            path={[[], "nickname"]}
+            is_views_editable
+            is_sorting_editable
+            is_filters_editable
+          />
+        )}
+      />
+    </>
+  );
 }

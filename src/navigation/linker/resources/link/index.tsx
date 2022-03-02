@@ -358,27 +358,25 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
 
 export function ResourceComponent() {
   const struct = get_struct("Resource_Type");
-  if (unwrap(struct)) {
-    const [state, dispatch, jsx] = useComponent({
-      struct: struct.value,
-      id: new Decimal(-1),
-      created_at: new Date(),
-      updated_at: new Date(),
-      values: HashSet.of(),
-      init_values: HashSet.of(),
-      extensions: {},
-      labels: [
-        ["type", [[], "type"]],
-        ["type name", [["type"], "name"]],
-        ["url", [[], "lstr"]],
-        ["name", [[], "str"]],
-      ],
-      higher_structs: [],
-      user_paths: [[[], "user"]],
-      borrows: [],
-      create: views.Test["Default"].create,
-      update: views.Test["Default"].update,
-      show: views.Test["Default"].show,
-    });
-  }
+  const [state, dispatch, jsx] = useComponent({
+    struct: struct,
+    id: new Decimal(-1),
+    created_at: new Date(),
+    updated_at: new Date(),
+    values: HashSet.of(),
+    init_values: HashSet.of(),
+    extensions: {},
+    labels: [
+      ["type", [[], "type"]],
+      ["type name", [["type"], "name"]],
+      ["url", [[], "lstr"]],
+      ["name", [[], "str"]],
+    ],
+    higher_structs: [],
+    user_paths: [[[], "user"]],
+    borrows: [],
+    create: views.Test["Default"].create,
+    update: views.Test["Default"].update,
+    show: views.Test["Default"].show,
+  });
 }

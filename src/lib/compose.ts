@@ -258,17 +258,11 @@ export class Compose {
               } else {
                 if (arg.type === input.type && arg.other === input.other) {
                   const other_struct = get_struct(input.other as StructName);
-                  if (unwrap(other_struct)) {
-                    computed_outputs[input_name] = {
-                      type: arg.type,
-                      other: other_struct.value.name,
-                      value: arg.value,
-                    };
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
+                  computed_outputs[input_name] = {
+                    type: arg.type,
+                    other: other_struct.name,
+                    value: arg.value,
+                  };
                 } else {
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
@@ -288,17 +282,11 @@ export class Compose {
                   } as StrongEnum;
                 } else {
                   const other_struct = get_struct(input.other as StructName);
-                  if (unwrap(other_struct)) {
-                    computed_outputs[input_name] = {
-                      type: input.type,
-                      other: other_struct.value.name,
-                      value: input.default,
-                    };
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
+                  computed_outputs[input_name] = {
+                    type: input.type,
+                    other: other_struct.name,
+                    value: input.default,
+                  };
                 }
               } else {
                 return new Err(
@@ -1400,112 +1388,211 @@ export class Compose {
           if (transform.query !== undefined) {
             for (const input_name of Object.keys(transform.query.map)) {
               const struct = get_struct(transform.query.struct as StructName);
-              if (unwrap(struct)) {
-                const result = get_path_with_type(
-                  struct.value,
-                  transform.query.map[input_name]
-                );
-                if (unwrap(result)) {
-                  const field_struct_name = result.value[1];
-                  if (input_name in step.map.query) {
-                    const step_map = step.map.query[input_name];
-                    switch (step_map.type) {
-                      case "input": {
-                        const arg_name: string = step_map.value;
-                        if (arg_name in args) {
-                          const arg = args[arg_name];
-                          if (arg.type !== "other") {
-                            if (arg.type === field_struct_name[0]) {
-                              transform_query[input_name] = arrow(() => {
-                                switch (arg.type) {
-                                  case "str":
-                                  case "lstr":
-                                  case "clob": {
-                                    return {
-                                      type: arg.type,
-                                      value: arg.value,
-                                    };
-                                  }
-                                  case "i32":
-                                  case "u32":
-                                  case "i64":
-                                  case "u64": {
-                                    return {
-                                      type: arg.type,
-                                      value: arg.value,
-                                    };
-                                  }
-                                  case "idouble":
-                                  case "udouble":
-                                  case "idecimal":
-                                  case "udecimal": {
-                                    return {
-                                      type: arg.type,
-                                      value: arg.value,
-                                    };
-                                  }
-                                  case "bool": {
-                                    return {
-                                      type: arg.type,
-                                      value: arg.value,
-                                    };
-                                  }
-                                  case "date":
-                                  case "time":
-                                  case "timestamp": {
-                                    return {
-                                      type: arg.type,
-                                      value: arg.value,
-                                    };
-                                  }
-                                  default: {
-                                    const _exhaustiveCheck: never = arg;
-                                    return _exhaustiveCheck;
-                                  }
+              const result = get_path_with_type(
+                struct,
+                transform.query.map[input_name]
+              );
+              if (unwrap(result)) {
+                const field_struct_name = result.value[1];
+                if (input_name in step.map.query) {
+                  const step_map = step.map.query[input_name];
+                  switch (step_map.type) {
+                    case "input": {
+                      const arg_name: string = step_map.value;
+                      if (arg_name in args) {
+                        const arg = args[arg_name];
+                        if (arg.type !== "other") {
+                          if (arg.type === field_struct_name[0]) {
+                            transform_query[input_name] = arrow(() => {
+                              switch (arg.type) {
+                                case "str":
+                                case "lstr":
+                                case "clob": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
                                 }
-                              });
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
+                                case "i32":
+                                case "u32":
+                                case "i64":
+                                case "u64": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "idouble":
+                                case "udouble":
+                                case "idecimal":
+                                case "udecimal": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "bool": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                case "date":
+                                case "time":
+                                case "timestamp": {
+                                  return {
+                                    type: arg.type,
+                                    value: arg.value,
+                                  };
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = arg;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            });
                           } else {
-                            if (
-                              arg.type === field_struct_name[0] &&
-                              arg.other === field_struct_name[1].name
-                            ) {
-                              transform_query[input_name] = {
-                                type: field_struct_name[0],
-                                other: field_struct_name[1].name,
-                                value: arg.value,
-                                user_paths: arg.user_paths,
-                                borrows: arg.borrows,
-                              };
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
                           }
                         } else {
+                          if (
+                            arg.type === field_struct_name[0] &&
+                            arg.other === field_struct_name[1].name
+                          ) {
+                            transform_query[input_name] = {
+                              type: field_struct_name[0],
+                              other: field_struct_name[1].name,
+                              value: arg.value,
+                              user_paths: arg.user_paths,
+                              borrows: arg.borrows,
+                            };
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
                         }
-                        break;
+                      } else {
                       }
-                      case "fx": {
-                        const [step_ref, fx_output_name] = step_map.value as [
-                          string,
-                          string
-                        ];
-                        if (step_ref in step_outputs) {
-                          const step_output: StepOutput =
-                            step_outputs[step_ref];
-                          if (step_map.type === step_output.type) {
-                            if (fx_output_name in step_output.value) {
-                              const arg = step_output.value[fx_output_name];
+                      break;
+                    }
+                    case "fx": {
+                      const [step_ref, fx_output_name] = step_map.value as [
+                        string,
+                        string
+                      ];
+                      if (step_ref in step_outputs) {
+                        const step_output: StepOutput = step_outputs[step_ref];
+                        if (step_map.type === step_output.type) {
+                          if (fx_output_name in step_output.value) {
+                            const arg = step_output.value[fx_output_name];
+                            if (arg.type !== "other") {
+                              if (arg.type === field_struct_name[0]) {
+                                transform_query[input_name] = arrow(() => {
+                                  switch (arg.type) {
+                                    case "str":
+                                    case "lstr":
+                                    case "clob": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "i32":
+                                    case "u32":
+                                    case "i64":
+                                    case "u64": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "idouble":
+                                    case "udouble":
+                                    case "idecimal":
+                                    case "udecimal": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "bool": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    case "date":
+                                    case "time":
+                                    case "timestamp": {
+                                      return {
+                                        type: arg.type,
+                                        value: arg.value,
+                                      };
+                                    }
+                                    default: {
+                                      const _exhaustiveCheck: never = arg;
+                                      return _exhaustiveCheck;
+                                    }
+                                  }
+                                });
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
+                              }
+                            } else {
+                              if (
+                                arg.type === field_struct_name[0] &&
+                                arg.other === field_struct_name[1].name
+                              ) {
+                                transform_query[input_name] = {
+                                  type: field_struct_name[0],
+                                  other: field_struct_name[1].name,
+                                  value: arg.value,
+                                  user_paths: [],
+                                  borrows: [],
+                                };
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
+                              }
+                            }
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "compose": {
+                      const [step_ref, compose_output_name] =
+                        step_map.value as [string, string];
+                      if (step_ref in step_outputs) {
+                        const step_output: StepOutput = step_outputs[step_ref];
+                        if (step_map.type === step_output.type) {
+                          if (compose_output_name in step_output.value) {
+                            const value =
+                              step_output.value[compose_output_name];
+                            if (!Array.isArray(value)) {
+                              const arg: StrongEnum = value as StrongEnum;
                               if (arg.type !== "other") {
                                 if (arg.type === field_struct_name[0]) {
                                   transform_query[input_name] = arrow(() => {
@@ -1600,133 +1687,18 @@ export class Compose {
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
-                        break;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
                       }
-                      case "compose": {
-                        const [step_ref, compose_output_name] =
-                          step_map.value as [string, string];
-                        if (step_ref in step_outputs) {
-                          const step_output: StepOutput =
-                            step_outputs[step_ref];
-                          if (step_map.type === step_output.type) {
-                            if (compose_output_name in step_output.value) {
-                              const value =
-                                step_output.value[compose_output_name];
-                              if (!Array.isArray(value)) {
-                                const arg: StrongEnum = value as StrongEnum;
-                                if (arg.type !== "other") {
-                                  if (arg.type === field_struct_name[0]) {
-                                    transform_query[input_name] = arrow(() => {
-                                      switch (arg.type) {
-                                        case "str":
-                                        case "lstr":
-                                        case "clob": {
-                                          return {
-                                            type: arg.type,
-                                            value: arg.value,
-                                          };
-                                        }
-                                        case "i32":
-                                        case "u32":
-                                        case "i64":
-                                        case "u64": {
-                                          return {
-                                            type: arg.type,
-                                            value: arg.value,
-                                          };
-                                        }
-                                        case "idouble":
-                                        case "udouble":
-                                        case "idecimal":
-                                        case "udecimal": {
-                                          return {
-                                            type: arg.type,
-                                            value: arg.value,
-                                          };
-                                        }
-                                        case "bool": {
-                                          return {
-                                            type: arg.type,
-                                            value: arg.value,
-                                          };
-                                        }
-                                        case "date":
-                                        case "time":
-                                        case "timestamp": {
-                                          return {
-                                            type: arg.type,
-                                            value: arg.value,
-                                          };
-                                        }
-                                        default: {
-                                          const _exhaustiveCheck: never = arg;
-                                          return _exhaustiveCheck;
-                                        }
-                                      }
-                                    });
-                                  } else {
-                                    return new Err(
-                                      new CustomError([
-                                        errors.ErrUnexpected,
-                                      ] as ErrMsg)
-                                    );
-                                  }
-                                } else {
-                                  if (
-                                    arg.type === field_struct_name[0] &&
-                                    arg.other === field_struct_name[1].name
-                                  ) {
-                                    transform_query[input_name] = {
-                                      type: field_struct_name[0],
-                                      other: field_struct_name[1].name,
-                                      value: arg.value,
-                                      user_paths: [],
-                                      borrows: [],
-                                    };
-                                  } else {
-                                    return new Err(
-                                      new CustomError([
-                                        errors.ErrUnexpected,
-                                      ] as ErrMsg)
-                                    );
-                                  }
-                                }
-                              } else {
-                                return new Err(
-                                  new CustomError([
-                                    errors.ErrUnexpected,
-                                  ] as ErrMsg)
-                                );
-                              }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
-                          } else {
-                            return new Err(
-                              new CustomError([errors.ErrUnexpected] as ErrMsg)
-                            );
-                          }
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                        break;
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = step_map;
-                        return _exhaustiveCheck;
-                      }
+                      break;
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = step_map;
+                      return _exhaustiveCheck;
                     }
                   }
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
                 }
               } else {
                 return new Err(

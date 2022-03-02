@@ -83,24 +83,19 @@ function get_valid_user_path(
       const field = struct.fields[field_name];
       if (field.type == "other") {
         const next_struct = get_struct(field.other as StructName);
-        if (unwrap(next_struct)) {
-          const result = get_valid_user_path(
-            next_struct.value,
-            [init.slice(1), last],
-            borrowed
-          );
-          if (unwrap(result)) {
-            return new Ok([
-              apply(
-                [[field_name, next_struct.value] as [string, Struct]],
-                (it) => {
-                  return it.concat(result.value[0]);
-                }
-              ),
-              result.value[1],
-              borrowed,
-            ] as [Array<[string, Struct]>, string, boolean]);
-          }
+        const result = get_valid_user_path(
+          next_struct,
+          [init.slice(1), last],
+          borrowed
+        );
+        if (unwrap(result)) {
+          return new Ok([
+            apply([[field_name, next_struct] as [string, Struct]], (it) => {
+              return it.concat(result.value[0]);
+            }),
+            result.value[1],
+            borrowed,
+          ] as [Array<[string, Struct]>, string, boolean]);
         }
       }
     }
@@ -125,15 +120,13 @@ function get_public_permissions(
       }
       if (field.type === "other") {
         const next_struct = get_struct(field.other as StructName);
-        if (unwrap(next_struct)) {
-          const nested_path_permissions = get_public_permissions(
-            next_struct.value,
-            [...prefix, [field_name, next_struct.value]]
-          );
-          for (const permission of nested_path_permissions) {
-            if (!path_permissions.contains(permission)) {
-              path_permissions = path_permissions.add(permission);
-            }
+        const nested_path_permissions = get_public_permissions(next_struct, [
+          ...prefix,
+          [field_name, next_struct],
+        ]);
+        for (const permission of nested_path_permissions) {
+          if (!path_permissions.contains(permission)) {
+            path_permissions = path_permissions.add(permission);
           }
         }
       }
@@ -169,15 +162,13 @@ function get_user_path_permissions(
           path_permissions = path_permissions.add(path_permission);
           if (field.type === "other") {
             const next_struct = get_struct(field.other as StructName);
-            if (unwrap(next_struct)) {
-              const nested_path_permissions = get_public_permissions(
-                next_struct.value,
-                [...prefix, [field_name, next_struct.value]]
-              );
-              for (const permission of nested_path_permissions) {
-                if (!path_permissions.contains(permission)) {
-                  path_permissions = path_permissions.add(permission);
-                }
+            const nested_path_permissions = get_public_permissions(
+              next_struct,
+              [...prefix, [field_name, next_struct]]
+            );
+            for (const permission of nested_path_permissions) {
+              if (!path_permissions.contains(permission)) {
+                path_permissions = path_permissions.add(permission);
               }
             }
           }
@@ -195,15 +186,13 @@ function get_user_path_permissions(
           }
           if (field.type === "other") {
             const next_struct = get_struct(field.other as StructName);
-            if (unwrap(next_struct)) {
-              const nested_path_permissions = get_public_permissions(
-                next_struct.value,
-                [...prefix, [field_name, next_struct.value]]
-              );
-              for (const permission of nested_path_permissions) {
-                if (!path_permissions.contains(permission)) {
-                  path_permissions = path_permissions.add(permission);
-                }
+            const nested_path_permissions = get_public_permissions(
+              next_struct,
+              [...prefix, [field_name, next_struct]]
+            );
+            for (const permission of nested_path_permissions) {
+              if (!path_permissions.contains(permission)) {
+                path_permissions = path_permissions.add(permission);
               }
             }
           }
@@ -272,15 +261,13 @@ function get_user_path_permissions(
       }
       if (field.type === "other") {
         const next_struct = get_struct(field.other as StructName);
-        if (unwrap(next_struct)) {
-          const nested_path_permissions = get_public_permissions(
-            next_struct.value,
-            [...prefix, [field_name, next_struct.value]]
-          );
-          for (const permission of nested_path_permissions) {
-            if (!path_permissions.contains(permission)) {
-              path_permissions = path_permissions.add(permission);
-            }
+        const nested_path_permissions = get_public_permissions(next_struct, [
+          ...prefix,
+          [field_name, next_struct],
+        ]);
+        for (const permission of nested_path_permissions) {
+          if (!path_permissions.contains(permission)) {
+            path_permissions = path_permissions.add(permission);
           }
         }
       }

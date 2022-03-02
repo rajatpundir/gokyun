@@ -1644,118 +1644,116 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
   const sheet_ref = useRef<BottomSheetModal>(null);
   if (value.type === "other") {
     const struct = get_struct(value.other as StructName);
-    if (unwrap(struct)) {
-      const list_props = {
-        ...props,
-        selected: value.value,
-        struct: struct.value,
-        level: undefined,
-        filters: [
-          new OrFilter(
-            0,
-            [false, undefined],
-            [false, undefined],
-            [false, undefined],
-            get_other_filter_paths(
-              props.struct,
-              props.state,
-              props.path,
-              props.labels
-            )
-          ),
-          HashSet.of(),
-        ] as [OrFilter, HashSet<AndFilter>],
-        update_parent_values: (variable: Variable) =>
-          props.dispatch([
-            "values",
-            get_upscaled_paths(props.path, variable, props.state.labels),
-          ]),
-      };
-      switch (props.options[0]) {
-        case "list": {
+    const list_props = {
+      ...props,
+      selected: value.value,
+      struct: struct,
+      level: undefined,
+      filters: [
+        new OrFilter(
+          0,
+          [false, undefined],
+          [false, undefined],
+          [false, undefined],
+          get_other_filter_paths(
+            props.struct,
+            props.state,
+            props.path,
+            props.labels
+          )
+        ),
+        HashSet.of(),
+      ] as [OrFilter, HashSet<AndFilter>],
+      update_parent_values: (variable: Variable) =>
+        props.dispatch([
+          "values",
+          get_upscaled_paths(props.path, variable, props.state.labels),
+        ]),
+    };
+    switch (props.options[0]) {
+      case "list": {
+        const title: string = apply(props.options[1].title, (it) => {
+          if (it !== undefined) {
+            return it;
+          }
+          return "Select value";
+        });
+        if (is_writeable) {
+          return (
+            <Pressable
+              onPress={() => {
+                navigation.navigate("SelectionModal", {
+                  ...list_props,
+                  title: title,
+                });
+              }}
+            >
+              {apply(props.options[1].element, (it) => {
+                if (it !== undefined) {
+                  return it;
+                }
+                return <></>;
+              })}
+            </Pressable>
+          );
+        } else {
+          return apply(props.options[1].element, (it) => {
+            if (it !== undefined) {
+              return it;
+            }
+            return <></>;
+          });
+        }
+      }
+      case "menu": {
+        if (is_writeable) {
+          return <List {...list_props} />;
+        } else {
+          return (
+            <Row alignItems={"center"} pl={"1.5"} pr={"0"} py={"0.5"}>
+              {props.options[1].element}
+            </Row>
+          );
+        }
+      }
+      case "sheet": {
+        if (is_writeable) {
           const title: string = apply(props.options[1].title, (it) => {
             if (it !== undefined) {
               return it;
             }
             return "Select value";
           });
-          if (is_writeable) {
-            return (
+          const bsm_ref = props.options[1].bsm_ref
+            ? props.options[1].bsm_ref
+            : sheet_ref;
+          const options = [
+            props.options[0],
+            {
+              ...props.options[1],
+              title: title,
+              bsm_ref: bsm_ref,
+            },
+          ] as ["sheet", SheetVariantProps];
+          return (
+            <>
               <Pressable
                 onPress={() => {
-                  navigation.navigate("SelectionModal", {
-                    ...list_props,
-                    title: title,
-                  });
+                  bsm_ref.current?.present();
                 }}
               >
-                {apply(props.options[1].element, (it) => {
-                  if (it !== undefined) {
-                    return it;
-                  }
-                  return <></>;
-                })}
-              </Pressable>
-            );
-          } else {
-            return apply(props.options[1].element, (it) => {
-              if (it !== undefined) {
-                return it;
-              }
-              return <></>;
-            });
-          }
-        }
-        case "menu": {
-          if (is_writeable) {
-            return <List {...list_props} />;
-          } else {
-            return (
-              <Row alignItems={"center"} pl={"1.5"} pr={"0"} py={"0.5"}>
                 {props.options[1].element}
-              </Row>
-            );
-          }
+              </Pressable>
+              <List {...list_props} options={options} />
+            </>
+          );
+        } else {
+          return props.options[1].element;
         }
-        case "sheet": {
-          if (is_writeable) {
-            const title: string = apply(props.options[1].title, (it) => {
-              if (it !== undefined) {
-                return it;
-              }
-              return "Select value";
-            });
-            const bsm_ref = props.options[1].bsm_ref
-              ? props.options[1].bsm_ref
-              : sheet_ref;
-            const options = [
-              props.options[0],
-              {
-                ...props.options[1],
-                title: title,
-                bsm_ref: bsm_ref,
-              },
-            ] as ["sheet", SheetVariantProps];
-            return (
-              <>
-                <Pressable
-                  onPress={() => {
-                    bsm_ref.current?.present();
-                  }}
-                >
-                  {props.options[1].element}
-                </Pressable>
-                <List {...list_props} options={options} />
-              </>
-            );
-          } else {
-            return props.options[1].element;
-          }
-        }
-        default: {
-          const _exhaustiveCheck: never = props.options[0];
-          return _exhaustiveCheck;
-        }
+      }
+      default: {
+        const _exhaustiveCheck: never = props.options[0];
+        return _exhaustiveCheck;
       }
     }
   }
@@ -1784,89 +1782,84 @@ function get_other_filter_paths(
   let filter_paths: HashSet<FilterPath> = HashSet.of();
   if (path.path[1][1].type === "other") {
     const other_struct = get_struct(path.path[1][1].other as StructName);
-    if (unwrap(other_struct)) {
-      let filtered_permissions: HashSet<PathPermission> = HashSet.of();
-      for (const permission of labeled_permissions) {
-        const permission_path_prefix: ReadonlyArray<string> =
-          permission.path[0].map((x) => x[0]);
-        let check = true;
-        for (const [index, field_name] of path_prefix.entries()) {
-          if (permission_path_prefix[index] !== field_name) {
-            check = false;
-            break;
-          }
-        }
-        if (check) {
-          filtered_permissions = filtered_permissions.add(permission);
+    let filtered_permissions: HashSet<PathPermission> = HashSet.of();
+    for (const permission of labeled_permissions) {
+      const permission_path_prefix: ReadonlyArray<string> =
+        permission.path[0].map((x) => x[0]);
+      let check = true;
+      for (const [index, field_name] of path_prefix.entries()) {
+        if (permission_path_prefix[index] !== field_name) {
+          check = false;
+          break;
         }
       }
-
-      for (const permission of filtered_permissions) {
-        const path_string: PathString = [
-          permission.path[0].slice(path_prefix.length).map((x) => x[0]),
-          permission.path[1][0],
-        ];
-        const field: StrongEnum = permission.path[1][1];
-        switch (field.type) {
-          case "str":
-          case "lstr":
-          case "clob":
-          case "i32":
-          case "u32":
-          case "i64":
-          case "u64":
-          case "idouble":
-          case "udouble":
-          case "idecimal":
-          case "udecimal":
-          case "bool":
-          case "date":
-          case "time":
-          case "timestamp": {
-            filter_paths = filter_paths.add(
-              apply(
-                new FilterPath(
-                  permission.label,
-                  path_string,
-                  [field.type, undefined],
-                  undefined
-                ),
-                (it) => {
-                  it.active = true;
-                  return it;
-                }
-              )
-            );
-            break;
-          }
-          case "other": {
-            const other_struct = get_struct(field.other as StructName);
-            if (unwrap(other_struct)) {
-              filter_paths = filter_paths.add(
-                apply(
-                  new FilterPath(
-                    permission.label,
-                    path_string,
-                    [field.type, undefined, other_struct.value],
-                    undefined
-                  ),
-                  (it) => {
-                    it.active = true;
-                    return it;
-                  }
-                )
-              );
-            }
-            break;
-          }
-          default: {
-            const _exhaustiveCheck: never = field;
-            return _exhaustiveCheck;
-          }
-        }
+      if (check) {
+        filtered_permissions = filtered_permissions.add(permission);
       }
-      return filter_paths;
     }
+    for (const permission of filtered_permissions) {
+      const path_string: PathString = [
+        permission.path[0].slice(path_prefix.length).map((x) => x[0]),
+        permission.path[1][0],
+      ];
+      const field: StrongEnum = permission.path[1][1];
+      switch (field.type) {
+        case "str":
+        case "lstr":
+        case "clob":
+        case "i32":
+        case "u32":
+        case "i64":
+        case "u64":
+        case "idouble":
+        case "udouble":
+        case "idecimal":
+        case "udecimal":
+        case "bool":
+        case "date":
+        case "time":
+        case "timestamp": {
+          filter_paths = filter_paths.add(
+            apply(
+              new FilterPath(
+                permission.label,
+                path_string,
+                [field.type, undefined],
+                undefined
+              ),
+              (it) => {
+                it.active = true;
+                return it;
+              }
+            )
+          );
+          break;
+        }
+        case "other": {
+          const other_struct = get_struct(field.other as StructName);
+          filter_paths = filter_paths.add(
+            apply(
+              new FilterPath(
+                permission.label,
+                path_string,
+                [field.type, undefined, other_struct],
+                undefined
+              ),
+              (it) => {
+                it.active = true;
+                return it;
+              }
+            )
+          );
+          break;
+        }
+        default: {
+          const _exhaustiveCheck: never = field;
+          return _exhaustiveCheck;
+        }
+      }
+    }
+    return filter_paths;
   }
   return filter_paths;
 }
