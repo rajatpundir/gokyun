@@ -6,7 +6,7 @@ import {
   NumberArithmeticExpression,
   Subtract,
   ToNum,
-} from "../../../lib/lisp";
+} from "../../../lib";
 import { StructSchema } from "..";
 
 export default {

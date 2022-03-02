@@ -1,4 +1,4 @@
-import { errors, ErrMsg } from "../../../lib/errors";
+import { errors, ErrMsg } from "../../../lib";
 import {
   DotExpression,
   Dot,
@@ -13,7 +13,7 @@ import {
   NumberArithmeticExpression,
   Subtract,
   ToNum,
-} from "../../../lib/lisp";
+} from "../../../lib";
 import { StructSchema } from "..";
 
 export default {

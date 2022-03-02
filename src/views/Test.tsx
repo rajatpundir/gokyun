@@ -14,22 +14,17 @@ import {
   DeleteButton,
   OtherComponent,
   SearchWrapper,
-} from "../lib/component";
-import { Field } from "../lib/field";
-import { Template } from "../lib/templates";
-import { apply, arrow, unwrap } from "../lib/prelude";
-import {
-  compare_paths,
-  get_path_string,
-  Path,
-  Variable,
-} from "../lib/variable";
-import { get_path } from "../lib/commons";
+} from "../lib";
+import { Field } from "../lib";
+import { Template } from "../lib";
+import { apply, arrow, unwrap } from "../lib";
+import { compare_paths, get_path_string, Path, Variable } from "../lib";
+import { get_path } from "../lib";
 import UserViews from "./User";
-import { RenderListVariantProps, RenderListElement } from "../lib/list";
-import { useTheme, useBSTheme } from "../lib/theme";
-import { get_struct_counter, increment_struct_counter } from "../lib/db";
-import { replace_variable, remove_variables_in_db } from "../lib/db_variables";
+import { RenderListVariantProps, RenderListElement } from "../lib";
+import { useTheme, useBSTheme } from "../lib";
+import { get_struct_counter, increment_struct_counter } from "../lib";
+import { replace_variable, remove_variables_in_db } from "../lib";
 import { HashSet } from "prelude-ts";
 import { cloneDeep } from "lodash";
 

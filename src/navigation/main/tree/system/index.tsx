@@ -21,7 +21,7 @@ import Categories from "./categories";
 import Tests from "./tests";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { tw } from "../../../../lib/tailwind";
+import { tw } from "../../../../lib";
 
 export type NavigatorParams = {
   Countries: undefined;

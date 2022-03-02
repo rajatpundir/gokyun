@@ -1,6 +1,6 @@
-import { errors, ErrMsg } from "../../lib/errors";
-import { Result, Err, CustomError, Ok } from "../../lib/prelude";
-import { Transform } from "../../lib/transform";
+import { errors, ErrMsg } from "../../lib";
+import { Result, Err, CustomError, Ok } from "../../lib";
+import { Transform } from "../../lib";
 
 const schema: Record<string, Transform> = {};
 

@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { errors, ErrMsg } from "../../../lib/errors";
+import { errors, ErrMsg } from "../../../lib";
 import {
   DotExpression,
   Dot,
@@ -9,7 +9,7 @@ import {
   TextComparatorExpression,
   ToText,
   Text,
-} from "../../../lib/lisp";
+} from "../../../lib";
 import { StructSchema } from "..";
 
 export default {

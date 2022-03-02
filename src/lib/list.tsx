@@ -58,7 +58,7 @@ export type ListAction =
   | ["reload"]
   | ["remove", Array<number>];
 
-export function reducer(state: Draft<ListState>, action: ListAction) {
+function reducer(state: Draft<ListState>, action: ListAction) {
   switch (action[0]) {
     case "variables": {
       if (state.offset.equals(0)) {
