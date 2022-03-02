@@ -1,22 +1,23 @@
 import Decimal from "decimal.js";
-import { errors, ErrMsg } from "../../../lib";
+import { StructSchema } from "..";
 import {
-  DotExpression,
-  Dot,
-  Equals,
   LogicalUnaryExpression,
   Not,
   TextComparatorExpression,
+  Equals,
   ToText,
-  Text,
+  DotExpression,
+  Dot,
+  errors,
+  ErrMsg,
+  LogicalBinaryExpression,
   And,
-  Deci,
   DecimalComparatorExpression,
   GreaterThanEquals,
-  LogicalBinaryExpression,
   ToDeci,
+  Deci,
+  Text,
 } from "../../../lib";
-import { StructSchema } from "..";
 
 // Also need to store pincode stats for each guild
 // This is to give a high level comparison of efficiency of various guilds

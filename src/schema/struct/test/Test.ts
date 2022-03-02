@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { errors, ErrMsg } from "../../../lib";
+import { StructSchema } from "..";
 import {
   NumberArithmeticExpression,
   Multiply,
@@ -12,8 +12,9 @@ import {
   Equals,
   Modulus,
   Num,
+  errors,
+  ErrMsg,
 } from "../../../lib";
-import { StructSchema } from "..";
 
 export default {
   fields: {

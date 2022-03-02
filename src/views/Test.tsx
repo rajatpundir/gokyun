@@ -9,24 +9,33 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { ScrollView, Row, Text, Pressable, Column } from "native-base";
-import {
-  ComponentViews,
-  DeleteButton,
-  OtherComponent,
-  SearchWrapper,
-} from "../lib";
-import { Field } from "../lib";
-import { Template } from "../lib";
-import { apply, arrow, unwrap } from "../lib";
-import { compare_paths, get_path_string, Path, Variable } from "../lib";
-import { get_path } from "../lib";
 import UserViews from "./User";
-import { RenderListVariantProps, RenderListElement } from "../lib";
-import { useTheme, useBSTheme } from "../lib";
-import { get_struct_counter, increment_struct_counter } from "../lib";
-import { replace_variable, remove_variables_in_db } from "../lib";
 import { HashSet } from "prelude-ts";
 import { cloneDeep } from "lodash";
+import {
+  ComponentViews,
+  useBSTheme,
+  Template,
+  arrow,
+  get_path,
+  unwrap,
+  Field,
+  OtherComponent,
+  RenderListElement,
+  RenderListVariantProps,
+  SearchWrapper,
+  compare_paths,
+  get_path_string,
+  replace_variable,
+  Variable,
+  increment_struct_counter,
+  get_struct_counter,
+  DeleteButton,
+  remove_variables_in_db,
+  useTheme,
+  apply,
+  Path,
+} from "../lib";
 
 const views = {
   User: UserViews,

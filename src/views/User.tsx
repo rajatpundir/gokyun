@@ -1,9 +1,6 @@
 import React from "react";
 import { Column, Pressable, Row, Text } from "native-base";
-import { ComponentViews } from "../lib";
-import { Template } from "../lib";
-import { arrow } from "../lib";
-import { useTheme } from "../lib";
+import { ComponentViews, arrow, Template, useTheme } from "../lib";
 
 const views = {};
 

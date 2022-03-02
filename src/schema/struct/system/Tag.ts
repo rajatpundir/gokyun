@@ -1,15 +1,16 @@
-import { errors, ErrMsg } from "../../../lib";
+import { StructSchema } from "..";
 import {
-  DotExpression,
-  Dot,
-  Equals,
   LogicalUnaryExpression,
   Not,
   TextComparatorExpression,
+  Equals,
   ToText,
+  DotExpression,
+  Dot,
+  errors,
+  ErrMsg,
   Text,
 } from "../../../lib";
-import { StructSchema } from "..";
 
 // Tag is same for all languages
 export default {
