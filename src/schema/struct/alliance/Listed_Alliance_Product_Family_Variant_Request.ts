@@ -1,16 +1,17 @@
-import { errors, ErrMsg } from "../../../lib";
+import { StructSchema } from "..";
 import {
+  ToNum,
   DotExpression,
   Dot,
   Equals,
+  errors,
+  ErrMsg,
   And,
   GreaterThanEquals,
   LessThanEquals,
   LogicalBinaryExpression,
   NumberComparatorExpression,
-  ToNum,
 } from "../../../lib";
-import { StructSchema } from "..";
 
 export default {
   // This struct represents a request sent to user to allow/deny linking

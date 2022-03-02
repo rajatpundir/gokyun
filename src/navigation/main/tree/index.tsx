@@ -19,8 +19,7 @@ import Alliances from "./alliances";
 import Guilds from "./guilds";
 import Users from "./users";
 import System from "./system";
-import { AppHeader } from "../../../lib";
-import { tw } from "../../../lib";
+import { AppHeader, tw } from "../../../lib";
 
 export type NavigatorParams = {
   Clans: undefined;

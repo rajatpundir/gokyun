@@ -1,6 +1,12 @@
-import { Compose } from "../../lib";
-import { errors, ErrMsg } from "../../lib";
-import { Result, Err, CustomError, Ok } from "../../lib";
+import {
+  Compose,
+  Result,
+  Ok,
+  Err,
+  CustomError,
+  errors,
+  ErrMsg,
+} from "../../lib";
 
 const schema: Record<string, Compose> = {};
 

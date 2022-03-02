@@ -1,23 +1,24 @@
 import Decimal from "decimal.js";
-import { errors, ErrMsg } from "../../../lib";
+import { StructSchema } from "..";
 import {
+  NumberArithmeticExpression,
+  Add,
+  ToNum,
   DotExpression,
   Dot,
-  Equals,
+  Num,
+  Subtract,
   LogicalUnaryExpression,
   Not,
   TextComparatorExpression,
+  Equals,
   ToText,
+  errors,
+  ErrMsg,
   Text,
-  Add,
-  LessThanEquals,
-  Num,
-  NumberArithmeticExpression,
   NumberComparatorExpression,
-  Subtract,
-  ToNum,
+  LessThanEquals,
 } from "../../../lib";
-import { StructSchema } from "..";
 
 export default {
   fields: {

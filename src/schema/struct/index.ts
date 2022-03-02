@@ -1,7 +1,16 @@
-import { BooleanLispExpression } from "../../lib";
-import { errors, ErrMsg } from "../../lib";
-import { Struct, StructPermissions, StructTrigger, WeakEnum } from "../../lib";
-import { CustomError, Err, Ok, Result } from "../../lib";
+import {
+  WeakEnum,
+  StructPermissions,
+  StructTrigger,
+  BooleanLispExpression,
+  ErrMsg,
+  Result,
+  Struct,
+  Ok,
+  Err,
+  CustomError,
+  errors,
+} from "../../lib";
 
 import Test from "./test/Test";
 import Test2 from "./test/Test2";

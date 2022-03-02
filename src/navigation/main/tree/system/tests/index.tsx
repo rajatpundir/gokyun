@@ -3,15 +3,18 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import { get_filter_paths } from "../../../../../lib";
-import { OtherComponent, SearchWrapper } from "../../../../../lib";
-import { OrFilter } from "../../../../../lib";
-import { List } from "../../../../../lib";
-import { unwrap } from "../../../../../lib";
 import { get_struct } from "../../../../../schema";
 import { views } from "../../../../../views";
 import { Fab, Icon } from "native-base";
 import { AntDesign } from "@expo/vector-icons";
+import {
+  unwrap,
+  OrFilter,
+  get_filter_paths,
+  List,
+  OtherComponent,
+  SearchWrapper,
+} from "../../../../../lib";
 
 export default function Component(props: ParentNavigatorProps<"Tests">) {
   const struct = get_struct("Test");
