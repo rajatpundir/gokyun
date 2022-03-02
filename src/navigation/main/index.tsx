@@ -32,10 +32,10 @@ import {
   useRNPTheme,
   tw,
   SelectionModal,
-  load_test_data,
   Path,
   useTheme,
 } from "../../lib";
+import { load_data } from "../../schema";
 
 // Ignore react navigation error related to serializability of props passed
 
@@ -133,7 +133,7 @@ function useAssets() {
           ...FontAwesome.font,
           "space-mono": require("../../../assets/fonts/SpaceMono-Regular.ttf"),
         });
-        await load_test_data();
+        await load_data();
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);

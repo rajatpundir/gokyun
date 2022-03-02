@@ -1,10 +1,9 @@
+import { test_ids } from "./struct/test/Test";
+import { resource_type_ids } from "./struct/system/Resource_Type";
+import { user_ids } from "./struct/system/User";
+
 export const ids = {
-  ResourceType: {
-    png: 0,
-    jpeg: 1,
-    webp: 2,
-    mp4: 3,
-    pdf: 4,
-    youtube: 5,
-  },
+  ...user_ids,
+  ...test_ids,
+  ...resource_type_ids,
 };
