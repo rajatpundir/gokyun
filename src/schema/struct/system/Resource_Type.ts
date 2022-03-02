@@ -12,7 +12,6 @@ import {
   errors,
   ErrMsg,
   Text,
-  unwrap,
   Variable,
   Path,
   replace_variable,
@@ -99,31 +98,26 @@ export const resource_type_ids = {
 
 export async function load_resource_type() {
   const struct = get_struct("Resource_Type");
-  if (unwrap(struct)) {
-    for (let key of Object.keys(resource_type_ids.ResourceType)) {
-      const value =
-        resource_type_ids.ResourceType[
-          key as keyof typeof resource_type_ids.ResourceType
-        ];
-      await replace_variable(
-        value._id,
-        new Variable(
-          struct.value,
-          new Decimal(1),
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("type", [
-              [],
-              ["type", { type: "str", value: value.type }],
-            ]),
-            new Path("subtype", [
-              [],
-              ["subtype", { type: "str", value: value.subtype }],
-            ]),
-          ])
-        )
-      );
-    }
+  for (let key of Object.keys(resource_type_ids.ResourceType)) {
+    const value =
+      resource_type_ids.ResourceType[
+        key as keyof typeof resource_type_ids.ResourceType
+      ];
+    await replace_variable(
+      value._id,
+      new Variable(
+        struct,
+        new Decimal(1),
+        new Date(),
+        new Date(),
+        HashSet.ofIterable([
+          new Path("type", [[], ["type", { type: "str", value: value.type }]]),
+          new Path("subtype", [
+            [],
+            ["subtype", { type: "str", value: value.subtype }],
+          ]),
+        ])
+      )
+    );
   }
 }

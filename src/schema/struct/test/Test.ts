@@ -17,7 +17,6 @@ import {
   ErrMsg,
   Path,
   replace_variable,
-  unwrap,
   Variable,
 } from "../../../lib";
 import { user_ids } from "../system/User";
@@ -175,69 +174,52 @@ export const test_ids = {
 
 export async function load_test() {
   const struct = get_struct("Test");
-  if (unwrap(struct)) {
-    for (let key of Object.keys(test_ids.Test)) {
-      const value = test_ids.Test[key as keyof typeof test_ids.Test];
-      await replace_variable(
-        value._id,
-        new Variable(
-          struct.value,
-          new Decimal(1),
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("STR", [[], ["str", { type: "str", value: value.str }]]),
-            new Path("LSTR", [
-              [],
-              ["lstr", { type: "lstr", value: value.lstr }],
-            ]),
-            new Path("CLOB", [
-              [],
-              ["clob", { type: "clob", value: value.clob }],
-            ]),
-            new Path("U32", [[], ["u32", { type: "u32", value: value.u32 }]]),
-            new Path("I32", [[], ["i32", { type: "i32", value: value.i32 }]]),
-            new Path("U64", [[], ["u64", { type: "u64", value: value.u64 }]]),
-            new Path("I64", [[], ["i64", { type: "i64", value: value.i64 }]]),
-            new Path("UDOUBLE", [
-              [],
-              ["udouble", { type: "udouble", value: value.udouble }],
-            ]),
-            new Path("IDOUBLE", [
-              [],
-              ["idouble", { type: "idouble", value: value.idouble }],
-            ]),
-            new Path("UDECIMAL", [
-              [],
-              ["udecimal", { type: "udecimal", value: value.udecimal }],
-            ]),
-            new Path("IDECIMAL", [
-              [],
-              ["idecimal", { type: "idecimal", value: value.idecimal }],
-            ]),
-            new Path("BOOL", [
-              [],
-              ["bool", { type: "bool", value: value.bool }],
-            ]),
-            new Path("DATE", [
-              [],
-              ["date", { type: "date", value: value.date }],
-            ]),
-            new Path("TIME", [
-              [],
-              ["time", { type: "time", value: value.time }],
-            ]),
-            new Path("TIMESTAMP", [
-              [],
-              ["timestamp", { type: "timestamp", value: value.timestamp }],
-            ]),
-            new Path("USER", [
-              [],
-              ["user", { type: "other", other: "User", value: value.user }],
-            ]),
-          ])
-        )
-      );
-    }
+  for (let key of Object.keys(test_ids.Test)) {
+    const value = test_ids.Test[key as keyof typeof test_ids.Test];
+    await replace_variable(
+      value._id,
+      new Variable(
+        struct,
+        new Decimal(1),
+        new Date(),
+        new Date(),
+        HashSet.ofIterable([
+          new Path("STR", [[], ["str", { type: "str", value: value.str }]]),
+          new Path("LSTR", [[], ["lstr", { type: "lstr", value: value.lstr }]]),
+          new Path("CLOB", [[], ["clob", { type: "clob", value: value.clob }]]),
+          new Path("U32", [[], ["u32", { type: "u32", value: value.u32 }]]),
+          new Path("I32", [[], ["i32", { type: "i32", value: value.i32 }]]),
+          new Path("U64", [[], ["u64", { type: "u64", value: value.u64 }]]),
+          new Path("I64", [[], ["i64", { type: "i64", value: value.i64 }]]),
+          new Path("UDOUBLE", [
+            [],
+            ["udouble", { type: "udouble", value: value.udouble }],
+          ]),
+          new Path("IDOUBLE", [
+            [],
+            ["idouble", { type: "idouble", value: value.idouble }],
+          ]),
+          new Path("UDECIMAL", [
+            [],
+            ["udecimal", { type: "udecimal", value: value.udecimal }],
+          ]),
+          new Path("IDECIMAL", [
+            [],
+            ["idecimal", { type: "idecimal", value: value.idecimal }],
+          ]),
+          new Path("BOOL", [[], ["bool", { type: "bool", value: value.bool }]]),
+          new Path("DATE", [[], ["date", { type: "date", value: value.date }]]),
+          new Path("TIME", [[], ["time", { type: "time", value: value.time }]]),
+          new Path("TIMESTAMP", [
+            [],
+            ["timestamp", { type: "timestamp", value: value.timestamp }],
+          ]),
+          new Path("USER", [
+            [],
+            ["user", { type: "other", other: "User", value: value.user }],
+          ]),
+        ])
+      )
+    );
   }
 }

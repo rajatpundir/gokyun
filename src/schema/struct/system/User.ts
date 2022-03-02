@@ -14,7 +14,6 @@ import {
   Text,
   Path,
   replace_variable,
-  unwrap,
   Variable,
 } from "../../../lib";
 
@@ -104,36 +103,34 @@ export const user_ids = {
 
 export async function load_user() {
   const struct = get_struct("User");
-  if (unwrap(struct)) {
-    for (let key of Object.keys(user_ids.User)) {
-      const value = user_ids.User[key as keyof typeof user_ids.User];
-      await replace_variable(
-        value._id,
-        new Variable(
-          struct.value,
-          new Decimal(1),
-          new Date(),
-          new Date(),
-          HashSet.ofIterable([
-            new Path("NICKNAME", [
-              [],
-              ["nickname", { type: "str", value: value.nickname }],
-            ]),
-            new Path("MOBILE", [
-              [],
-              ["mobile", { type: "str", value: value.mobile }],
-            ]),
-            new Path("KNOWS ENGLISH", [
-              [],
-              ["knows_english", { type: "bool", value: value.knows_enligh }],
-            ]),
-            new Path("Product Count", [
-              [],
-              ["product_count", { type: "u32", value: value.product_count }],
-            ]),
-          ])
-        )
-      );
-    }
+  for (let key of Object.keys(user_ids.User)) {
+    const value = user_ids.User[key as keyof typeof user_ids.User];
+    await replace_variable(
+      value._id,
+      new Variable(
+        struct,
+        new Decimal(1),
+        new Date(),
+        new Date(),
+        HashSet.ofIterable([
+          new Path("NICKNAME", [
+            [],
+            ["nickname", { type: "str", value: value.nickname }],
+          ]),
+          new Path("MOBILE", [
+            [],
+            ["mobile", { type: "str", value: value.mobile }],
+          ]),
+          new Path("KNOWS ENGLISH", [
+            [],
+            ["knows_english", { type: "bool", value: value.knows_enligh }],
+          ]),
+          new Path("Product Count", [
+            [],
+            ["product_count", { type: "u32", value: value.product_count }],
+          ]),
+        ])
+      )
+    );
   }
 }
