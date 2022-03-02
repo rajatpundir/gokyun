@@ -1,15 +1,12 @@
 import Decimal from "decimal.js";
+import { get_struct, get_fx, get_compose, get_transform } from "../schema";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
 import { Bool, BooleanLispExpression, Symbol } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_struct } from "../schema";
 import { TransformArgs, TransformResult } from "./transform";
 import { compare_paths, PathString, StrongEnum, WeakEnum } from "./variable";
-import { get_compose } from "../schema";
-import { get_fx } from "../schema";
-import { get_transform } from "../schema";
 
 export type ComposeInputs = Record<
   string,

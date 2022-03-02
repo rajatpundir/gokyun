@@ -1,12 +1,12 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
+import { get_fx, get_struct, get_compose } from "../schema";
 import { get_path_with_type } from "./commons";
 import { ComposeArgs, ComposeResult } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs } from "./fx";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_struct } from "../schema";
 import {
   compare_paths,
   get_flattened_path,
@@ -14,8 +14,6 @@ import {
   PathString,
   StrongEnum,
 } from "./variable";
-import { get_compose } from "../schema";
-import { get_fx } from "../schema";
 
 type TrandformQuery =
   | {
