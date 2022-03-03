@@ -82,11 +82,6 @@ export type FxArgs = Record<
     }
 >;
 
-// 'outputs' should be used to insert, replace and delete variables, as well as primitive value forwarding for use in composer computations
-
-// Additionally, a transformer may be marked as such that it cannot be run directly by the user
-// In case, a transformer is executed via a Composer, ownership of inputs will not be checked.
-
 type FxOutputs = Record<
   string,
   | {
