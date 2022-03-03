@@ -9,6 +9,8 @@ import {
   ComposeStep,
 } from "../../lib";
 
+// Conversion to/from PrivateResource and PublicResource with their tags
+
 const schema: Record<string, Compose> = {
   Create_Private_Resource: new Compose(
     "Create_Private_Resource",
@@ -64,6 +66,35 @@ const schema: Record<string, Compose> = {
     ]),
     {}
   ),
+  Delete_Private_Resource: new Compose(
+    "Delete_Private_Resource",
+    {
+      private_resource: { type: "other", other: "Private_Resource" },
+    },
+    new ComposeStep(undefined, [
+      {
+        type: "fx",
+        invoke: "Delete_Private_Resource_Tag_By_Private_Resource",
+        map: {
+          private_resource: {
+            type: "input",
+            value: "private_resource",
+          },
+        },
+      },
+      {
+        type: "fx",
+        invoke: "Delete_Private_Resource",
+        map: {
+          private_resource: {
+            type: "input",
+            value: "private_resource",
+          },
+        },
+      },
+    ]),
+    {}
+  ),
   Create_Public_Resource: new Compose(
     "Create_Public_Resource",
     {
@@ -114,6 +145,35 @@ const schema: Record<string, Compose> = {
           query: {},
         },
         output: "tags",
+      },
+    ]),
+    {}
+  ),
+  Delete_Public_Resource: new Compose(
+    "Delete_Public_Resource",
+    {
+      public_resource: { type: "other", other: "Public_Resource" },
+    },
+    new ComposeStep(undefined, [
+      {
+        type: "fx",
+        invoke: "Delete_Public_Resource_Tag_By_Public_Resource",
+        map: {
+          public_resource: {
+            type: "input",
+            value: "public_resource",
+          },
+        },
+      },
+      {
+        type: "fx",
+        invoke: "Delete_Public_Resource",
+        map: {
+          public_resource: {
+            type: "input",
+            value: "public_resource",
+          },
+        },
       },
     ]),
     {}

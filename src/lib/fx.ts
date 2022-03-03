@@ -44,6 +44,10 @@ import {
 } from "./variable";
 import { ComposeArgs, ComposeInputs } from "./compose";
 
+// TODO. Implement delete / delete_ignore by id
+// For delete_all and delete_ignore_all, fields should be array of objects with path and expression
+// This will allow deletion of structs that are much higher in hierarchy
+
 type FxInputs = Record<
   string,
   | Exclude<
@@ -109,15 +113,27 @@ type FxOutputs = Record<
       fields: { [index: string]: LispExpression };
     }
   | {
-      // Abort if variable(s) cannot be deleted (maybe referenced somewhere)
+      // Abort if variable cannot be deleted (maybe referenced somewhere)
       op: "delete";
+      struct: string;
+      id: LispExpression;
+    }
+  | {
+      // Abort if variable cannot be deleted (maybe referenced somewhere)
+      op: "delete_ignore";
+      struct: string;
+      id: LispExpression;
+    }
+  | {
+      // Abort if variable(s) cannot be deleted (maybe referenced somewhere)
+      op: "delete_all";
       struct: string;
       // the variable(s) is/are queried on basis of matched fields
       fields: { [index: string]: LispExpression };
     }
   | {
       // Ignore the operation if variable(s) cannot be deleted
-      op: "delete_ignore";
+      op: "delete_all_ignore";
       struct: string;
       // the variable(s) is/are queried on basis of matched fields
       fields: { [index: string]: LispExpression };
@@ -1092,8 +1108,8 @@ export class Fx {
             }
             break;
           }
-          case "delete":
-          case "delete_ignore": {
+          case "delete_all":
+          case "delete_all_ignore": {
             // variable(s) found -> deletes, create removal record
             // variable(s) not found -> skip
             const struct = get_struct(output.struct as StructName);
