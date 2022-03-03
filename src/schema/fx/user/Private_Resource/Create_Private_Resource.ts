@@ -12,7 +12,7 @@ export default new Fx(
       struct: "Private_Resource",
       fields: {
         resource_type: new DotExpression(new Dot(["resource_type"])),
-        url: new DotExpression(new Dot(["resource_type"])),
+        url: new DotExpression(new Dot(["url"])),
         user: new DotExpression(new Dot(["_system", "user"])),
       },
     },

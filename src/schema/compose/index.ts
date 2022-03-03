@@ -9,7 +9,7 @@ import {
   ComposeStep,
 } from "../../lib";
 
-// Remove Tag struct, use str instead
+// Tag will make lookups faster, so no need to remove it
 
 // Conversion to/from PrivateResource and PublicResource with their tags
 
@@ -178,6 +178,67 @@ const schema: Record<string, Compose> = {
           public_resource: {
             type: "input",
             value: "public_resource",
+          },
+        },
+      },
+    ]),
+    {}
+  ),
+  Create_Public_Resource_From_Private_Resource: new Compose(
+    "Create_Public_Resource_From_Private_Resource",
+    {
+      private_resource: { type: "other", other: "Private_Resource" },
+      base: {
+        type: "list",
+      },
+    },
+    new ComposeStep(undefined, [
+      {
+        name: "Create_Public_Resource_From_Private_Resource",
+        type: "fx",
+        invoke: "Create_Public_Resource_From_Private_Resource",
+        map: {
+          private_resource: {
+            type: "input",
+            value: "private_resource",
+          },
+        },
+      },
+      {
+        type: "transform",
+        invoke: "Create_Public_Resource_Tag_From_Private_Resource_Tag",
+        map: {
+          // TODO. base should be optional, in case of absence, default will be [{}]
+          // Or introduce new type with only inject
+          base: {
+            type: "input",
+            value: "base",
+            inject: {
+              public_resource: {
+                type: "fx",
+                value: [
+                  "Create_Public_Resource_From_Private_Resource",
+                  "public_resource",
+                ],
+              },
+            },
+          },
+          // TODO. Query should be optional
+          query: {
+            private_resource: {
+              type: "input",
+              value: "private_resource",
+            },
+          },
+        },
+      },
+      {
+        type: "compose",
+        invoke: "Delete_Private_Resource",
+        map: {
+          private_resource: {
+            type: "input",
+            value: "private_resource",
           },
         },
       },
