@@ -9,7 +9,13 @@ import {
   ComposeStep,
 } from "../../lib";
 
+// Remove Tag struct, use str instead
+
 // Conversion to/from PrivateResource and PublicResource with their tags
+
+// Add checks to match user when deleting private/public resource or their tags
+// This is required because others may provide them as args because of readability only
+// Same goes for replace operation
 
 const schema: Record<string, Compose> = {
   Create_Private_Resource: new Compose(
