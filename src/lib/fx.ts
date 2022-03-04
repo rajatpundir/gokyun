@@ -198,9 +198,27 @@ export class Fx {
             const expr = output.value.value;
             paths = paths.concat(expr.get_paths());
           } else {
-            for (const field_name of Object.keys(output.fields)) {
-              const expr = output.fields[field_name];
-              paths = paths.concat(expr.get_paths());
+            switch (output.op) {
+              case "insert":
+              case "insert_ignore":
+              case "replace": {
+                for (const field_name of Object.keys(output.fields)) {
+                  const expr = output.fields[field_name];
+                  paths = paths.concat(expr.get_paths());
+                }
+                break;
+              }
+              case "delete_all":
+              case "delete_all_ignore": {
+                for (const { expr } of output.fields) {
+                  paths = paths.concat(expr.get_paths());
+                }
+                break;
+              }
+              default: {
+                const _exhaustiveCheck: never = output;
+                return _exhaustiveCheck;
+              }
             }
           }
         }
@@ -1134,13 +1152,14 @@ export class Fx {
             const struct = get_struct(output.struct as StructName);
             const filter_paths: Array<FilterPath> = [];
             // 1. process paths
-            for (const field_name in Object.keys(output.fields)) {
-              if (field_name in struct.fields) {
-                const field = struct.fields[field_name];
-                const result = output.fields[field_name].get_result(symbols);
-                if (unwrap(result)) {
-                  const expr_result = result.value;
-                  switch (field.type) {
+            for (const field of output.fields) {
+              const result = get_path_with_type(struct, field.path);
+              if (unwrap(result)) {
+                const field_struct_name = result.value[1];
+                const value = field.expr.get_result(symbols);
+                if (unwrap(value)) {
+                  const expr_result = value.value;
+                  switch (field_struct_name[0]) {
                     case "str":
                     case "lstr":
                     case "clob": {
@@ -1149,7 +1168,7 @@ export class Fx {
                           new FilterPath(
                             output_name,
                             [[], output_name],
-                            [field.type, ["==", expr_result.value]],
+                            [field_struct_name[0], ["==", expr_result.value]],
                             undefined
                           )
                         );
@@ -1170,7 +1189,7 @@ export class Fx {
                             output_name,
                             [[], output_name],
                             [
-                              field.type,
+                              field_struct_name[0],
                               ["==", new Decimal(expr_result.value)],
                             ],
                             undefined
@@ -1193,7 +1212,7 @@ export class Fx {
                             output_name,
                             [[], output_name],
                             [
-                              field.type,
+                              field_struct_name[0],
                               ["==", new Decimal(expr_result.value)],
                             ],
                             undefined
@@ -1212,7 +1231,7 @@ export class Fx {
                           new FilterPath(
                             output_name,
                             [[], output_name],
-                            [field.type, ["==", expr_result.value]],
+                            [field_struct_name[0], ["==", expr_result.value]],
                             undefined
                           )
                         );
@@ -1231,7 +1250,10 @@ export class Fx {
                           new FilterPath(
                             output_name,
                             [[], output_name],
-                            [field.type, ["==", new Date(expr_result.value)]],
+                            [
+                              field_struct_name[0],
+                              ["==", new Date(expr_result.value)],
+                            ],
                             undefined
                           )
                         );
@@ -1244,15 +1266,13 @@ export class Fx {
                     }
                     case "other": {
                       if (expr_result instanceof Num) {
-                        const other_struct = get_struct(
-                          field.other as StructName
-                        );
+                        const other_struct = field_struct_name[1];
                         filter_paths.push(
                           new FilterPath(
                             output_name,
                             [[], output_name],
                             [
-                              field.type,
+                              field_struct_name[0],
                               ["==", new Decimal(expr_result.value)],
                               other_struct,
                             ],
@@ -1267,10 +1287,14 @@ export class Fx {
                       break;
                     }
                     default: {
-                      const _exhaustiveCheck: never = field;
+                      const _exhaustiveCheck: never = field_struct_name;
                       return _exhaustiveCheck;
                     }
                   }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
                 }
               } else {
                 return new Err(
