@@ -38,17 +38,20 @@ export class Transform {
   type: "fx" | "compose";
   invoke: string;
   query: TrandformQuery;
+  user_invocable: boolean;
 
   constructor(
     name: string,
     type: "fx" | "compose",
     invoke: string,
-    query: TrandformQuery
+    query: TrandformQuery,
+    user_invocable: boolean
   ) {
     this.name = name;
     this.type = type;
     this.invoke = invoke;
     this.query = query;
+    this.user_invocable = user_invocable;
   }
 
   equals(other: Transform): boolean {

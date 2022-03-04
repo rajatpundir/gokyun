@@ -1,4 +1,15 @@
-import { Fx, DotExpression, Dot } from "../../../../lib";
+import {
+  Fx,
+  DotExpression,
+  Dot,
+  Equals,
+  ErrMsg,
+  errors,
+  LogicalUnaryExpression,
+  Not,
+  NumberComparatorExpression,
+  ToNum,
+} from "../../../../lib";
 
 export default {
   Create_Private_Resource_Tag: new Fx(
@@ -17,7 +28,8 @@ export default {
         },
       },
     },
-    {}
+    {},
+    false
   ),
   Delete_Private_Resource_Tag: new Fx(
     "Delete_Private_Resource_Tag",
@@ -29,7 +41,25 @@ export default {
       },
     },
     {},
-    {}
+    {
+      ownership_check: [
+        new LogicalUnaryExpression(
+          new Not(
+            new NumberComparatorExpression(
+              new Equals<ToNum>([
+                new DotExpression(
+                  new Dot(["private_resource_tag", "private_resource", "user"])
+                ),
+                new DotExpression(new Dot(["_system", "user"])),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrUnexpected] as ErrMsg,
+      ],
+    },
+    true
   ),
   Delete_Private_Resource_Tag_By_Private_Resource: new Fx(
     "Delete_Private_Resource_Tag_By_Private_Resource",
@@ -48,7 +78,8 @@ export default {
         ],
       },
     },
-    {}
+    {},
+    false
   ),
   Create_Public_Resource_Tag_From_Private_Resource_Tag: new Fx(
     "Create_Public_Resource_Tag_From_Private_Resource_Tag",
@@ -66,6 +97,7 @@ export default {
         },
       },
     },
-    {}
+    {},
+    false
   ),
 };

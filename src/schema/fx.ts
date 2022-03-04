@@ -46,7 +46,7 @@ const schema: Record<string, Fx> = {
 };
 
 export function get_fx(fx_name: string): Result<Fx> {
-  if (fx_name in schema) {
+  if (fx_name in schema && schema[fx_name].user_invocable) {
     return new Ok(schema[fx_name]);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));

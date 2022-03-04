@@ -215,17 +215,20 @@ export class Compose {
   inputs: ComposeInputs;
   step: ComposeStep;
   checks: ComposeChecks;
+  user_invocable: boolean;
 
   constructor(
     name: string,
     inputs: ComposeInputs,
     steps: ComposeStep,
-    checks: ComposeChecks
+    checks: ComposeChecks,
+    user_invocable: boolean
   ) {
     this.name = name;
     this.inputs = inputs;
     this.step = steps;
     this.checks = checks;
+    this.user_invocable = user_invocable;
   }
 
   equals(other: Compose): boolean {

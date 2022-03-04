@@ -1,4 +1,16 @@
-import { Compose, ComposeStep } from "../../../../lib";
+import {
+  Compose,
+  ComposeStep,
+  Dot,
+  DotExpression,
+  Equals,
+  ErrMsg,
+  errors,
+  LogicalUnaryExpression,
+  Not,
+  NumberComparatorExpression,
+  ToNum,
+} from "../../../../lib";
 
 export default {
   Create_Private_Resource: new Compose(
@@ -51,7 +63,8 @@ export default {
         output: "tags",
       },
     ]),
-    {}
+    {},
+    true
   ),
   Delete_Private_Resource: new Compose(
     "Delete_Private_Resource",
@@ -80,7 +93,23 @@ export default {
         },
       },
     ]),
-    {}
+    {
+      ownership_check: [
+        new LogicalUnaryExpression(
+          new Not(
+            new NumberComparatorExpression(
+              new Equals<ToNum>([
+                new DotExpression(new Dot(["private_resource", "user"])),
+                new DotExpression(new Dot(["_system", "user"])),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrUnexpected] as ErrMsg,
+      ],
+    },
+    true
   ),
   Create_Public_Resource_From_Private_Resource: new Compose(
     "Create_Public_Resource_From_Private_Resource",
@@ -97,6 +126,9 @@ export default {
             type: "input",
             value: "private_resource",
           },
+        },
+        output: {
+          public_resource: "public_resource",
         },
       },
       {
@@ -122,6 +154,7 @@ export default {
             },
           },
         },
+        output: "tags",
       },
       {
         type: "compose",
@@ -134,6 +167,22 @@ export default {
         },
       },
     ]),
-    {}
+    {
+      ownership_check: [
+        new LogicalUnaryExpression(
+          new Not(
+            new NumberComparatorExpression(
+              new Equals<ToNum>([
+                new DotExpression(new Dot(["private_resource", "user"])),
+                new DotExpression(new Dot(["_system", "user"])),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrUnexpected] as ErrMsg,
+      ],
+    },
+    true
   ),
 };

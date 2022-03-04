@@ -136,17 +136,20 @@ export class Fx {
   inputs: FxInputs;
   outputs: FxOutputs;
   checks: FxChecks;
+  user_invocable: boolean;
 
   constructor(
     name: string,
     inputs: FxInputs,
     outputs: FxOutputs,
-    checks: FxChecks
+    checks: FxChecks,
+    user_invocable: boolean
   ) {
     this.name = name;
     this.inputs = inputs;
     this.outputs = outputs;
     this.checks = checks;
+    this.user_invocable = user_invocable;
   }
 
   equals(other: Fx): boolean {

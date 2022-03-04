@@ -5,7 +5,8 @@ export default {
     "Create_Private_Resource_Tag",
     "fx",
     "Create_Private_Resource_Tag",
-    undefined
+    undefined,
+    false
   ),
   Create_Public_Resource_Tag_From_Private_Resource_Tag: new Transform(
     "Create_Public_Resource_Tag_From_Private_Resource_Tag",
@@ -15,6 +16,7 @@ export default {
       struct: "Public_Resource_Tag",
       fields: ["private_resource"],
       map: { tag: [[], "tag"] },
-    }
+    },
+    false
   ),
 };
