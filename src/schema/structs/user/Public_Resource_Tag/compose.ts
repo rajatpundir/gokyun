@@ -13,10 +13,10 @@ import {
 } from "../../../../lib";
 
 export default {
-  Create_Private_Resource_Tag: new Compose(
-    "Create_Private_Resource_Tag",
+  Create_Public_Resource_Tag: new Compose(
+    "Create_Public_Resource_Tag",
     {
-      private_resource: { type: "other", other: "Private_Resource" },
+      public_resource: { type: "other", other: "Public_Resource" },
       name: { type: "other", other: "str" },
     },
     new ComposeStep(undefined, [
@@ -33,18 +33,18 @@ export default {
       },
       {
         type: "fx",
-        invoke: "Create_Private_Resource_Tag",
+        invoke: "Create_Public_Resource_Tag",
         map: {
-          private_resource: {
+          public_resource: {
             type: "input",
-            value: "private_resource",
+            value: "public_resource",
           },
           tag: {
             type: "fx",
             value: ["Create_Tag", "tag"],
           },
         },
-        output: { private_resource_tag: "private_resource_tag" },
+        output: { public_resource_tag: "public_resource_tag" },
       },
     ]),
     {
@@ -53,7 +53,7 @@ export default {
           new Not(
             new NumberComparatorExpression(
               new Equals<ToNum>([
-                new DotExpression(new Dot(["private_resource", "user"])),
+                new DotExpression(new Dot(["public_resource", "user"])),
                 new DotExpression(new Dot(["_system", "user"])),
                 [],
               ])

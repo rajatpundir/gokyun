@@ -3,6 +3,7 @@ import { Compose, Result, Ok, Err, CustomError, errors, ErrMsg } from "../lib";
 import Private_Resource from "./structs/user/Private_Resource/compose";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/compose";
 import Public_Resource from "./structs/user/Public_Resource/compose";
+import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/compose";
 
 // Tag will make lookups faster, so no need to remove it
 
@@ -16,6 +17,7 @@ const schema: Record<string, Compose> = {
   ...Private_Resource,
   ...Private_Resource_Tag,
   ...Public_Resource,
+  ...Public_Resource_Tag,
 };
 
 export function get_compose(compose_name: string): Result<Compose> {

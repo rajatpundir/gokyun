@@ -1,4 +1,15 @@
-import { Fx, DotExpression, Dot } from "../../../../lib";
+import {
+  Fx,
+  DotExpression,
+  Dot,
+  Equals,
+  ErrMsg,
+  errors,
+  LogicalUnaryExpression,
+  Not,
+  NumberComparatorExpression,
+  ToNum,
+} from "../../../../lib";
 
 export default {
   Create_Public_Resource_Tag: new Fx(
@@ -17,7 +28,38 @@ export default {
         },
       },
     },
-    {}
+    {},
+    false
+  ),
+  Delete_Public_Resource_Tag: new Fx(
+    "Delete_Public_Resource_Tag",
+    {
+      public_resource_tag: {
+        type: "other",
+        other: "Public_Resource_Tag",
+        delete_mode: "delete",
+      },
+    },
+    {},
+    {
+      ownership_check: [
+        new LogicalUnaryExpression(
+          new Not(
+            new NumberComparatorExpression(
+              new Equals<ToNum>([
+                new DotExpression(
+                  new Dot(["public_resource_tag", "public_resource", "user"])
+                ),
+                new DotExpression(new Dot(["_system", "user"])),
+                [],
+              ])
+            )
+          )
+        ),
+        [errors.ErrUnexpected] as ErrMsg,
+      ],
+    },
+    true
   ),
   Delete_Public_Resource_Tag_By_Public_Resource: new Fx(
     "Delete_Public_Resource_Tag_By_Public_Resource",
@@ -36,6 +78,26 @@ export default {
         ],
       },
     },
-    {}
+    {},
+    false
+  ),
+  Create_Private_Resource_Tag_From_Public_Resource_Tag: new Fx(
+    "Create_Private_Resource_Tag_From_Public_Resource_Tag",
+    {
+      private_resource: { type: "other", other: "Private_Resource" },
+      public_resource_tag: { type: "other", other: "Public_Resource_Tag" },
+    },
+    {
+      private_resource_tag: {
+        op: "insert_ignore",
+        struct: "Private_Resource_Tag",
+        fields: {
+          private_resource: new DotExpression(new Dot(["private_resource"])),
+          tag: new DotExpression(new Dot(["public_resource_tag", "tag"])),
+        },
+      },
+    },
+    {},
+    false
   ),
 };

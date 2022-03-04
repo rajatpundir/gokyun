@@ -18,7 +18,8 @@ export default {
         },
       },
     },
-    {}
+    {},
+    false
   ),
   Delete_Public_Resource: new Fx(
     "Delete_Public_Resource",
@@ -30,6 +31,28 @@ export default {
       },
     },
     {},
-    {}
+    {},
+    false
+  ),
+  Create_Private_Resource_From_Public_Resource: new Fx(
+    "Create_Private_Resource_From_Public_Resource",
+    {
+      public_resource: { type: "other", other: "Public_Resource" },
+    },
+    {
+      private_resource: {
+        op: "insert_ignore",
+        struct: "Private_Resource",
+        fields: {
+          resource_type: new DotExpression(
+            new Dot(["public_resource", "resource_type"])
+          ),
+          url: new DotExpression(new Dot(["public_resource", "url"])),
+          user: new DotExpression(new Dot(["_system", "user"])),
+        },
+      },
+    },
+    {},
+    false
   ),
 };

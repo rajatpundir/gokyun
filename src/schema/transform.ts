@@ -19,7 +19,7 @@ const schema: Record<string, Transform> = {
 };
 
 export function get_transform(transform_name: string): Result<Transform> {
-  if (transform_name in schema) {
+  if (transform_name in schema && schema[transform_name].user_invocable) {
     return new Ok(schema[transform_name]);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
