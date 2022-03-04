@@ -99,6 +99,24 @@ type Step =
       map: {
         base:
           | {
+              type: "inject";
+              inject: Record<
+                string,
+                | {
+                    type: "input";
+                    value: string;
+                  }
+                | {
+                    type: "fx" | "compose";
+                    value: [string, string];
+                  }
+                | {
+                    type: "transform";
+                    value: string;
+                  }
+              >;
+            }
+          | {
               type: "input";
               value: string;
               inject?: Record<
@@ -157,7 +175,7 @@ type Step =
                   }
               >;
             };
-        query: Record<
+        query?: Record<
           string,
           | {
               type: "input";
@@ -1338,6 +1356,114 @@ export class Compose {
             Record<string, StrongEnum> | ComposeResult
           > = [];
           switch (step.map.base.type) {
+            case "inject": {
+              const transform_arg: Record<string, StrongEnum> | ComposeResult =
+                {};
+              for (const field_name of Object.keys(step.map.base.inject)) {
+                const inject = step.map.base.inject[field_name];
+                switch (inject.type) {
+                  case "input": {
+                    const inject_arg_name: string = inject.value;
+                    if (inject_arg_name in args) {
+                      const inject_arg = args[inject_arg_name];
+                      if (inject_arg.type === "list") {
+                        transform_arg[field_name] = inject_arg.value;
+                      } else {
+                        transform_arg[field_name] = inject_arg;
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                    break;
+                  }
+                  case "fx": {
+                    const [inject_step_ref, inject_fx_output_name] =
+                      inject.value as [string, string];
+                    if (inject_step_ref in step_outputs) {
+                      const inject_step_output: StepOutput =
+                        step_outputs[inject_step_ref];
+                      if (inject.type === inject_step_output.type) {
+                        if (inject_fx_output_name in inject_step_output.value) {
+                          transform_arg[field_name] =
+                            inject_step_output.value[inject_fx_output_name];
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                    break;
+                  }
+                  case "compose": {
+                    const [inject_step_ref, inject_compose_output_name] =
+                      inject.value as [string, string];
+                    if (inject_step_ref in step_outputs) {
+                      const inject_step_output: StepOutput =
+                        step_outputs[inject_step_ref];
+                      if (inject.type === inject_step_output.type) {
+                        if (
+                          inject_compose_output_name in inject_step_output.value
+                        ) {
+                          transform_arg[field_name] =
+                            inject_step_output.value[
+                              inject_compose_output_name
+                            ];
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                    break;
+                  }
+                  case "transform": {
+                    const inject_step_ref: string = inject.value;
+                    if (inject_step_ref in step_outputs) {
+                      const inject_step_output: StepOutput =
+                        step_outputs[inject_step_ref];
+                      if (inject.type === inject_step_output.type) {
+                        transform_arg[field_name] = inject_step_output.value;
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                    break;
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = inject;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }
+              transform_base.push(transform_arg);
+              break;
+            }
             case "input": {
               const arg_name: string = step.map.base.value;
               if (arg_name in args) {
@@ -1853,7 +1979,7 @@ export class Compose {
             }
           }
           const transform_query: TransformArgs["query"] = {};
-          if (transform.query !== undefined) {
+          if (transform.query !== undefined && step.map.query !== undefined) {
             for (const input_name of Object.keys(transform.query.map)) {
               const struct = get_struct(transform.query.struct as StructName);
               const result = get_path_with_type(

@@ -45,7 +45,6 @@ const schema: Record<string, Compose> = {
             type: "input",
             value: "tags",
           },
-          query: {},
         },
       },
       {
@@ -65,7 +64,6 @@ const schema: Record<string, Compose> = {
               },
             },
           },
-          query: {},
         },
         output: "tags",
       },
@@ -128,7 +126,6 @@ const schema: Record<string, Compose> = {
             type: "input",
             value: "tags",
           },
-          query: {},
         },
       },
       {
@@ -148,7 +145,6 @@ const schema: Record<string, Compose> = {
               },
             },
           },
-          query: {},
         },
         output: "tags",
       },
@@ -188,9 +184,6 @@ const schema: Record<string, Compose> = {
     "Create_Public_Resource_From_Private_Resource",
     {
       private_resource: { type: "other", other: "Private_Resource" },
-      base: {
-        type: "list",
-      },
     },
     new ComposeStep(undefined, [
       {
@@ -208,11 +201,8 @@ const schema: Record<string, Compose> = {
         type: "transform",
         invoke: "Create_Public_Resource_Tag_From_Private_Resource_Tag",
         map: {
-          // TODO. base should be optional, in case of absence, default will be [{}]
-          // Or introduce new type with only inject
           base: {
-            type: "input",
-            value: "base",
+            type: "inject",
             inject: {
               public_resource: {
                 type: "fx",
@@ -223,7 +213,6 @@ const schema: Record<string, Compose> = {
               },
             },
           },
-          // TODO. Query should be optional
           query: {
             private_resource: {
               type: "input",
