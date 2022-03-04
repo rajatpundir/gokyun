@@ -44,10 +44,6 @@ import {
 } from "./variable";
 import { ComposeArgs, ComposeInputs } from "./compose";
 
-// TODO. Implement delete / delete_ignore by id
-// For delete_all and delete_ignore_all, fields should be array of objects with path and expression
-// This will allow deletion of structs that are much higher in hierarchy
-
 type FxInputs = Record<
   string,
   | Exclude<
