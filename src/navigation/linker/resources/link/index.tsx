@@ -32,8 +32,6 @@ import {
 
 // Higher existence for searching via keywords
 
-// Distinct structs for private and public resources
-
 export default function Component(props: ParentNavigatorProps<"Link">) {
   const theme = useTheme();
   const bs_theme = useBSTheme();
