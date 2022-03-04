@@ -12,7 +12,10 @@ import {
   Text,
 } from "../../../../lib";
 
-// Tag is same for all languages
+// Tag will make lookups faster, so no need to remove it
+
+// Tag can be in any language
+
 export default {
   Tag: {
     fields: {
