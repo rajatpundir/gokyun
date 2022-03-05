@@ -5,7 +5,7 @@ import { load_test } from "./structs/test/Test";
 
 export async function load_data() {
   await replace_param("theme", { type: "str", value: "Black" });
+  await load_resource_type();
   await load_user();
   await load_test();
-  await load_resource_type();
 }

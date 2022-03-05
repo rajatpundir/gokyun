@@ -90,7 +90,15 @@ export function execute_transaction(
         tx.executeSql(sql, args, (_, result_set) => resolve(result_set));
       },
       (err) => {
-        console.log("TRANSACTION ERROR: ", sql, args, err);
+        console.log(
+          "\nTRANSACTION ERROR: \n",
+          sql,
+          "\n",
+          args,
+          "\n",
+          err,
+          "\n"
+        );
         reject(String(err));
       }
     );

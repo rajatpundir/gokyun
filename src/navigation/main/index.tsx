@@ -36,8 +36,10 @@ import {
   useTheme,
 } from "../../lib";
 import { load_data } from "../../schema";
+import { LogBox } from "react-native";
 
 // Ignore react navigation error related to serializability of props passed
+LogBox.ignoreLogs(["Require cycle:"]);
 
 export type NavigatorParams = {
   Main: NavigatorScreenParams<MainNavigatorParams> | undefined;
@@ -67,7 +69,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Linker">
+                        <Stack.Navigator initialRouteName="Main">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,

@@ -104,10 +104,10 @@ export async function load_resource_type() {
         key as keyof typeof resource_type_ids.ResourceType
       ];
     await replace_variable(
-      value._id,
+      new Decimal(0),
       new Variable(
         struct,
-        new Decimal(1),
+        value._id,
         new Date(),
         new Date(),
         HashSet.ofIterable([

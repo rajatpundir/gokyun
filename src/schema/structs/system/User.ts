@@ -106,10 +106,10 @@ export async function load_user() {
   for (let key of Object.keys(user_ids.User)) {
     const value = user_ids.User[key as keyof typeof user_ids.User];
     await replace_variable(
-      value._id,
+      new Decimal(0),
       new Variable(
         struct,
-        new Decimal(1),
+        value._id,
         new Date(),
         new Date(),
         HashSet.ofIterable([
