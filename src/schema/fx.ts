@@ -1,5 +1,6 @@
 import { CustomError, Err, ErrMsg, errors, Fx, Ok, Result } from "../lib";
 
+import Test from "./structs/test/Test/fx";
 import Tag from "./structs/system/Tag/fx";
 import Private_Resource from "./structs/user/Private_Resource/fx";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/fx";
@@ -36,6 +37,7 @@ import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
 // }
 
 const fxs = {
+  ...Test,
   ...Tag,
   ...Private_Resource,
   ...Private_Resource_Tag,
