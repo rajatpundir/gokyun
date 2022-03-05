@@ -34,6 +34,7 @@ import {
   compare_paths,
   concat_path_strings,
   WeakEnum,
+  get_path_string,
 } from "./variable";
 
 export type State = Immutable<{
@@ -1196,4 +1197,23 @@ export function get_symbols_for_paths(
     });
   }
   return symbols;
+}
+
+export function get_fx_args(
+  fields: Record<string, PathString>,
+  paths: HashSet<Path>
+): Result<Record<string, StrongEnum>> {
+  const args: Record<string, StrongEnum> = {};
+  for (const field_name of Object.keys(fields)) {
+    const path = fields[field_name];
+    const result = paths.findAny((x) =>
+      compare_paths(get_path_string(x), path)
+    );
+    if (result.isSome()) {
+      args[field_name] = result.get().path[1][1];
+    } else {
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+    }
+  }
+  return new Ok(args);
 }

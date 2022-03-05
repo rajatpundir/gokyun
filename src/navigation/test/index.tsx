@@ -20,6 +20,7 @@ import {
   useTheme,
   Path,
   apply,
+  get_fx_args,
 } from "../../lib";
 
 export default function Component(
@@ -143,8 +144,29 @@ export default function Component(
                     onPress={async () => {
                       if (state1.id.equals(-1)) {
                         const fx = get_fx("Create_Test");
-                        if (unwrap(fx)) {
-                          await fx.value.exec({}, new Decimal(0));
+                        const args = get_fx_args(
+                          {
+                            str: [[], "str"],
+                            lstr: [[], "lstr"],
+                            clob: [[], "clob"],
+                            u32: [[], "u32"],
+                            i32: [[], "i32"],
+                            u64: [[], "u64"],
+                            i64: [[], "i64"],
+                            udouble: [[], "udouble"],
+                            idouble: [[], "idouble"],
+                            udecimal: [[], "udecimal"],
+                            idecimal: [[], "idecimal"],
+                            bool: [[], "bool"],
+                            date: [[], "date"],
+                            time: [[], "time"],
+                            timestamp: [[], "timestamp"],
+                            user: [[], "user"],
+                          },
+                          state1.values as HashSet<Path>
+                        );
+                        if (unwrap(fx) && unwrap(args)) {
+                          await fx.value.exec(args.value, new Decimal(0));
                         }
                       } else {
                         try {
