@@ -49,9 +49,18 @@ export type FxName = keyof typeof fxs;
 
 const schema: Record<string, Fx> = fxs;
 
-export function get_fx(fx_name: FxName): Result<Fx> {
-  if (fx_name in schema && schema[fx_name].user_invocable) {
-    return new Ok(schema[fx_name]);
+export function get_fx(
+  fx_name: FxName,
+  user_invoked: boolean = true
+): Result<Fx> {
+  if (fx_name in schema) {
+    if (user_invoked) {
+      if (schema[fx_name].user_invocable) {
+        return new Ok(schema[fx_name]);
+      }
+    } else {
+      return new Ok(schema[fx_name]);
+    }
   } else {
     console.log("[ERROR] Invalid fx: ", fx_name);
   }

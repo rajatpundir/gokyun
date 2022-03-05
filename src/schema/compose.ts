@@ -16,9 +16,18 @@ export type ComposeName = keyof typeof composes;
 
 const schema: Record<string, Compose> = composes;
 
-export function get_compose(compose_name: ComposeName): Result<Compose> {
+export function get_compose(
+  compose_name: ComposeName,
+  user_invoked: boolean = true
+): Result<Compose> {
   if (compose_name in schema && schema[compose_name].user_invocable) {
-    return new Ok(schema[compose_name]);
+    if (user_invoked) {
+      if (schema[compose_name].user_invocable) {
+        return new Ok(schema[compose_name]);
+      }
+    } else {
+      return new Ok(schema[compose_name]);
+    }
   } else {
     console.log("[ERROR] Invalid compose: ", compose_name);
   }

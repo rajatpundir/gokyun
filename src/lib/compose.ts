@@ -497,7 +497,7 @@ export class Compose {
   ): Promise<Result<ComposeResult>> {
     switch (step.type) {
       case "fx": {
-        const result = get_fx(step.invoke);
+        const result = get_fx(step.invoke, false);
         if (unwrap(result)) {
           const fx = result.value;
           const fx_args: FxArgs = {};
@@ -904,7 +904,7 @@ export class Compose {
         break;
       }
       case "compose": {
-        const result = get_compose(step.invoke as ComposeName);
+        const result = get_compose(step.invoke as ComposeName, false);
         if (unwrap(result)) {
           const compose = result.value;
           const compose_args: ComposeArgs = {};
@@ -1355,7 +1355,7 @@ export class Compose {
         break;
       }
       case "transform": {
-        const result = get_transform(step.invoke);
+        const result = get_transform(step.invoke, false);
         if (unwrap(result)) {
           const transform = result.value;
           const transform_base: Array<

@@ -84,7 +84,7 @@ export class Transform {
       [];
     switch (this.type) {
       case "fx": {
-        const result = get_fx(this.invoke as FxName);
+        const result = get_fx(this.invoke as FxName, false);
         if (unwrap(result)) {
           const fx = result.value;
           if (this.query !== undefined) {
@@ -651,7 +651,7 @@ export class Transform {
         break;
       }
       case "compose": {
-        const result = get_compose(this.invoke as ComposeName);
+        const result = get_compose(this.invoke as ComposeName, false);
         if (unwrap(result)) {
           const compose = result.value;
           if (this.query !== undefined) {
