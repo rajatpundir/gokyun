@@ -44,6 +44,8 @@ import {
 } from "./variable";
 import { ComposeArgs, ComposeInputs } from "./compose";
 
+// Note. Trigger fields will be passed to fx for creation of variables, on client side, but asbent on server side
+
 type FxInputs = Record<
   string,
   | Exclude<
