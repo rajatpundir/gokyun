@@ -1111,6 +1111,11 @@ export class Fx {
                       HashSet.ofIterable(paths)
                     );
                     await replace_variable(level, variable);
+                    computed_outputs[output_name] = {
+                      type: "other",
+                      other: variable.struct.name,
+                      value: variable.id,
+                    };
                   } else {
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
