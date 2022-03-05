@@ -16,7 +16,7 @@ import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
 // Public_Resource {
 // 	resource_type: Resource_Type
 // 	url: string
-// 	user: User
+// 	owner: User
 // }
 
 // Public_Resource_Tag {
@@ -27,7 +27,7 @@ import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
 // Private_Resource {
 // 	resource_type: Resource_Type
 // 	url: string
-// 	user: User
+// 	owner: User
 // }
 
 // Private_Resource_Tag {
@@ -37,7 +37,7 @@ import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
 
 // fx to convert public resource to private resource and vice versa, along with their tags
 
-const schema: Record<string, Fx> = {
+const fxs = {
   ...Tag,
   ...Private_Resource,
   ...Private_Resource_Tag,
@@ -45,9 +45,15 @@ const schema: Record<string, Fx> = {
   ...Public_Resource_Tag,
 };
 
-export function get_fx(fx_name: string): Result<Fx> {
+export type FxName = keyof typeof fxs;
+
+const schema: Record<string, Fx> = fxs;
+
+export function get_fx(fx_name: FxName): Result<Fx> {
   if (fx_name in schema && schema[fx_name].user_invocable) {
     return new Ok(schema[fx_name]);
+  } else {
+    console.log("[ERROR] Invalid fx: ", fx_name);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

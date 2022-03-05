@@ -5,16 +5,22 @@ import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/compose";
 import Public_Resource from "./structs/user/Public_Resource/compose";
 import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/compose";
 
-const schema: Record<string, Compose> = {
+const composes = {
   ...Private_Resource,
   ...Private_Resource_Tag,
   ...Public_Resource,
   ...Public_Resource_Tag,
 };
 
-export function get_compose(compose_name: string): Result<Compose> {
+export type ComposeName = keyof typeof composes;
+
+const schema: Record<string, Compose> = composes;
+
+export function get_compose(compose_name: ComposeName): Result<Compose> {
   if (compose_name in schema && schema[compose_name].user_invocable) {
     return new Ok(schema[compose_name]);
+  } else {
+    console.log("[ERROR] Invalid compose: ", compose_name);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

@@ -1,6 +1,13 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { get_fx, get_struct, get_compose, StructName } from "../schema";
+import {
+  get_fx,
+  get_struct,
+  get_compose,
+  StructName,
+  FxName,
+  ComposeName,
+} from "../schema";
 import { get_path_with_type } from "./commons";
 import { ComposeArgs, ComposeResult } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";
@@ -77,7 +84,7 @@ export class Transform {
       [];
     switch (this.type) {
       case "fx": {
-        const result = get_fx(this.invoke);
+        const result = get_fx(this.invoke as FxName);
         if (unwrap(result)) {
           const fx = result.value;
           if (this.query !== undefined) {
@@ -644,7 +651,7 @@ export class Transform {
         break;
       }
       case "compose": {
-        const result = get_compose(this.invoke);
+        const result = get_compose(this.invoke as ComposeName);
         if (unwrap(result)) {
           const compose = result.value;
           if (this.query !== undefined) {

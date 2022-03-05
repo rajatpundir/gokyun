@@ -12,15 +12,23 @@ import Tag from "./structs/system/Tag/transform";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/transform";
 import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/transform";
 
-const schema: Record<string, Transform> = {
+const transforms = {
   ...Tag,
   ...Private_Resource_Tag,
   ...Public_Resource_Tag,
 };
 
-export function get_transform(transform_name: string): Result<Transform> {
+export type TransformName = keyof typeof transforms;
+
+const schema: Record<string, Transform> = transforms;
+
+export function get_transform(
+  transform_name: TransformName
+): Result<Transform> {
   if (transform_name in schema && schema[transform_name].user_invocable) {
     return new Ok(schema[transform_name]);
+  } else {
+    console.log("[ERROR] Invalid transform: ", transform_name);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

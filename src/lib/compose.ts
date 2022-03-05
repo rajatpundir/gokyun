@@ -5,6 +5,9 @@ import {
   get_compose,
   get_transform,
   StructName,
+  FxName,
+  ComposeName,
+  TransformName,
 } from "../schema";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
@@ -57,7 +60,7 @@ type Step =
   | {
       name?: string;
       type: "fx";
-      invoke: string;
+      invoke: FxName;
       map: Record<
         string,
         | {
@@ -95,7 +98,7 @@ type Step =
   | {
       name?: string;
       type: "transform";
-      invoke: string;
+      invoke: TransformName;
       map: {
         base:
           | {
@@ -901,7 +904,7 @@ export class Compose {
         break;
       }
       case "compose": {
-        const result = get_compose(step.invoke);
+        const result = get_compose(step.invoke as ComposeName);
         if (unwrap(result)) {
           const compose = result.value;
           const compose_args: ComposeArgs = {};
