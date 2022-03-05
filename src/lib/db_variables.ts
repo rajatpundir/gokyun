@@ -54,6 +54,14 @@ async function replace_variable_in_db(
   >;
   try {
     await execute_transaction(
+      `DELETE FROM "REMOVED_VARS" WHERE level = ? AND struct_name = ? AND id = ?;`,
+      [
+        level.abs().truncated().toString(),
+        struct_name,
+        id.truncated().toString(),
+      ]
+    );
+    await execute_transaction(
       `UPDATE "VARS" SET created_at=?, updated_at=?, requested_at=? WHERE level=? AND struct_name=? AND id=?`,
       [
         created_at.getTime().toString(),
@@ -313,6 +321,14 @@ export async function remove_variables_in_db(
       }
     } else {
       for (const id of ids) {
+        await execute_transaction(
+          `DELETE FROM "VARS" WHERE level = ? AND struct_name = ? AND id = ?;`,
+          [
+            level.abs().truncated().toString(),
+            struct_name,
+            id.truncated().toString(),
+          ]
+        );
         await execute_transaction(
           `REPLACE INTO "REMOVED_VARS"("level", "struct_name", "id") VALUES (?, ?, ?);`,
           [

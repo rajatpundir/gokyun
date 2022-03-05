@@ -24,10 +24,6 @@ import {
 import { ErrMsg, errors } from "./errors";
 import { get_struct, StructName } from "../schema";
 
-// TODO. Replacing variable at some level should remove any removal at that level
-
-// TODO. Deletion at some level other than base should add removal at that level
-
 // TODO. Add Existence functionality
 
 const db_name: string = "test1.db";
