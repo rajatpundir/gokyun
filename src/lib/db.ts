@@ -835,7 +835,7 @@ export async function get_max_level(): Promise<Result<Decimal>> {
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-export async function create_level(id: Decimal): Promise<Result<[]>> {
+export async function create_level(id: Decimal): Promise<Result<Decimal>> {
   try {
     await execute_transaction(
       `INSERT INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
@@ -844,7 +844,7 @@ export async function create_level(id: Decimal): Promise<Result<[]>> {
   } catch (err) {
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
-  return new Ok([] as []);
+  return new Ok(id);
 }
 
 export async function activate_level(id: Decimal): Promise<Result<[]>> {

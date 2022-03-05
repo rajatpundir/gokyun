@@ -32,6 +32,10 @@ import {
   useTheme,
   apply,
   Path,
+  activate_level,
+  create_level,
+  get_max_level,
+  remove_level,
 } from "../lib";
 import { get_fx } from "../schema";
 
@@ -539,19 +543,32 @@ export default {
                     />
                   </Row>
                 }
-                onPress={() => {
-                  const fx = get_fx("Delete_Test");
-                  if (unwrap(fx)) {
-                    fx.value.exec(
-                      {
-                        test: {
-                          type: "other",
-                          other: props.struct.name,
-                          value: props.state.id as Decimal,
-                        },
-                      },
-                      new Decimal(0)
-                    );
+                onPress={async () => {
+                  const max_level = await get_max_level();
+                  if (unwrap(max_level)) {
+                    const level = await create_level(max_level.value.add(1));
+                    if (unwrap(level)) {
+                      const fx = get_fx("Delete_Test");
+                      if (unwrap(fx)) {
+                        const result = await fx.value.exec(
+                          {
+                            test: {
+                              type: "other",
+                              other: props.struct.name,
+                              value: props.state.id as Decimal,
+                            },
+                          },
+                          level.value
+                        );
+                        if (unwrap(result)) {
+                          await activate_level(level.value);
+                        } else {
+                          await remove_level(level.value);
+                        }
+                      } else {
+                        await remove_level(level.value);
+                      }
+                    }
                   }
                 }}
               />
