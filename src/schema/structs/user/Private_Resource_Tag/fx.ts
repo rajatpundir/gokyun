@@ -9,13 +9,31 @@ import {
   Not,
   NumberComparatorExpression,
   ToNum,
+  NumberArithmeticExpression,
+  Add,
+  Num,
+  Subtract,
 } from "../../../../lib";
 
 export default {
   Create_Private_Resource_Tag: new Fx(
     "Create_Private_Resource_Tag",
     {
-      private_resource: { type: "other", other: "Private_Resource" },
+      private_resource: {
+        type: "other",
+        other: "Private_Resource",
+        updates: [
+          [
+            [[], "tag_count"],
+            new NumberArithmeticExpression(
+              new Add<ToNum>([
+                new DotExpression(new Dot(["private_resource", "tag_count"])),
+                [new Num(1)],
+              ])
+            ),
+          ],
+        ],
+      },
       tag: { type: "other", other: "Tag" },
     },
     {
@@ -38,6 +56,23 @@ export default {
         type: "other",
         other: "Private_Resource_Tag",
         delete_mode: "delete",
+        updates: [
+          [
+            [["private_resource"], "tag_count"],
+            new NumberArithmeticExpression(
+              new Subtract<ToNum>([
+                new DotExpression(
+                  new Dot([
+                    "private_resource_tag",
+                    "private_resource",
+                    "tag_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          ],
+        ],
       },
     },
     {},
@@ -64,7 +99,11 @@ export default {
   Delete_Private_Resource_Tag_By_Private_Resource: new Fx(
     "Delete_Private_Resource_Tag_By_Private_Resource",
     {
-      private_resource: { type: "other", other: "Private_Resource" },
+      private_resource: {
+        type: "other",
+        other: "Private_Resource",
+        updates: [[[[], "tag_count"], new Num(0)]],
+      },
     },
     {
       private_resource_tag: {

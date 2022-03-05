@@ -1,4 +1,4 @@
-import { Fx, DotExpression, Dot } from "../../../../lib";
+import { Fx, DotExpression, Dot, Num } from "../../../../lib";
 
 export default {
   Create_Private_Resource: new Fx(
@@ -14,6 +14,7 @@ export default {
         fields: {
           resource_type: new DotExpression(new Dot(["resource_type"])),
           url: new DotExpression(new Dot(["url"])),
+          tag_count: new Num(0),
           owner: new DotExpression(new Dot(["_system", "user"])),
         },
       },
@@ -48,6 +49,9 @@ export default {
             new Dot(["private_resource", "resource_type"])
           ),
           url: new DotExpression(new Dot(["private_resource", "url"])),
+          tag_count: new DotExpression(
+            new Dot(["private_resource", "tag_count"])
+          ),
           owner: new DotExpression(new Dot(["_system", "user"])),
         },
       },

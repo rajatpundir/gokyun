@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { StructSchema } from "../../../struct";
 import {
   LogicalUnaryExpression,
@@ -17,6 +18,7 @@ export default {
     fields: {
       resource_type: { type: "other", other: "Resource_Type" },
       url: { type: "lstr" },
+      tag_count: { type: "u32", default: new Decimal(0) },
       owner: { type: "other", other: "User" },
     },
     uniqueness: [[["owner"], "url"]],

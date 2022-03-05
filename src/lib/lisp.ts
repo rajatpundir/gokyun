@@ -15,6 +15,10 @@ import { PathString } from "./variable";
 export type LispResult = Num | Deci | Text | Bool;
 
 export type LispExpression =
+  | Num
+  | Deci
+  | Text
+  | Bool
   | NumberArithmeticExpression
   | DecimalArithmeticExpression
   | NumberComparatorExpression

@@ -9,13 +9,31 @@ import {
   Not,
   NumberComparatorExpression,
   ToNum,
+  Num,
+  NumberArithmeticExpression,
+  Subtract,
+  Add,
 } from "../../../../lib";
 
 export default {
   Create_Public_Resource_Tag: new Fx(
     "Create_Public_Resource_Tag",
     {
-      public_resource: { type: "other", other: "Public_Resource" },
+      public_resource: {
+        type: "other",
+        other: "Public_Resource",
+        updates: [
+          [
+            [[], "tag_count"],
+            new NumberArithmeticExpression(
+              new Add<ToNum>([
+                new DotExpression(new Dot(["public_resource", "tag_count"])),
+                [new Num(1)],
+              ])
+            ),
+          ],
+        ],
+      },
       tag: { type: "other", other: "Tag" },
     },
     {
@@ -38,6 +56,23 @@ export default {
         type: "other",
         other: "Public_Resource_Tag",
         delete_mode: "delete",
+        updates: [
+          [
+            [["public_resource"], "tag_count"],
+            new NumberArithmeticExpression(
+              new Subtract<ToNum>([
+                new DotExpression(
+                  new Dot([
+                    "public_resource_tag",
+                    "public_resource",
+                    "tag_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          ],
+        ],
       },
     },
     {},
@@ -64,7 +99,11 @@ export default {
   Delete_Public_Resource_Tag_By_Public_Resource: new Fx(
     "Delete_Public_Resource_Tag_By_Public_Resource",
     {
-      public_resource: { type: "other", other: "Public_Resource" },
+      public_resource: {
+        type: "other",
+        other: "Public_Resource",
+        updates: [[[[], "tag_count"], new Num(0)]],
+      },
     },
     {
       public_resource_tag: {
