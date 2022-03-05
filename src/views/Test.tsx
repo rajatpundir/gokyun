@@ -28,8 +28,6 @@ import {
   get_path_string,
   replace_variable,
   Variable,
-  increment_struct_counter,
-  get_struct_counter,
   DeleteButton,
   useTheme,
   apply,
@@ -439,18 +437,7 @@ export default {
                       new Decimal(0),
                       new Variable(
                         props.struct,
-                        await arrow(async () => {
-                          if (props.state.id.equals(-1)) {
-                            await increment_struct_counter(props.struct.name);
-                            const result = await get_struct_counter(
-                              props.struct.name
-                            );
-                            if (unwrap(result)) {
-                              return result.value;
-                            }
-                          }
-                          return props.state.id as Decimal;
-                        }),
+                        props.state.id as Decimal,
                         props.state.created_at,
                         props.state.updated_at,
                         props.state.values as HashSet<Path>
