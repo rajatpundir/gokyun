@@ -31,7 +31,6 @@ import {
   increment_struct_counter,
   get_struct_counter,
   DeleteButton,
-  remove_variables_in_db,
   useTheme,
   apply,
   Path,
@@ -553,10 +552,10 @@ export default {
                     />
                   </Row>
                 }
-                onPress={async () => {
+                onPress={() => {
                   const fx = get_fx("Delete_Test");
                   if (unwrap(fx)) {
-                    const x = await fx.value.exec(
+                    fx.value.exec(
                       {
                         test: {
                           type: "other",
@@ -568,13 +567,7 @@ export default {
                       },
                       new Decimal(0)
                     );
-                    console.log("Do nothing", x);
                   }
-                  // await remove_variables_in_db(
-                  //   new Decimal(0),
-                  //   props.struct.name,
-                  //   [props.state.id as Decimal]
-                  // );
                 }}
               />
             </Row>

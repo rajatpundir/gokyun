@@ -3,7 +3,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 
 import { NavigatorProps as RootNavigatorProps } from "../main";
-import { get_struct } from "../../schema";
+import { get_fx, get_struct } from "../../schema";
 import { views } from "../../views";
 import { Row, Pressable, Text } from "native-base";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
@@ -17,7 +17,6 @@ import {
   increment_struct_counter,
   get_struct_counter,
   DeleteButton,
-  remove_variables_in_db,
   useTheme,
   Path,
   apply,
@@ -224,11 +223,21 @@ export default function Component(
                       </Row>
                     }
                     onPress={async () => {
-                      await remove_variables_in_db(
-                        new Decimal(0),
-                        struct1.name,
-                        [state1.id as Decimal]
-                      );
+                      const fx = get_fx("Delete_Test");
+                      if (unwrap(fx)) {
+                        await fx.value.exec(
+                          {
+                            test: {
+                              type: "other",
+                              other: struct1.name,
+                              value: state1.id as Decimal,
+                              user_paths: [],
+                              borrows: [],
+                            },
+                          },
+                          new Decimal(0)
+                        );
+                      }
                       props.navigation.goBack();
                     }}
                   />
