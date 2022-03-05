@@ -17,8 +17,8 @@ import { NavigatorParams as RootNavigatorParams } from "../../";
 import Countries from "./countries";
 import Languages from "./languages";
 import Tags from "./tags";
-import Categories from "./categories";
-import Tests from "./tests";
+import Resource_Types from "./Resource_Types";
+import Tests from "./Tests";
 import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { tw } from "../../../../lib";
@@ -27,7 +27,7 @@ export type NavigatorParams = {
   Countries: undefined;
   Languages: undefined;
   Tags: undefined;
-  Categories: undefined;
+  Resource_Types: undefined;
   Tests: undefined;
 };
 
@@ -49,7 +49,13 @@ export default function Navigator(props: ParentNavigatorProps<"System">) {
       <TopTab.Screen name="Countries" component={Countries} />
       <TopTab.Screen name="Languages" component={Languages} />
       <TopTab.Screen name="Tags" component={Tags} />
-      <TopTab.Screen name="Categories" component={Categories} />
+      <TopTab.Screen
+        name="Resource_Types"
+        component={Resource_Types}
+        options={{
+          tabBarLabel: "Resource Types",
+        }}
+      />
       <TopTab.Screen name="Tests" component={Tests} />
     </TopTab.Navigator>
   );

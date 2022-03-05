@@ -1,7 +1,9 @@
-import UserViews from "./User";
-import TestViews from "./Test";
+import User from "./User";
+import Test from "./Test";
+import Resource_Type from "./Resource_Type";
 
 export const views = {
-  User: UserViews,
-  Test: TestViews,
+  Resource_Type,
+  User,
+  Test,
 };
