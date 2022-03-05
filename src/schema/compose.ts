@@ -28,8 +28,7 @@ export function get_compose(
     } else {
       return new Ok(schema[compose_name]);
     }
-  } else {
-    console.log("[ERROR] Invalid compose: ", compose_name);
   }
+  console.log("[ERROR] Invalid compose: ", compose_name);
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

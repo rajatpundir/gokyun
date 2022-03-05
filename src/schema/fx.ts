@@ -35,8 +35,6 @@ import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
 // 	tag: Tag
 // }
 
-// fx to convert public resource to private resource and vice versa, along with their tags
-
 const fxs = {
   ...Tag,
   ...Private_Resource,
@@ -61,8 +59,7 @@ export function get_fx(
     } else {
       return new Ok(schema[fx_name]);
     }
-  } else {
-    console.log("[ERROR] Invalid fx: ", fx_name);
   }
+  console.log("[ERROR] Invalid fx: ", fx_name);
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
