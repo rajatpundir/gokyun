@@ -44,7 +44,7 @@ async function replace_variable_in_db(
     >
   >
 > {
-  console.log("REPLACE: ", level.toString(), struct_name, id.toString(), paths);
+  console.log("REPLACE: ", level.toString(), struct_name, id.toString());
   const changes = {} as Record<
     BrokerKey,
     {

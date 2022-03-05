@@ -171,32 +171,21 @@ export default function Component(
                             new Decimal(0)
                           );
                           console.log("===", result);
+                          if (unwrap(result)) {
+                            props.navigation.goBack();
+                          }
                         }
                       } else {
-                        try {
-                          await replace_variable(
-                            new Decimal(0),
-                            new Variable(
-                              struct1,
-                              await arrow(async () => {
-                                if (state1.id.equals(-1)) {
-                                  await increment_struct_counter(struct1.name);
-                                  const result = await get_struct_counter(
-                                    struct1.name
-                                  );
-                                  if (unwrap(result)) {
-                                    props.navigation.goBack();
-                                    return result.value;
-                                  }
-                                }
-                                return state1.id as Decimal;
-                              }),
-                              state1.created_at,
-                              state1.updated_at,
-                              state1.values as HashSet<Path>
-                            )
-                          );
-                        } catch (e) {}
+                        await replace_variable(
+                          new Decimal(0),
+                          new Variable(
+                            struct1,
+                            state1.id as Decimal,
+                            state1.created_at,
+                            state1.updated_at,
+                            state1.values as HashSet<Path>
+                          )
+                        );
                       }
                     }}
                     flexDirection={"row"}
