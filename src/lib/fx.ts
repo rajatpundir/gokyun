@@ -696,10 +696,10 @@ export class Fx {
                     case "clob": {
                       if (expr_result instanceof Text) {
                         paths.push(
-                          new Path(output_name, [
+                          new Path(field_name, [
                             [],
                             [
-                              output_name,
+                              field_name,
                               {
                                 type: field.type,
                                 value: expr_result.value,
@@ -720,10 +720,10 @@ export class Fx {
                     case "u64": {
                       if (expr_result instanceof Num) {
                         paths.push(
-                          new Path(output_name, [
+                          new Path(field_name, [
                             [],
                             [
-                              output_name,
+                              field_name,
                               {
                                 type: field.type,
                                 value: new Decimal(expr_result.value),
@@ -744,10 +744,10 @@ export class Fx {
                     case "udecimal": {
                       if (expr_result instanceof Deci) {
                         paths.push(
-                          new Path(output_name, [
+                          new Path(field_name, [
                             [],
                             [
-                              output_name,
+                              field_name,
                               {
                                 type: field.type,
                                 value: new Decimal(expr_result.value),
@@ -765,10 +765,10 @@ export class Fx {
                     case "bool": {
                       if (expr_result instanceof Bool) {
                         paths.push(
-                          new Path(output_name, [
+                          new Path(field_name, [
                             [],
                             [
-                              output_name,
+                              field_name,
                               {
                                 type: field.type,
                                 value: expr_result.value,
@@ -788,10 +788,10 @@ export class Fx {
                     case "timestamp": {
                       if (expr_result instanceof Num) {
                         paths.push(
-                          new Path(output_name, [
+                          new Path(field_name, [
                             [],
                             [
-                              output_name,
+                              field_name,
                               {
                                 type: field.type,
                                 value: new Date(expr_result.value),
@@ -809,10 +809,10 @@ export class Fx {
                     case "other": {
                       if (expr_result instanceof Num) {
                         paths.push(
-                          new Path(output_name, [
+                          new Path(field_name, [
                             [],
                             [
-                              output_name,
+                              field_name,
                               {
                                 type: field.type,
                                 other: field.other,
@@ -917,10 +917,10 @@ export class Fx {
                       case "clob": {
                         if (expr_result instanceof Text) {
                           paths.push(
-                            new Path(output_name, [
+                            new Path(field_name, [
                               [],
                               [
-                                output_name,
+                                field_name,
                                 {
                                   type: field.type,
                                   value: expr_result.value,
@@ -941,10 +941,10 @@ export class Fx {
                       case "u64": {
                         if (expr_result instanceof Num) {
                           paths.push(
-                            new Path(output_name, [
+                            new Path(field_name, [
                               [],
                               [
-                                output_name,
+                                field_name,
                                 {
                                   type: field.type,
                                   value: new Decimal(expr_result.value),
@@ -965,10 +965,10 @@ export class Fx {
                       case "udecimal": {
                         if (expr_result instanceof Deci) {
                           paths.push(
-                            new Path(output_name, [
+                            new Path(field_name, [
                               [],
                               [
-                                output_name,
+                                field_name,
                                 {
                                   type: field.type,
                                   value: new Decimal(expr_result.value),
@@ -986,10 +986,10 @@ export class Fx {
                       case "bool": {
                         if (expr_result instanceof Bool) {
                           paths.push(
-                            new Path(output_name, [
+                            new Path(field_name, [
                               [],
                               [
-                                output_name,
+                                field_name,
                                 {
                                   type: field.type,
                                   value: expr_result.value,
@@ -1009,10 +1009,10 @@ export class Fx {
                       case "timestamp": {
                         if (expr_result instanceof Num) {
                           paths.push(
-                            new Path(output_name, [
+                            new Path(field_name, [
                               [],
                               [
-                                output_name,
+                                field_name,
                                 {
                                   type: field.type,
                                   value: new Date(expr_result.value),
@@ -1030,10 +1030,10 @@ export class Fx {
                       case "other": {
                         if (expr_result instanceof Num) {
                           paths.push(
-                            new Path(output_name, [
+                            new Path(field_name, [
                               [],
                               [
-                                output_name,
+                                field_name,
                                 {
                                   type: field.type,
                                   other: field.other,
