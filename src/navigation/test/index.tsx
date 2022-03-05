@@ -166,7 +166,11 @@ export default function Component(
                           state1.values as HashSet<Path>
                         );
                         if (unwrap(fx) && unwrap(args)) {
-                          await fx.value.exec(args.value, new Decimal(0));
+                          const result = await fx.value.exec(
+                            args.value,
+                            new Decimal(0)
+                          );
+                          console.log("===", result);
                         }
                       } else {
                         try {

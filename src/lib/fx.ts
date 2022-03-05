@@ -904,7 +904,7 @@ export class Fx {
               }
             }
             // 3. Process keys not present in uniqueness constraints
-            for (const field_name in Object.keys(struct.fields)) {
+            for (const field_name of Object.keys(struct.fields)) {
               if (!unique_constraint_fields.contains(field_name)) {
                 const field = struct.fields[field_name];
                 if (field_name in output.fields) {
