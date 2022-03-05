@@ -238,8 +238,6 @@ export default function Component(
                               type: "other",
                               other: struct1.name,
                               value: state1.id as Decimal,
-                              user_paths: [],
-                              borrows: [],
                             },
                           },
                           new Decimal(0)

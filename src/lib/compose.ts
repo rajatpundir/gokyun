@@ -575,8 +575,6 @@ export class Compose {
                           type: input.type,
                           other: input.other,
                           value: arg.value,
-                          user_paths: arg.user_paths,
-                          borrows: arg.borrows,
                         };
                       } else {
                         return new Err(
@@ -643,8 +641,6 @@ export class Compose {
                           type: input.type,
                           other: input.other,
                           value: input.default,
-                          user_paths: [],
-                          borrows: [],
                         };
                       }
                     } else {
@@ -729,8 +725,6 @@ export class Compose {
                               type: input.type,
                               other: input.other,
                               value: arg.value,
-                              user_paths: [],
-                              borrows: [],
                             };
                           } else {
                             return new Err(
@@ -833,8 +827,6 @@ export class Compose {
                                 type: input.type,
                                 other: input.other,
                                 value: arg.value,
-                                user_paths: [],
-                                borrows: [],
                               };
                             } else {
                               return new Err(
@@ -984,8 +976,6 @@ export class Compose {
                         type: input.type,
                         other: input.other,
                         value: arg.value,
-                        user_paths: arg.user_paths,
-                        borrows: arg.borrows,
                       };
                     } else {
                       return new Err(
@@ -1053,8 +1043,6 @@ export class Compose {
                           type: input.type,
                           other: input.other,
                           value: input.default,
-                          user_paths: [],
-                          borrows: [],
                         };
                       }
                     } else {
@@ -1145,8 +1133,6 @@ export class Compose {
                             type: input.type,
                             other: input.other,
                             value: arg.value,
-                            user_paths: [],
-                            borrows: [],
                           };
                         } else {
                           return new Err(
@@ -1247,8 +1233,6 @@ export class Compose {
                               type: input.type,
                               other: input.other,
                               value: arg.value,
-                              user_paths: [],
-                              borrows: [],
                             };
                           } else {
                             return new Err(
@@ -1265,16 +1249,7 @@ export class Compose {
                             >) {
                               const fx_args: FxArgs = {};
                               for (const field_name of Object.keys(arg)) {
-                                const field = arg[field_name];
-                                if (field.type !== "other") {
-                                  fx_args[field_name] = field;
-                                } else {
-                                  fx_args[field_name] = {
-                                    ...field,
-                                    user_paths: [],
-                                    borrows: [],
-                                  };
-                                }
+                                fx_args[field_name] = arg[field_name];
                               }
                               it.push(fx_args);
                             }
@@ -2066,8 +2041,6 @@ export class Compose {
                               type: field_struct_name[0],
                               other: field_struct_name[1].name,
                               value: arg.value,
-                              user_paths: arg.user_paths,
-                              borrows: arg.borrows,
                             };
                           } else {
                             return new Err(
@@ -2155,8 +2128,6 @@ export class Compose {
                                   type: field_struct_name[0],
                                   other: field_struct_name[1].name,
                                   value: arg.value,
-                                  user_paths: [],
-                                  borrows: [],
                                 };
                               } else {
                                 return new Err(
@@ -2260,8 +2231,6 @@ export class Compose {
                                     type: field_struct_name[0],
                                     other: field_struct_name[1].name,
                                     value: arg.value,
-                                    user_paths: [],
-                                    borrows: [],
                                   };
                                 } else {
                                   return new Err(

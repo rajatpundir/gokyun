@@ -63,25 +63,7 @@ type FxInputs = Record<
     }
 >;
 
-export type FxArgs = Record<
-  string,
-  | Exclude<
-      StrongEnum,
-      {
-        type: "other";
-        other: string;
-        value: Decimal;
-      }
-    >
-  | {
-      type: "other";
-      other: string;
-      value: Decimal;
-      // There must be atleast one read path permission, obtained after using user_paths / borrows
-      user_paths: Array<PathString>;
-      borrows: Array<string>;
-    }
->;
+export type FxArgs = Record<string, StrongEnum>;
 
 type FxOutputs = Record<
   string,

@@ -561,8 +561,6 @@ export default {
                           type: "other",
                           other: props.struct.name,
                           value: props.state.id as Decimal,
-                          user_paths: [],
-                          borrows: [],
                         },
                       },
                       new Decimal(0)
