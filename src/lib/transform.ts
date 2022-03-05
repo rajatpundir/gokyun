@@ -80,6 +80,7 @@ export class Transform {
     args: TransformArgs,
     level: Decimal
   ): Promise<Result<TransformResult>> {
+    console.log("[TRANSFORM]", this.name);
     const computed_outputs: Array<Record<string, StrongEnum> | ComposeResult> =
       [];
     switch (this.type) {

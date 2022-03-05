@@ -141,30 +141,37 @@ export default function Component(
                 <Row space={"2"}>
                   <Pressable
                     onPress={async () => {
-                      try {
-                        await replace_variable(
-                          new Decimal(0),
-                          new Variable(
-                            struct1,
-                            await arrow(async () => {
-                              if (state1.id.equals(-1)) {
-                                await increment_struct_counter(struct1.name);
-                                const result = await get_struct_counter(
-                                  struct1.name
-                                );
-                                if (unwrap(result)) {
-                                  props.navigation.goBack();
-                                  return result.value;
+                      if (state1.id.equals(-1)) {
+                        const fx = get_fx("Create_Test");
+                        if (unwrap(fx)) {
+                          await fx.value.exec({}, new Decimal(0));
+                        }
+                      } else {
+                        try {
+                          await replace_variable(
+                            new Decimal(0),
+                            new Variable(
+                              struct1,
+                              await arrow(async () => {
+                                if (state1.id.equals(-1)) {
+                                  await increment_struct_counter(struct1.name);
+                                  const result = await get_struct_counter(
+                                    struct1.name
+                                  );
+                                  if (unwrap(result)) {
+                                    props.navigation.goBack();
+                                    return result.value;
+                                  }
                                 }
-                              }
-                              return state1.id as Decimal;
-                            }),
-                            state1.created_at,
-                            state1.updated_at,
-                            state1.values as HashSet<Path>
-                          )
-                        );
-                      } catch (e) {}
+                                return state1.id as Decimal;
+                              }),
+                              state1.created_at,
+                              state1.updated_at,
+                              state1.values as HashSet<Path>
+                            )
+                          );
+                        } catch (e) {}
+                      }
                     }}
                     flexDirection={"row"}
                     alignItems={"center"}

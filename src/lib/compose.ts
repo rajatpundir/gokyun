@@ -253,6 +253,7 @@ export class Compose {
     args: ComposeArgs,
     level: Decimal
   ): Promise<Result<ComposeResult>> {
+    console.log("[COMPOSE]", this.name);
     const result = await get_symbols_for_fx_compose_paths(
       level,
       arrow(() => {
