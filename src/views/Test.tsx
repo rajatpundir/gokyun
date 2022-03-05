@@ -36,6 +36,7 @@ import {
   apply,
   Path,
 } from "../lib";
+import { get_fx } from "../schema";
 
 const views = {
   User: UserViews,
@@ -553,11 +554,27 @@ export default {
                   </Row>
                 }
                 onPress={async () => {
-                  await remove_variables_in_db(
-                    new Decimal(0),
-                    props.struct.name,
-                    [props.state.id as Decimal]
-                  );
+                  const fx = get_fx("Delete_Test");
+                  if (unwrap(fx)) {
+                    const x = await fx.value.exec(
+                      {
+                        test: {
+                          type: "other",
+                          other: props.struct.name,
+                          value: props.state.id as Decimal,
+                          user_paths: [],
+                          borrows: [],
+                        },
+                      },
+                      new Decimal(0)
+                    );
+                    console.log("Do nothing", x);
+                  }
+                  // await remove_variables_in_db(
+                  //   new Decimal(0),
+                  //   props.struct.name,
+                  //   [props.state.id as Decimal]
+                  // );
                 }}
               />
             </Row>

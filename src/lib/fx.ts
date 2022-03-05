@@ -261,301 +261,303 @@ export class Fx {
       // 2. update inputs
       for (const input_name of Object.keys(this.inputs)) {
         const input = this.inputs[input_name];
-        if (input.type === "other" && input.updates !== undefined) {
+        if (input.type === "other") {
           const struct = get_struct(input.other as StructName);
           if (input.delete_mode === undefined) {
-            const paths: Array<Path> = [];
-            for (const [path_string, expr] of input.updates) {
-              const result = get_path_with_type(struct, path_string);
-              if (unwrap(result)) {
-                const field_struct_name = result.value[1];
-                // fetch single path, ignore path update if it does not exist
-                const path: Option<Path> = await arrow(async () => {
-                  const filter_paths: HashSet<FilterPath> = HashSet.of(
-                    arrow(() => {
-                      if (field_struct_name[0] !== "other") {
-                        return new FilterPath(
-                          get_flattened_path(path_string).join("."),
-                          path_string,
-                          [field_struct_name[0], undefined],
-                          undefined
-                        );
-                      } else {
-                        return new FilterPath(
-                          get_flattened_path(path_string).join("."),
-                          path_string,
-                          [
-                            field_struct_name[0],
-                            undefined,
-                            field_struct_name[1],
-                          ],
-                          undefined
-                        );
-                      }
-                    })
-                  );
-                  if (input_name in args) {
-                    const arg = args[input_name];
-                    if (arg.type === input.type) {
-                      const variable = await get_variable(
-                        struct,
-                        level,
-                        arg.value,
-                        filter_paths,
-                        []
-                      );
-                      if (unwrap(variable)) {
-                        const path = variable.value.paths.findAny((x) =>
-                          compare_paths(path_string, get_path_string(x))
-                        );
-                        if (path.isSome()) {
-                          const value = path.get().path[1][1];
-                          if (value.type !== "other") {
-                            if (value.type === field_struct_name[0]) {
-                              path.get();
-                            }
-                          } else {
-                            if (value.type === field_struct_name[0]) {
-                              if (value.other === field_struct_name[1].name) {
-                                return new Ok(path.get());
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  } else {
-                    if (input.default !== undefined) {
-                      const variable = await get_variable(
-                        struct,
-                        level,
-                        input.default,
-                        filter_paths,
-                        []
-                      );
-                      if (unwrap(variable)) {
-                        const path = variable.value.paths.findAny((x) =>
-                          compare_paths(path_string, get_path_string(x))
-                        );
-                        if (path.isSome()) {
-                          const value = path.get().path[1][1];
-                          if (value.type !== "other") {
-                            if (value.type === field_struct_name[0]) {
-                              path.get();
-                            }
-                          } else {
-                            if (value.type === field_struct_name[0]) {
-                              if (value.other === field_struct_name[1].name) {
-                                return new Ok(path.get());
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                });
-                if (unwrap(path)) {
-                  const res = expr.get_result(symbols);
-                  if (unwrap(res)) {
-                    const expr_result = res.value;
-                    switch (field_struct_name[0]) {
-                      case "str":
-                      case "lstr":
-                      case "clob": {
-                        if (expr_result instanceof Text) {
-                          paths.push(
-                            apply(path.value, (it) => {
-                              it.path[1][1] = {
-                                type: field_struct_name[0],
-                                value: expr_result.value,
-                              } as StrongEnum;
-                              return it;
-                            })
+            if (input.updates !== undefined) {
+              const paths: Array<Path> = [];
+              for (const [path_string, expr] of input.updates) {
+                const result = get_path_with_type(struct, path_string);
+                if (unwrap(result)) {
+                  const field_struct_name = result.value[1];
+                  // fetch single path, ignore path update if it does not exist
+                  const path: Option<Path> = await arrow(async () => {
+                    const filter_paths: HashSet<FilterPath> = HashSet.of(
+                      arrow(() => {
+                        if (field_struct_name[0] !== "other") {
+                          return new FilterPath(
+                            get_flattened_path(path_string).join("."),
+                            path_string,
+                            [field_struct_name[0], undefined],
+                            undefined
                           );
                         } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          return new FilterPath(
+                            get_flattened_path(path_string).join("."),
+                            path_string,
+                            [
+                              field_struct_name[0],
+                              undefined,
+                              field_struct_name[1],
+                            ],
+                            undefined
                           );
                         }
-                        break;
-                      }
-                      case "i32":
-                      case "u32":
-                      case "i64":
-                      case "u64": {
-                        if (expr_result instanceof Num) {
-                          paths.push(
-                            apply(path.value, (it) => {
-                              it.path[1][1] = {
-                                type: field_struct_name[0],
-                                value: new Decimal(expr_result.value),
-                              } as StrongEnum;
-                              return it;
-                            })
-                          );
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                        break;
-                      }
-                      case "idouble":
-                      case "udouble":
-                      case "idecimal":
-                      case "udecimal": {
-                        if (expr_result instanceof Deci) {
-                          paths.push(
-                            apply(path.value, (it) => {
-                              it.path[1][1] = {
-                                type: field_struct_name[0],
-                                value: new Decimal(expr_result.value),
-                              } as StrongEnum;
-                              return it;
-                            })
-                          );
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                        break;
-                      }
-                      case "bool": {
-                        if (expr_result instanceof Bool) {
-                          paths.push(
-                            apply(path.value, (it) => {
-                              it.path[1][1] = {
-                                type: field_struct_name[0],
-                                value: expr_result.value,
-                              } as StrongEnum;
-                              return it;
-                            })
-                          );
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                        break;
-                      }
-                      case "date":
-                      case "time":
-                      case "timestamp": {
-                        if (expr_result instanceof Num) {
-                          paths.push(
-                            apply(path.value, (it) => {
-                              it.path[1][1] = {
-                                type: field_struct_name[0],
-                                value: new Date(expr_result.value),
-                              } as StrongEnum;
-                              return it;
-                            })
-                          );
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                        break;
-                      }
-                      case "other": {
-                        if (expr_result instanceof Num) {
-                          paths.push(
-                            apply(path.value, (it) => {
-                              it.path[1][1] = {
-                                type: field_struct_name[0],
-                                other: field_struct_name[1].name,
-                                value: new Decimal(expr_result.value),
-                              } as StrongEnum;
-                              return it;
-                            })
-                          );
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                        break;
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = field_struct_name;
-                        return _exhaustiveCheck;
-                      }
-                    }
-                  } else {
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      })
                     );
+                    if (input_name in args) {
+                      const arg = args[input_name];
+                      if (arg.type === input.type) {
+                        const variable = await get_variable(
+                          struct,
+                          level,
+                          arg.value,
+                          filter_paths,
+                          []
+                        );
+                        if (unwrap(variable)) {
+                          const path = variable.value.paths.findAny((x) =>
+                            compare_paths(path_string, get_path_string(x))
+                          );
+                          if (path.isSome()) {
+                            const value = path.get().path[1][1];
+                            if (value.type !== "other") {
+                              if (value.type === field_struct_name[0]) {
+                                path.get();
+                              }
+                            } else {
+                              if (value.type === field_struct_name[0]) {
+                                if (value.other === field_struct_name[1].name) {
+                                  return new Ok(path.get());
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    } else {
+                      if (input.default !== undefined) {
+                        const variable = await get_variable(
+                          struct,
+                          level,
+                          input.default,
+                          filter_paths,
+                          []
+                        );
+                        if (unwrap(variable)) {
+                          const path = variable.value.paths.findAny((x) =>
+                            compare_paths(path_string, get_path_string(x))
+                          );
+                          if (path.isSome()) {
+                            const value = path.get().path[1][1];
+                            if (value.type !== "other") {
+                              if (value.type === field_struct_name[0]) {
+                                path.get();
+                              }
+                            } else {
+                              if (value.type === field_struct_name[0]) {
+                                if (value.other === field_struct_name[1].name) {
+                                  return new Ok(path.get());
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  });
+                  if (unwrap(path)) {
+                    const res = expr.get_result(symbols);
+                    if (unwrap(res)) {
+                      const expr_result = res.value;
+                      switch (field_struct_name[0]) {
+                        case "str":
+                        case "lstr":
+                        case "clob": {
+                          if (expr_result instanceof Text) {
+                            paths.push(
+                              apply(path.value, (it) => {
+                                it.path[1][1] = {
+                                  type: field_struct_name[0],
+                                  value: expr_result.value,
+                                } as StrongEnum;
+                                return it;
+                              })
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "i32":
+                        case "u32":
+                        case "i64":
+                        case "u64": {
+                          if (expr_result instanceof Num) {
+                            paths.push(
+                              apply(path.value, (it) => {
+                                it.path[1][1] = {
+                                  type: field_struct_name[0],
+                                  value: new Decimal(expr_result.value),
+                                } as StrongEnum;
+                                return it;
+                              })
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "idouble":
+                        case "udouble":
+                        case "idecimal":
+                        case "udecimal": {
+                          if (expr_result instanceof Deci) {
+                            paths.push(
+                              apply(path.value, (it) => {
+                                it.path[1][1] = {
+                                  type: field_struct_name[0],
+                                  value: new Decimal(expr_result.value),
+                                } as StrongEnum;
+                                return it;
+                              })
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "bool": {
+                          if (expr_result instanceof Bool) {
+                            paths.push(
+                              apply(path.value, (it) => {
+                                it.path[1][1] = {
+                                  type: field_struct_name[0],
+                                  value: expr_result.value,
+                                } as StrongEnum;
+                                return it;
+                              })
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "date":
+                        case "time":
+                        case "timestamp": {
+                          if (expr_result instanceof Num) {
+                            paths.push(
+                              apply(path.value, (it) => {
+                                it.path[1][1] = {
+                                  type: field_struct_name[0],
+                                  value: new Date(expr_result.value),
+                                } as StrongEnum;
+                                return it;
+                              })
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        case "other": {
+                          if (expr_result instanceof Num) {
+                            paths.push(
+                              apply(path.value, (it) => {
+                                it.path[1][1] = {
+                                  type: field_struct_name[0],
+                                  other: field_struct_name[1].name,
+                                  value: new Decimal(expr_result.value),
+                                } as StrongEnum;
+                                return it;
+                              })
+                            );
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                          break;
+                        }
+                        default: {
+                          const _exhaustiveCheck: never = field_struct_name;
+                          return _exhaustiveCheck;
+                        }
+                      }
+                    } else {
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    continue;
                   }
                 } else {
-                  continue;
-                }
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
-              }
-            }
-            // replace variable
-            // TODO. Variable could be fetched even filter_paths are empty
-            if (input_name in args) {
-              const arg = args[input_name];
-              if (arg.type === input.type) {
-                const variable = await get_variable(
-                  struct,
-                  level,
-                  arg.value,
-                  HashSet.of(),
-                  []
-                );
-                if (unwrap(variable)) {
-                  await replace_variable(
-                    level,
-                    new Variable(
-                      struct,
-                      arg.value,
-                      variable.value.created_at,
-                      new Date(),
-                      HashSet.ofIterable(paths)
-                    )
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
-                } else {
-                  continue;
                 }
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
               }
-            } else {
-              if (input.default !== undefined) {
-                const variable = await get_variable(
-                  struct,
-                  level,
-                  input.default,
-                  HashSet.of(),
-                  []
-                );
-                if (unwrap(variable)) {
-                  await replace_variable(
+              // replace variable
+              // TODO. Variable could be fetched even filter_paths are empty
+              if (input_name in args) {
+                const arg = args[input_name];
+                if (arg.type === input.type) {
+                  const variable = await get_variable(
+                    struct,
                     level,
-                    new Variable(
-                      struct,
-                      input.default,
-                      variable.value.created_at,
-                      new Date(),
-                      HashSet.ofIterable(paths)
-                    )
+                    arg.value,
+                    HashSet.of(),
+                    []
                   );
+                  if (unwrap(variable)) {
+                    await replace_variable(
+                      level,
+                      new Variable(
+                        struct,
+                        arg.value,
+                        variable.value.created_at,
+                        new Date(),
+                        HashSet.ofIterable(paths)
+                      )
+                    );
+                  } else {
+                    continue;
+                  }
                 } else {
-                  continue;
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
                 }
               } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
+                if (input.default !== undefined) {
+                  const variable = await get_variable(
+                    struct,
+                    level,
+                    input.default,
+                    HashSet.of(),
+                    []
+                  );
+                  if (unwrap(variable)) {
+                    await replace_variable(
+                      level,
+                      new Variable(
+                        struct,
+                        input.default,
+                        variable.value.created_at,
+                        new Date(),
+                        HashSet.ofIterable(paths)
+                      )
+                    );
+                  } else {
+                    continue;
+                  }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
               }
             }
           } else {

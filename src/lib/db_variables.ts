@@ -302,6 +302,7 @@ export async function remove_variables_in_db(
   struct_name: string,
   ids: ReadonlyArray<Decimal>
 ): Promise<Result<[]>> {
+  console.log("REMOVE: ", struct_name, ids);
   try {
     if (level.equals(0)) {
       for (const id of ids) {

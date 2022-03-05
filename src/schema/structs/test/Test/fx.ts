@@ -49,4 +49,17 @@ export default {
     {},
     true
   ),
+  Delete_Test: new Fx(
+    "Delete_Test",
+    {
+      test: {
+        type: "other",
+        other: "Test",
+        delete_mode: "delete",
+      },
+    },
+    {},
+    {},
+    true
+  ),
 };
