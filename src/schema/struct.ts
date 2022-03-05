@@ -86,8 +86,8 @@ export type StructSchema = {
 };
 
 const structs = {
-  Test: Test,
-  Test2: Test2,
+  ...Test,
+  ...Test2,
 
   Country: Country,
   Pincode: Pincode,
