@@ -17,13 +17,13 @@ export default {
     fields: {
       resource_type: { type: "other", other: "Resource_Type" },
       url: { type: "str" },
-      user: { type: "other", other: "User" },
+      owner: { type: "other", other: "User" },
     },
-    uniqueness: [[["user"], "url"]],
+    uniqueness: [[["owner"], "url"]],
     permissions: {
       borrow: {},
       ownership: {
-        user: {
+        owner: {
           read: ["resource_type", "url"],
           write: [],
         },

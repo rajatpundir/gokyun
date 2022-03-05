@@ -14,7 +14,7 @@ export default {
         fields: {
           resource_type: new DotExpression(new Dot(["resource_type"])),
           url: new DotExpression(new Dot(["url"])),
-          user: new DotExpression(new Dot(["_system", "user"])),
+          owner: new DotExpression(new Dot(["_system", "user"])),
         },
       },
     },
@@ -48,7 +48,7 @@ export default {
             new Dot(["private_resource", "resource_type"])
           ),
           url: new DotExpression(new Dot(["private_resource", "url"])),
-          user: new DotExpression(new Dot(["_system", "user"])),
+          owner: new DotExpression(new Dot(["_system", "user"])),
         },
       },
     },

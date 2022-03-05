@@ -99,7 +99,7 @@ export default {
           new Not(
             new NumberComparatorExpression(
               new Equals<ToNum>([
-                new DotExpression(new Dot(["public_resource", "user"])),
+                new DotExpression(new Dot(["public_resource", "owner"])),
                 new DotExpression(new Dot(["_system", "user"])),
                 [],
               ])
@@ -173,7 +173,7 @@ export default {
           new Not(
             new NumberComparatorExpression(
               new Equals<ToNum>([
-                new DotExpression(new Dot(["public_resource", "user"])),
+                new DotExpression(new Dot(["public_resource", "owner"])),
                 new DotExpression(new Dot(["_system", "user"])),
                 [],
               ])

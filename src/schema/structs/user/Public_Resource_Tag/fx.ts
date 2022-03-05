@@ -48,7 +48,7 @@ export default {
             new NumberComparatorExpression(
               new Equals<ToNum>([
                 new DotExpression(
-                  new Dot(["public_resource_tag", "public_resource", "user"])
+                  new Dot(["public_resource_tag", "public_resource", "owner"])
                 ),
                 new DotExpression(new Dot(["_system", "user"])),
                 [],
