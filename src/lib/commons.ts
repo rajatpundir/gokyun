@@ -7,7 +7,7 @@ import { ErrMsg, errors } from "./errors";
 import {
   LispExpression,
   Symbol,
-  Text,
+  Txt,
   Num,
   Bool,
   Deci,
@@ -542,7 +542,7 @@ function add_symbol(
         case "lstr":
         case "clob": {
           return new Symbol({
-            value: new Ok(new Text(field.value)),
+            value: new Ok(new Txt(field.value)),
             values: {},
           });
         }
@@ -1141,7 +1141,7 @@ export function get_symbols_for_paths(
           case "lstr":
           case "clob": {
             return new Symbol({
-              value: new Ok(new Text(value.value)),
+              value: new Ok(new Txt(value.value)),
               values: sub_symbols,
             });
           }

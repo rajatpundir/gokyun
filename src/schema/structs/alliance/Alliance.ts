@@ -13,7 +13,7 @@ import {
   TextComparatorExpression,
   Equals,
   ToText,
-  Text,
+  Txt,
 } from "../../../lib/lisp";
 
 export default {
@@ -82,7 +82,7 @@ export default {
         new Not(
           new TextComparatorExpression(
             new Equals<ToText>([
-              new Text(""),
+              new Txt(""),
               new DotExpression(new Dot(["name"])),
               [],
             ])

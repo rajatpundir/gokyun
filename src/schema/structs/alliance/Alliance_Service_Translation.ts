@@ -12,7 +12,7 @@ import {
   TextComparatorExpression,
   Equals,
   ToText,
-  Text,
+  Txt,
 } from "../../../lib/lisp";
 
 export default {
@@ -82,7 +82,7 @@ export default {
           new TextComparatorExpression(
             new Equals<ToText>([
               new DotExpression(new Dot(["name"])),
-              new Text(""),
+              new Txt(""),
               [],
             ])
           )
@@ -96,7 +96,7 @@ export default {
           new TextComparatorExpression(
             new Equals<ToText>([
               new DotExpression(new Dot(["language", "code"])),
-              new Text("en"),
+              new Txt("en"),
               [],
             ])
           )

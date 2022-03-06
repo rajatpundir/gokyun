@@ -7,7 +7,7 @@ import {
   ToText,
   DotExpression,
   Dot,
-  Text,
+  Txt,
 } from "../../../../lib/lisp";
 import { ErrMsg, errors } from "../../../../lib/errors";
 
@@ -50,7 +50,7 @@ export default {
         new Not(
           new TextComparatorExpression(
             new Equals<ToText>([
-              new Text(""),
+              new Txt(""),
               new DotExpression(new Dot(["mobile"])),
               [],
             ])
@@ -64,7 +64,7 @@ export default {
         new Not(
           new TextComparatorExpression(
             new Equals<ToText>([
-              new Text(""),
+              new Txt(""),
               new DotExpression(new Dot(["nickname"])),
               [],
             ])

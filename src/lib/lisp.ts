@@ -12,12 +12,12 @@ import {
 import { ErrMsg, errors } from "./errors";
 import { PathString } from "./variable";
 
-export type LispResult = Num | Deci | Text | Bool;
+export type LispResult = Num | Deci | Txt | Bool;
 
 export type LispExpression =
   | Num
   | Deci
-  | Text
+  | Txt
   | Bool
   | NumberArithmeticExpression
   | DecimalArithmeticExpression
@@ -44,7 +44,7 @@ abstract class ToValue {
 }
 
 export abstract class ToText extends ToValue {
-  abstract get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text>;
+  abstract get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt>;
 }
 
 export abstract class ToNum extends ToText {
@@ -87,8 +87,8 @@ export class Num implements ToNum, ToDeci, ToText {
     return new Ok(new Deci(this.value));
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
-    return new Ok(new Text(this.value.toString()));
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
+    return new Ok(new Txt(this.value.toString()));
   }
 
   get_paths(): Array<PathString> {
@@ -127,8 +127,8 @@ export class Deci implements ToNum, ToDeci, ToText {
     return new Ok(new Deci(this.value));
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
-    return new Ok(new Text(this.value.toString()));
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
+    return new Ok(new Txt(this.value.toString()));
   }
 
   get_paths(): Array<PathString> {
@@ -140,7 +140,7 @@ export class Deci implements ToNum, ToDeci, ToText {
   }
 }
 
-export class Text implements ToText {
+export class Txt implements ToText {
   value: string;
 
   constructor(value: string) {
@@ -159,8 +159,8 @@ export class Text implements ToText {
     return this.get_text(symbols);
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
-    return new Ok(new Text(this.value));
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
+    return new Ok(new Txt(this.value));
   }
 
   get_paths(): Array<PathString> {
@@ -195,8 +195,8 @@ export class Bool implements ToBoolean, ToText {
     return new Ok(new Bool(this.value));
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
-    return new Ok(new Text(String(this.value)));
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
+    return new Ok(new Txt(String(this.value)));
   }
 
   get_paths(): Array<PathString> {
@@ -208,7 +208,7 @@ export class Bool implements ToBoolean, ToText {
   }
 }
 
-type Leaf = Num | Deci | Text | Bool;
+type Leaf = Num | Deci | Txt | Bool;
 
 export class Symbol {
   value: {
@@ -319,7 +319,7 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToNum> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -510,7 +510,7 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToDeci> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -739,7 +739,7 @@ export class NumberComparatorExpression implements ToBoolean {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToBoolean> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -990,7 +990,7 @@ export class DecimalComparatorExpression implements ToBoolean {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToBoolean> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -1241,7 +1241,7 @@ export class TextComparatorExpression implements ToBoolean {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToBoolean> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -1510,7 +1510,7 @@ export class LogicalBinaryExpression implements ToBoolean {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToBoolean> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -1666,7 +1666,7 @@ export class LogicalUnaryExpression implements ToBoolean {
     }
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v: Result<ToBoolean> = this.eval(symbols);
     if (unwrap(v)) {
       return v.value.get_text(symbols);
@@ -1819,7 +1819,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
     return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
       if (v.value instanceof ToText) {
@@ -1863,10 +1863,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
             if (condition.value.equals(v.value, symbols)) {
               return guard[1].get_result(symbols);
             }
-          } else if (
-            condition.value instanceof Text &&
-            v.value instanceof Text
-          ) {
+          } else if (condition.value instanceof Txt && v.value instanceof Txt) {
             if (condition.value.equals(v.value, symbols)) {
               return guard[1].get_result(symbols);
             }
@@ -2138,10 +2135,10 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
     return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
 
-  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Text> {
+  get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof Text) {
+      if (v.value instanceof Txt) {
         let v1 = v.value.get_text(symbols);
         if (unwrap(v1)) {
           return v1;

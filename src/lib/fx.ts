@@ -18,7 +18,7 @@ import {
   LispExpression,
   Num,
   Symbol,
-  Text,
+  Txt,
 } from "./lisp";
 import {
   apply,
@@ -349,7 +349,7 @@ export class Fx {
                         case "str":
                         case "lstr":
                         case "clob": {
-                          if (expr_result instanceof Text) {
+                          if (expr_result instanceof Txt) {
                             paths.push(
                               apply(path.value, (it) => {
                                 it.path[1][1] = {
@@ -575,7 +575,7 @@ export class Fx {
                 case "str":
                 case "lstr":
                 case "clob": {
-                  if (expr_result instanceof Text) {
+                  if (expr_result instanceof Txt) {
                     computed_outputs[output_name] = {
                       type: output.value.type,
                       value: expr_result.value,
@@ -696,7 +696,7 @@ export class Fx {
                     case "str":
                     case "lstr":
                     case "clob": {
-                      if (expr_result instanceof Text) {
+                      if (expr_result instanceof Txt) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -917,7 +917,7 @@ export class Fx {
                       case "str":
                       case "lstr":
                       case "clob": {
-                        if (expr_result instanceof Text) {
+                        if (expr_result instanceof Txt) {
                           paths.push(
                             new Path(field_name, [
                               [],
@@ -1154,7 +1154,7 @@ export class Fx {
                     case "str":
                     case "lstr":
                     case "clob": {
-                      if (expr_result instanceof Text) {
+                      if (expr_result instanceof Txt) {
                         filter_paths.push(
                           new FilterPath(
                             output_name,
@@ -1361,7 +1361,7 @@ export async function get_symbols_for_fx_compose_paths(
             case "clob": {
               symbols[input_name] = new Symbol({
                 value: new Ok(
-                  new Text(
+                  new Txt(
                     arrow(() => {
                       if (input_name in args) {
                         const arg = args[input_name];

@@ -14,7 +14,7 @@ import {
   GreaterThanEquals,
   ToDeci,
   Deci,
-  Text,
+  Txt,
 } from "../../../lib/lisp";
 
 // Also need to store pincode stats for each guild
@@ -47,7 +47,7 @@ export default {
         new Not(
           new TextComparatorExpression(
             new Equals<ToText>([
-              new Text(""),
+              new Txt(""),
               new DotExpression(new Dot(["name"])),
               [],
             ])

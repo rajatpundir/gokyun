@@ -7,7 +7,7 @@ import {
   ToText,
   DotExpression,
   Dot,
-  Text,
+  Txt,
 } from "../../../../lib/lisp";
 
 // Tag will make lookups faster, so no need to remove it
@@ -33,7 +33,7 @@ export default {
             new TextComparatorExpression(
               new Equals<ToText>([
                 new DotExpression(new Dot(["name"])),
-                new Text(""),
+                new Txt(""),
                 [],
               ])
             )
