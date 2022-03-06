@@ -817,34 +817,33 @@ function get_filter_path_stmt(
   return [filter_path_stmt, args];
 }
 
-export async function get_max_level(): Promise<Result<Decimal>> {
-  try {
-    const result_set = await execute_transaction(
-      `SELECT MAX("id") AS "max_id" FROM "LEVELS";`,
-      []
-    );
-    if (result_set.rows.length == 1) {
-      const result = result_set.rows._array[0];
-      if ("max_id" in result) {
-        return new Ok(new Decimal(result["max_id"]).abs().truncated());
-      }
+async function get_max_level(): Promise<Result<Decimal>> {
+  const result_set = await execute_transaction(
+    `SELECT MAX("id") AS "max_id" FROM "LEVELS";`,
+    []
+  );
+  if (result_set.rows.length == 1) {
+    const result = result_set.rows._array[0];
+    if ("max_id" in result) {
+      return new Ok(new Decimal(result["max_id"]).abs().truncated());
     }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-export async function create_level(id: Decimal): Promise<Result<Decimal>> {
-  try {
+export async function create_level(): Promise<Result<Decimal>> {
+  const max_level = await get_max_level();
+  if (unwrap(max_level)) {
     await execute_transaction(
       `INSERT INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
-      [id.abs().truncated().toString(), new Date().getTime().toString()]
+      [
+        max_level.value.abs().truncated().toString(),
+        new Date().getTime().toString(),
+      ]
     );
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+    return new Ok(max_level.value);
   }
-  return new Ok(id);
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
 export async function activate_level(id: Decimal): Promise<Result<[]>> {

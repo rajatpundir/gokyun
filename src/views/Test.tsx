@@ -34,7 +34,6 @@ import {
   Path,
   activate_level,
   create_level,
-  get_max_level,
   remove_level,
 } from "../lib";
 import { get_fx } from "../schema";
@@ -436,9 +435,10 @@ export default {
             >
               <Pressable
                 onPress={async () => {
-                  try {
-                    await replace_variable(
-                      new Decimal(0),
+                  const level = await create_level();
+                  if (unwrap(level)) {
+                    const result = await replace_variable(
+                      level.value,
                       new Variable(
                         props.struct,
                         props.state.id as Decimal,
@@ -447,7 +447,12 @@ export default {
                         props.state.values as HashSet<Path>
                       )
                     );
-                  } catch (e) {}
+                    if (unwrap(result)) {
+                      await activate_level(level.value);
+                    } else {
+                      await remove_level(level.value);
+                    }
+                  }
                 }}
                 flexDirection={"row"}
                 alignItems={"center"}
@@ -544,30 +549,27 @@ export default {
                   </Row>
                 }
                 onPress={async () => {
-                  const max_level = await get_max_level();
-                  if (unwrap(max_level)) {
-                    const level = await create_level(max_level.value.add(1));
-                    if (unwrap(level)) {
-                      const fx = get_fx("Delete_Test");
-                      if (unwrap(fx)) {
-                        const result = await fx.value.exec(
-                          {
-                            test: {
-                              type: "other",
-                              other: props.struct.name,
-                              value: props.state.id as Decimal,
-                            },
+                  const level = await create_level();
+                  if (unwrap(level)) {
+                    const fx = get_fx("Delete_Test");
+                    if (unwrap(fx)) {
+                      const result = await fx.value.exec(
+                        {
+                          test: {
+                            type: "other",
+                            other: props.struct.name,
+                            value: props.state.id as Decimal,
                           },
-                          level.value
-                        );
-                        if (unwrap(result)) {
-                          await activate_level(level.value);
-                        } else {
-                          await remove_level(level.value);
-                        }
+                        },
+                        level.value
+                      );
+                      if (unwrap(result)) {
+                        await activate_level(level.value);
                       } else {
                         await remove_level(level.value);
                       }
+                    } else {
+                      await remove_level(level.value);
                     }
                   }
                 }}
