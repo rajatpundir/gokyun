@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { StructSchema } from "../../struct";
+import { errors, ErrMsg } from "../../../lib/errors";
 import {
   NumberArithmeticExpression,
   Add,
@@ -10,9 +10,7 @@ import {
   Subtract,
   NumberComparatorExpression,
   Equals,
-  errors,
-  ErrMsg,
-} from "../../../lib";
+} from "../../../lib/lisp";
 
 export default {
   fields: {
@@ -138,4 +136,4 @@ export default {
       [errors.ErrUnexpected] as ErrMsg,
     ],
   },
-} as StructSchema;
+};

@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 export default {
   fields: {
     alliance_service_milestone: {
@@ -25,4 +23,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 export default {
   // Produced by Clan leader and consumed by a User to produce ClanMember
   fields: {
@@ -23,4 +21,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

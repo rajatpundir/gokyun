@@ -1,13 +1,12 @@
 import {
-  DotExpression,
-  Dot,
   Add,
+  Dot,
+  DotExpression,
   Num,
   NumberArithmeticExpression,
   Subtract,
   ToNum,
-} from "../../../lib";
-import { StructSchema } from "../../struct";
+} from "../../../lib/lisp";
 
 export default {
   fields: {
@@ -115,4 +114,4 @@ export default {
     },
   },
   checks: {},
-} as StructSchema;
+};

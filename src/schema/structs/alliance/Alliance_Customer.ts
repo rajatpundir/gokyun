@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 // TODO. Define Alliance_Voucher here, acts like a partial wallet after applying coupon if any
 // Could be used certain number of times as defined, owner tracks what what exactly was bought with voucher
 // The one using voucher needs to provide its code, which may not be randomly generated, unique(alliance, clan, code)
@@ -33,4 +31,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

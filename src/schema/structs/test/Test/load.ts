@@ -2,8 +2,8 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { replace_variable } from "../../../../lib/db_variables";
 import { Path, Variable } from "../../../../lib/variable";
-import { user_ids } from "../../system/User";
 import { get_struct } from "../../../struct";
+import { user_ids } from "../../system/User/load";
 
 export const test_ids = {
   Test: {

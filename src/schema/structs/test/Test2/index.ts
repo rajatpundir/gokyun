@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import { errors, ErrMsg } from "../../../../lib/errors";
 import {
   NumberArithmeticExpression,
   Multiply,
@@ -9,10 +10,7 @@ import {
   Equals,
   Modulus,
   Num,
-  errors,
-  ErrMsg,
-} from "../../../../lib";
-import { StructSchema } from "../../../struct";
+} from "../../../../lib/lisp";
 
 export default {
   Test2: {
@@ -140,5 +138,5 @@ export default {
         [errors.ErrEmptyField] as ErrMsg,
       ],
     },
-  } as StructSchema,
+  },
 };

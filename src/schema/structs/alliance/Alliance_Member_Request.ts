@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 export default {
   // This is consumed by a function and converted to AllianceMember or just deleted by another.
   fields: {
@@ -23,4 +21,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

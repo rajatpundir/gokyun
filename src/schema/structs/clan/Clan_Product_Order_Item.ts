@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 export default {
   fields: {
     clan_product_order: { type: "other", other: "Clan_Product_Order_Draft" },
@@ -27,4 +25,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

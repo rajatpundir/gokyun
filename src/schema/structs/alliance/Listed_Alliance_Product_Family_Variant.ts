@@ -1,4 +1,4 @@
-import { StructSchema } from "../../struct";
+import { errors, ErrMsg } from "../../../lib/errors";
 import {
   NumberArithmeticExpression,
   Add,
@@ -7,15 +7,13 @@ import {
   Dot,
   Num,
   Subtract,
+  NumberComparatorExpression,
   Equals,
-  errors,
-  ErrMsg,
+  LogicalBinaryExpression,
   And,
   GreaterThanEquals,
   LessThanEquals,
-  LogicalBinaryExpression,
-  NumberComparatorExpression,
-} from "../../../lib";
+} from "../../../lib/lisp";
 
 export default {
   // This will be created after Listed_Alliance_Product_Family_Variant_Request is consumed by a function
@@ -220,4 +218,4 @@ export default {
       [errors.ErrUnexpected] as ErrMsg,
     ],
   },
-} as StructSchema;
+};

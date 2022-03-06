@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 export default {
   // Also think about variations that can be applied to a product
   fields: {
@@ -30,4 +28,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

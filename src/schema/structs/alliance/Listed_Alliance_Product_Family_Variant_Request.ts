@@ -1,17 +1,15 @@
-import { StructSchema } from "../../struct";
+import { errors, ErrMsg } from "../../../lib/errors";
 import {
+  NumberComparatorExpression,
+  Equals,
   ToNum,
   DotExpression,
   Dot,
-  Equals,
-  errors,
-  ErrMsg,
+  LogicalBinaryExpression,
   And,
   GreaterThanEquals,
   LessThanEquals,
-  LogicalBinaryExpression,
-  NumberComparatorExpression,
-} from "../../../lib";
+} from "../../../lib/lisp";
 
 export default {
   // This struct represents a request sent to user to allow/deny linking
@@ -143,4 +141,4 @@ export default {
       [errors.ErrUnexpected] as ErrMsg,
     ],
   },
-} as StructSchema;
+};

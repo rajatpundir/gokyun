@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
-import { Fx, DotExpression, Dot } from "../../../../lib";
+import { Fx } from "../../../../lib/fx";
+import { DotExpression, Dot } from "../../../../lib/lisp";
 
 export default {
   Create_Test: new Fx(

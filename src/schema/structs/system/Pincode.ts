@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import { StructSchema } from "../../struct";
+import { errors, ErrMsg } from "../../../lib/errors";
 import {
   LogicalUnaryExpression,
   Not,
@@ -8,8 +8,6 @@ import {
   ToText,
   DotExpression,
   Dot,
-  errors,
-  ErrMsg,
   LogicalBinaryExpression,
   And,
   DecimalComparatorExpression,
@@ -17,7 +15,7 @@ import {
   ToDeci,
   Deci,
   Text,
-} from "../../../lib";
+} from "../../../lib/lisp";
 
 // Also need to store pincode stats for each guild
 // This is to give a high level comparison of efficiency of various guilds
@@ -82,4 +80,4 @@ export default {
       [errors.ErrEmptyField] as ErrMsg,
     ],
   },
-} as StructSchema;
+};

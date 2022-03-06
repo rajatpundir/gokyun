@@ -1,14 +1,13 @@
 import Decimal from "decimal.js";
 import {
+  NumberArithmeticExpression,
+  Add,
+  ToNum,
   DotExpression,
   Dot,
-  Add,
   Num,
-  NumberArithmeticExpression,
   Subtract,
-  ToNum,
-} from "../../../lib";
-import { StructSchema } from "../../struct";
+} from "../../../lib/lisp";
 
 export default {
   fields: {
@@ -118,4 +117,4 @@ export default {
     },
   },
   checks: {},
-} as StructSchema;
+};

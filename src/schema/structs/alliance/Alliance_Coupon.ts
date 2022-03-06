@@ -1,14 +1,12 @@
 import Decimal from "decimal.js";
-import { StructSchema } from "../../struct";
+import { errors, ErrMsg } from "../../../lib/errors";
 import {
   NumberComparatorExpression,
   GreaterThanEquals,
   ToNum,
   DotExpression,
   Dot,
-  errors,
-  ErrMsg,
-} from "../../../lib";
+} from "../../../lib/lisp";
 
 export default {
   fields: {
@@ -90,4 +88,4 @@ export default {
       [errors.ErrEmptyField] as ErrMsg,
     ],
   },
-} as StructSchema;
+};

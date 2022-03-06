@@ -1,17 +1,15 @@
 import Decimal from "decimal.js";
-import { StructSchema } from "../../struct";
+import { errors, ErrMsg } from "../../../lib/errors";
 import {
-  DotExpression,
-  Dot,
   LogicalUnaryExpression,
   Not,
   TextComparatorExpression,
   Equals,
   ToText,
-  errors,
-  ErrMsg,
+  DotExpression,
+  Dot,
   Text,
-} from "../../../lib";
+} from "../../../lib/lisp";
 
 export default {
   fields: {
@@ -49,4 +47,4 @@ export default {
       [errors.ErrEmptyField] as ErrMsg,
     ],
   },
-} as StructSchema;
+};

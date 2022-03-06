@@ -1,4 +1,4 @@
-import { StructSchema } from "../../../struct";
+import { errors, ErrMsg } from "../../../../lib/errors";
 import {
   LogicalUnaryExpression,
   Not,
@@ -7,10 +7,8 @@ import {
   ToText,
   DotExpression,
   Dot,
-  errors,
-  ErrMsg,
   Text,
-} from "../../../../lib";
+} from "../../../../lib/lisp";
 
 // Tag will make lookups faster, so no need to remove it
 
@@ -44,5 +42,5 @@ export default {
         [errors.ErrEmptyField] as ErrMsg,
       ],
     },
-  } as StructSchema,
+  },
 };

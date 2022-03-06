@@ -1,5 +1,3 @@
-import { StructSchema } from "../../struct";
-
 // TODO. To Reassess below structs
 export default {
   // Clan_Product_Order_Draft and Clan_Product_Order_Draft_Item are consumed by a function
@@ -23,4 +21,4 @@ export default {
   },
   triggers: {},
   checks: {},
-} as StructSchema;
+};

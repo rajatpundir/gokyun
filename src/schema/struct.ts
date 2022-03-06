@@ -77,7 +77,7 @@ import Clan_Product_Order from "./structs/clan/Clan_Product_Order";
 import Clan_Product_Order_Item from "./structs/clan/Clan_Product_Order_Item";
 import Clan_Service_Order from "./structs/clan/Clan_Service_Order";
 
-export type StructSchema = {
+type StructSchema = {
   fields: Record<string, WeakEnum>;
   uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
   permissions: StructPermissions;
@@ -150,7 +150,7 @@ const structs = {
     Alliance_Service_Milestone_Translation,
   Alliance_Service_Milestone_Task: Alliance_Service_Milestone_Task,
   Alliance_Service_Provider: Alliance_Service_Provider,
-  Alliance_Coupon: Alliance_Coupon,
+  Alliance_Coupon: Alliance_Coupon as any as StructSchema,
   Alliance_Customer: Alliance_Customer,
 
   Guild: Guild,
