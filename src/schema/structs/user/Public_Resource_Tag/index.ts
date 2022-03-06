@@ -1,5 +1,3 @@
-import { StructSchema } from "../../../struct";
-
 export default {
   Public_Resource_Tag: {
     fields: {
@@ -19,5 +17,5 @@ export default {
     },
     triggers: {},
     checks: {},
-  } as StructSchema,
+  },
 };

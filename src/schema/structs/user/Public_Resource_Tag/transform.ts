@@ -1,4 +1,4 @@
-import { Transform } from "../../../../lib";
+import { Transform } from "../../../../lib/transform";
 
 export default {
   Create_Public_Resource_Tag: new Transform(

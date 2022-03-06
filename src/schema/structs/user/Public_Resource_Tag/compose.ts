@@ -1,16 +1,14 @@
+import { Compose, ComposeStep } from "../../../../lib/compose";
+import { errors, ErrMsg } from "../../../../lib/errors";
 import {
-  Compose,
-  ComposeStep,
-  Dot,
-  DotExpression,
-  Equals,
-  ErrMsg,
-  errors,
   LogicalUnaryExpression,
   Not,
   NumberComparatorExpression,
+  Equals,
   ToNum,
-} from "../../../../lib";
+  DotExpression,
+  Dot,
+} from "../../../../lib/lisp";
 
 export default {
   Create_Public_Resource_Tag: new Compose(

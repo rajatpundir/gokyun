@@ -1,19 +1,18 @@
+import { errors, ErrMsg } from "../../../../lib/errors";
+import { Fx } from "../../../../lib/fx";
 import {
-  Fx,
+  NumberArithmeticExpression,
+  Add,
+  ToNum,
   DotExpression,
   Dot,
-  Equals,
-  ErrMsg,
-  errors,
+  Num,
+  Subtract,
   LogicalUnaryExpression,
   Not,
   NumberComparatorExpression,
-  ToNum,
-  NumberArithmeticExpression,
-  Add,
-  Num,
-  Subtract,
-} from "../../../../lib";
+  Equals,
+} from "../../../../lib/lisp";
 
 export default {
   Create_Private_Resource_Tag: new Fx(

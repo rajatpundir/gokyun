@@ -1,4 +1,5 @@
-import { Fx, DotExpression, Dot, Num } from "../../../../lib";
+import { Fx } from "../../../../lib/fx";
+import { DotExpression, Dot, Num } from "../../../../lib/lisp";
 
 export default {
   Create_Public_Resource: new Fx(
