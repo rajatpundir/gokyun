@@ -444,7 +444,7 @@ export default {
                         props.state.id as Decimal,
                         props.state.created_at,
                         props.state.updated_at,
-                        props.state.values as HashSet<Path>
+                        props.state.values.filter((x) => x.modified)
                       )
                     );
                     if (unwrap(result)) {

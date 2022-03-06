@@ -189,7 +189,7 @@ export default function Component(
                               state1.id as Decimal,
                               state1.created_at,
                               state1.updated_at,
-                              state1.values as HashSet<Path>
+                              state1.values.filter((x) => x.modified)
                             )
                           );
                           if (unwrap(result)) {
