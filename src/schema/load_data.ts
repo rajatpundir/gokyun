@@ -1,5 +1,5 @@
-import { replace_param } from "../lib";
-import { load_resource_type } from "./structs/system/Resource_Type";
+import { replace_param } from "../lib/db";
+import { load_resource_type } from "./structs/system/Resource_Type/load";
 import { load_user } from "./structs/system/User";
 import { load_test } from "./structs/test/Test/load";
 

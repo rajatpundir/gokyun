@@ -2,10 +2,10 @@ import {
   WeakEnum,
   StructPermissions,
   StructTrigger,
-  BooleanLispExpression,
-  ErrMsg,
   Struct,
-} from "../lib";
+} from "../lib/variable";
+import { BooleanLispExpression } from "../lib/lisp";
+import { ErrMsg } from "../lib/errors";
 
 import Test from "./structs/test/Test";
 import Test2 from "./structs/test/Test2";
@@ -95,7 +95,7 @@ const structs = {
   Language: Language,
   ...Tag,
   User: User,
-  Resource_Type: Resource_Type,
+  Resource_Type: Resource_Type as any as StructSchema,
 
   Product_Category: Product_Category,
   Product_Category_Translation: Product_Category_Translation,
