@@ -1,5 +1,6 @@
-import { Compose, Result, Ok, Err, CustomError, errors, ErrMsg } from "../lib";
-
+import { Compose } from "../lib/compose";
+import { errors, ErrMsg } from "../lib/errors";
+import { Result, Ok, Err, CustomError } from "../lib/prelude";
 import Private_Resource from "./structs/user/Private_Resource/compose";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/compose";
 import Public_Resource from "./structs/user/Public_Resource/compose";

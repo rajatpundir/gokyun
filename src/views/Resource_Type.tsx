@@ -1,6 +1,6 @@
 import React from "react";
-import { Column, Row, Text } from "native-base";
-import { ComponentViews, arrow, Template, useTheme, Field } from "../lib";
+import { Column, Text } from "native-base";
+import { ComponentViews, arrow, useTheme, Field } from "../lib";
 
 const views = {};
 

@@ -1,11 +1,12 @@
-import { CustomError, Err, ErrMsg, errors, Fx, Ok, Result } from "../lib";
-
 import Test from "./structs/test/Test/fx";
 import Tag from "./structs/system/Tag/fx";
 import Private_Resource from "./structs/user/Private_Resource/fx";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/fx";
 import Public_Resource from "./structs/user/Public_Resource/fx";
 import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
+import { errors, ErrMsg } from "../lib/errors";
+import { Fx } from "../lib/fx";
+import { Result, Ok, Err, CustomError } from "../lib/prelude";
 
 // All structs are created via Fx
 

@@ -1,13 +1,6 @@
-import {
-  Transform,
-  Result,
-  Ok,
-  Err,
-  CustomError,
-  errors,
-  ErrMsg,
-} from "../lib";
-
+import { errors, ErrMsg } from "../lib/errors";
+import { Result, Ok, Err, CustomError } from "../lib/prelude";
+import { Transform } from "../lib/transform";
 import Tag from "./structs/system/Tag/transform";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/transform";
 import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/transform";
