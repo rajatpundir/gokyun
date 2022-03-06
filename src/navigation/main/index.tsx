@@ -35,8 +35,8 @@ import {
   Path,
   useTheme,
 } from "../../lib";
-import { load_data } from "../../schema";
 import { LogBox } from "react-native";
+import { load_data } from "../../schema/load_data";
 
 // Ignore react navigation error related to serializability of props passed
 LogBox.ignoreLogs(["Require cycle:"]);

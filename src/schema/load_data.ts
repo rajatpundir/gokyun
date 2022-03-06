@@ -1,6 +1,6 @@
 import { replace_param } from "../lib/db";
 import { load_resource_type } from "./structs/system/Resource_Type/load";
-import { load_user } from "./structs/system/User";
+import { load_user } from "./structs/system/User/load";
 import { load_test } from "./structs/test/Test/load";
 
 export async function load_data() {

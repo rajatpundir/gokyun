@@ -94,7 +94,7 @@ const structs = {
   PincodeStats: PincodeStats,
   Language: Language,
   ...Tag,
-  User: User,
+  User: User as any as StructSchema,
   Resource_Type: Resource_Type as any as StructSchema,
 
   Product_Category: Product_Category,
