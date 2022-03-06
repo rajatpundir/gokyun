@@ -1,7 +1,7 @@
 import { replace_param } from "../lib";
 import { load_resource_type } from "./structs/system/Resource_Type";
 import { load_user } from "./structs/system/User";
-import { load_test } from "./structs/test/Test";
+import { load_test } from "./structs/test/Test/load";
 
 export async function load_data() {
   await replace_param("theme", { type: "str", value: "Black" });

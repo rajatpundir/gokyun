@@ -86,7 +86,7 @@ export type StructSchema = {
 };
 
 const structs = {
-  ...Test,
+  Test: Test as any as StructSchema,
   ...Test2,
 
   Country: Country,
