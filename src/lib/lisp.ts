@@ -43,24 +43,24 @@ abstract class ToValue {
   abstract serialize(): any;
 }
 
-export abstract class ToText extends ToValue {
+export abstract class ToTxt extends ToValue {
   abstract get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt>;
 }
 
-export abstract class ToNum extends ToText {
+export abstract class ToNum extends ToTxt {
   abstract get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num>;
 }
 
-export abstract class ToDeci extends ToText {
+export abstract class ToDeci extends ToTxt {
   abstract get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num>;
   abstract get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci>;
 }
 
-export abstract class ToBoolean extends ToText {
+export abstract class ToBoolean extends ToTxt {
   abstract get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool>;
 }
 
-export class Num implements ToNum, ToDeci, ToText {
+export class Num implements ToNum, ToDeci, ToTxt {
   value: number;
 
   constructor(value: number) {
@@ -100,7 +100,7 @@ export class Num implements ToNum, ToDeci, ToText {
   }
 }
 
-export class Deci implements ToNum, ToDeci, ToText {
+export class Deci implements ToNum, ToDeci, ToTxt {
   value: number;
 
   constructor(value: number) {
@@ -140,7 +140,7 @@ export class Deci implements ToNum, ToDeci, ToText {
   }
 }
 
-export class Txt implements ToText {
+export class Txt implements ToTxt {
   value: string;
 
   constructor(value: string) {
@@ -172,7 +172,7 @@ export class Txt implements ToText {
   }
 }
 
-export class Bool implements ToBoolean, ToText {
+export class Bool implements ToBoolean, ToTxt {
   value: boolean;
 
   constructor(value: boolean) {
@@ -1205,9 +1205,9 @@ export class DecimalComparatorExpression implements ToBoolean {
 }
 
 export class TextComparatorExpression implements ToBoolean {
-  value: ComparatorExpressionVariant<ToText>;
+  value: ComparatorExpressionVariant<ToTxt>;
 
-  constructor(value: ComparatorExpressionVariant<ToText>) {
+  constructor(value: ComparatorExpressionVariant<ToTxt>) {
     this.value = value;
   }
 
@@ -1251,7 +1251,7 @@ export class TextComparatorExpression implements ToBoolean {
   }
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
-    let args: [ToText, ToText, ReadonlyArray<ToText>] = this.value.value;
+    let args: [ToTxt, ToTxt, ReadonlyArray<ToTxt>] = this.value.value;
     if (this.value instanceof Equals) {
       let v = args[0].get_text(symbols);
       if (unwrap(v)) {
@@ -1707,7 +1707,7 @@ export class Match<T extends ToValue, U extends ToValue> {
 }
 
 export class MatchExpression<T extends ToValue, U extends ToValue>
-  implements ToNum, ToDeci, ToText, ToBoolean
+  implements ToNum, ToDeci, ToTxt, ToBoolean
 {
   value: Match<T, U>;
 
@@ -1752,10 +1752,10 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
             }
           }
         }
-      } else if (v.value instanceof ToText) {
+      } else if (v.value instanceof ToTxt) {
         let v1 = other.get_result(symbols);
         if (unwrap(v1)) {
-          if (v1.value instanceof ToText) {
+          if (v1.value instanceof ToTxt) {
             let v2 = v.value.get_text(symbols);
             let v3 = v1.value.get_text(symbols);
             if (unwrap(v2) && unwrap(v3)) {
@@ -1822,7 +1822,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
     let v = this.eval(symbols);
     if (unwrap(v)) {
-      if (v.value instanceof ToText) {
+      if (v.value instanceof ToTxt) {
         let v1 = v.value.get_text(symbols);
         if (unwrap(v1)) {
           return v1;
@@ -1916,7 +1916,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
           type: ["Number", "Decimal"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToText) {
+      } else if (this.value.value[0] instanceof ToTxt) {
         return {
           op: "match",
           type: ["Number", "Text"],
@@ -1942,7 +1942,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
           type: ["Decimal", "Decimal"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToText) {
+      } else if (this.value.value[0] instanceof ToTxt) {
         return {
           op: "match",
           type: ["Decimal", "Text"],
@@ -1955,7 +1955,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
           args: args,
         };
       }
-    } else if (this.value.value[2] instanceof ToText) {
+    } else if (this.value.value[2] instanceof ToTxt) {
       if (this.value.value[0] instanceof ToNum) {
         return {
           op: "match",
@@ -1968,7 +1968,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
           type: ["Text", "Decimal"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToText) {
+      } else if (this.value.value[0] instanceof ToTxt) {
         return {
           op: "match",
           type: ["Text", "Text"],
@@ -1994,7 +1994,7 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
           type: ["Boolean", "Decimal"],
           args: args,
         };
-      } else if (this.value.value[0] instanceof ToText) {
+      } else if (this.value.value[0] instanceof ToTxt) {
         return {
           op: "match",
           type: ["Boolean", "Text"],
@@ -2024,7 +2024,7 @@ export class Dot {
   }
 }
 
-export class DotExpression implements ToNum, ToText, ToBoolean {
+export class DotExpression implements ToNum, ToTxt, ToBoolean {
   value: Dot;
 
   constructor(value: Dot) {
@@ -2068,10 +2068,10 @@ export class DotExpression implements ToNum, ToText, ToBoolean {
             }
           }
         }
-      } else if (v.value instanceof ToText) {
+      } else if (v.value instanceof ToTxt) {
         let v1 = other.get_result(symbols);
         if (unwrap(v1)) {
-          if (v1.value instanceof ToText) {
+          if (v1.value instanceof ToTxt) {
             let v2 = v.value.get_text(symbols);
             let v3 = v1.value.get_text(symbols);
             if (unwrap(v2) && unwrap(v3)) {

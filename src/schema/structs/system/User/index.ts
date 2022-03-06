@@ -4,7 +4,7 @@ import {
   Not,
   TextComparatorExpression,
   Equals,
-  ToText,
+  ToTxt,
   DotExpression,
   Dot,
   Txt,
@@ -49,7 +49,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new Txt(""),
               new DotExpression(new Dot(["mobile"])),
               [],
@@ -63,7 +63,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new Txt(""),
               new DotExpression(new Dot(["nickname"])),
               [],

@@ -11,7 +11,7 @@ import {
   Not,
   TextComparatorExpression,
   Equals,
-  ToText,
+  ToTxt,
   Txt,
 } from "../../../lib/lisp";
 
@@ -82,7 +82,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new DotExpression(new Dot(["name"])),
               new Txt(""),
               [],
@@ -96,7 +96,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new DotExpression(new Dot(["language", "code"])),
               new Txt("en"),
               [],

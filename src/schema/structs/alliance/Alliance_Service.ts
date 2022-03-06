@@ -12,7 +12,7 @@ import {
   Not,
   TextComparatorExpression,
   Equals,
-  ToText,
+  ToTxt,
   NumberComparatorExpression,
   GreaterThanEquals,
   Txt,
@@ -92,7 +92,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new DotExpression(new Dot(["name"])),
               new Txt(""),
               [],

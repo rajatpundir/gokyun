@@ -1,13 +1,13 @@
 import { errors, ErrMsg } from "../../../../lib/errors";
 import {
-  Dot,
-  DotExpression,
-  Equals,
   LogicalUnaryExpression,
   Not,
   TextComparatorExpression,
-  ToText,
+  Equals,
+  ToTxt,
   Txt,
+  DotExpression,
+  Dot,
 } from "../../../../lib/lisp";
 
 export default {
@@ -27,7 +27,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new Txt(""),
               new DotExpression(new Dot(["type"])),
               [],
@@ -41,7 +41,7 @@ export default {
       new LogicalUnaryExpression(
         new Not(
           new TextComparatorExpression(
-            new Equals<ToText>([
+            new Equals<ToTxt>([
               new Txt(""),
               new DotExpression(new Dot(["subtype"])),
               [],
