@@ -11,6 +11,7 @@ import {
 } from "./prelude";
 import { ErrMsg, errors } from "./errors";
 import { PathString } from "./variable";
+import { getState } from "./store";
 
 export type LispResult = Num | Deci | Txt | Bool;
 
@@ -68,7 +69,7 @@ export class Num implements ToNum, ToDeci, ToTxt {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = other.get_number(symbols);
+    let v = other.get_number(inject_system_constants(symbols));
     if (unwrap(v)) {
       return this.value === v.value.value;
     }
@@ -76,7 +77,7 @@ export class Num implements ToNum, ToDeci, ToTxt {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_number(symbols);
+    return this.get_number(inject_system_constants(symbols));
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
@@ -108,7 +109,7 @@ export class Deci implements ToNum, ToDeci, ToTxt {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = other.get_decimal(symbols);
+    let v = other.get_decimal(inject_system_constants(symbols));
     if (unwrap(v)) {
       return this.value === v.value.value;
     }
@@ -116,7 +117,7 @@ export class Deci implements ToNum, ToDeci, ToTxt {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_decimal(symbols);
+    return this.get_decimal(inject_system_constants(symbols));
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
@@ -148,7 +149,7 @@ export class Txt implements ToTxt {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = other.get_text(symbols);
+    let v = other.get_text(inject_system_constants(symbols));
     if (unwrap(v)) {
       return this.value === v.value.value;
     }
@@ -156,7 +157,7 @@ export class Txt implements ToTxt {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_text(symbols);
+    return this.get_text(inject_system_constants(symbols));
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
@@ -180,7 +181,7 @@ export class Bool implements ToBoolean, ToTxt {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = other.get_boolean(symbols);
+    let v = other.get_boolean(inject_system_constants(symbols));
     if (unwrap(v)) {
       return this.value === v.value.value;
     }
@@ -188,7 +189,7 @@ export class Bool implements ToBoolean, ToTxt {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_boolean(symbols);
+    return this.get_boolean(inject_system_constants(symbols));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
@@ -276,13 +277,13 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_number(symbols);
+      let v1 = v.value.get_number(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_number(symbols);
+          let v3 = v2.value.get_number(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -293,22 +294,22 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_number(symbols);
+    return this.get_number(inject_system_constants(symbols));
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
-    let v: Result<ToNum> = this.eval(symbols);
+    let v: Result<ToNum> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_number(symbols);
+      return v.value.get_number(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
-    let v: Result<ToNum> = this.eval(symbols);
+    let v: Result<ToNum> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_number(symbols);
+      let v1 = v.value.get_number(inject_system_constants(symbols));
       if (unwrap(v1)) {
         return new Ok(new Deci(v1.value.value));
       } else {
@@ -320,9 +321,9 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToNum> = this.eval(symbols);
+    let v: Result<ToNum> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -332,11 +333,11 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
     let args: [ToNum, ReadonlyArray<ToNum>] = this.value.value;
     if (this.value instanceof Add) {
       let result: Result<ToNum> = fold(
-        args[0].get_number(symbols),
+        args[0].get_number(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_number(symbols);
+            let v = val.get_number(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value + v.value.value));
             }
@@ -347,11 +348,11 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Multiply) {
       let result: Result<ToNum> = fold(
-        args[0].get_number(symbols),
+        args[0].get_number(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_number(symbols);
+            let v = val.get_number(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value * v.value.value));
             }
@@ -362,11 +363,11 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Subtract) {
       let result: Result<ToNum> = fold(
-        args[0].get_number(symbols),
+        args[0].get_number(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_number(symbols);
+            let v = val.get_number(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value - v.value.value));
             }
@@ -377,11 +378,11 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Divide) {
       let result: Result<ToNum> = fold(
-        args[0].get_number(symbols),
+        args[0].get_number(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_number(symbols);
+            let v = val.get_number(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value / v.value.value));
             }
@@ -392,11 +393,11 @@ export class NumberArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Modulus) {
       let result: Result<ToNum> = fold(
-        args[0].get_number(symbols),
+        args[0].get_number(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_number(symbols);
+            let v = val.get_number(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value % v.value.value));
             }
@@ -472,17 +473,17 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_decimal(symbols);
+    return this.get_decimal(inject_system_constants(symbols));
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_decimal(symbols);
+      let v1 = v.value.get_decimal(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_decimal(symbols);
+          let v3 = v2.value.get_decimal(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -493,27 +494,27 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
-    let v: Result<ToDeci> = this.eval(symbols);
+    let v: Result<ToDeci> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_number(symbols);
+      return v.value.get_number(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
-    let v: Result<ToDeci> = this.eval(symbols);
+    let v: Result<ToDeci> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_decimal(symbols);
+      return v.value.get_decimal(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToDeci> = this.eval(symbols);
+    let v: Result<ToDeci> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -523,11 +524,11 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
     let args: [ToDeci, ReadonlyArray<ToDeci>] = this.value.value;
     if (this.value instanceof Add) {
       let result: Result<ToDeci> = fold(
-        args[0].get_decimal(symbols),
+        args[0].get_decimal(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_decimal(symbols);
+            let v = val.get_decimal(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value + v.value.value));
             }
@@ -538,11 +539,11 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Multiply) {
       let result: Result<ToDeci> = fold(
-        args[0].get_decimal(symbols),
+        args[0].get_decimal(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_decimal(symbols);
+            let v = val.get_decimal(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value * v.value.value));
             }
@@ -553,11 +554,11 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Subtract) {
       let result: Result<ToDeci> = fold(
-        args[0].get_decimal(symbols),
+        args[0].get_decimal(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_decimal(symbols);
+            let v = val.get_decimal(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value - v.value.value));
             }
@@ -568,11 +569,11 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Divide) {
       let result: Result<ToDeci> = fold(
-        args[0].get_decimal(symbols),
+        args[0].get_decimal(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_decimal(symbols);
+            let v = val.get_decimal(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value / v.value.value));
             }
@@ -583,11 +584,11 @@ export class DecimalArithmeticExpression implements ToNum, ToDeci {
       return result;
     } else if (this.value instanceof Modulus) {
       let result: Result<ToDeci> = fold(
-        args[0].get_decimal(symbols),
+        args[0].get_decimal(inject_system_constants(symbols)),
         args[1],
         (acc, val) => {
           if (unwrap(acc)) {
-            let v = val.get_decimal(symbols);
+            let v = val.get_decimal(inject_system_constants(symbols));
             if (unwrap(v)) {
               return new Ok(new Num(acc.value.value % v.value.value));
             }
@@ -710,13 +711,13 @@ export class NumberComparatorExpression implements ToBoolean {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_boolean(symbols);
+      let v1 = v.value.get_boolean(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_boolean(symbols);
+          let v3 = v2.value.get_boolean(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -727,22 +728,22 @@ export class NumberComparatorExpression implements ToBoolean {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_boolean(symbols);
+    return this.get_boolean(inject_system_constants(symbols));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_boolean(symbols);
+      return v.value.get_boolean(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -751,9 +752,9 @@ export class NumberComparatorExpression implements ToBoolean {
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
     let args: [ToNum, ToNum, ReadonlyArray<ToNum>] = this.value.value;
     if (this.value instanceof Equals) {
-      let v = args[0].get_number(symbols);
+      let v = args[0].get_number(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_number(symbols);
+        let v1 = args[1].get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value === v1.value.value)) as Result<Bool>,
@@ -762,9 +763,9 @@ export class NumberComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_number(symbols);
+                  let v2 = prev.get_number(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_number(symbols);
+                    let v3 = val.get_number(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(
                         new Bool(v2.value.value === v3.value.value)
@@ -781,9 +782,9 @@ export class NumberComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThan) {
-      let v = args[0].get_number(symbols);
+      let v = args[0].get_number(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_number(symbols);
+        let v1 = args[1].get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value < v1.value.value)) as Result<Bool>,
@@ -792,9 +793,9 @@ export class NumberComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_number(symbols);
+                  let v2 = prev.get_number(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_number(symbols);
+                    let v3 = val.get_number(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value < v3.value.value));
                     }
@@ -809,9 +810,9 @@ export class NumberComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThan) {
-      let v = args[0].get_number(symbols);
+      let v = args[0].get_number(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_number(symbols);
+        let v1 = args[1].get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value > v1.value.value)) as Result<Bool>,
@@ -820,9 +821,9 @@ export class NumberComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_number(symbols);
+                  let v2 = prev.get_number(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_number(symbols);
+                    let v3 = val.get_number(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value > v3.value.value));
                     }
@@ -837,9 +838,9 @@ export class NumberComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThanEquals) {
-      let v = args[0].get_number(symbols);
+      let v = args[0].get_number(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_number(symbols);
+        let v1 = args[1].get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value <= v1.value.value)) as Result<Bool>,
@@ -848,9 +849,9 @@ export class NumberComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_number(symbols);
+                  let v2 = prev.get_number(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_number(symbols);
+                    let v3 = val.get_number(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value <= v3.value.value));
                     }
@@ -865,9 +866,9 @@ export class NumberComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThanEquals) {
-      let v = args[0].get_number(symbols);
+      let v = args[0].get_number(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_number(symbols);
+        let v1 = args[1].get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value >= v1.value.value)) as Result<Bool>,
@@ -876,9 +877,9 @@ export class NumberComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_number(symbols);
+                  let v2 = prev.get_number(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_number(symbols);
+                    let v3 = val.get_number(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value >= v3.value.value));
                     }
@@ -961,13 +962,13 @@ export class DecimalComparatorExpression implements ToBoolean {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_boolean(symbols);
+      let v1 = v.value.get_boolean(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_boolean(symbols);
+          let v3 = v2.value.get_boolean(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -978,22 +979,22 @@ export class DecimalComparatorExpression implements ToBoolean {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_boolean(symbols);
+    return this.get_boolean(inject_system_constants(symbols));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_boolean(symbols);
+      return v.value.get_boolean(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -1002,9 +1003,9 @@ export class DecimalComparatorExpression implements ToBoolean {
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
     let args: [ToDeci, ToDeci, ReadonlyArray<ToDeci>] = this.value.value;
     if (this.value instanceof Equals) {
-      let v = args[0].get_decimal(symbols);
+      let v = args[0].get_decimal(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_decimal(symbols);
+        let v1 = args[1].get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value === v1.value.value)) as Result<Bool>,
@@ -1013,9 +1014,9 @@ export class DecimalComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_decimal(symbols);
+                  let v2 = prev.get_decimal(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_decimal(symbols);
+                    let v3 = val.get_decimal(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(
                         new Bool(v2.value.value === v3.value.value)
@@ -1032,9 +1033,9 @@ export class DecimalComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThan) {
-      let v = args[0].get_decimal(symbols);
+      let v = args[0].get_decimal(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_decimal(symbols);
+        let v1 = args[1].get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value < v1.value.value)) as Result<Bool>,
@@ -1043,9 +1044,9 @@ export class DecimalComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_decimal(symbols);
+                  let v2 = prev.get_decimal(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_decimal(symbols);
+                    let v3 = val.get_decimal(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value < v3.value.value));
                     }
@@ -1060,9 +1061,9 @@ export class DecimalComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThan) {
-      let v = args[0].get_decimal(symbols);
+      let v = args[0].get_decimal(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_decimal(symbols);
+        let v1 = args[1].get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value > v1.value.value)) as Result<Bool>,
@@ -1071,9 +1072,9 @@ export class DecimalComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_decimal(symbols);
+                  let v2 = prev.get_decimal(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_decimal(symbols);
+                    let v3 = val.get_decimal(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value > v3.value.value));
                     }
@@ -1088,9 +1089,9 @@ export class DecimalComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThanEquals) {
-      let v = args[0].get_decimal(symbols);
+      let v = args[0].get_decimal(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_decimal(symbols);
+        let v1 = args[1].get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value <= v1.value.value)) as Result<Bool>,
@@ -1099,9 +1100,9 @@ export class DecimalComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_decimal(symbols);
+                  let v2 = prev.get_decimal(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_decimal(symbols);
+                    let v3 = val.get_decimal(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value <= v3.value.value));
                     }
@@ -1116,9 +1117,9 @@ export class DecimalComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThanEquals) {
-      let v = args[0].get_decimal(symbols);
+      let v = args[0].get_decimal(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_decimal(symbols);
+        let v1 = args[1].get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value >= v1.value.value)) as Result<Bool>,
@@ -1127,9 +1128,9 @@ export class DecimalComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_decimal(symbols);
+                  let v2 = prev.get_decimal(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_decimal(symbols);
+                    let v3 = val.get_decimal(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value >= v3.value.value));
                     }
@@ -1212,13 +1213,13 @@ export class TextComparatorExpression implements ToBoolean {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_boolean(symbols);
+      let v1 = v.value.get_boolean(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_boolean(symbols);
+          let v3 = v2.value.get_boolean(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -1229,22 +1230,22 @@ export class TextComparatorExpression implements ToBoolean {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_boolean(symbols);
+    return this.get_boolean(inject_system_constants(symbols));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_boolean(symbols);
+      return v.value.get_boolean(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -1253,9 +1254,9 @@ export class TextComparatorExpression implements ToBoolean {
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
     let args: [ToTxt, ToTxt, ReadonlyArray<ToTxt>] = this.value.value;
     if (this.value instanceof Equals) {
-      let v = args[0].get_text(symbols);
+      let v = args[0].get_text(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_text(symbols);
+        let v1 = args[1].get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value === v1.value.value)) as Result<Bool>,
@@ -1264,9 +1265,9 @@ export class TextComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_text(symbols);
+                  let v2 = prev.get_text(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_text(symbols);
+                    let v3 = val.get_text(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(
                         new Bool(v2.value.value === v3.value.value)
@@ -1283,9 +1284,9 @@ export class TextComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThan) {
-      let v = args[0].get_text(symbols);
+      let v = args[0].get_text(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_text(symbols);
+        let v1 = args[1].get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value < v1.value.value)) as Result<Bool>,
@@ -1294,9 +1295,9 @@ export class TextComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_text(symbols);
+                  let v2 = prev.get_text(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_text(symbols);
+                    let v3 = val.get_text(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value < v3.value.value));
                     }
@@ -1311,9 +1312,9 @@ export class TextComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThan) {
-      let v = args[0].get_text(symbols);
+      let v = args[0].get_text(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_text(symbols);
+        let v1 = args[1].get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value > v1.value.value)) as Result<Bool>,
@@ -1322,9 +1323,9 @@ export class TextComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_text(symbols);
+                  let v2 = prev.get_text(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_text(symbols);
+                    let v3 = val.get_text(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value > v3.value.value));
                     }
@@ -1339,9 +1340,9 @@ export class TextComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof GreaterThanEquals) {
-      let v = args[0].get_text(symbols);
+      let v = args[0].get_text(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_text(symbols);
+        let v1 = args[1].get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value <= v1.value.value)) as Result<Bool>,
@@ -1350,9 +1351,9 @@ export class TextComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_text(symbols);
+                  let v2 = prev.get_text(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_text(symbols);
+                    let v3 = val.get_text(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value <= v3.value.value));
                     }
@@ -1367,9 +1368,9 @@ export class TextComparatorExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof LessThanEquals) {
-      let v = args[0].get_text(symbols);
+      let v = args[0].get_text(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_text(symbols);
+        let v1 = args[1].get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value >= v1.value.value)) as Result<Bool>,
@@ -1378,9 +1379,9 @@ export class TextComparatorExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_text(symbols);
+                  let v2 = prev.get_text(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_text(symbols);
+                    let v3 = val.get_text(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value >= v3.value.value));
                     }
@@ -1481,13 +1482,13 @@ export class LogicalBinaryExpression implements ToBoolean {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_boolean(symbols);
+      let v1 = v.value.get_boolean(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_boolean(symbols);
+          let v3 = v2.value.get_boolean(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -1498,22 +1499,22 @@ export class LogicalBinaryExpression implements ToBoolean {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_boolean(symbols);
+    return this.get_boolean(inject_system_constants(symbols));
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_boolean(symbols);
+      return v.value.get_boolean(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -1523,9 +1524,9 @@ export class LogicalBinaryExpression implements ToBoolean {
     let args: [ToBoolean, ToBoolean, ReadonlyArray<ToBoolean>] =
       this.value.value;
     if (this.value instanceof And) {
-      let v = args[0].get_boolean(symbols);
+      let v = args[0].get_boolean(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_boolean(symbols);
+        let v1 = args[1].get_boolean(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value && v1.value.value)) as Result<Bool>,
@@ -1534,9 +1535,9 @@ export class LogicalBinaryExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === true) {
-                  let v2 = prev.get_boolean(symbols);
+                  let v2 = prev.get_boolean(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_boolean(symbols);
+                    let v3 = val.get_boolean(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value && v3.value.value));
                     }
@@ -1551,9 +1552,9 @@ export class LogicalBinaryExpression implements ToBoolean {
       }
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     } else if (this.value instanceof Or) {
-      let v = args[0].get_boolean(symbols);
+      let v = args[0].get_boolean(inject_system_constants(symbols));
       if (unwrap(v)) {
-        let v1 = args[1].get_boolean(symbols);
+        let v1 = args[1].get_boolean(inject_system_constants(symbols));
         if (unwrap(v1)) {
           let result: Result<Bool> = fold_prev(
             new Ok(new Bool(v.value.value || v1.value.value)) as Result<Bool>,
@@ -1562,9 +1563,9 @@ export class LogicalBinaryExpression implements ToBoolean {
             (acc, prev, val) => {
               if (unwrap(acc)) {
                 if (acc.value.value === false) {
-                  let v2 = prev.get_boolean(symbols);
+                  let v2 = prev.get_boolean(inject_system_constants(symbols));
                   if (unwrap(v2)) {
-                    let v3 = val.get_boolean(symbols);
+                    let v3 = val.get_boolean(inject_system_constants(symbols));
                     if (unwrap(v3)) {
                       return new Ok(new Bool(v2.value.value || v3.value.value));
                     }
@@ -1637,17 +1638,17 @@ export class LogicalUnaryExpression implements ToBoolean {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.get_boolean(symbols);
+    return this.get_boolean(inject_system_constants(symbols));
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      let v1 = v.value.get_boolean(symbols);
+      let v1 = v.value.get_boolean(inject_system_constants(symbols));
       if (unwrap(v1)) {
-        let v2 = other.eval(symbols);
+        let v2 = other.eval(inject_system_constants(symbols));
         if (unwrap(v2)) {
-          let v3 = v2.value.get_boolean(symbols);
+          let v3 = v2.value.get_boolean(inject_system_constants(symbols));
           if (unwrap(v3)) {
             return v1.value.value === v3.value.value;
           }
@@ -1658,18 +1659,18 @@ export class LogicalUnaryExpression implements ToBoolean {
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_boolean(symbols);
+      return v.value.get_boolean(inject_system_constants(symbols));
     } else {
       return v;
     }
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v: Result<ToBoolean> = this.eval(symbols);
+    let v: Result<ToBoolean> = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
-      return v.value.get_text(symbols);
+      return v.value.get_text(inject_system_constants(symbols));
     } else {
       return v;
     }
@@ -1677,7 +1678,7 @@ export class LogicalUnaryExpression implements ToBoolean {
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<ToBoolean> {
     let args: ToBoolean = this.value.value;
-    let v = args.get_boolean(symbols);
+    let v = args.get_boolean(inject_system_constants(symbols));
     if (unwrap(v)) {
       return new Ok(new Bool(!v.value.value));
     }
@@ -1716,59 +1717,59 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.get_result(symbols);
+    let v = this.get_result(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof ToNum) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToNum) {
-            let v2 = v.value.get_number(symbols);
-            let v3 = v1.value.get_number(symbols);
+            let v2 = v.value.get_number(inject_system_constants(symbols));
+            let v3 = v1.value.get_number(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           } else if (v1.value instanceof ToDeci) {
-            let v2 = v.value.get_number(symbols);
-            let v3 = v1.value.get_number(symbols);
+            let v2 = v.value.get_number(inject_system_constants(symbols));
+            let v3 = v1.value.get_number(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           }
         }
       } else if (v.value instanceof ToDeci) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToDeci) {
-            let v2 = v.value.get_decimal(symbols);
-            let v3 = v1.value.get_decimal(symbols);
+            let v2 = v.value.get_decimal(inject_system_constants(symbols));
+            let v3 = v1.value.get_decimal(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           } else if (v1.value instanceof ToNum) {
-            let v2 = v.value.get_decimal(symbols);
-            let v3 = v1.value.get_number(symbols);
+            let v2 = v.value.get_decimal(inject_system_constants(symbols));
+            let v3 = v1.value.get_number(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           }
         }
       } else if (v.value instanceof ToTxt) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToTxt) {
-            let v2 = v.value.get_text(symbols);
-            let v3 = v1.value.get_text(symbols);
+            let v2 = v.value.get_text(inject_system_constants(symbols));
+            let v3 = v1.value.get_text(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           }
         }
       } else if (v.value instanceof ToBoolean) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToBoolean) {
-            let v2 = v.value.get_boolean(symbols);
-            let v3 = v1.value.get_boolean(symbols);
+            let v2 = v.value.get_boolean(inject_system_constants(symbols));
+            let v3 = v1.value.get_boolean(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
@@ -1780,19 +1781,19 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.eval(symbols);
+    return this.eval(inject_system_constants(symbols));
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof ToNum) {
-        let v1 = v.value.get_number(symbols);
+        let v1 = v.value.get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
       } else if (v.value instanceof ToDeci) {
-        let v1 = v.value.get_decimal(symbols);
+        let v1 = v.value.get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return new Ok(new Num(v1.value.value));
         }
@@ -1802,15 +1803,15 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   }
 
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof ToDeci) {
-        let v1 = v.value.get_decimal(symbols);
+        let v1 = v.value.get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
       } else if (v.value instanceof ToNum) {
-        let v1 = v.value.get_number(symbols);
+        let v1 = v.value.get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return new Ok(new Deci(v1.value.value));
         }
@@ -1820,10 +1821,10 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof ToTxt) {
-        let v1 = v.value.get_text(symbols);
+        let v1 = v.value.get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
@@ -1833,10 +1834,10 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof ToBoolean) {
-        let v1 = v.value.get_boolean(symbols);
+        let v1 = v.value.get_boolean(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
@@ -1847,37 +1848,43 @@ export class MatchExpression<T extends ToValue, U extends ToValue>
 
   eval(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
     let args: [T, ReadonlyArray<[T, U]>, U] = this.value.value;
-    let condition: Result<LispResult> = args[0].get_result(symbols);
+    let condition: Result<LispResult> = args[0].get_result(
+      inject_system_constants(symbols)
+    );
     if (unwrap(condition)) {
       for (const guard of args[1]) {
-        let v: Result<LispResult> = guard[0].get_result(symbols);
+        let v: Result<LispResult> = guard[0].get_result(
+          inject_system_constants(symbols)
+        );
         if (unwrap(v)) {
           if (condition.value instanceof Num && v.value instanceof Num) {
             if (condition.value.equals(v.value, symbols)) {
-              return guard[1].get_result(symbols);
+              return guard[1].get_result(inject_system_constants(symbols));
             }
           } else if (
             condition.value instanceof Deci &&
             v.value instanceof Deci
           ) {
             if (condition.value.equals(v.value, symbols)) {
-              return guard[1].get_result(symbols);
+              return guard[1].get_result(inject_system_constants(symbols));
             }
           } else if (condition.value instanceof Txt && v.value instanceof Txt) {
             if (condition.value.equals(v.value, symbols)) {
-              return guard[1].get_result(symbols);
+              return guard[1].get_result(inject_system_constants(symbols));
             }
           } else if (
             condition.value instanceof Bool &&
             v.value instanceof Bool
           ) {
             if (condition.value.equals(v.value, symbols)) {
-              return guard[1].get_result(symbols);
+              return guard[1].get_result(inject_system_constants(symbols));
             }
           }
         }
       }
-      let otherwise: Result<LispResult> = args[2].get_result(symbols);
+      let otherwise: Result<LispResult> = args[2].get_result(
+        inject_system_constants(symbols)
+      );
       return otherwise;
     }
     return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
@@ -2032,59 +2039,59 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
   }
 
   equals(other: this, symbols: Readonly<Record<string, Symbol>>): boolean {
-    let v = this.get_result(symbols);
+    let v = this.get_result(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof ToNum) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToNum) {
-            let v2 = v.value.get_number(symbols);
-            let v3 = v1.value.get_number(symbols);
+            let v2 = v.value.get_number(inject_system_constants(symbols));
+            let v3 = v1.value.get_number(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           } else if (v1.value instanceof ToDeci) {
-            let v2 = v.value.get_number(symbols);
-            let v3 = v1.value.get_number(symbols);
+            let v2 = v.value.get_number(inject_system_constants(symbols));
+            let v3 = v1.value.get_number(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           }
         }
       } else if (v.value instanceof ToDeci) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToDeci) {
-            let v2 = v.value.get_decimal(symbols);
-            let v3 = v1.value.get_decimal(symbols);
+            let v2 = v.value.get_decimal(inject_system_constants(symbols));
+            let v3 = v1.value.get_decimal(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           } else if (v1.value instanceof ToNum) {
-            let v2 = v.value.get_decimal(symbols);
-            let v3 = v1.value.get_number(symbols);
+            let v2 = v.value.get_decimal(inject_system_constants(symbols));
+            let v3 = v1.value.get_number(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           }
         }
       } else if (v.value instanceof ToTxt) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToTxt) {
-            let v2 = v.value.get_text(symbols);
-            let v3 = v1.value.get_text(symbols);
+            let v2 = v.value.get_text(inject_system_constants(symbols));
+            let v3 = v1.value.get_text(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
           }
         }
       } else if (v.value instanceof ToBoolean) {
-        let v1 = other.get_result(symbols);
+        let v1 = other.get_result(inject_system_constants(symbols));
         if (unwrap(v1)) {
           if (v1.value instanceof ToBoolean) {
-            let v2 = v.value.get_boolean(symbols);
-            let v3 = v1.value.get_boolean(symbols);
+            let v2 = v.value.get_boolean(inject_system_constants(symbols));
+            let v3 = v1.value.get_boolean(inject_system_constants(symbols));
             if (unwrap(v2) && unwrap(v3)) {
               return v2.value.value === v3.value.value;
             }
@@ -2096,19 +2103,19 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
   }
 
   get_result(symbols: Readonly<Record<string, Symbol>>): Result<LispResult> {
-    return this.eval(symbols);
+    return this.eval(inject_system_constants(symbols));
   }
 
   get_number(symbols: Readonly<Record<string, Symbol>>): Result<Num> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof Num) {
-        let v1 = v.value.get_number(symbols);
+        let v1 = v.value.get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
       } else if (v.value instanceof Deci) {
-        let v1 = v.value.get_number(symbols);
+        let v1 = v.value.get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return new Ok(new Num(v1.value.value));
         }
@@ -2118,15 +2125,15 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
   }
 
   get_decimal(symbols: Readonly<Record<string, Symbol>>): Result<Deci> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof Deci) {
-        let v1 = v.value.get_decimal(symbols);
+        let v1 = v.value.get_decimal(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
       } else if (v.value instanceof Num) {
-        let v1 = v.value.get_number(symbols);
+        let v1 = v.value.get_number(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return new Ok(new Deci(v1.value.value));
         }
@@ -2136,10 +2143,10 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
   }
 
   get_text(symbols: Readonly<Record<string, Symbol>>): Result<Txt> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof Txt) {
-        let v1 = v.value.get_text(symbols);
+        let v1 = v.value.get_text(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
@@ -2149,10 +2156,10 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
   }
 
   get_boolean(symbols: Readonly<Record<string, Symbol>>): Result<Bool> {
-    let v = this.eval(symbols);
+    let v = this.eval(inject_system_constants(symbols));
     if (unwrap(v)) {
       if (v.value instanceof Bool) {
-        let v1 = v.value.get_boolean(symbols);
+        let v1 = v.value.get_boolean(inject_system_constants(symbols));
         if (unwrap(v1)) {
           return v1;
         }
@@ -2201,4 +2208,31 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
       args: this.value.value,
     };
   }
+}
+
+export function get_system_constants() {
+  return {
+    max_private_resource_count: new Num(10),
+    max_public_resource_count: new Num(10),
+    user_id: new Num(getState().params.user_id.truncated().toNumber()),
+  };
+}
+
+function inject_system_constants(
+  symbols: Readonly<Record<string, Symbol>>
+): Readonly<Record<string, Symbol>> {
+  const system_constants: Record<string, Leaf> = get_system_constants();
+  const values: Record<string, Symbol> = {};
+  for (const symbol_name of Object.keys(system_constants)) {
+    values[symbol_name] = new Symbol({
+      value: new Ok(system_constants[symbol_name]),
+      values: {},
+    });
+  }
+  const updated_symbols = { ...symbols };
+  updated_symbols["_system"] = new Symbol({
+    value: undefined,
+    values: values,
+  });
+  return updated_symbols;
 }

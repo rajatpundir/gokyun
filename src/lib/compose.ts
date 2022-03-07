@@ -29,15 +29,14 @@ export type ComposeInputs = Record<
   }
 >;
 
-export type ComposeArgs =
-  | FxArgs
-  | Record<
-      string,
-      {
-        type: "list";
-        value: TransformResult;
-      }
-    >;
+export type ComposeArgs = Record<
+  string,
+  | StrongEnum
+  | {
+      type: "list";
+      value: TransformResult;
+    }
+>;
 
 export class ComposeStep {
   predicate:

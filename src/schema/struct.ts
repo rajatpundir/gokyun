@@ -111,7 +111,7 @@ const structs = {
   User_Product_Family_Variant: User_Product_Family_Variant,
   User_Product_Family_Variant_Property_Value:
     User_Product_Family_Variant_Property_Value,
-  ...Private_Resource,
+  Private_Resource: Private_Resource as any as StructSchema,
   ...Private_Resource_Tag,
   ...Public_Resource,
   ...Public_Resource_Tag,
@@ -172,6 +172,7 @@ export type StructName = keyof typeof structs;
 const schema: Record<string, StructSchema> = structs;
 
 export function get_struct(struct_name: StructName): Struct {
+  console.log("[STRUCT]", struct_name);
   const structDef = schema[struct_name];
   const struct: Struct = new Struct(
     struct_name,
