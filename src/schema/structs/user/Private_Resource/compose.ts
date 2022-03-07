@@ -70,16 +70,17 @@ export default {
       private_resource: { type: "other", other: "Private_Resource" },
     },
     new ComposeStep(undefined, [
-      {
-        type: "fx",
-        invoke: "Delete_Private_Resource_Tag_By_Private_Resource",
-        map: {
-          private_resource: {
-            type: "input",
-            value: "private_resource",
-          },
-        },
-      },
+      // Note. Below should be useful where aggregate is not updated in multiple places on some parent in the hierarchy
+      // {
+      //   type: "fx",
+      //   invoke: "Delete_Private_Resource_Tag_By_Private_Resource",
+      //   map: {
+      //     private_resource: {
+      //       type: "input",
+      //       value: "private_resource",
+      //     },
+      //   },
+      // },
       {
         type: "fx",
         invoke: "Delete_Private_Resource",

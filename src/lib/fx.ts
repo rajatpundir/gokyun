@@ -60,7 +60,7 @@ type FxInputs = Record<
       type: "other";
       other: string;
       default?: Decimal;
-      updates?: ReadonlyArray<[PathString, LispExpression]>;
+      updates?: ReadonlyArray<{ path: PathString; expr: LispExpression }>;
       delete_mode?: "delete" | "delete_ignore";
     }
 >;
@@ -166,7 +166,7 @@ export class Fx {
         for (const input_name of Object.keys(this.inputs)) {
           const input = this.inputs[input_name];
           if (input.type === "other" && input.updates !== undefined) {
-            for (const [, expr] of input.updates) {
+            for (const { expr } of input.updates) {
               paths = paths.concat(expr.get_paths());
             }
           }
@@ -246,7 +246,9 @@ export class Fx {
           const struct = get_struct(input.other as StructName);
           if (input.updates !== undefined) {
             const paths: Array<Path> = [];
-            for (const [path_string, expr] of input.updates) {
+            for (const update of input.updates) {
+              const path_string = update.path;
+              const expr = update.expr;
               const result = get_path_with_type(struct, path_string);
               if (unwrap(result)) {
                 const field_struct_name = result.value[1];

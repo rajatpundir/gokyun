@@ -1,3 +1,4 @@
+import Decimal from "decimal.js";
 import { errors, ErrMsg } from "../../../../lib/errors";
 import {
   LogicalUnaryExpression,
@@ -18,6 +19,8 @@ export default {
   Tag: {
     fields: {
       name: { type: "str" },
+      private_resource_tag_count: { type: "u32", default: new Decimal(0) },
+      public_resource_tag_count: { type: "u32", default: new Decimal(0) },
     },
     uniqueness: [[[], "name"]],
     permissions: {

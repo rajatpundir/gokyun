@@ -22,18 +22,34 @@ export default {
         type: "other",
         other: "Private_Resource",
         updates: [
-          [
-            [[], "tag_count"],
-            new NumberArithmeticExpression(
+          {
+            path: [[], "tag_count"],
+            expr: new NumberArithmeticExpression(
               new Add<ToNum>([
                 new DotExpression(new Dot(["private_resource", "tag_count"])),
                 [new Num(1)],
               ])
             ),
-          ],
+          },
         ],
       },
-      tag: { type: "other", other: "Tag" },
+      tag: {
+        type: "other",
+        other: "Tag",
+        updates: [
+          {
+            path: [[], "private_resource_tag_count"],
+            expr: new NumberArithmeticExpression(
+              new Add<ToNum>([
+                new DotExpression(
+                  new Dot(["tag", "private_resource_tag_count"])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
+        ],
+      },
     },
     {
       private_resource_tag: {
@@ -56,9 +72,9 @@ export default {
         other: "Private_Resource_Tag",
         delete_mode: "delete",
         updates: [
-          [
-            [["private_resource"], "tag_count"],
-            new NumberArithmeticExpression(
+          {
+            path: [["private_resource"], "tag_count"],
+            expr: new NumberArithmeticExpression(
               new Subtract<ToNum>([
                 new DotExpression(
                   new Dot([
@@ -70,7 +86,22 @@ export default {
                 [new Num(1)],
               ])
             ),
-          ],
+          },
+          {
+            path: [["tag"], "private_resource_tag_count"],
+            expr: new NumberArithmeticExpression(
+              new Subtract<ToNum>([
+                new DotExpression(
+                  new Dot([
+                    "private_resource_tag",
+                    "tag",
+                    "private_resource_tag_count",
+                  ])
+                ),
+                [new Num(1)],
+              ])
+            ),
+          },
         ],
       },
     },
@@ -95,30 +126,31 @@ export default {
     },
     true
   ),
-  Delete_Private_Resource_Tag_By_Private_Resource: new Fx(
-    "Delete_Private_Resource_Tag_By_Private_Resource",
-    {
-      private_resource: {
-        type: "other",
-        other: "Private_Resource",
-        updates: [[[[], "tag_count"], new Num(0)]],
-      },
-    },
-    {
-      private_resource_tag: {
-        op: "delete_all",
-        struct: "Private_Resource_Tag",
-        fields: [
-          {
-            path: [[], "private_resource"],
-            expr: new DotExpression(new Dot(["private_resource"])),
-          },
-        ],
-      },
-    },
-    {},
-    false
-  ),
+  // Note. Below should be useful where aggregate is not updated in multiple places on some parent in the hierarchy
+  // Delete_Private_Resource_Tag_By_Private_Resource: new Fx(
+  //   "Delete_Private_Resource_Tag_By_Private_Resource",
+  //   {
+  //     private_resource: {
+  //       type: "other",
+  //       other: "Private_Resource",
+  //       updates: [{ path: [[], "tag_count"], expr: new Num(0) }],
+  //     },
+  //   },
+  //   {
+  //     private_resource_tag: {
+  //       op: "delete_all",
+  //       struct: "Private_Resource_Tag",
+  //       fields: [
+  //         {
+  //           path: [[], "private_resource"],
+  //           expr: new DotExpression(new Dot(["private_resource"])),
+  //         },
+  //       ],
+  //     },
+  //   },
+  //   {},
+  //   false
+  // ),
   Create_Public_Resource_Tag_From_Private_Resource_Tag: new Fx(
     "Create_Public_Resource_Tag_From_Private_Resource_Tag",
     {
