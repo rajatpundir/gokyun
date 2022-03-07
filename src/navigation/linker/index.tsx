@@ -14,12 +14,10 @@ import {
   NavigatorProps as RootNavigatorProps,
 } from "../main";
 
-import Search from "./search";
 import Resources from "./resources";
 import { ModalHeader, tw } from "../../lib";
 
 export type NavigatorParams = {
-  Search: undefined;
   Resources: undefined;
 };
 
@@ -37,21 +35,6 @@ export default function Navigator(props: RootNavigatorProps<"Linker">) {
           tabBarItemStyle: { paddingBottom: 0 },
         }}
       >
-        <BottomTab.Screen
-          name="Search"
-          component={Search}
-          options={{
-            title: "Search",
-            tabBarIcon: ({ color }) => (
-              <Feather
-                name="search"
-                size={28}
-                color={color}
-                style={tw.style([], { marginBottom: -4 })}
-              />
-            ),
-          }}
-        />
         <BottomTab.Screen
           name="Resources"
           component={Resources}
