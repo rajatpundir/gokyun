@@ -1373,7 +1373,7 @@ export class Fx {
           }
         }
       }
-      console.log("[FX]", this.name, "[SUCCESS]");
+      console.log("[SUCCESS]");
       return new Ok(computed_outputs);
     } else {
       console.log("FX", 50);

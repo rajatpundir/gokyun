@@ -2427,7 +2427,7 @@ export class Compose {
         return _exhaustiveCheck;
       }
     }
-    console.log("[COMPOSE]", this.name, "[SUCCESS]");
+    console.log("[STEP]", step.name ? step.name : "");
     return new Ok(computed_outputs);
   }
 }
