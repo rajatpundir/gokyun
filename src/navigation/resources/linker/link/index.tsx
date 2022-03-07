@@ -2,6 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import VideoPlayer from "expo-video-player";
 import * as Clipboard from "expo-clipboard";
 import { WebView } from "react-native-webview";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { Portal } from "@gorhom/portal";
+import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import {
   Column,
@@ -12,13 +17,7 @@ import {
   Image,
   ScrollView,
 } from "native-base";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { Portal } from "@gorhom/portal";
 import { get_struct } from "../../../../schema";
-import Decimal from "decimal.js";
-import { HashSet } from "prelude-ts";
-import { views } from "../../../../views";
 import {
   useTheme,
   useBSTheme,
@@ -28,6 +27,7 @@ import {
   tw,
   useComponent,
 } from "../../../../lib";
+import { views } from "../../../../views";
 
 // Higher existence for searching via keywords
 

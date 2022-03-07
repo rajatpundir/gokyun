@@ -577,7 +577,7 @@ export function AppHeader(props: { title?: string }): JSX.Element {
       justifyContent={"space-between"}
       alignItems={"center"}
     >
-      <Pressable onPress={() => navigation.navigate("Linker")}>
+      <Pressable onPress={() => navigation.navigate("Resources")}>
         <Text bold fontSize={"lg"} color={theme.primary}>
           {props.title ? props.title : "Aakhiri"}
         </Text>

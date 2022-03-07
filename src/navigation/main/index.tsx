@@ -18,7 +18,6 @@ import MainNavigator, { NavigatorParams as MainNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 
 import Test from "../test";
-import Linker from "../linker";
 import Search from "../search";
 import Resources from "../resources";
 import { HashSet } from "prelude-ts";
@@ -48,7 +47,6 @@ export type NavigatorParams = {
   SelectionModal: SelectionModalProps;
   Search: undefined;
   Resources: undefined;
-  Linker: undefined;
   Test: {
     id: number;
     values?: HashSet<Path>;
@@ -73,7 +71,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Resources">
+                        <Stack.Navigator initialRouteName="Main">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
@@ -92,7 +90,6 @@ function Component() {
                                 name="SelectionModal"
                                 component={SelectionModal}
                               />
-                              <Stack.Screen name="Linker" component={Linker} />
                               <Stack.Screen
                                 name="Resources"
                                 component={Resources}

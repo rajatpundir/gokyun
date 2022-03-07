@@ -15,8 +15,10 @@ import { ModalHeader, tw } from "../../lib";
 
 import Public from "./public";
 import Private from "./private";
+import Linker from "./linker";
 
 export type NavigatorParams = {
+  Linker: undefined;
   Public: undefined;
   Private: undefined;
 };
@@ -26,7 +28,7 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
     <>
       <ModalHeader title="Resources" />
       <TopTab.Navigator
-        initialRouteName="Public"
+        initialRouteName="Linker"
         initialLayout={{ width: Dimensions.get("window").width }}
         screenOptions={{
           lazy: true,
@@ -38,6 +40,7 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
           }),
         }}
       >
+        <TopTab.Screen name="Linker" component={Linker} />
         <TopTab.Screen name="Public" component={Public} />
         <TopTab.Screen name="Private" component={Private} />
       </TopTab.Navigator>
