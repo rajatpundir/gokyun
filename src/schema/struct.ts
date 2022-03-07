@@ -86,16 +86,16 @@ type StructSchema = {
 };
 
 const structs = {
-  Test: Test as any as StructSchema,
-  ...Test2,
+  Test: Test,
+  Test2: Test2,
 
   Country: Country,
   Pincode: Pincode,
   PincodeStats: PincodeStats,
   Language: Language,
-  ...Tag,
-  User: User as any as StructSchema,
-  Resource_Type: Resource_Type as any as StructSchema,
+  Tag: Tag,
+  User: User,
+  Resource_Type: Resource_Type,
 
   Product_Category: Product_Category,
   Product_Category_Translation: Product_Category_Translation,
@@ -111,10 +111,10 @@ const structs = {
   User_Product_Family_Variant: User_Product_Family_Variant,
   User_Product_Family_Variant_Property_Value:
     User_Product_Family_Variant_Property_Value,
-  Private_Resource: Private_Resource as any as StructSchema,
-  ...Private_Resource_Tag,
-  ...Public_Resource,
-  ...Public_Resource_Tag,
+  Private_Resource: Private_Resource,
+  Private_Resource_Tag: Private_Resource_Tag,
+  Public_Resource: Public_Resource,
+  Public_Resource_Tag: Public_Resource_Tag,
 
   Alliance: Alliance,
   Alliance_Member_Request: Alliance_Member_Request,
@@ -150,7 +150,7 @@ const structs = {
     Alliance_Service_Milestone_Translation,
   Alliance_Service_Milestone_Task: Alliance_Service_Milestone_Task,
   Alliance_Service_Provider: Alliance_Service_Provider,
-  Alliance_Coupon: Alliance_Coupon as any as StructSchema,
+  Alliance_Coupon: Alliance_Coupon,
   Alliance_Customer: Alliance_Customer,
 
   Guild: Guild,
@@ -169,7 +169,7 @@ const structs = {
 
 export type StructName = keyof typeof structs;
 
-const schema: Record<string, StructSchema> = structs;
+const schema = structs as any as Record<string, StructSchema>;
 
 export function get_struct(struct_name: StructName): Struct {
   console.log("[STRUCT]", struct_name);
