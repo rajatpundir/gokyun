@@ -36,4 +36,27 @@ export async function load_data() {
     console.log(result);
   }
   console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+  const compose2 = get_compose("Create_Private_Resource");
+  if (unwrap(compose2)) {
+    const result = await compose2.value.exec(
+      {
+        resource_type: {
+          type: "other",
+          other: "Resource_Type",
+          value: ids.ResourceType["image/png"]._id,
+        },
+        url: {
+          type: "str",
+          value: "some_url2",
+        },
+        tags: {
+          type: "list",
+          value: [],
+        },
+      },
+      new Decimal(0)
+    );
+    console.log(result);
+  }
+  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 }

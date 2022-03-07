@@ -28,7 +28,7 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
     <>
       <ModalHeader title="Resources" />
       <TopTab.Navigator
-        initialRouteName="Community"
+        initialRouteName="Personal"
         // initialLayout={{ width: dimensions.width }}
         screenOptions={{
           lazy: true,

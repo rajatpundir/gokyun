@@ -9,6 +9,7 @@ import {
   OtherComponent,
   List,
   Identity,
+  PathString,
 } from "../../../../../lib";
 import { get_struct } from "../../../../../schema";
 import { views } from "../../../../../views";
@@ -17,11 +18,12 @@ export default function Component(
   props: ParentNavigatorProps<"Resource_Types">
 ) {
   const struct = get_struct("Resource_Type");
+  const user_paths: Array<PathString> = [];
+  const borrows: Array<string> = [];
   return (
     <List
       selected={new Decimal(-1)}
       struct={struct}
-      level={undefined}
       filters={[
         new OrFilter(
           0,
@@ -34,8 +36,8 @@ export default function Component(
               ["type", [[], "type"]],
               ["subtype", [[], "subtype"]],
             ],
-            [],
-            []
+            user_paths,
+            borrows
           )
         ),
         HashSet.of(),
@@ -44,8 +46,8 @@ export default function Component(
       options={[
         "list",
         {
-          user_paths: [[[], "user"]],
-          borrows: [],
+          user_paths: user_paths,
+          borrows: borrows,
           RenderElement: [
             (props) => (
               <OtherComponent

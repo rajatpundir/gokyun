@@ -13,16 +13,18 @@ import {
   List,
   OtherComponent,
   SearchWrapper,
+  PathString,
 } from "../../../../../lib";
 
 export default function Component(props: ParentNavigatorProps<"Tests">) {
   const struct = get_struct("Test");
+  const user_paths: Array<PathString> = [[[], "user"]];
+  const borrows: Array<string> = [];
   return (
     <>
       <List
         selected={new Decimal(-1)}
         struct={struct}
-        level={undefined}
         filters={[
           new OrFilter(
             0,
@@ -50,8 +52,8 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
                 ["USER", [[], "user"]],
                 ["USER NICKNAME", [["user"], "nickname"]],
               ],
-              [],
-              []
+              user_paths,
+              borrows
             )
           ),
           HashSet.of(),
@@ -60,8 +62,8 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
         options={[
           "list",
           {
-            user_paths: [[[], "user"]],
-            borrows: [],
+            user_paths: user_paths,
+            borrows: borrows,
             RenderElement: [
               (props) => (
                 <OtherComponent {...props} view={views.Test["Card"]} />

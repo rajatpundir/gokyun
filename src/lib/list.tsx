@@ -15,7 +15,6 @@ import {
 } from "./filter";
 import { Portal } from "@gorhom/portal";
 import { Row, Text, Pressable } from "native-base";
-import Checkbox from "expo-checkbox";
 import { Identity, ModalHeader } from "./component";
 import { tw } from "./tailwind";
 import { ListVariant, ListVariantOptions } from "./list_variants";
@@ -27,7 +26,6 @@ import { useBSTheme } from "./theme";
 
 export type ListState = {
   struct: Struct;
-  level: Decimal | undefined;
   init_filter: OrFilter;
   filters: HashSet<AndFilter>;
   limit: Decimal;
@@ -41,7 +39,6 @@ export type ListState = {
 
 export type ListAction =
   | ["variables", Array<Variable>]
-  | ["level", Decimal | undefined]
   | ["offset"]
   | ["sort", "add", FilterPath, boolean]
   | ["sort", "remove", FilterPath]
@@ -80,13 +77,6 @@ function reducer(state: Draft<ListState>, action: ListAction) {
       if (!state.limit.equals(action[1].length)) {
         state.reached_end = true;
       }
-      break;
-    }
-    case "level": {
-      state.level = action[1];
-      state.offset = new Decimal(0);
-      state.reached_end = false;
-      state.variables = [];
       break;
     }
     case "offset": {
@@ -448,7 +438,6 @@ export type CommonProps = {
 type ListSpecificProps = CommonProps & {
   selected: Decimal;
   struct: Struct;
-  level: Decimal | undefined;
   filters: [OrFilter, HashSet<AndFilter>];
   update_parent_values?: (variable: Variable) => void;
 };
@@ -457,7 +446,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
   const bs_theme = useBSTheme();
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
-    level: props.level,
     init_filter: props.filters[0],
     filters: props.filters[1],
     limit: props.limit,
@@ -478,7 +466,7 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
         if (request_count === request_counter.current) {
           const variables = await get_variables(
             state.struct,
-            state.level,
+            undefined,
             state.init_filter,
             state.filters,
             state.limit,
@@ -496,7 +484,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     get_vars();
   }, [
     state.struct,
-    state.level,
     state.init_filter,
     state.filters,
     state.limit,
@@ -659,26 +646,6 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
             <Text bold color={bs_theme.text}>
               FILTERS
             </Text>
-            <Row>
-              <Pressable
-                onPress={() =>
-                  dispatch([
-                    "level",
-                    !!state.level ? undefined : new Decimal(0),
-                  ])
-                }
-              >
-                <Text color={bs_theme.text}>Unsaved</Text>
-              </Pressable>
-              <Checkbox
-                value={!state.level ? true : false}
-                onValueChange={(x) =>
-                  dispatch(["level", x ? undefined : new Decimal(0)])
-                }
-                color={!state.level ? bs_theme.primary : undefined}
-                style={tw.style(["mx-1"], {})}
-              />
-            </Row>
             <Pressable
               onPress={() => dispatch(["and_filter", "add"])}
               backgroundColor={bs_theme.highlight}

@@ -10,18 +10,20 @@ import {
   OtherComponent,
   SearchWrapper,
   List,
+  PathString,
 } from "../../../../lib";
 
 export default function Component(
   props: ParentNavigatorProps<"Users">
 ): JSX.Element {
   const struct = get_struct("User");
+  const user_paths: Array<PathString> = [];
+  const borrows: Array<string> = [];
   return (
     <>
       <List
         selected={new Decimal(-1)}
         struct={struct}
-        level={undefined}
         filters={[
           new OrFilter(
             0,
@@ -36,8 +38,8 @@ export default function Component(
                 ["Mobile", [[], "mobile"]],
                 ["Product Count", [[], "product_count"]],
               ],
-              [],
-              []
+              user_paths,
+              borrows
             )
           ),
           HashSet.of(),
@@ -46,8 +48,8 @@ export default function Component(
         options={[
           "list",
           {
-            user_paths: [],
-            borrows: [],
+            user_paths: user_paths,
+            borrows: borrows,
             RenderElement: [
               (props) => (
                 <OtherComponent {...props} view={views.User["Default"]} />

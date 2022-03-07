@@ -29,4 +29,10 @@ export {
   useNBTheme,
   useRNPTheme,
 } from "./theme";
-export { compare_paths, get_path_string, Variable, Path } from "./variable";
+export {
+  compare_paths,
+  get_path_string,
+  Variable,
+  Path,
+  PathString,
+} from "./variable";

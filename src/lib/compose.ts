@@ -896,6 +896,8 @@ export class Compose {
             }
             if (step.output !== undefined) {
               for (const output_name of Object.keys(step.output)) {
+                // TODO. Debug this
+                console.log(output_name, computed_output.value);
                 const value: string = step.output[output_name];
                 if (value in computed_output.value) {
                   computed_outputs[output_name] = computed_output.value[value];
