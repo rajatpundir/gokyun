@@ -77,14 +77,6 @@ import Clan_Product_Order from "./structs/clan/Clan_Product_Order";
 import Clan_Product_Order_Item from "./structs/clan/Clan_Product_Order_Item";
 import Clan_Service_Order from "./structs/clan/Clan_Service_Order";
 
-type StructSchema = {
-  fields: Record<string, WeakEnum>;
-  uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
-  permissions: StructPermissions;
-  triggers: Record<string, StructTrigger>;
-  checks: Record<string, [BooleanLispExpression, ErrMsg]>;
-};
-
 const structs = {
   Test: Test,
   Test2: Test2,
@@ -169,7 +161,16 @@ const structs = {
 
 export type StructName = keyof typeof structs;
 
-const schema = structs as any as Record<string, StructSchema>;
+const schema = structs as any as Record<
+  string,
+  {
+    fields: Record<string, WeakEnum>;
+    uniqueness: ReadonlyArray<[ReadonlyArray<string>, string]>;
+    permissions: StructPermissions;
+    triggers: Record<string, StructTrigger>;
+    checks: Record<string, [BooleanLispExpression, ErrMsg]>;
+  }
+>;
 
 export function get_struct(struct_name: StructName): Struct {
   console.log("[STRUCT]", struct_name);
