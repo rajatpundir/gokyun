@@ -9,7 +9,7 @@ import {
   unwrap_array,
   apply,
 } from "./prelude";
-import { get_struct, StructName } from "../schema";
+import { get_struct, StructName } from "../schema/struct";
 import { get_strong_enum, PathString, StrongEnum, Struct } from "./variable";
 
 // Cache computed permissions for same input

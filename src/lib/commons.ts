@@ -12,7 +12,7 @@ import {
   Bool,
   Deci,
   LispResult,
-  inject_system_constants,
+  Leaf,
 } from "./lisp";
 import { get_permissions, PathPermission } from "./permissions";
 import {
@@ -25,7 +25,7 @@ import {
   Option,
   arrow,
 } from "./prelude";
-import { get_struct, StructName } from "../schema";
+import { get_struct, StructName } from "../schema/struct";
 import {
   Path,
   Variable,
@@ -38,6 +38,7 @@ import {
   get_path_string,
 } from "./variable";
 import { Dimensions } from "react-native";
+import { getState } from "./store";
 
 export type State = Immutable<{
   id: Decimal;
@@ -1218,4 +1219,31 @@ export function get_fx_args(
     }
   }
   return new Ok(args);
+}
+
+export function get_system_constants() {
+  return {
+    max_private_resource_count: new Num(10),
+    max_public_resource_count: new Num(10),
+    user: new Num(getState().params.user_id.truncated().toNumber()),
+  };
+}
+
+export function inject_system_constants(
+  symbols: Readonly<Record<string, Symbol>>
+): Readonly<Record<string, Symbol>> {
+  const system_constants: Record<string, Leaf> = get_system_constants();
+  const values: Record<string, Symbol> = {};
+  for (const symbol_name of Object.keys(system_constants)) {
+    values[symbol_name] = new Symbol({
+      value: new Ok(system_constants[symbol_name]),
+      values: {},
+    });
+  }
+  const updated_symbols = { ...symbols };
+  updated_symbols["_system"] = new Symbol({
+    value: undefined,
+    values: values,
+  });
+  return updated_symbols;
 }

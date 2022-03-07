@@ -1,6 +1,10 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { get_path_with_type, get_symbols_for_paths } from "./commons";
+import {
+  get_path_with_type,
+  get_symbols_for_paths,
+  inject_system_constants,
+} from "./commons";
 import {
   FilterPath,
   get_struct_counter,
@@ -15,7 +19,6 @@ import {
   Bool,
   BooleanLispExpression,
   Deci,
-  inject_system_constants,
   LispExpression,
   Num,
   Symbol,
@@ -32,7 +35,7 @@ import {
   unwrap,
   unwrap_array,
 } from "./prelude";
-import { get_struct, StructName } from "../schema";
+import { get_struct, StructName } from "../schema/struct";
 import {
   compare_paths,
   get_flattened_path,

@@ -22,7 +22,7 @@ import {
   Variable,
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
-import { get_struct, StructName } from "../schema";
+import { get_struct, StructName } from "../schema/struct";
 
 // TODO. Add Existence functionality
 

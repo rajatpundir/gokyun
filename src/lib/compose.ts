@@ -1,14 +1,8 @@
 import Decimal from "decimal.js";
-import {
-  get_struct,
-  get_fx,
-  get_compose,
-  get_transform,
-  StructName,
-  FxName,
-  ComposeName,
-  TransformName,
-} from "../schema";
+import { ComposeName, get_compose } from "../schema/compose";
+import { FxName, get_fx } from "../schema/fx";
+import { get_struct, StructName } from "../schema/struct";
+import { get_transform, TransformName } from "../schema/transform";
 import { get_path_with_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";

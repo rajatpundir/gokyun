@@ -1,13 +1,8 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import {
-  get_fx,
-  get_struct,
-  get_compose,
-  StructName,
-  FxName,
-  ComposeName,
-} from "../schema";
+import { ComposeName, get_compose } from "../schema/compose";
+import { FxName, get_fx } from "../schema/fx";
+import { get_struct, StructName } from "../schema/struct";
 import { get_path_with_type } from "./commons";
 import { ComposeArgs, ComposeResult } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";

@@ -11,7 +11,6 @@ import {
 } from "./prelude";
 import { ErrMsg, errors } from "./errors";
 import { PathString } from "./variable";
-import { getState } from "./store";
 
 export type LispResult = Num | Deci | Txt | Bool;
 
@@ -209,7 +208,7 @@ export class Bool implements ToBoolean, ToTxt {
   }
 }
 
-type Leaf = Num | Deci | Txt | Bool;
+export type Leaf = Num | Deci | Txt | Bool;
 
 export class Symbol {
   value: {
@@ -2202,31 +2201,4 @@ export class DotExpression implements ToNum, ToTxt, ToBoolean {
       args: this.value.value,
     };
   }
-}
-
-export function get_system_constants() {
-  return {
-    max_private_resource_count: new Num(10),
-    max_public_resource_count: new Num(10),
-    user: new Num(getState().params.user_id.truncated().toNumber()),
-  };
-}
-
-export function inject_system_constants(
-  symbols: Readonly<Record<string, Symbol>>
-): Readonly<Record<string, Symbol>> {
-  const system_constants: Record<string, Leaf> = get_system_constants();
-  const values: Record<string, Symbol> = {};
-  for (const symbol_name of Object.keys(system_constants)) {
-    values[symbol_name] = new Symbol({
-      value: new Ok(system_constants[symbol_name]),
-      values: {},
-    });
-  }
-  const updated_symbols = { ...symbols };
-  updated_symbols["_system"] = new Symbol({
-    value: undefined,
-    values: values,
-  });
-  return updated_symbols;
 }
