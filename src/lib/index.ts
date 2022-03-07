@@ -19,7 +19,7 @@ export {
   SelectionModalProps,
   List,
 } from "./list";
-export { arrow, apply, unwrap } from "./prelude";
+export { arrow, apply, unwrap, Resource, get_resource } from "./prelude";
 export { tw } from "./tailwind";
 export { Template } from "./templates";
 export {

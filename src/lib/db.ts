@@ -837,11 +837,11 @@ export async function create_level(): Promise<Result<Decimal>> {
     await execute_transaction(
       `INSERT INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
       [
-        max_level.value.abs().truncated().toString(),
+        max_level.value.add(1).abs().truncated().toString(),
         new Date().getTime().toString(),
       ]
     );
-    return new Ok(max_level.value);
+    return new Ok(max_level.value.add(1).abs().truncated());
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
