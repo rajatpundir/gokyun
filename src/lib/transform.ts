@@ -165,6 +165,7 @@ export class Transform {
                         })
                       );
                     } else {
+                      console.log("TRANSFORM", 1);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -183,6 +184,7 @@ export class Transform {
                         )
                       );
                     } else {
+                      console.log("TRANSFORM", 2);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -277,6 +279,7 @@ export class Transform {
                       }
                     }
                   } else {
+                    console.log("TRANSFORM", 3);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -318,6 +321,7 @@ export class Transform {
                     );
                   }
                 } else {
+                  console.log("TRANSFORM", 4);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -353,6 +357,7 @@ export class Transform {
                     if (path.isSome()) {
                       fx_args[input_name] = path.get().path[1][1];
                     } else {
+                      console.log("TRANSFORM", 5);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -367,6 +372,7 @@ export class Transform {
                           input_name
                         ] as StrongEnum;
                       } else {
+                        console.log("TRANSFORM", 6);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -381,11 +387,13 @@ export class Transform {
                           args.base.length - 1
                         ] as StrongEnum;
                       } else {
+                        console.log("TRANSFORM", 7);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
                       }
                     } else {
+                      console.log("TRANSFORM", 8);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -451,6 +459,7 @@ export class Transform {
                       };
                     }
                   } else {
+                    console.log("TRANSFORM", 9);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -459,6 +468,7 @@ export class Transform {
                   if (unwrap(computed_output)) {
                     computed_outputs.push(computed_output.value);
                   } else {
+                    console.log("TRANSFORM", 10);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -466,6 +476,7 @@ export class Transform {
                 }
               }
             } else {
+              console.log("TRANSFORM", 11);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
@@ -478,6 +489,7 @@ export class Transform {
                   if (!Array.isArray(arg[input_name])) {
                     fx_args[input_name] = arg[input_name] as StrongEnum;
                   } else {
+                    console.log("TRANSFORM", 12);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -491,6 +503,7 @@ export class Transform {
                       input_name
                     ] as StrongEnum;
                   } else {
+                    console.log("TRANSFORM", 13);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -556,6 +569,7 @@ export class Transform {
                     };
                   }
                 } else {
+                  console.log("TRANSFORM", 14);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -564,6 +578,7 @@ export class Transform {
                 if (unwrap(computed_output)) {
                   computed_outputs.push(computed_output.value);
                 } else {
+                  console.log("TRANSFORM", 15);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -572,6 +587,7 @@ export class Transform {
             }
           }
         } else {
+          console.log("TRANSFORM", 16);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
@@ -655,6 +671,7 @@ export class Transform {
                         })
                       );
                     } else {
+                      console.log("TRANSFORM", 17);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -673,6 +690,7 @@ export class Transform {
                         )
                       );
                     } else {
+                      console.log("TRANSFORM", 18);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -767,6 +785,7 @@ export class Transform {
                       }
                     }
                   } else {
+                    console.log("TRANSFORM", 19);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -808,6 +827,7 @@ export class Transform {
                     );
                   }
                 } else {
+                  console.log("TRANSFORM", 20);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -843,6 +863,7 @@ export class Transform {
                     if (path.isSome()) {
                       compose_args[input_name] = path.get().path[1][1];
                     } else {
+                      console.log("TRANSFORM", 21);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -884,6 +905,7 @@ export class Transform {
                         };
                       }
                     } else {
+                      console.log("TRANSFORM", 22);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -953,6 +975,7 @@ export class Transform {
                           };
                         }
                       } else {
+                        console.log("TRANSFORM", 23);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -966,6 +989,7 @@ export class Transform {
                   if (unwrap(computed_output)) {
                     computed_outputs.push(computed_output.value);
                   } else {
+                    console.log("TRANSFORM", 24);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -973,6 +997,7 @@ export class Transform {
                 }
               }
             } else {
+              console.log("TRANSFORM", 25);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
@@ -1070,6 +1095,7 @@ export class Transform {
                         };
                       }
                     } else {
+                      console.log("TRANSFORM", 26);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -1080,6 +1106,7 @@ export class Transform {
                 if (unwrap(computed_output)) {
                   computed_outputs.push(computed_output.value);
                 } else {
+                  console.log("TRANSFORM", 27);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1088,6 +1115,7 @@ export class Transform {
             }
           }
         } else {
+          console.log("TRANSFORM", 28);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
