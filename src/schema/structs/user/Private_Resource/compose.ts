@@ -27,8 +27,7 @@ export default {
           resource_type: { type: "input", value: "resource_type" },
           url: { type: "input", value: "url" },
         },
-        // TODO. Debug below
-        // output: { private_resource: "private_resource" },
+        output: { private_resource: "private_resource" },
       },
       {
         name: "Create_Tag",

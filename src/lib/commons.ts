@@ -417,8 +417,6 @@ export function get_writeable_paths(
   state: State,
   paths: HashSet<Path>
 ): HashSet<Path> {
-  console.log("ppp", state.user_paths);
-
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,
     state.user_paths as PathString[],

@@ -887,6 +887,7 @@ export class Fx {
                 if (filter_paths.length === 1) {
                   const path = paths[0];
                   if (path.path[1][1].type !== "other") {
+                    // TODO. Add equals op and activate filter paths part of unique constraints
                     unique_constraint_filter_paths.push(
                       new FilterPath(
                         path.label,
@@ -915,6 +916,7 @@ export class Fx {
                   );
                 }
               }
+              console.log(unique_constraint_filter_paths, "0-0-0");
               const result = await get_variables(
                 struct,
                 level,
@@ -1103,6 +1105,7 @@ export class Fx {
                 }
               }
             }
+            console.log(variable);
             // 4. Replace variable
             if (variable !== undefined) {
               // insert -> fails

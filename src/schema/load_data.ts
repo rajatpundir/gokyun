@@ -13,7 +13,7 @@ export async function load_data() {
   await load_user();
   await load_test();
   const compose = get_compose("Create_Private_Resource");
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%111111111111111");
   if (unwrap(compose)) {
     const result = await compose.value.exec(
       {
@@ -35,7 +35,7 @@ export async function load_data() {
     );
     console.log(result);
   }
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%22222222222");
   const compose2 = get_compose("Create_Private_Resource");
   if (unwrap(compose2)) {
     const result = await compose2.value.exec(
@@ -58,5 +58,5 @@ export async function load_data() {
     );
     console.log(result);
   }
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%33333333333");
 }
