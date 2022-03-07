@@ -100,7 +100,7 @@ type Step =
       type: "transform";
       invoke: TransformName;
       map: {
-        base:
+        base?:
           | {
               type: "inject";
               inject: Record<
@@ -1337,346 +1337,168 @@ export class Compose {
           const transform_base: Array<
             Record<string, StrongEnum> | ComposeResult
           > = [];
-          switch (step.map.base.type) {
-            case "inject": {
-              const transform_arg: Record<string, StrongEnum> | ComposeResult =
-                {};
-              for (const field_name of Object.keys(step.map.base.inject)) {
-                const inject = step.map.base.inject[field_name];
-                switch (inject.type) {
-                  case "input": {
-                    const inject_arg_name: string = inject.value;
-                    if (inject_arg_name in args) {
-                      const inject_arg = args[inject_arg_name];
-                      if (inject_arg.type === "list") {
-                        transform_arg[field_name] = inject_arg.value;
-                      } else {
-                        transform_arg[field_name] = inject_arg;
-                      }
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
-                    break;
-                  }
-                  case "fx": {
-                    const [inject_step_ref, inject_fx_output_name] =
-                      inject.value as [string, string];
-                    if (inject_step_ref in step_outputs) {
-                      const inject_step_output: StepOutput =
-                        step_outputs[inject_step_ref];
-                      if (inject.type === inject_step_output.type) {
-                        if (inject_fx_output_name in inject_step_output.value) {
-                          transform_arg[field_name] =
-                            inject_step_output.value[inject_fx_output_name];
+          if (step.map.base !== undefined) {
+            switch (step.map.base.type) {
+              case "inject": {
+                const transform_arg:
+                  | Record<string, StrongEnum>
+                  | ComposeResult = {};
+                for (const field_name of Object.keys(step.map.base.inject)) {
+                  const inject = step.map.base.inject[field_name];
+                  switch (inject.type) {
+                    case "input": {
+                      const inject_arg_name: string = inject.value;
+                      if (inject_arg_name in args) {
+                        const inject_arg = args[inject_arg_name];
+                        if (inject_arg.type === "list") {
+                          transform_arg[field_name] = inject_arg.value;
                         } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
+                          transform_arg[field_name] = inject_arg;
                         }
                       } else {
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
                       }
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
+                      break;
                     }
-                    break;
-                  }
-                  case "compose": {
-                    const [inject_step_ref, inject_compose_output_name] =
-                      inject.value as [string, string];
-                    if (inject_step_ref in step_outputs) {
-                      const inject_step_output: StepOutput =
-                        step_outputs[inject_step_ref];
-                      if (inject.type === inject_step_output.type) {
-                        if (
-                          inject_compose_output_name in inject_step_output.value
-                        ) {
-                          transform_arg[field_name] =
-                            inject_step_output.value[
-                              inject_compose_output_name
-                            ];
-                        } else {
-                          return new Err(
-                            new CustomError([errors.ErrUnexpected] as ErrMsg)
-                          );
-                        }
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
-                        );
-                      }
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
-                    break;
-                  }
-                  case "transform": {
-                    const inject_step_ref: string = inject.value;
-                    if (inject_step_ref in step_outputs) {
-                      const inject_step_output: StepOutput =
-                        step_outputs[inject_step_ref];
-                      if (inject.type === inject_step_output.type) {
-                        transform_arg[field_name] = inject_step_output.value;
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
-                        );
-                      }
-                    } else {
-                      return new Err(
-                        new CustomError([errors.ErrUnexpected] as ErrMsg)
-                      );
-                    }
-                    break;
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = inject;
-                    return _exhaustiveCheck;
-                  }
-                }
-              }
-              transform_base.push(transform_arg);
-              break;
-            }
-            case "input": {
-              const arg_name: string = step.map.base.value;
-              if (arg_name in args) {
-                const arg = args[arg_name];
-                if (arg.type === "list") {
-                  for (const arg_value of arg.value) {
-                    const transform_arg:
-                      | Record<string, StrongEnum>
-                      | ComposeResult = arg_value;
-                    if (step.map.base.inject !== undefined) {
-                      for (const field_name of Object.keys(
-                        step.map.base.inject
-                      )) {
-                        const inject = step.map.base.inject[field_name];
-                        switch (inject.type) {
-                          case "input": {
-                            const inject_arg_name: string = inject.value;
-                            if (inject_arg_name in args) {
-                              const inject_arg = args[inject_arg_name];
-                              if (inject_arg.type === "list") {
-                                transform_arg[field_name] = inject_arg.value;
-                              } else {
-                                transform_arg[field_name] = inject_arg;
-                              }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
-                            break;
-                          }
-                          case "fx": {
-                            const [inject_step_ref, inject_fx_output_name] =
-                              inject.value as [string, string];
-                            if (inject_step_ref in step_outputs) {
-                              const inject_step_output: StepOutput =
-                                step_outputs[inject_step_ref];
-                              if (inject.type === inject_step_output.type) {
-                                if (
-                                  inject_fx_output_name in
-                                  inject_step_output.value
-                                ) {
-                                  transform_arg[field_name] =
-                                    inject_step_output.value[
-                                      inject_fx_output_name
-                                    ];
-                                } else {
-                                  return new Err(
-                                    new CustomError([
-                                      errors.ErrUnexpected,
-                                    ] as ErrMsg)
-                                  );
-                                }
-                              } else {
-                                return new Err(
-                                  new CustomError([
-                                    errors.ErrUnexpected,
-                                  ] as ErrMsg)
-                                );
-                              }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
-                            break;
-                          }
-                          case "compose": {
-                            const [
-                              inject_step_ref,
-                              inject_compose_output_name,
-                            ] = inject.value as [string, string];
-                            if (inject_step_ref in step_outputs) {
-                              const inject_step_output: StepOutput =
-                                step_outputs[inject_step_ref];
-                              if (inject.type === inject_step_output.type) {
-                                if (
-                                  inject_compose_output_name in
-                                  inject_step_output.value
-                                ) {
-                                  transform_arg[field_name] =
-                                    inject_step_output.value[
-                                      inject_compose_output_name
-                                    ];
-                                } else {
-                                  return new Err(
-                                    new CustomError([
-                                      errors.ErrUnexpected,
-                                    ] as ErrMsg)
-                                  );
-                                }
-                              } else {
-                                return new Err(
-                                  new CustomError([
-                                    errors.ErrUnexpected,
-                                  ] as ErrMsg)
-                                );
-                              }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
-                            break;
-                          }
-                          case "transform": {
-                            const inject_step_ref: string = inject.value;
-                            if (inject_step_ref in step_outputs) {
-                              const inject_step_output: StepOutput =
-                                step_outputs[inject_step_ref];
-                              if (inject.type === inject_step_output.type) {
-                                transform_arg[field_name] =
-                                  inject_step_output.value;
-                              } else {
-                                return new Err(
-                                  new CustomError([
-                                    errors.ErrUnexpected,
-                                  ] as ErrMsg)
-                                );
-                              }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
-                            }
-                            break;
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = inject;
-                            return _exhaustiveCheck;
-                          }
-                        }
-                      }
-                    }
-                    transform_base.push(transform_arg);
-                  }
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
-              }
-              break;
-            }
-            case "compose": {
-              const [step_ref, compose_output_name] = step.map.base.value as [
-                string,
-                string
-              ];
-              if (step_ref in step_outputs) {
-                const step_output: StepOutput = step_outputs[step_ref];
-                if (step.map.base.type === step_output.type) {
-                  if (compose_output_name in step_output.value) {
-                    const value = step_output.value[compose_output_name];
-                    if (Array.isArray(value)) {
-                      const arg = value as ReadonlyArray<
-                        Record<string, StrongEnum>
-                      >;
-                      for (const arg_value of arg) {
-                        const transform_arg:
-                          | Record<string, StrongEnum>
-                          | ComposeResult = {};
-                        for (const field_name of Object.keys(
-                          step.map.base.map
-                        )) {
-                          const ref_field_name: string =
-                            step.map.base.map[field_name];
-                          if (ref_field_name in arg_value) {
+                    case "fx": {
+                      const [inject_step_ref, inject_fx_output_name] =
+                        inject.value as [string, string];
+                      if (inject_step_ref in step_outputs) {
+                        const inject_step_output: StepOutput =
+                          step_outputs[inject_step_ref];
+                        if (inject.type === inject_step_output.type) {
+                          if (
+                            inject_fx_output_name in inject_step_output.value
+                          ) {
                             transform_arg[field_name] =
-                              arg_value[ref_field_name];
+                              inject_step_output.value[inject_fx_output_name];
                           } else {
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
                           }
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
                         }
-                        if (step.map.base.inject !== undefined) {
-                          for (const field_name of Object.keys(
-                            step.map.base.inject
-                          )) {
-                            const inject = step.map.base.inject[field_name];
-                            switch (inject.type) {
-                              case "input": {
-                                const inject_arg_name: string = inject.value;
-                                if (inject_arg_name in args) {
-                                  const inject_arg = args[inject_arg_name];
-                                  if (inject_arg.type === "list") {
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "compose": {
+                      const [inject_step_ref, inject_compose_output_name] =
+                        inject.value as [string, string];
+                      if (inject_step_ref in step_outputs) {
+                        const inject_step_output: StepOutput =
+                          step_outputs[inject_step_ref];
+                        if (inject.type === inject_step_output.type) {
+                          if (
+                            inject_compose_output_name in
+                            inject_step_output.value
+                          ) {
+                            transform_arg[field_name] =
+                              inject_step_output.value[
+                                inject_compose_output_name
+                              ];
+                          } else {
+                            return new Err(
+                              new CustomError([errors.ErrUnexpected] as ErrMsg)
+                            );
+                          }
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    case "transform": {
+                      const inject_step_ref: string = inject.value;
+                      if (inject_step_ref in step_outputs) {
+                        const inject_step_output: StepOutput =
+                          step_outputs[inject_step_ref];
+                        if (inject.type === inject_step_output.type) {
+                          transform_arg[field_name] = inject_step_output.value;
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
+                      }
+                      break;
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = inject;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                transform_base.push(transform_arg);
+                break;
+              }
+              case "input": {
+                const arg_name: string = step.map.base.value;
+                if (arg_name in args) {
+                  const arg = args[arg_name];
+                  if (arg.type === "list") {
+                    for (const arg_value of arg.value) {
+                      const transform_arg:
+                        | Record<string, StrongEnum>
+                        | ComposeResult = arg_value;
+                      if (step.map.base.inject !== undefined) {
+                        for (const field_name of Object.keys(
+                          step.map.base.inject
+                        )) {
+                          const inject = step.map.base.inject[field_name];
+                          switch (inject.type) {
+                            case "input": {
+                              const inject_arg_name: string = inject.value;
+                              if (inject_arg_name in args) {
+                                const inject_arg = args[inject_arg_name];
+                                if (inject_arg.type === "list") {
+                                  transform_arg[field_name] = inject_arg.value;
+                                } else {
+                                  transform_arg[field_name] = inject_arg;
+                                }
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
+                              }
+                              break;
+                            }
+                            case "fx": {
+                              const [inject_step_ref, inject_fx_output_name] =
+                                inject.value as [string, string];
+                              if (inject_step_ref in step_outputs) {
+                                const inject_step_output: StepOutput =
+                                  step_outputs[inject_step_ref];
+                                if (inject.type === inject_step_output.type) {
+                                  if (
+                                    inject_fx_output_name in
+                                    inject_step_output.value
+                                  ) {
                                     transform_arg[field_name] =
-                                      inject_arg.value;
-                                  } else {
-                                    transform_arg[field_name] = inject_arg;
-                                  }
-                                } else {
-                                  return new Err(
-                                    new CustomError([
-                                      errors.ErrUnexpected,
-                                    ] as ErrMsg)
-                                  );
-                                }
-                                break;
-                              }
-                              case "fx": {
-                                const [inject_step_ref, inject_fx_output_name] =
-                                  inject.value as [string, string];
-                                if (inject_step_ref in step_outputs) {
-                                  const inject_step_output: StepOutput =
-                                    step_outputs[inject_step_ref];
-                                  if (inject.type === inject_step_output.type) {
-                                    if (
-                                      inject_fx_output_name in
-                                      inject_step_output.value
-                                    ) {
-                                      transform_arg[field_name] =
-                                        inject_step_output.value[
-                                          inject_fx_output_name
-                                        ];
-                                    } else {
-                                      return new Err(
-                                        new CustomError([
-                                          errors.ErrUnexpected,
-                                        ] as ErrMsg)
-                                      );
-                                    }
+                                      inject_step_output.value[
+                                        inject_fx_output_name
+                                      ];
                                   } else {
                                     return new Err(
                                       new CustomError([
@@ -1691,56 +1513,32 @@ export class Compose {
                                     ] as ErrMsg)
                                   );
                                 }
-                                break;
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
                               }
-                              case "compose": {
-                                const [
-                                  inject_step_ref,
-                                  inject_compose_output_name,
-                                ] = inject.value as [string, string];
-                                if (inject_step_ref in step_outputs) {
-                                  const inject_step_output: StepOutput =
-                                    step_outputs[inject_step_ref];
-                                  if (inject.type === inject_step_output.type) {
-                                    if (
-                                      inject_compose_output_name in
-                                      inject_step_output.value
-                                    ) {
-                                      transform_arg[field_name] =
-                                        inject_step_output.value[
-                                          inject_compose_output_name
-                                        ];
-                                    } else {
-                                      return new Err(
-                                        new CustomError([
-                                          errors.ErrUnexpected,
-                                        ] as ErrMsg)
-                                      );
-                                    }
-                                  } else {
-                                    return new Err(
-                                      new CustomError([
-                                        errors.ErrUnexpected,
-                                      ] as ErrMsg)
-                                    );
-                                  }
-                                } else {
-                                  return new Err(
-                                    new CustomError([
-                                      errors.ErrUnexpected,
-                                    ] as ErrMsg)
-                                  );
-                                }
-                                break;
-                              }
-                              case "transform": {
-                                const inject_step_ref: string = inject.value;
-                                if (inject_step_ref in step_outputs) {
-                                  const inject_step_output: StepOutput =
-                                    step_outputs[inject_step_ref];
-                                  if (inject.type === inject_step_output.type) {
+                              break;
+                            }
+                            case "compose": {
+                              const [
+                                inject_step_ref,
+                                inject_compose_output_name,
+                              ] = inject.value as [string, string];
+                              if (inject_step_ref in step_outputs) {
+                                const inject_step_output: StepOutput =
+                                  step_outputs[inject_step_ref];
+                                if (inject.type === inject_step_output.type) {
+                                  if (
+                                    inject_compose_output_name in
+                                    inject_step_output.value
+                                  ) {
                                     transform_arg[field_name] =
-                                      inject_step_output.value;
+                                      inject_step_output.value[
+                                        inject_compose_output_name
+                                      ];
                                   } else {
                                     return new Err(
                                       new CustomError([
@@ -1755,16 +1553,238 @@ export class Compose {
                                     ] as ErrMsg)
                                   );
                                 }
-                                break;
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
                               }
-                              default: {
-                                const _exhaustiveCheck: never = inject;
-                                return _exhaustiveCheck;
+                              break;
+                            }
+                            case "transform": {
+                              const inject_step_ref: string = inject.value;
+                              if (inject_step_ref in step_outputs) {
+                                const inject_step_output: StepOutput =
+                                  step_outputs[inject_step_ref];
+                                if (inject.type === inject_step_output.type) {
+                                  transform_arg[field_name] =
+                                    inject_step_output.value;
+                                } else {
+                                  return new Err(
+                                    new CustomError([
+                                      errors.ErrUnexpected,
+                                    ] as ErrMsg)
+                                  );
+                                }
+                              } else {
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
                               }
+                              break;
+                            }
+                            default: {
+                              const _exhaustiveCheck: never = inject;
+                              return _exhaustiveCheck;
                             }
                           }
                         }
-                        transform_base.push(transform_arg);
+                      }
+                      transform_base.push(transform_arg);
+                    }
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                }
+                break;
+              }
+              case "compose": {
+                const [step_ref, compose_output_name] = step.map.base.value as [
+                  string,
+                  string
+                ];
+                if (step_ref in step_outputs) {
+                  const step_output: StepOutput = step_outputs[step_ref];
+                  if (step.map.base.type === step_output.type) {
+                    if (compose_output_name in step_output.value) {
+                      const value = step_output.value[compose_output_name];
+                      if (Array.isArray(value)) {
+                        const arg = value as ReadonlyArray<
+                          Record<string, StrongEnum>
+                        >;
+                        for (const arg_value of arg) {
+                          const transform_arg:
+                            | Record<string, StrongEnum>
+                            | ComposeResult = {};
+                          for (const field_name of Object.keys(
+                            step.map.base.map
+                          )) {
+                            const ref_field_name: string =
+                              step.map.base.map[field_name];
+                            if (ref_field_name in arg_value) {
+                              transform_arg[field_name] =
+                                arg_value[ref_field_name];
+                            } else {
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                          }
+                          if (step.map.base.inject !== undefined) {
+                            for (const field_name of Object.keys(
+                              step.map.base.inject
+                            )) {
+                              const inject = step.map.base.inject[field_name];
+                              switch (inject.type) {
+                                case "input": {
+                                  const inject_arg_name: string = inject.value;
+                                  if (inject_arg_name in args) {
+                                    const inject_arg = args[inject_arg_name];
+                                    if (inject_arg.type === "list") {
+                                      transform_arg[field_name] =
+                                        inject_arg.value;
+                                    } else {
+                                      transform_arg[field_name] = inject_arg;
+                                    }
+                                  } else {
+                                    return new Err(
+                                      new CustomError([
+                                        errors.ErrUnexpected,
+                                      ] as ErrMsg)
+                                    );
+                                  }
+                                  break;
+                                }
+                                case "fx": {
+                                  const [
+                                    inject_step_ref,
+                                    inject_fx_output_name,
+                                  ] = inject.value as [string, string];
+                                  if (inject_step_ref in step_outputs) {
+                                    const inject_step_output: StepOutput =
+                                      step_outputs[inject_step_ref];
+                                    if (
+                                      inject.type === inject_step_output.type
+                                    ) {
+                                      if (
+                                        inject_fx_output_name in
+                                        inject_step_output.value
+                                      ) {
+                                        transform_arg[field_name] =
+                                          inject_step_output.value[
+                                            inject_fx_output_name
+                                          ];
+                                      } else {
+                                        return new Err(
+                                          new CustomError([
+                                            errors.ErrUnexpected,
+                                          ] as ErrMsg)
+                                        );
+                                      }
+                                    } else {
+                                      return new Err(
+                                        new CustomError([
+                                          errors.ErrUnexpected,
+                                        ] as ErrMsg)
+                                      );
+                                    }
+                                  } else {
+                                    return new Err(
+                                      new CustomError([
+                                        errors.ErrUnexpected,
+                                      ] as ErrMsg)
+                                    );
+                                  }
+                                  break;
+                                }
+                                case "compose": {
+                                  const [
+                                    inject_step_ref,
+                                    inject_compose_output_name,
+                                  ] = inject.value as [string, string];
+                                  if (inject_step_ref in step_outputs) {
+                                    const inject_step_output: StepOutput =
+                                      step_outputs[inject_step_ref];
+                                    if (
+                                      inject.type === inject_step_output.type
+                                    ) {
+                                      if (
+                                        inject_compose_output_name in
+                                        inject_step_output.value
+                                      ) {
+                                        transform_arg[field_name] =
+                                          inject_step_output.value[
+                                            inject_compose_output_name
+                                          ];
+                                      } else {
+                                        return new Err(
+                                          new CustomError([
+                                            errors.ErrUnexpected,
+                                          ] as ErrMsg)
+                                        );
+                                      }
+                                    } else {
+                                      return new Err(
+                                        new CustomError([
+                                          errors.ErrUnexpected,
+                                        ] as ErrMsg)
+                                      );
+                                    }
+                                  } else {
+                                    return new Err(
+                                      new CustomError([
+                                        errors.ErrUnexpected,
+                                      ] as ErrMsg)
+                                    );
+                                  }
+                                  break;
+                                }
+                                case "transform": {
+                                  const inject_step_ref: string = inject.value;
+                                  if (inject_step_ref in step_outputs) {
+                                    const inject_step_output: StepOutput =
+                                      step_outputs[inject_step_ref];
+                                    if (
+                                      inject.type === inject_step_output.type
+                                    ) {
+                                      transform_arg[field_name] =
+                                        inject_step_output.value;
+                                    } else {
+                                      return new Err(
+                                        new CustomError([
+                                          errors.ErrUnexpected,
+                                        ] as ErrMsg)
+                                      );
+                                    }
+                                  } else {
+                                    return new Err(
+                                      new CustomError([
+                                        errors.ErrUnexpected,
+                                      ] as ErrMsg)
+                                    );
+                                  }
+                                  break;
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = inject;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            }
+                          }
+                          transform_base.push(transform_arg);
+                        }
+                      } else {
+                        return new Err(
+                          new CustomError([errors.ErrUnexpected] as ErrMsg)
+                        );
                       }
                     } else {
                       return new Err(
@@ -1781,72 +1801,74 @@ export class Compose {
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
+                break;
               }
-              break;
-            }
-            case "transform": {
-              const step_ref = step.map.base.value;
-              if (step_ref in step_outputs) {
-                const step_output: StepOutput = step_outputs[step_ref];
-                if (step.map.base.type === step_output.type) {
-                  for (const arg_value of step_output.value) {
-                    const transform_arg:
-                      | Record<string, StrongEnum>
-                      | ComposeResult = {};
-                    for (const field_name of Object.keys(step.map.base.map)) {
-                      const ref_field_name: string =
-                        step.map.base.map[field_name];
-                      if (ref_field_name in arg_value) {
-                        transform_arg[field_name] = arg_value[ref_field_name];
-                      } else {
-                        return new Err(
-                          new CustomError([errors.ErrUnexpected] as ErrMsg)
-                        );
+              case "transform": {
+                const step_ref = step.map.base.value;
+                if (step_ref in step_outputs) {
+                  const step_output: StepOutput = step_outputs[step_ref];
+                  if (step.map.base.type === step_output.type) {
+                    for (const arg_value of step_output.value) {
+                      const transform_arg:
+                        | Record<string, StrongEnum>
+                        | ComposeResult = {};
+                      for (const field_name of Object.keys(step.map.base.map)) {
+                        const ref_field_name: string =
+                          step.map.base.map[field_name];
+                        if (ref_field_name in arg_value) {
+                          transform_arg[field_name] = arg_value[ref_field_name];
+                        } else {
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
                       }
-                    }
-                    if (step.map.base.inject !== undefined) {
-                      for (const field_name of Object.keys(
-                        step.map.base.inject
-                      )) {
-                        const inject = step.map.base.inject[field_name];
-                        switch (inject.type) {
-                          case "input": {
-                            const inject_arg_name: string = inject.value;
-                            if (inject_arg_name in args) {
-                              const inject_arg = args[inject_arg_name];
-                              if (inject_arg.type === "list") {
-                                transform_arg[field_name] = inject_arg.value;
+                      if (step.map.base.inject !== undefined) {
+                        for (const field_name of Object.keys(
+                          step.map.base.inject
+                        )) {
+                          const inject = step.map.base.inject[field_name];
+                          switch (inject.type) {
+                            case "input": {
+                              const inject_arg_name: string = inject.value;
+                              if (inject_arg_name in args) {
+                                const inject_arg = args[inject_arg_name];
+                                if (inject_arg.type === "list") {
+                                  transform_arg[field_name] = inject_arg.value;
+                                } else {
+                                  transform_arg[field_name] = inject_arg;
+                                }
                               } else {
-                                transform_arg[field_name] = inject_arg;
+                                return new Err(
+                                  new CustomError([
+                                    errors.ErrUnexpected,
+                                  ] as ErrMsg)
+                                );
                               }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
+                              break;
                             }
-                            break;
-                          }
-                          case "fx": {
-                            const [inject_step_ref, inject_fx_output_name] =
-                              inject.value as [string, string];
-                            if (inject_step_ref in step_outputs) {
-                              const inject_step_output: StepOutput =
-                                step_outputs[inject_step_ref];
-                              if (inject.type === inject_step_output.type) {
-                                if (
-                                  inject_fx_output_name in
-                                  inject_step_output.value
-                                ) {
-                                  transform_arg[field_name] =
-                                    inject_step_output.value[
-                                      inject_fx_output_name
-                                    ];
+                            case "fx": {
+                              const [inject_step_ref, inject_fx_output_name] =
+                                inject.value as [string, string];
+                              if (inject_step_ref in step_outputs) {
+                                const inject_step_output: StepOutput =
+                                  step_outputs[inject_step_ref];
+                                if (inject.type === inject_step_output.type) {
+                                  if (
+                                    inject_fx_output_name in
+                                    inject_step_output.value
+                                  ) {
+                                    transform_arg[field_name] =
+                                      inject_step_output.value[
+                                        inject_fx_output_name
+                                      ];
+                                  } else {
+                                    return new Err(
+                                      new CustomError([
+                                        errors.ErrUnexpected,
+                                      ] as ErrMsg)
+                                    );
+                                  }
                                 } else {
                                   return new Err(
                                     new CustomError([
@@ -1861,32 +1883,32 @@ export class Compose {
                                   ] as ErrMsg)
                                 );
                               }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
+                              break;
                             }
-                            break;
-                          }
-                          case "compose": {
-                            const [
-                              inject_step_ref,
-                              inject_compose_output_name,
-                            ] = inject.value as [string, string];
-                            if (inject_step_ref in step_outputs) {
-                              const inject_step_output: StepOutput =
-                                step_outputs[inject_step_ref];
-                              if (inject.type === inject_step_output.type) {
-                                if (
-                                  inject_compose_output_name in
-                                  inject_step_output.value
-                                ) {
-                                  transform_arg[field_name] =
-                                    inject_step_output.value[
-                                      inject_compose_output_name
-                                    ];
+                            case "compose": {
+                              const [
+                                inject_step_ref,
+                                inject_compose_output_name,
+                              ] = inject.value as [string, string];
+                              if (inject_step_ref in step_outputs) {
+                                const inject_step_output: StepOutput =
+                                  step_outputs[inject_step_ref];
+                                if (inject.type === inject_step_output.type) {
+                                  if (
+                                    inject_compose_output_name in
+                                    inject_step_output.value
+                                  ) {
+                                    transform_arg[field_name] =
+                                      inject_step_output.value[
+                                        inject_compose_output_name
+                                      ];
+                                  } else {
+                                    return new Err(
+                                      new CustomError([
+                                        errors.ErrUnexpected,
+                                      ] as ErrMsg)
+                                    );
+                                  }
                                 } else {
                                   return new Err(
                                     new CustomError([
@@ -1901,23 +1923,23 @@ export class Compose {
                                   ] as ErrMsg)
                                 );
                               }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
+                              break;
                             }
-                            break;
-                          }
-                          case "transform": {
-                            const inject_step_ref: string = inject.value;
-                            if (inject_step_ref in step_outputs) {
-                              const inject_step_output: StepOutput =
-                                step_outputs[inject_step_ref];
-                              if (inject.type === inject_step_output.type) {
-                                transform_arg[field_name] =
-                                  inject_step_output.value;
+                            case "transform": {
+                              const inject_step_ref: string = inject.value;
+                              if (inject_step_ref in step_outputs) {
+                                const inject_step_output: StepOutput =
+                                  step_outputs[inject_step_ref];
+                                if (inject.type === inject_step_output.type) {
+                                  transform_arg[field_name] =
+                                    inject_step_output.value;
+                                } else {
+                                  return new Err(
+                                    new CustomError([
+                                      errors.ErrUnexpected,
+                                    ] as ErrMsg)
+                                  );
+                                }
                               } else {
                                 return new Err(
                                   new CustomError([
@@ -1925,39 +1947,33 @@ export class Compose {
                                   ] as ErrMsg)
                                 );
                               }
-                            } else {
-                              return new Err(
-                                new CustomError([
-                                  errors.ErrUnexpected,
-                                ] as ErrMsg)
-                              );
+                              break;
                             }
-                            break;
-                          }
-                          default: {
-                            const _exhaustiveCheck: never = inject;
-                            return _exhaustiveCheck;
+                            default: {
+                              const _exhaustiveCheck: never = inject;
+                              return _exhaustiveCheck;
+                            }
                           }
                         }
                       }
+                      transform_base.push(transform_arg);
                     }
-                    transform_base.push(transform_arg);
+                  } else {
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
                   }
                 } else {
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
-              } else {
-                return new Err(
-                  new CustomError([errors.ErrUnexpected] as ErrMsg)
-                );
+                break;
               }
-              break;
-            }
-            default: {
-              const _exhaustiveCheck: never = step.map.base;
-              return _exhaustiveCheck;
+              default: {
+                const _exhaustiveCheck: never = step.map.base;
+                return _exhaustiveCheck;
+              }
             }
           }
           const transform_query: TransformArgs["query"] = {};

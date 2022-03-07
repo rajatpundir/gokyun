@@ -25,7 +25,9 @@ import {
 type TrandformQuery =
   | {
       struct: string;
-      // query on basis of top level fields
+      // Currently, querying on basis of top level fields
+      // TODO. query should be on basis of paths instead
+      // this would fetching indirect children
       fields: ReadonlyArray<string>;
       map: Record<string, PathString>;
     }
