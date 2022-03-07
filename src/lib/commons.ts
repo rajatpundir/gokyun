@@ -36,6 +36,7 @@ import {
   WeakEnum,
   get_path_string,
 } from "./variable";
+import { Dimensions } from "react-native";
 
 export type State = Immutable<{
   id: Decimal;
@@ -1006,11 +1007,11 @@ export function get_label(state: State, path: PathString | string): string {
   });
 }
 
-// export const dimensions = {
-//   width: Dimensions.get("window").width,
-//   height: Dimensions.get("window").height,
-//   isSmallDevice: Dimensions.get("window").width < 375,
-// };
+export const dimensions = {
+  width: Dimensions.get("window").width,
+  height: Dimensions.get("window").height,
+  isSmallDevice: Dimensions.get("window").width < 375,
+};
 
 export function get_validated_decimal(
   field_struct_name:

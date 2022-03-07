@@ -9,13 +9,13 @@ import {
   NavigatorProps as RootNavigatorProps,
 } from "../main";
 
-import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ModalHeader, tw } from "../../lib";
 
 import Linker from "./linker";
 import Community from "./community";
 import Personal from "./personal";
+import { dimensions } from "../../lib/commons";
 
 export type NavigatorParams = {
   Linker: undefined;
@@ -29,12 +29,12 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
       <ModalHeader title="Resources" />
       <TopTab.Navigator
         initialRouteName="Community"
-        initialLayout={{ width: Dimensions.get("window").width }}
+        // initialLayout={{ width: dimensions.width }}
         screenOptions={{
           lazy: true,
           tabBarScrollEnabled: true,
           tabBarItemStyle: tw.style([], {
-            width: Dimensions.get("screen").width / 3,
+            width: dimensions.width / 3,
           }),
           tabBarLabelStyle: tw.style([], {
             fontSize: 14,
