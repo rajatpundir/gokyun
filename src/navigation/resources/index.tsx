@@ -13,14 +13,14 @@ import { Dimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ModalHeader, tw } from "../../lib";
 
-import Public from "./public";
-import Private from "./private";
 import Linker from "./linker";
+import Community from "./community";
+import Personal from "./personal";
 
 export type NavigatorParams = {
   Linker: undefined;
-  Public: undefined;
-  Private: undefined;
+  Community: undefined;
+  Personal: undefined;
 };
 
 export default function Navigator(props: RootNavigatorProps<"Resources">) {
@@ -33,7 +33,9 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
         screenOptions={{
           lazy: true,
           tabBarScrollEnabled: true,
-          tabBarItemStyle: tw.style([], { width: 100 }),
+          tabBarItemStyle: tw.style([], {
+            width: Dimensions.get("screen").width / 3,
+          }),
           tabBarLabelStyle: tw.style([], {
             fontSize: 14,
             textTransform: "none",
@@ -41,8 +43,8 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
         }}
       >
         <TopTab.Screen name="Linker" component={Linker} />
-        <TopTab.Screen name="Public" component={Public} />
-        <TopTab.Screen name="Private" component={Private} />
+        <TopTab.Screen name="Community" component={Community} />
+        <TopTab.Screen name="Personal" component={Personal} />
       </TopTab.Navigator>
     </>
   );

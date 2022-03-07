@@ -71,7 +71,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Main">
+                        <Stack.Navigator initialRouteName="Resources">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,

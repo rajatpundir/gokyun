@@ -25,7 +25,7 @@ export type NavigatorParams = {
   YouTube: undefined;
 };
 
-export default function Navigator(props: ParentNavigatorProps<"Private">) {
+export default function Navigator(props: ParentNavigatorProps<"Community">) {
   return (
     <BottomTab.Navigator
       initialRouteName="Images"
