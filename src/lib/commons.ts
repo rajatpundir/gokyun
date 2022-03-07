@@ -12,6 +12,7 @@ import {
   Bool,
   Deci,
   LispResult,
+  inject_system_constants,
 } from "./lisp";
 import { get_permissions, PathPermission } from "./permissions";
 import {
@@ -610,7 +611,7 @@ function add_symbol(
   return symbols;
 }
 
-export function get_symbols(
+function get_symbols(
   state: State,
   expr: LispExpression
 ): Result<Readonly<Record<string, Symbol>>> {
@@ -629,7 +630,7 @@ export function get_symbols(
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
   }
-  return new Ok(symbols);
+  return new Ok(inject_system_constants(symbols));
 }
 
 function dispatch_result(

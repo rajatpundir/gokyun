@@ -15,6 +15,7 @@ import {
   Bool,
   BooleanLispExpression,
   Deci,
+  inject_system_constants,
   LispExpression,
   Num,
   Symbol,
@@ -230,12 +231,15 @@ export class Fx {
           const expr_result = result.value;
           if (expr_result instanceof Bool) {
             if (!expr_result.value) {
+              console.log("FX", 1);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
+            console.log("FX", 2);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         } else {
+          console.log("FX", 3);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       }
@@ -357,6 +361,7 @@ export class Fx {
                             })
                           );
                         } else {
+                          console.log("FX", 4);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -378,6 +383,7 @@ export class Fx {
                             })
                           );
                         } else {
+                          console.log("FX", 5);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -399,6 +405,7 @@ export class Fx {
                             })
                           );
                         } else {
+                          console.log("FX", 6);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -417,6 +424,7 @@ export class Fx {
                             })
                           );
                         } else {
+                          console.log("FX", 7);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -437,6 +445,7 @@ export class Fx {
                             })
                           );
                         } else {
+                          console.log("FX", 8);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -456,6 +465,7 @@ export class Fx {
                             })
                           );
                         } else {
+                          console.log("FX", 9);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -468,6 +478,7 @@ export class Fx {
                       }
                     }
                   } else {
+                    console.log("FX", 10);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -476,6 +487,7 @@ export class Fx {
                   continue;
                 }
               } else {
+                console.log("FX", 11);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -507,6 +519,7 @@ export class Fx {
                   continue;
                 }
               } else {
+                console.log("FX", 12);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -535,6 +548,7 @@ export class Fx {
                   continue;
                 }
               } else {
+                console.log("FX", 13);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -548,11 +562,13 @@ export class Fx {
               if (arg.type === input.type && arg.other === input.other) {
                 await remove_variables_in_db(level, struct.name, [arg.value]);
               } else {
+                console.log("FX", 14);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
               }
             } else {
+              console.log("FX", 15);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           }
@@ -577,6 +593,7 @@ export class Fx {
                       value: expr_result.value,
                     };
                   } else {
+                    console.log("FX", 16);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -593,6 +610,7 @@ export class Fx {
                       value: new Decimal(expr_result.value),
                     };
                   } else {
+                    console.log("FX", 17);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -609,6 +627,7 @@ export class Fx {
                       value: new Decimal(expr_result.value),
                     };
                   } else {
+                    console.log("FX", 18);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -622,6 +641,7 @@ export class Fx {
                       value: expr_result.value,
                     };
                   } else {
+                    console.log("FX", 19);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -637,6 +657,7 @@ export class Fx {
                       value: new Date(expr_result.value),
                     };
                   } else {
+                    console.log("FX", 20);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -651,6 +672,7 @@ export class Fx {
                       value: new Decimal(expr_result.value),
                     };
                   } else {
+                    console.log("FX", 21);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -663,6 +685,7 @@ export class Fx {
                 }
               }
             } else {
+              console.log("FX", 22);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
             break;
@@ -686,13 +709,14 @@ export class Fx {
                 const field = struct.fields[field_name];
                 const expr_result =
                   output.fields[field_name].get_result(symbols);
+                console.log(field_name, output.fields[field_name]);
                 if (unwrap(expr_result)) {
-                  const expr_result = result.value;
+                  const expr_result_value = expr_result.value;
                   switch (field.type) {
                     case "str":
                     case "lstr":
                     case "clob": {
-                      if (expr_result instanceof Txt) {
+                      if (expr_result_value instanceof Txt) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -700,12 +724,13 @@ export class Fx {
                               field_name,
                               {
                                 type: field.type,
-                                value: expr_result.value,
+                                value: expr_result_value.value,
                               },
                             ],
                           ])
                         );
                       } else {
+                        console.log("FX", 23);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -716,7 +741,7 @@ export class Fx {
                     case "u32":
                     case "i64":
                     case "u64": {
-                      if (expr_result instanceof Num) {
+                      if (expr_result_value instanceof Num) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -724,12 +749,13 @@ export class Fx {
                               field_name,
                               {
                                 type: field.type,
-                                value: new Decimal(expr_result.value),
+                                value: new Decimal(expr_result_value.value),
                               },
                             ],
                           ])
                         );
                       } else {
+                        console.log("FX", 24);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -740,7 +766,7 @@ export class Fx {
                     case "udouble":
                     case "idecimal":
                     case "udecimal": {
-                      if (expr_result instanceof Deci) {
+                      if (expr_result_value instanceof Deci) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -748,12 +774,13 @@ export class Fx {
                               field_name,
                               {
                                 type: field.type,
-                                value: new Decimal(expr_result.value),
+                                value: new Decimal(expr_result_value.value),
                               },
                             ],
                           ])
                         );
                       } else {
+                        console.log("FX", 25);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -761,7 +788,7 @@ export class Fx {
                       break;
                     }
                     case "bool": {
-                      if (expr_result instanceof Bool) {
+                      if (expr_result_value instanceof Bool) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -769,12 +796,13 @@ export class Fx {
                               field_name,
                               {
                                 type: field.type,
-                                value: expr_result.value,
+                                value: expr_result_value.value,
                               },
                             ],
                           ])
                         );
                       } else {
+                        console.log("FX", 26);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -784,7 +812,7 @@ export class Fx {
                     case "date":
                     case "time":
                     case "timestamp": {
-                      if (expr_result instanceof Num) {
+                      if (expr_result_value instanceof Num) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -792,12 +820,13 @@ export class Fx {
                               field_name,
                               {
                                 type: field.type,
-                                value: new Date(expr_result.value),
+                                value: new Date(expr_result_value.value),
                               },
                             ],
                           ])
                         );
                       } else {
+                        console.log("FX", 27);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -805,7 +834,7 @@ export class Fx {
                       break;
                     }
                     case "other": {
-                      if (expr_result instanceof Num) {
+                      if (expr_result_value instanceof Num) {
                         paths.push(
                           new Path(field_name, [
                             [],
@@ -814,12 +843,13 @@ export class Fx {
                               {
                                 type: field.type,
                                 other: field.other,
-                                value: new Decimal(expr_result.value),
+                                value: new Decimal(expr_result_value.value),
                               },
                             ],
                           ])
                         );
                       } else {
+                        console.log("FX", 28);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -832,11 +862,13 @@ export class Fx {
                     }
                   }
                 } else {
+                  console.log("FX", 29);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
               } else {
+                console.log("FX", 30);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -874,6 +906,7 @@ export class Fx {
                     );
                   }
                 } else {
+                  console.log("FX", 31);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -927,6 +960,7 @@ export class Fx {
                             ])
                           );
                         } else {
+                          console.log("FX", 32);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -951,6 +985,7 @@ export class Fx {
                             ])
                           );
                         } else {
+                          console.log("FX", 33);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -975,6 +1010,7 @@ export class Fx {
                             ])
                           );
                         } else {
+                          console.log("FX", 34);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -996,6 +1032,7 @@ export class Fx {
                             ])
                           );
                         } else {
+                          console.log("FX", 35);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1019,6 +1056,7 @@ export class Fx {
                             ])
                           );
                         } else {
+                          console.log("FX", 36);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1041,6 +1079,7 @@ export class Fx {
                             ])
                           );
                         } else {
+                          console.log("FX", 37);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1054,6 +1093,7 @@ export class Fx {
                     }
                   }
                 } else {
+                  console.log("FX", 38);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1067,6 +1107,7 @@ export class Fx {
               // replace -> replace
               switch (output.op) {
                 case "insert": {
+                  console.log("FX", 39);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1115,6 +1156,7 @@ export class Fx {
                       value: variable.id,
                     };
                   } else {
+                    console.log("FX", 40);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -1160,6 +1202,7 @@ export class Fx {
                           )
                         );
                       } else {
+                        console.log("FX", 41);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1183,6 +1226,7 @@ export class Fx {
                           )
                         );
                       } else {
+                        console.log("FX", 42);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1206,6 +1250,7 @@ export class Fx {
                           )
                         );
                       } else {
+                        console.log("FX", 43);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1223,6 +1268,7 @@ export class Fx {
                           )
                         );
                       } else {
+                        console.log("FX", 44);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1245,6 +1291,7 @@ export class Fx {
                           )
                         );
                       } else {
+                        console.log("FX", 45);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1267,6 +1314,7 @@ export class Fx {
                           )
                         );
                       } else {
+                        console.log("FX", 46);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1279,11 +1327,13 @@ export class Fx {
                     }
                   }
                 } else {
+                  console.log("FX", 47);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
               } else {
+                console.log("FX", 48);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -1312,6 +1362,7 @@ export class Fx {
                 result.value.map((x) => x.id)
               );
             } else {
+              console.log("FX", 49);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
             break;
@@ -1322,8 +1373,10 @@ export class Fx {
           }
         }
       }
+      console.log("[FX]", this.name, "[SUCCESS]");
       return new Ok(computed_outputs);
     } else {
+      console.log("FX", 50);
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
   }
@@ -1524,11 +1577,13 @@ export async function get_symbols_for_fx_compose_paths(
                       values: get_symbols_for_paths(variable.value.paths),
                     });
                   } else {
+                    console.log("FX", 51);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
+                  console.log("FX", 52);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1548,11 +1603,13 @@ export async function get_symbols_for_fx_compose_paths(
                       values: get_symbols_for_paths(variable.value.paths),
                     });
                   } else {
+                    console.log("FX", 53);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
+                  console.log("FX", 54);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1567,6 +1624,7 @@ export async function get_symbols_for_fx_compose_paths(
                     values: {},
                   });
                 } else {
+                  console.log("FX", 55);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1578,6 +1636,7 @@ export async function get_symbols_for_fx_compose_paths(
                     values: {},
                   });
                 } else {
+                  console.log("FX", 56);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1585,11 +1644,12 @@ export async function get_symbols_for_fx_compose_paths(
               }
             }
           } else {
+            console.log("FX", 57);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         }
       }
     }
   }
-  return new Ok(symbols);
+  return new Ok(inject_system_constants(symbols));
 }

@@ -1097,6 +1097,7 @@ export class Transform {
         return _exhaustiveCheck;
       }
     }
+    console.log("[TRANSFORM]", this.name, "[SUCCESS]");
     return new Ok(computed_outputs);
   }
 }

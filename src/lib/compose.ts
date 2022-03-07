@@ -2320,6 +2320,7 @@ export class Compose {
         return _exhaustiveCheck;
       }
     }
+    console.log("[COMPOSE]", this.name, "[SUCCESS]");
     return new Ok(computed_outputs);
   }
 }
