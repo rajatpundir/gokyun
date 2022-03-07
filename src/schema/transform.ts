@@ -28,6 +28,6 @@ export function get_transform(
       return new Ok(schema[transform_name]);
     }
   }
-  console.log("[ERROR] Invalid transform: ", transform_name);
+  console.log("[ERROR] Invalid transform:", transform_name);
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

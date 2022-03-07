@@ -63,6 +63,6 @@ export function get_fx(
       return new Ok(schema[fx_name]);
     }
   }
-  console.log("[ERROR] Invalid fx: ", fx_name);
+  console.log("[ERROR] Invalid fx:", fx_name);
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

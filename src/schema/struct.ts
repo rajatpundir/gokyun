@@ -173,7 +173,9 @@ const schema = structs as any as Record<
 >;
 
 export function get_struct(struct_name: StructName): Struct {
-  // console.log("[STRUCT]", struct_name);
+  if (!(struct_name in schema)) {
+    console.log("[ERROR] Invalid struct:", struct_name);
+  }
   const structDef = schema[struct_name];
   const struct: Struct = new Struct(
     struct_name,
