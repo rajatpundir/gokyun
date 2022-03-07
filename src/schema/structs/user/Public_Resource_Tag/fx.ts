@@ -61,8 +61,7 @@ export default {
         },
       },
     },
-    {},
-    false
+    {}
   ),
   Delete_Public_Resource_Tag: new Fx(
     "Delete_Public_Resource_Tag",
@@ -148,8 +147,7 @@ export default {
   //       ],
   //     },
   //   },
-  //   {},
-  //   false
+  //   {}
   // ),
   Create_Private_Resource_Tag_From_Public_Resource_Tag: new Fx(
     "Create_Private_Resource_Tag_From_Public_Resource_Tag",
@@ -167,7 +165,6 @@ export default {
         },
       },
     },
-    {},
-    false
+    {}
   ),
 };

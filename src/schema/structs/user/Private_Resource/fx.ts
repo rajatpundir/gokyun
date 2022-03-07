@@ -20,8 +20,7 @@ export default {
         },
       },
     },
-    {},
-    false
+    {}
   ),
   Delete_Private_Resource: new Fx(
     "Delete_Private_Resource",
@@ -33,8 +32,7 @@ export default {
       },
     },
     {},
-    {},
-    false
+    {}
   ),
   Create_Public_Resource_From_Private_Resource: new Fx(
     "Create_Public_Resource_From_Private_Resource",
@@ -57,7 +55,6 @@ export default {
         },
       },
     },
-    {},
-    false
+    {}
   ),
 };

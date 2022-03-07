@@ -52,7 +52,7 @@ export class Transform {
     type: "fx" | "compose",
     invoke: string,
     query: TrandformQuery,
-    user_invocable: boolean
+    user_invocable: boolean = false
   ) {
     this.name = name;
     this.type = type;

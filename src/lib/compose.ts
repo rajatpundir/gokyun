@@ -225,7 +225,7 @@ export class Compose {
     inputs: ComposeInputs,
     steps: ComposeStep,
     checks: ComposeChecks,
-    user_invocable: boolean
+    user_invocable: boolean = false
   ) {
     this.name = name;
     this.inputs = inputs;
