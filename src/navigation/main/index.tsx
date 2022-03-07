@@ -20,6 +20,7 @@ import { useDeviceContext } from "twrnc";
 import Test from "../test";
 import Linker from "../linker";
 import Search from "../search";
+import Resources from "../resources";
 import { HashSet } from "prelude-ts";
 
 import { FontAwesome } from "@expo/vector-icons";
@@ -46,6 +47,7 @@ export type NavigatorParams = {
   Main: NavigatorScreenParams<MainNavigatorParams> | undefined;
   SelectionModal: SelectionModalProps;
   Search: undefined;
+  Resources: undefined;
   Linker: undefined;
   Test: {
     id: number;
@@ -71,7 +73,7 @@ function Component() {
                   <SafeAreaProvider>
                     <SafeAreaView style={tw.style(["flex-1"])}>
                       <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Search">
+                        <Stack.Navigator initialRouteName="Resources">
                           <Stack.Group
                             screenOptions={{
                               headerShown: false,
@@ -91,6 +93,10 @@ function Component() {
                                 component={SelectionModal}
                               />
                               <Stack.Screen name="Linker" component={Linker} />
+                              <Stack.Screen
+                                name="Resources"
+                                component={Resources}
+                              />
                               <Stack.Screen name="Search" component={Search} />
                               <Stack.Screen name="Test" component={Test} />
                             </Stack.Group>
