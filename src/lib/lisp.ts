@@ -2208,7 +2208,7 @@ export function get_system_constants() {
   return {
     max_private_resource_count: new Num(10),
     max_public_resource_count: new Num(10),
-    user_id: new Num(getState().params.user_id.truncated().toNumber()),
+    user: new Num(getState().params.user_id.truncated().toNumber()),
   };
 }
 

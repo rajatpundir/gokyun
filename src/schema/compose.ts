@@ -21,7 +21,7 @@ export function get_compose(
   compose_name: ComposeName,
   user_invoked: boolean = true
 ): Result<Compose> {
-  if (compose_name in schema && schema[compose_name].user_invocable) {
+  if (compose_name in schema) {
     if (user_invoked) {
       if (schema[compose_name].user_invocable) {
         return new Ok(schema[compose_name]);

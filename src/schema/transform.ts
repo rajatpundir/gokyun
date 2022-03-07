@@ -19,7 +19,7 @@ export function get_transform(
   transform_name: TransformName,
   user_invoked: boolean = true
 ): Result<Transform> {
-  if (transform_name in schema && schema[transform_name].user_invocable) {
+  if (transform_name in schema) {
     if (user_invoked) {
       if (schema[transform_name].user_invocable) {
         return new Ok(schema[transform_name]);
