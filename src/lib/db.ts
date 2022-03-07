@@ -834,14 +834,12 @@ async function get_max_level(): Promise<Result<Decimal>> {
 export async function create_level(): Promise<Result<Decimal>> {
   const max_level = await get_max_level();
   if (unwrap(max_level)) {
+    const level = max_level.value.add(1).abs().truncated();
     await execute_transaction(
       `INSERT INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
-      [
-        max_level.value.add(1).abs().truncated().toString(),
-        new Date().getTime().toString(),
-      ]
+      [level.toString(), new Date().getTime().toString()]
     );
-    return new Ok(max_level.value.add(1).abs().truncated());
+    return new Ok(level);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
