@@ -1281,6 +1281,11 @@ export class Fx {
                   );
                 }
                 case "insert_ignore": {
+                  computed_outputs[output_name] = {
+                    type: "other",
+                    other: variable.struct.name,
+                    value: variable.id,
+                  };
                   continue;
                 }
                 case "replace": {
@@ -1291,6 +1296,11 @@ export class Fx {
                       return it;
                     })
                   );
+                  computed_outputs[output_name] = {
+                    type: "other",
+                    other: variable.struct.name,
+                    value: variable.id,
+                  };
                   break;
                 }
                 default: {
