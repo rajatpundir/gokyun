@@ -36,7 +36,10 @@ function get_permissions(
     if (field_name in struct.fields) {
       const field = struct.fields[field_name];
       if (rest !== undefined) {
-        if (field.type === "other") {
+        if (
+          field.type === "other" &&
+          field_name in struct.permissions.ownership
+        ) {
           const other_struct = get_struct(field.other as StructName);
           const result = get_permissions(other_struct, rest);
           if (unwrap(result)) {
@@ -55,67 +58,65 @@ function get_permissions(
                 )
               )
             );
-            if (field_name in struct.permissions.ownership) {
-              const ownership = struct.permissions.ownership[field_name];
-              for (const owned_field_name of ownership.write) {
-                if (owned_field_name in struct.fields) {
-                  const owned_field = struct.fields[owned_field_name];
-                  path_permissions = path_permissions.add(
-                    apply(
-                      new PathPermission([
-                        [],
-                        [owned_field_name, get_strong_enum(owned_field)],
-                      ]),
-                      (it) => {
-                        it.writeable = true;
-                        it.label = owned_field_name;
-                        return it;
-                      }
-                    )
-                  );
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
-              }
-              for (const owned_field_name of ownership.read) {
-                if (owned_field_name in struct.fields) {
-                  const owned_field = struct.fields[owned_field_name];
-                  path_permissions = path_permissions.add(
-                    apply(
-                      new PathPermission([
-                        [],
-                        [owned_field_name, get_strong_enum(owned_field)],
-                      ]),
-                      (it) => {
-                        it.label = owned_field_name;
-                        return it;
-                      }
-                    )
-                  );
-                } else {
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
-              }
-              if (
-                !(field_name in ownership.write || field_name in ownership.read)
-              ) {
+            const ownership = struct.permissions.ownership[field_name];
+            for (const owned_field_name of ownership.write) {
+              if (owned_field_name in struct.fields) {
+                const owned_field = struct.fields[owned_field_name];
                 path_permissions = path_permissions.add(
                   apply(
                     new PathPermission([
                       [],
-                      [field_name, get_strong_enum(field)],
+                      [owned_field_name, get_strong_enum(owned_field)],
                     ]),
                     (it) => {
-                      it.label = field_name;
+                      it.writeable = true;
+                      it.label = owned_field_name;
                       return it;
                     }
                   )
                 );
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
               }
+            }
+            for (const owned_field_name of ownership.read) {
+              if (owned_field_name in struct.fields) {
+                const owned_field = struct.fields[owned_field_name];
+                path_permissions = path_permissions.add(
+                  apply(
+                    new PathPermission([
+                      [],
+                      [owned_field_name, get_strong_enum(owned_field)],
+                    ]),
+                    (it) => {
+                      it.label = owned_field_name;
+                      return it;
+                    }
+                  )
+                );
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            }
+            if (
+              !(field_name in ownership.write || field_name in ownership.read)
+            ) {
+              path_permissions = path_permissions.add(
+                apply(
+                  new PathPermission([
+                    [],
+                    [field_name, get_strong_enum(field)],
+                  ]),
+                  (it) => {
+                    it.label = field_name;
+                    return it;
+                  }
+                )
+              );
             }
             return new Ok(path_permissions);
           } else {
