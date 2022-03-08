@@ -7,10 +7,9 @@ import {
 } from "./commons";
 import {
   FilterPath,
-  get_struct_counter,
+  get_incremented_struct_counter,
   get_variable,
   get_variables,
-  increment_struct_counter,
   OrFilter,
 } from "./db";
 import { remove_variables_in_db, replace_variable } from "./db_variables";
@@ -1306,10 +1305,9 @@ export class Fx {
               switch (output.op) {
                 case "insert":
                 case "insert_ignore": {
-                  const result = await get_struct_counter(
-                    output.struct as StructName
+                  const result = await get_incremented_struct_counter(
+                    output.struct
                   );
-                  await increment_struct_counter(output.struct);
                   if (unwrap(result)) {
                     const variable = new Variable(
                       struct,

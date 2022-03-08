@@ -1098,9 +1098,7 @@ export async function get_param_other(
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-export async function get_struct_counter(
-  name: string
-): Promise<Result<Decimal>> {
+async function get_struct_counter(name: string): Promise<Result<Decimal>> {
   try {
     const result_set = await execute_transaction(
       `SELECT struct_name, count FROM counters WHERE struct_name = ?`,
@@ -1130,18 +1128,18 @@ export async function get_struct_counter(
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
-export async function increment_struct_counter(
+export async function get_incremented_struct_counter(
   name: string
-): Promise<Result<[]>> {
-  try {
+): Promise<Result<Decimal>> {
+  const counter = await get_struct_counter(name);
+  if (unwrap(counter)) {
     const result_set = await execute_transaction(
-      `UPDATE "COUNTERS" SET count = count + 1 WHERE struct_name = ?`,
-      [name]
+      `UPDATE "COUNTERS" SET count = ? WHERE struct_name = ?`,
+      [counter.value.truncated().abs().add(1).toString(), name]
     );
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+    return new Ok(counter.value.truncated().abs());
   }
-  return new Ok([] as []);
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
 export async function get_variables(
