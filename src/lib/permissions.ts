@@ -13,9 +13,16 @@ import { get_struct, StructName } from "../schema/struct";
 import { get_strong_enum, PathString, StrongEnum, Struct } from "./variable";
 
 // TODO. Borrow is an Existence on some field providing ownership
-// Borrow points to proving ownership over direct child of ownership field's or to another of its borrow.
 
-type Borrow = PathString | [string, string, Borrow];
+// user_paths and borrow concepts can be merged as below
+type UserPath =
+  | PathString
+  | {
+      // Following path starting in higher struct, we should arrive at a field of current which has ownership defined for it
+      borrow: [StructName, PathString];
+      // User path starting in higher_struct
+      user_path: UserPath;
+    };
 
 // Cache computed permissions for same input
 
