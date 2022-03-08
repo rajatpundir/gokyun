@@ -47,7 +47,7 @@ import {
 } from "./variable";
 import { ComposeArgs, ComposeInputs } from "./compose";
 
-// Note. Trigger fields will be passed to fx for creation of variables, on client side, but asbent on server side
+// Note. Trigger fields will be passed to fx for creation of variables, on client side, but absent on server side
 
 type FxInputs = Record<
   string,
