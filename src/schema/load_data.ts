@@ -13,9 +13,8 @@ export async function load_data() {
   await load_user();
   await load_test();
   const compose = get_compose("Create_Private_Resource");
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%111111111111111");
   if (unwrap(compose)) {
-    const result = await compose.value.exec(
+    let result = await compose.value.exec(
       {
         resource_type: {
           type: "other",
@@ -28,17 +27,26 @@ export async function load_data() {
         },
         tags: {
           type: "list",
-          value: [],
+          value: [
+            {
+              name: {
+                type: "str",
+                value: "some tag",
+              },
+            },
+            {
+              name: {
+                type: "str",
+                value: "some tag2",
+              },
+            },
+          ],
         },
       },
       new Decimal(0)
     );
     console.log(result);
-  }
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%22222222222");
-  const compose2 = get_compose("Create_Private_Resource");
-  if (unwrap(compose2)) {
-    const result = await compose2.value.exec(
+    result = await compose.value.exec(
       {
         resource_type: {
           type: "other",
@@ -51,12 +59,25 @@ export async function load_data() {
         },
         tags: {
           type: "list",
-          value: [],
+          value: [
+            {
+              name: {
+                type: "str",
+                value: "some tag3",
+              },
+            },
+            {
+              name: {
+                type: "str",
+                value: "some tag2",
+              },
+            },
+          ],
         },
       },
       new Decimal(0)
     );
     console.log(result);
   }
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%33333333333");
+  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 }

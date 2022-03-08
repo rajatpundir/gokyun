@@ -155,7 +155,7 @@ export class Fx {
   }
 
   async exec(args: FxArgs, level: Decimal): Promise<Result<FxResult>> {
-    console.log("[FX]", this.name);
+    console.log("\n[FX]", this.name, "\n", args, "\n");
     const result = await get_symbols_for_fx_compose_paths(
       level,
       arrow(() => {
@@ -1555,7 +1555,7 @@ export async function get_symbols_for_fx_compose_paths(
   value: [FxInputs, FxArgs] | [ComposeInputs, ComposeArgs]
 ): Promise<Result<Record<string, Symbol>>> {
   const [inputs, args] = value;
-  console.log(paths);
+  // console.log(paths);
   const symbols: Record<string, Symbol> = {};
   for (const input_name of Object.keys(inputs)) {
     const input = inputs[input_name];

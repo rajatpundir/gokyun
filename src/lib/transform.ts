@@ -77,7 +77,7 @@ export class Transform {
     args: TransformArgs,
     level: Decimal
   ): Promise<Result<TransformResult>> {
-    console.log("[TRANSFORM]", this.name);
+    console.log("\n[TRANSFORM]", this.name, "\n", args, "\n");
     const computed_outputs: Array<Record<string, StrongEnum> | ComposeResult> =
       [];
     switch (this.type) {
@@ -459,15 +459,15 @@ export class Transform {
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
-                  const computed_output = await fx.exec(fx_args, level);
-                  if (unwrap(computed_output)) {
-                    computed_outputs.push(computed_output.value);
-                  } else {
-                    console.log("TRANSFORM", 10);
-                    return new Err(
-                      new CustomError([errors.ErrUnexpected] as ErrMsg)
-                    );
-                  }
+                }
+                const computed_output = await fx.exec(fx_args, level);
+                if (unwrap(computed_output)) {
+                  computed_outputs.push(computed_output.value);
+                } else {
+                  console.log("TRANSFORM", 10);
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
                 }
               }
             } else {
@@ -477,8 +477,8 @@ export class Transform {
           } else {
             // use args.base
             for (const [index, arg] of args.base.entries()) {
+              const fx_args: FxArgs = {};
               for (const input_name of Object.keys(fx.inputs)) {
-                const fx_args: FxArgs = {};
                 const input = fx.inputs[input_name];
                 if (input_name in arg) {
                   if (!Array.isArray(arg[input_name])) {
@@ -569,15 +569,15 @@ export class Transform {
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
-                const computed_output = await fx.exec(fx_args, level);
-                if (unwrap(computed_output)) {
-                  computed_outputs.push(computed_output.value);
-                } else {
-                  console.log("TRANSFORM", 15);
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
-                }
+              }
+              const computed_output = await fx.exec(fx_args, level);
+              if (unwrap(computed_output)) {
+                computed_outputs.push(computed_output.value);
+              } else {
+                console.log("TRANSFORM", 15);
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
               }
             }
           }

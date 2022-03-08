@@ -426,8 +426,8 @@ function query(
     .toString()} OFFSET ${offset.abs().truncated().toString()}`;
 
   const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${having_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
-  console.log("FINAL STMT = ", final_stmt);
-  console.log("ARGS:", args);
+  // console.log("FINAL STMT = ", final_stmt);
+  // console.log("ARGS:", args);
   return execute_transaction(final_stmt, args);
 }
 
@@ -1137,7 +1137,7 @@ export async function get_incremented_struct_counter(
       `UPDATE "COUNTERS" SET count = ? WHERE struct_name = ?`,
       [counter.value.truncated().abs().add(1).toString(), name]
     );
-    return new Ok(counter.value.truncated().abs());
+    return new Ok(counter.value.truncated().abs().negated());
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
@@ -1162,7 +1162,7 @@ export async function get_variables(
       offset,
       existences
     );
-    console.log(result_set);
+    // console.log(result_set);
     for (const result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
