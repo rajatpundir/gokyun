@@ -9,7 +9,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { ScrollView, Row, Text, Pressable, Column } from "native-base";
-import UserViews from "./User";
+import User from "./User";
 import { HashSet } from "prelude-ts";
 import { cloneDeep } from "lodash";
 import {
@@ -39,7 +39,7 @@ import {
 import { get_fx } from "../schema";
 
 const views = {
-  User: UserViews,
+  User,
 };
 
 const common_default_component: ComponentViews[string]["create"] = (props) => {
