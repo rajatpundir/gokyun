@@ -885,9 +885,9 @@ export class Fx {
                   compare_paths(get_path_string(x), [[], field_name])
                 );
                 if (filter_paths.length === 1) {
+                  // TODO. Add equals op and activate filter paths part of unique constraints
                   const path = paths[0];
                   if (path.path[1][1].type !== "other") {
-                    // TODO. Add equals op and activate filter paths part of unique constraints
                     unique_constraint_filter_paths.push(
                       new FilterPath(
                         path.label,

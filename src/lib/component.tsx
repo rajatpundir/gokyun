@@ -586,7 +586,6 @@ export function AppHeader(props: { title?: string }): JSX.Element {
         onPress={() =>
           setState({
             params: {
-              // TODO. check this, might be out of sync
               ...getState().params,
               theme: arrow(() => {
                 switch (theme_name) {
