@@ -42,7 +42,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       </Text>
       {arrow(() => {
         const struct = get_struct("Private_Resource_Tag");
-        const user_paths: Array<PathString> = [[[], "private_resource"]];
+        const user_paths: Array<PathString> = [[["private_resource"], "owner"]];
         const borrows: Array<string> = [];
         return (
           <List
@@ -56,7 +56,10 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                 [false, undefined],
                 get_filter_paths(
                   struct,
-                  [["tag", [[], "tag"]]],
+                  [
+                    ["tag", [[], "tag"]],
+                    ["name", [["tag"], "name"]],
+                  ],
                   user_paths,
                   borrows
                 )

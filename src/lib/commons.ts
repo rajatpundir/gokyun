@@ -14,7 +14,11 @@ import {
   LispResult,
   Leaf,
 } from "./lisp";
-import { get_permissions, PathPermission } from "./permissions";
+import {
+  get_permissions,
+  log_permissions,
+  PathPermission,
+} from "./permissions";
 import {
   apply,
   CustomError,
@@ -418,6 +422,11 @@ export function get_writeable_paths(
   paths: HashSet<Path>
 ): HashSet<Path> {
   const permissions: HashSet<PathPermission> = get_permissions(
+    struct,
+    state.user_paths as PathString[],
+    state.borrows as string[]
+  );
+  log_permissions(
     struct,
     state.user_paths as PathString[],
     state.borrows as string[]

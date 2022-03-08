@@ -25,7 +25,7 @@ export default {
   permissions: {
     borrow: {},
     ownership: {},
-    public: ["name"],
+    public: ["name", "private_resource_tag_count", "public_resource_tag_count"],
   },
   triggers: {},
   checks: {

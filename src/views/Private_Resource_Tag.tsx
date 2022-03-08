@@ -24,6 +24,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
         {props.state.id.toString()}
         {": "}
         <Field {...props} path={[[], "tag"]} />
+        <Field {...props} path={[["tag"], "name"]} />
       </Text>
     </Column>
   );
