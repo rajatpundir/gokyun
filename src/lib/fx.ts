@@ -712,7 +712,6 @@ export class Fx {
                 const field = struct.fields[field_name];
                 const expr_result =
                   output.fields[field_name].get_result(symbols);
-                console.log(field_name, output.fields[field_name]);
                 if (unwrap(expr_result)) {
                   const expr_result_value = expr_result.value;
                   switch (field.type) {
@@ -879,63 +878,228 @@ export class Fx {
             }
             // 2. Try to fetch variable based on one set of unique constraint at a time
             for (const unique_constraint of unique_constraints) {
-              const unique_constraint_filter_paths: Array<FilterPath> = [];
+              let check = true;
               for (const field_name of unique_constraint) {
-                const filter_paths = paths.filter((x) =>
-                  compare_paths(get_path_string(x), [[], field_name])
-                );
-                if (filter_paths.length === 1) {
-                  // TODO. Add equals op and activate filter paths part of unique constraints
-                  const path = paths[0];
-                  if (path.path[1][1].type !== "other") {
-                    unique_constraint_filter_paths.push(
-                      new FilterPath(
-                        path.label,
-                        get_path_string(path),
-                        [path.path[1][1].type, undefined],
-                        undefined
-                      )
-                    );
-                  } else {
-                    const other_struct = get_struct(
-                      path.path[1][1].other as StructName
-                    );
-                    unique_constraint_filter_paths.push(
-                      new FilterPath(
-                        path.label,
-                        get_path_string(path),
-                        [path.path[1][1].type, undefined, other_struct],
-                        undefined
-                      )
-                    );
-                  }
-                } else {
-                  console.log("FX", 31);
-                  return new Err(
-                    new CustomError([errors.ErrUnexpected] as ErrMsg)
-                  );
+                if (!(field_name in output.fields)) {
+                  check = false;
+                  break;
                 }
               }
-              console.log(unique_constraint_filter_paths, "0-0-0");
-              const result = await get_variables(
-                struct,
-                level,
-                new OrFilter(
-                  0,
-                  [false, undefined],
-                  [false, undefined],
-                  [false, undefined],
-                  HashSet.ofIterable(unique_constraint_filter_paths)
-                ),
-                HashSet.of(),
-                new Decimal(1),
-                new Decimal(0),
-                []
-              );
-              if (unwrap(result)) {
-                if (result.value.length === 1) {
-                  variable = result.value[0];
-                  break;
+              if (!check) {
+                continue;
+              } else {
+                const unique_constraint_filter_paths: Array<FilterPath> = [];
+                for (const field_name of unique_constraint) {
+                  const filter_paths = paths.filter((x) =>
+                    compare_paths(get_path_string(x), [[], field_name])
+                  );
+                  if (filter_paths.length === 1) {
+                    const path = filter_paths[0];
+                    // TODO. Add equals op and activate filter paths part of unique constraints
+                    const expr_result =
+                      output.fields[field_name].get_result(symbols);
+                    if (unwrap(expr_result)) {
+                      const expr_result_value = expr_result.value;
+                      if (path.path[1][1].type !== "other") {
+                        switch (path.path[1][1].type) {
+                          case "str":
+                          case "lstr":
+                          case "clob": {
+                            if (expr_result_value instanceof Txt) {
+                              unique_constraint_filter_paths.push(
+                                new FilterPath(
+                                  path.label,
+                                  get_path_string(path),
+                                  [
+                                    path.path[1][1].type,
+                                    ["==", expr_result_value.value],
+                                  ],
+                                  undefined
+                                )
+                              );
+                            } else {
+                              console.log("FX", 30.1);
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                            break;
+                          }
+                          case "i32":
+                          case "u32":
+                          case "i64":
+                          case "u64": {
+                            if (expr_result_value instanceof Num) {
+                              unique_constraint_filter_paths.push(
+                                new FilterPath(
+                                  path.label,
+                                  get_path_string(path),
+                                  [
+                                    path.path[1][1].type,
+                                    [
+                                      "==",
+                                      new Decimal(expr_result_value.value),
+                                    ],
+                                  ],
+                                  undefined
+                                )
+                              );
+                            } else {
+                              console.log("FX", 30.2);
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                            break;
+                          }
+                          case "idouble":
+                          case "udouble":
+                          case "idecimal":
+                          case "udecimal": {
+                            if (expr_result_value instanceof Deci) {
+                              unique_constraint_filter_paths.push(
+                                new FilterPath(
+                                  path.label,
+                                  get_path_string(path),
+                                  [
+                                    path.path[1][1].type,
+                                    [
+                                      "==",
+                                      new Decimal(expr_result_value.value),
+                                    ],
+                                  ],
+                                  undefined
+                                )
+                              );
+                            } else {
+                              console.log("FX", 30.3);
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                            break;
+                          }
+                          case "bool": {
+                            if (expr_result_value instanceof Bool) {
+                              unique_constraint_filter_paths.push(
+                                new FilterPath(
+                                  path.label,
+                                  get_path_string(path),
+                                  [
+                                    path.path[1][1].type,
+                                    ["==", expr_result_value.value],
+                                  ],
+                                  undefined
+                                )
+                              );
+                            } else {
+                              console.log("FX", 30.4);
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                            break;
+                          }
+                          case "date":
+                          case "time":
+                          case "timestamp": {
+                            if (expr_result_value instanceof Num) {
+                              unique_constraint_filter_paths.push(
+                                new FilterPath(
+                                  path.label,
+                                  get_path_string(path),
+                                  [
+                                    path.path[1][1].type,
+                                    ["==", new Date(expr_result_value.value)],
+                                  ],
+                                  undefined
+                                )
+                              );
+                            } else {
+                              console.log("FX", 30.5);
+                              return new Err(
+                                new CustomError([
+                                  errors.ErrUnexpected,
+                                ] as ErrMsg)
+                              );
+                            }
+                            break;
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = path.path[1][1];
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      } else {
+                        if (expr_result_value instanceof Num) {
+                          const other_struct = get_struct(
+                            path.path[1][1].other as StructName
+                          );
+                          unique_constraint_filter_paths.push(
+                            new FilterPath(
+                              path.label,
+                              get_path_string(path),
+                              [
+                                path.path[1][1].type,
+                                ["==", new Decimal(expr_result_value.value)],
+                                other_struct,
+                              ],
+                              undefined
+                            )
+                          );
+                        } else {
+                          console.log("FX", 30.6);
+                          return new Err(
+                            new CustomError([errors.ErrUnexpected] as ErrMsg)
+                          );
+                        }
+                      }
+                    } else {
+                      console.log("FX", 30.7);
+                      return new Err(
+                        new CustomError([errors.ErrUnexpected] as ErrMsg)
+                      );
+                    }
+                  } else {
+                    console.log("FX", 31);
+                    return new Err(
+                      new CustomError([errors.ErrUnexpected] as ErrMsg)
+                    );
+                  }
+                }
+                const result = await get_variables(
+                  struct,
+                  level,
+                  new OrFilter(
+                    0,
+                    [false, undefined],
+                    [false, undefined],
+                    [false, undefined],
+                    HashSet.ofIterable(
+                      unique_constraint_filter_paths.map((filter_path) => {
+                        filter_path.active = true;
+                        return filter_path;
+                      })
+                    )
+                  ),
+                  HashSet.of(),
+                  new Decimal(1),
+                  new Decimal(0),
+                  []
+                );
+                if (unwrap(result)) {
+                  if (result.value.length === 1) {
+                    variable = result.value[0];
+                    break;
+                  }
                 }
               }
             }
@@ -1105,7 +1269,6 @@ export class Fx {
                 }
               }
             }
-            console.log(variable);
             // 4. Replace variable
             if (variable !== undefined) {
               // insert -> fails
