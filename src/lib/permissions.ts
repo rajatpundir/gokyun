@@ -19,7 +19,8 @@ type UserPath =
   | PathString
   | {
       // Following path starting in higher struct, we should arrive at a field of current which has ownership defined for it
-      borrow: [StructName, PathString];
+      higher_struct: StructName;
+      borrowed_field: PathString;
       // User path starting in higher_struct
       user_path: UserPath;
     };
