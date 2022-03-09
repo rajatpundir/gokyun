@@ -293,7 +293,34 @@ function get_private_permissions(
       }
     }
   }
-  return new Ok(path_permissions.addAll(get_public_permissions(struct)));
+  for (const path_permission of path_permissions.toArray()) {
+    const field_name = path_permission.path[1][0];
+    const value = path_permission.path[1][1];
+    if (value.type === "other") {
+      const other_struct = get_struct(value.other as StructName);
+      path_permissions = path_permissions.addAll(
+        get_public_permissions(other_struct).map((x) =>
+          apply(
+            new PathPermission([
+              [
+                ...path_permission.path[0],
+                [field_name, other_struct],
+                ...x.path[0],
+              ],
+              x.path[1],
+            ]),
+            (it) => {
+              it.writeable = x.writeable;
+              it.label = x.label;
+              return it;
+            }
+          )
+        )
+      );
+    }
+  }
+  path_permissions = path_permissions.addAll(get_public_permissions(struct));
+  return new Ok(path_permissions);
 }
 
 function get_public_permissions(struct: Struct): HashSet<PathPermission> {
