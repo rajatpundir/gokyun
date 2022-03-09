@@ -522,3 +522,11 @@ export function strong_enum_to_string(field: StrongEnum) {
 export function get_path_string(path: Path): PathString {
   return [path.path[0].map((x) => x[0]), path.path[1][0]];
 }
+
+export function split_path(path: PathString): [string, PathString | undefined] {
+  if (path[0].length === 0) {
+    return [path[1], undefined];
+  } else {
+    return [path[0][0], [path[0].slice(1), path[1]]];
+  }
+}

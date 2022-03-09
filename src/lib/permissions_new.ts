@@ -4,11 +4,10 @@ import { get_path_with_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { PathPermission } from "./permissions";
 import { Err, CustomError, apply, Result, Ok, unwrap } from "./prelude";
-import { get_strong_enum, PathString, Struct } from "./variable";
+import { get_strong_enum, PathString, split_path, Struct } from "./variable";
 
 // TODO. Borrow is an Existence on some field providing ownership
 
-// user_paths and borrow concepts can be merged as below
 type UserPath =
   | PathString
   | {
@@ -21,12 +20,36 @@ type UserPath =
       user_path: UserPath;
     };
 
-function split_path(path: PathString): [string, PathString | undefined] {
-  if (path[0].length === 0) {
-    return [path[1], undefined];
-  } else {
-    return [path[0][0], [path[0].slice(1), path[1]]];
+export function get_permissions(
+  struct: Struct,
+  user_paths: ReadonlyArray<UserPath>
+): HashSet<PathPermission> {
+  let path_permissions: HashSet<PathPermission> = HashSet.of();
+  for (const user_path of user_paths) {
+    const result = get_private_permissions(struct, user_path);
+    if (unwrap(result)) {
+      path_permissions = path_permissions.addAll(result.value);
+    } else {
+      console.log("[ERROR] Permissions:", user_path);
+    }
   }
+  path_permissions = path_permissions.addAll(get_public_permissions(struct));
+  if (true) {
+    console.log("\n=======================");
+    console.log("STRUCT: ", struct.name);
+    console.log("\n=======================");
+    console.log("READ PERMISSIONS");
+    for (const permission of path_permissions.filter((x) => !x.writeable)) {
+      console.log(permission.toString());
+    }
+    console.log("\n=======================");
+    console.log("WRITE PERMISSIONS");
+    for (const permission of path_permissions.filter((x) => x.writeable)) {
+      console.log(permission.toString());
+    }
+    console.log("\n=======================");
+  }
+  return path_permissions;
 }
 
 function get_private_permissions(
@@ -319,7 +342,6 @@ function get_private_permissions(
       );
     }
   }
-  path_permissions = path_permissions.addAll(get_public_permissions(struct));
   return new Ok(path_permissions);
 }
 
