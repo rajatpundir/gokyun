@@ -16,7 +16,7 @@ type UserPath =
       higher_struct: StructName;
       struct_path: PathString;
       borrow_field: string;
-      writeable: boolean;
+      readonly?: boolean;
       // User path starting in higher_struct
       user_path: UserPath;
     };
@@ -29,7 +29,7 @@ function split_path(path: PathString): [string, PathString | undefined] {
   }
 }
 
-function get_permissions(
+function get_private_permissions(
   struct: Struct,
   user_path: UserPath
 ): Result<HashSet<PathPermission>> {
@@ -44,7 +44,7 @@ function get_permissions(
           field_name in struct.permissions.ownership
         ) {
           const other_struct = get_struct(field.other as StructName);
-          const result = get_permissions(other_struct, rest);
+          const result = get_private_permissions(other_struct, rest);
           if (unwrap(result)) {
             path_permissions = path_permissions.addAll(
               result.value.map((x) =>
@@ -121,7 +121,6 @@ function get_permissions(
                 )
               );
             }
-            return new Ok(path_permissions);
           } else {
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
@@ -187,7 +186,6 @@ function get_permissions(
               )
             );
           }
-          return new Ok(path_permissions);
         } else {
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
@@ -209,7 +207,11 @@ function get_permissions(
           if (user_path.borrow_field in struct.permissions.ownership) {
             const ownership =
               struct.permissions.ownership[user_path.borrow_field];
-            if (unwrap(get_permissions(higher_struct, user_path.user_path))) {
+            if (
+              unwrap(
+                get_private_permissions(higher_struct, user_path.user_path)
+              )
+            ) {
               for (const owned_field_name of ownership.write) {
                 if (owned_field_name in struct.fields) {
                   const owned_field = struct.fields[owned_field_name];
@@ -220,7 +222,10 @@ function get_permissions(
                         [owned_field_name, get_strong_enum(owned_field)],
                       ]),
                       (it) => {
-                        if (user_path.writeable) {
+                        if (
+                          user_path.readonly !== undefined &&
+                          user_path.readonly === false
+                        ) {
                           it.writeable = true;
                         }
                         it.label = owned_field_name;
@@ -288,5 +293,42 @@ function get_permissions(
       }
     }
   }
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+  return new Ok(path_permissions.addAll(get_public_permissions(struct)));
+}
+
+function get_public_permissions(struct: Struct): HashSet<PathPermission> {
+  let path_permissions: HashSet<PathPermission> = HashSet.of();
+  for (const field_name of Object.keys(struct.fields)) {
+    const field = struct.fields[field_name];
+    if (field_name in struct.permissions.public) {
+      if (field.type !== "other") {
+        path_permissions = path_permissions.add(
+          apply(
+            new PathPermission([[], [field_name, get_strong_enum(field)]]),
+            (it) => {
+              it.label = field_name;
+              return it;
+            }
+          )
+        );
+      } else {
+        const other_struct = get_struct(field.other as StructName);
+        path_permissions = path_permissions.addAll(
+          get_public_permissions(other_struct).map((x) =>
+            apply(
+              new PathPermission([
+                [[field_name, other_struct], ...x.path[0]],
+                x.path[1],
+              ]),
+              (it) => {
+                it.label = x.label;
+                return it;
+              }
+            )
+          )
+        );
+      }
+    }
+  }
+  return path_permissions;
 }
