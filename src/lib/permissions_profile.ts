@@ -28,13 +28,9 @@ type Struct = {
           permission_name: string;
         }>;
         up: ReadonlyArray<{
+          struct_path_from_higher_struct: PathString;
           higher_struct: StructName;
-          // source and target will have same types and values
-          // Path arising from higher_struct
-          source: PathString;
-          // Path arising from current struct
-          target: PathString;
-          permission_name: string;
+          higher_struct_permission_name: string;
         }>;
       }
     >;
@@ -52,18 +48,20 @@ function get_struct(x: StructName): Struct {
   return {} as any;
 }
 
-function X(
+function get_perms(
   struct: Struct,
   permission_name: string,
   target_struct_name: StructName,
   parent_stack: ReadonlyArray<[StructName, string]>
 ): Result<HashSet<PathPermission>> {
-  const stack = Array.from(parent_stack);
   if (
-    stack.filter((x) => x[0] === struct.name && x[1] === permission_name)
+    parent_stack.filter((x) => x[0] === struct.name && x[1] === permission_name)
       .length === 0
   ) {
-    stack.push([struct.name as StructName, permission_name]);
+    const stack: ReadonlyArray<[StructName, string]> = [
+      ...parent_stack,
+      [struct.name as StructName, permission_name],
+    ];
     let path_permissions: HashSet<PathPermission> = HashSet.of();
     if (struct.name === target_struct_name) {
       if (permission_name in struct.permissions.private) {
@@ -73,18 +71,47 @@ function X(
         }
         // traverse all downs recursively
         for (const down of permission.down) {
-          const result = get_path_type(struct as any, down.struct_path);
+          const result = get_path_permission(struct, down.struct_path);
           if (unwrap(result)) {
-            const field_struct_name = result.value;
-            if (field_struct_name[0] === "other") {
-              const result = X(
-                field_struct_name[1] as any,
+            const prefix_path_permission = result.value;
+            if (prefix_path_permission.path[1][1].type === "other") {
+              const other_struct = get_struct(
+                prefix_path_permission.path[1][1].other as StructName
+              );
+              const result = get_perms(
+                other_struct,
                 down.permission_name,
-                target_struct_name,
-                []
+                other_struct.name as StructName,
+                stack
               );
               if (unwrap(result)) {
-                result.value;
+                for (const path_permission of result.value.map(
+                  (x) =>
+                    new PathPermission([
+                      [
+                        ...prefix_path_permission.path[0],
+                        [
+                          prefix_path_permission.path[1][0],
+                          other_struct as any,
+                        ],
+                        ...x.path[0],
+                      ],
+                      x.path[1],
+                    ])
+                )) {
+                  const result = path_permissions.findAny((x) =>
+                    x.equals(path_permission)
+                  );
+                  if (result.isSome()) {
+                    if (!result.get().writeable) {
+                      path_permissions = path_permissions
+                        .remove(result.get())
+                        .add(path_permission);
+                    }
+                  } else {
+                    path_permissions = path_permissions.add(path_permission);
+                  }
+                }
               } else {
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
@@ -99,6 +126,46 @@ function X(
         }
         // traverse all ups recursively
         for (const up of permission.up) {
+          const higher_struct = get_struct(up.higher_struct);
+          const result = get_path_type(
+            higher_struct as any,
+            up.struct_path_from_higher_struct
+          );
+          if (unwrap(result)) {
+            const field_struct_name = result.value;
+            if (field_struct_name[0] === "other") {
+              const result = get_perms(
+                higher_struct,
+                up.higher_struct_permission_name,
+                target_struct_name,
+                stack
+              );
+              if (unwrap(result)) {
+                for (const path_permission of result.value) {
+                  const result = path_permissions.findAny((x) =>
+                    x.equals(path_permission)
+                  );
+                  if (result.isSome()) {
+                    if (!result.get().writeable) {
+                      path_permissions = path_permissions
+                        .remove(result.get())
+                        .add(path_permission);
+                    }
+                  } else {
+                    path_permissions = path_permissions.add(path_permission);
+                  }
+                }
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
         }
       } else {
         return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
