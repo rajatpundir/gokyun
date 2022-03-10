@@ -1,5 +1,5 @@
 import { HashSet } from "prelude-ts";
-import { StructName } from "../schema";
+import { get_struct, StructName } from "../schema";
 import { get_path_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { PathPermission } from "./permissions";
@@ -9,34 +9,8 @@ import {
   get_strong_enum,
   PathString,
   split_path,
-  WeakEnum,
+  Struct,
 } from "./variable";
-
-type Struct = {
-  name: string;
-  fields: Record<string, WeakEnum>;
-  permissions: {
-    private: Record<
-      string,
-      {
-        // entrypoint points to a field with User type
-        entrypoint?: PathString;
-        read: ReadonlyArray<string>;
-        write: ReadonlyArray<string>;
-        down: ReadonlyArray<{
-          struct_path: PathString;
-          permission_name: string;
-        }>;
-        up: ReadonlyArray<{
-          struct_path_from_higher_struct: PathString;
-          higher_struct: StructName;
-          higher_struct_permission_name: string;
-        }>;
-      }
-    >;
-    public: ReadonlyArray<string>;
-  };
-};
 
 export type Entrypoint =
   | PathString
@@ -44,10 +18,6 @@ export type Entrypoint =
       higher_struct: StructName;
       entrypoint: PathString;
     };
-
-function get_struct(x: StructName): Struct {
-  return {} as any;
-}
 
 function get_path_permission(
   struct: Struct,
@@ -87,7 +57,7 @@ function get_public_permissions(struct: Struct): HashSet<PathPermission> {
           get_public_permissions(other_struct).map(
             (x) =>
               new PathPermission([
-                [[field_name, other_struct as any], ...x.path[0]],
+                [[field_name, other_struct], ...x.path[0]],
                 x.path[1],
               ])
           )
@@ -148,7 +118,7 @@ function get_private_permissions(
                 get_public_permissions(other_struct).map(
                   (x) =>
                     new PathPermission([
-                      [[field_name, other_struct as any], ...x.path[0]],
+                      [[field_name, other_struct], ...x.path[0]],
                       x.path[1],
                     ])
                 )
@@ -213,9 +183,9 @@ function get_private_permissions(
         }
         // traverse all ups recursively
         for (const up of permission.up) {
-          const higher_struct = get_struct(up.higher_struct);
+          const higher_struct = get_struct(up.higher_struct as StructName);
           const result = get_path_type(
-            higher_struct as any,
+            higher_struct,
             up.struct_path_from_higher_struct
           );
           if (unwrap(result)) {

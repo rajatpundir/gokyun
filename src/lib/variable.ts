@@ -8,25 +8,22 @@ import { Immutable } from "immer";
 export type PathString = [ReadonlyArray<string>, string];
 
 export type StructPermissions = {
-  ownership: Record<
+  private: Record<
     string,
     {
+      // entrypoint points to a field with User type
+      entrypoint?: PathString;
       read: ReadonlyArray<string>;
       write: ReadonlyArray<string>;
-    }
-  >;
-  borrow: Record<
-    string,
-    {
-      // Here, prove is struct, and field in borrowed struct over which ownership must be proven
-      prove: [string, string];
-      // For proved borrowing, further enforce some equality constraints
-      // For example.
-      // You may be trying to access some alliance's info with memberhip of some other alliance
-      // To prevent above misuse, we must ensure that membership is of same alliance
-      constraints: ReadonlyArray<[PathString, PathString]>;
-      // The below PathString should point to a 'User'
-      user_path: PathString;
+      down: ReadonlyArray<{
+        struct_path: PathString;
+        permission_name: string;
+      }>;
+      up: ReadonlyArray<{
+        struct_path_from_higher_struct: PathString;
+        higher_struct: string;
+        higher_struct_permission_name: string;
+      }>;
     }
   >;
   public: ReadonlyArray<string>;
