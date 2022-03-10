@@ -1,6 +1,6 @@
 import { HashSet } from "prelude-ts";
 import { get_struct, StructName } from "../schema";
-import { get_path_with_type } from "./commons";
+import { get_path_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { PathPermission } from "./permissions";
 import { Err, CustomError, apply, Result, Ok, unwrap } from "./prelude";
@@ -218,9 +218,9 @@ function get_private_permissions(
     }
   } else {
     const higher_struct = get_struct(user_path.higher_struct);
-    const result = get_path_with_type(higher_struct, user_path.struct_path);
+    const result = get_path_type(higher_struct, user_path.struct_path);
     if (unwrap(result)) {
-      const field_struct_name = result.value[1];
+      const field_struct_name = result.value;
       if (
         field_struct_name[0] === "other" &&
         field_struct_name[1].name === struct.name

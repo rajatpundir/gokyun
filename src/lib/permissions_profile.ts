@@ -51,6 +51,41 @@ function get_struct(x: StructName): Struct {
   return {} as any;
 }
 
+function X(
+  struct: Struct,
+  permission_name: string,
+  target_struct_name: StructName,
+  parent_stack: ReadonlyArray<[StructName, string]>
+): Result<HashSet<PathPermission>> {
+  const stack = Array.from(parent_stack);
+  if (
+    stack.filter((x) => x[0] === struct.name && x[1] === permission_name)
+      .length === 0
+  ) {
+    stack.push([struct.name as StructName, permission_name]);
+    let path_permissions: HashSet<PathPermission> = HashSet.of();
+    if (struct.name === target_struct_name) {
+      if (permission_name in struct.permissions.private) {
+        const permission = struct.permissions.private[permission_name];
+        // Add read, write, public permissions
+        for (const field_name of Object.keys(struct.fields)) {
+        }
+        // traverse all downs recursively
+        for (const down of permission.down) {
+        }
+        // traverse all ups recursively
+        for (const up of permission.up) {
+        }
+      } else {
+        return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+      }
+    }
+    return new Ok(path_permissions);
+  } else {
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+  }
+}
+
 export function get_permissions(entrypoints: ReadonlyArray<Entrypoint>) {
   let path_permissions: HashSet<PathPermission> = HashSet.of();
   for (const { source_struct, entrypoint, target_struct } of entrypoints.map(

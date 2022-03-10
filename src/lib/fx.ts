@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import {
-  get_path_with_type,
+  get_path_type,
   get_symbols_for_paths,
   inject_system_constants,
 } from "./commons";
@@ -42,6 +42,7 @@ import {
   Path,
   PathString,
   StrongEnum,
+  Struct,
   Variable,
   WeakEnum,
 } from "./variable";
@@ -255,9 +256,9 @@ export class Fx {
             for (const update of input.updates) {
               const path_string = update.path;
               const expr = update.expr;
-              const result = get_path_with_type(struct, path_string);
+              const result = get_path_type(struct, path_string);
               if (unwrap(result)) {
-                const field_struct_name = result.value[1];
+                const field_struct_name = result.value;
                 // fetch single path, ignore path update if it does not exist
                 const path: Option<Path> = await arrow(async () => {
                   const filter_paths: HashSet<FilterPath> = HashSet.of(
@@ -1359,9 +1360,9 @@ export class Fx {
             const filter_paths: Array<FilterPath> = [];
             // 1. process paths
             for (const field of output.fields) {
-              const result = get_path_with_type(struct, field.path);
+              const result = get_path_type(struct, field.path);
               if (unwrap(result)) {
-                const field_struct_name = result.value[1];
+                const field_struct_name = result.value;
                 const value = field.expr.get_result(symbols);
                 if (unwrap(value)) {
                   const expr_result = value.value;
@@ -1712,9 +1713,22 @@ export async function get_symbols_for_fx_compose_paths(
                   path[0].length !== 0 ? path[0][0] : path[1];
                 return first === input_name && path[0].length !== 0;
               })
-              .map((path) =>
-                get_path_with_type(struct, [path[0].slice(1), path[1]])
-              )
+              .map((path) => {
+                const result = get_path_type(struct, [
+                  path[0].slice(1),
+                  path[1],
+                ]);
+                if (unwrap(result)) {
+                  return new Ok([[path[0].slice(1), path[1]], result.value] as [
+                    PathString,
+                    [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
+                  ]);
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
+                }
+              })
           );
           if (unwrap(result)) {
             const filter_paths: HashSet<FilterPath> = HashSet.ofIterable(

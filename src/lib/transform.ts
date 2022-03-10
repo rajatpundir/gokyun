@@ -3,7 +3,7 @@ import { HashSet } from "prelude-ts";
 import { ComposeName, get_compose } from "../schema/compose";
 import { FxName, get_fx } from "../schema/fx";
 import { get_struct, StructName } from "../schema/struct";
-import { get_path_with_type } from "./commons";
+import { get_path_type } from "./commons";
 import { ComposeArgs, ComposeResult } from "./compose";
 import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
@@ -293,9 +293,9 @@ export class Transform {
                 }
               }
               if (check) {
-                const result = get_path_with_type(struct, path);
+                const result = get_path_type(struct, path);
                 if (unwrap(result)) {
-                  const field_struct_name = result.value[1];
+                  const field_struct_name = result.value;
                   if (field_struct_name[0] !== "other") {
                     filter_paths.push(
                       new FilterPath(
@@ -799,9 +799,9 @@ export class Transform {
                 }
               }
               if (check) {
-                const result = get_path_with_type(struct, path);
+                const result = get_path_type(struct, path);
                 if (unwrap(result)) {
-                  const field_struct_name = result.value[1];
+                  const field_struct_name = result.value;
                   if (field_struct_name[0] !== "other") {
                     filter_paths.push(
                       new FilterPath(

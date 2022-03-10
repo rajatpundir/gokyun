@@ -3,7 +3,7 @@ import { ComposeName, get_compose } from "../schema/compose";
 import { FxName, get_fx } from "../schema/fx";
 import { get_struct, StructName } from "../schema/struct";
 import { get_transform, TransformName } from "../schema/transform";
-import { get_path_with_type } from "./commons";
+import { get_path_type } from "./commons";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
 import { Bool, BooleanLispExpression, Symbol } from "./lisp";
@@ -2065,12 +2065,12 @@ export class Compose {
           if (transform.query !== undefined && step.map.query !== undefined) {
             for (const input_name of Object.keys(transform.query.map)) {
               const struct = get_struct(transform.query.struct as StructName);
-              const result = get_path_with_type(
+              const result = get_path_type(
                 struct,
                 transform.query.map[input_name]
               );
               if (unwrap(result)) {
-                const field_struct_name = result.value[1];
+                const field_struct_name = result.value;
                 if (input_name in step.map.query) {
                   const step_map = step.map.query[input_name];
                   switch (step_map.type) {

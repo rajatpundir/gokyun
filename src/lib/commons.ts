@@ -1088,12 +1088,10 @@ export function get_decimal_keyboard_type(
   return "numbers-and-punctuation";
 }
 
-export function get_path_with_type(
+export function get_path_type(
   struct: Struct,
   path: PathString
-): Result<
-  [PathString, [Exclude<WeakEnum["type"], "other">] | ["other", Struct]]
-> {
+): Result<[Exclude<WeakEnum["type"], "other">] | ["other", Struct]> {
   const [check, field_name] = [
     path[0].length !== 0,
     path[0].length !== 0 ? path[0][0] : path[1],
@@ -1102,19 +1100,17 @@ export function get_path_with_type(
     const field = struct.fields[field_name];
     if (check && field.type === "other") {
       const other_struct = get_struct(field.other as StructName);
-      return get_path_with_type(other_struct, [path[0].slice(1), path[1]]);
+      return get_path_type(other_struct, [path[0].slice(1), path[1]]);
     } else {
       if (field.type === "other") {
         const other_struct = get_struct(field.other as StructName);
-        return new Ok([path, [field.type, other_struct]] as [
-          PathString,
-          [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
-        ]);
+        return new Ok([field.type, other_struct] as
+          | [Exclude<WeakEnum["type"], "other">]
+          | ["other", Struct]);
       } else {
-        return new Ok([path, [field.type]] as [
-          PathString,
-          [Exclude<WeakEnum["type"], "other">] | ["other", Struct]
-        ]);
+        return new Ok([field.type] as
+          | [Exclude<WeakEnum["type"], "other">]
+          | ["other", Struct]);
       }
     }
   }
