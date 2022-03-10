@@ -1,5 +1,6 @@
 import { HashSet } from "prelude-ts";
 import { StructName } from "../schema";
+import { get_path_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { PathPermission } from "./permissions";
 import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
@@ -72,6 +73,29 @@ function X(
         }
         // traverse all downs recursively
         for (const down of permission.down) {
+          const result = get_path_type(struct as any, down.struct_path);
+          if (unwrap(result)) {
+            const field_struct_name = result.value;
+            if (field_struct_name[0] === "other") {
+              const result = X(
+                field_struct_name[1] as any,
+                down.permission_name,
+                target_struct_name,
+                []
+              );
+              if (unwrap(result)) {
+                result.value;
+              } else {
+                return new Err(
+                  new CustomError([errors.ErrUnexpected] as ErrMsg)
+                );
+              }
+            } else {
+              return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+            }
+          } else {
+            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+          }
         }
         // traverse all ups recursively
         for (const up of permission.up) {
