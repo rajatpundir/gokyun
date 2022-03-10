@@ -3,8 +3,14 @@ import { StructName } from "../schema";
 import { get_path_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { PathPermission } from "./permissions";
-import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
-import { get_strong_enum, PathString, split_path, WeakEnum } from "./variable";
+import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import {
+  compare_paths,
+  get_strong_enum,
+  PathString,
+  split_path,
+  WeakEnum,
+} from "./variable";
 
 type Struct = {
   name: string;
@@ -94,7 +100,7 @@ function get_public_permissions(struct: Struct): HashSet<PathPermission> {
 function get_perms(
   struct: Struct,
   permission_name: string,
-  target_struct_name: StructName,
+  target_struct: Struct,
   parent_stack: ReadonlyArray<[StructName, string]>
 ): Result<HashSet<PathPermission>> {
   if (
@@ -106,7 +112,7 @@ function get_perms(
       [struct.name as StructName, permission_name],
     ];
     let path_permissions: HashSet<PathPermission> = HashSet.of();
-    if (struct.name === target_struct_name) {
+    if (struct.name === target_struct.name) {
       if (permission_name in struct.permissions.private) {
         const permission = struct.permissions.private[permission_name];
         // Add read, write, public permissions
@@ -161,7 +167,7 @@ function get_perms(
               const result = get_perms(
                 other_struct,
                 down.permission_name,
-                other_struct.name as StructName,
+                other_struct,
                 stack
               );
               if (unwrap(result)) {
@@ -217,7 +223,7 @@ function get_perms(
               const result = get_perms(
                 higher_struct,
                 up.higher_struct_permission_name,
-                target_struct_name,
+                target_struct,
                 stack
               );
               if (unwrap(result)) {
@@ -257,16 +263,49 @@ function get_perms(
   }
 }
 
-export function get_permissions(entrypoints: ReadonlyArray<Entrypoint>) {
-  let path_permissions: HashSet<PathPermission> = HashSet.of();
-  for (const { source_struct, entrypoint, target_struct } of entrypoints.map(
-    (x) => {
-      return {
-        source_struct: get_struct(x.source_struct),
-        entrypoint: x.entrypoint,
-        target_struct: get_struct(x.target_struct),
-      };
+type X =
+  | PathString
+  | {
+      higher_struct: StructName;
+      entrypoint: PathString;
+    };
+
+export function get_permissions(
+  target_struct: Struct,
+  entrypoints: ReadonlyArray<X>
+): HashSet<PathPermission> {
+  if (entrypoints.length === 0) {
+    return get_public_permissions(target_struct);
+  } else {
+    let path_permissions: HashSet<PathPermission> = HashSet.of();
+    for (const entrypoint of entrypoints) {
+      const [source_struct, source_entrypoint] = arrow(() => {
+        if (Array.isArray(entrypoint)) {
+          return [target_struct, entrypoint];
+        } else {
+          return [get_struct(entrypoint.higher_struct), entrypoint.entrypoint];
+        }
+      });
+      for (const permission_name of Object.keys(
+        target_struct.permissions.private
+      )) {
+        const permission = target_struct.permissions.private[permission_name];
+        if (
+          permission.entrypoint !== undefined &&
+          compare_paths(permission.entrypoint, source_entrypoint)
+        ) {
+          const result = get_perms(
+            source_struct,
+            permission_name,
+            target_struct,
+            []
+          );
+          if (unwrap(result)) {
+          } else {
+          }
+        }
+      }
     }
-  )) {
+    return path_permissions;
   }
 }
