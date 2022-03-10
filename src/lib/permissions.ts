@@ -333,3 +333,23 @@ export function get_permissions(
   }
   return path_permissions;
 }
+
+export function log_permissions(
+  target_struct: Struct,
+  entrypoints: ReadonlyArray<Entrypoint>
+) {
+  const path_permissions = get_permissions(target_struct, entrypoints);
+  console.log("\n=======================");
+  console.log("STRUCT: ", target_struct.name);
+  console.log("\n=======================");
+  console.log("READ PERMISSIONS");
+  for (const permission of path_permissions.filter((x) => !x.writeable)) {
+    console.log(permission.toString());
+  }
+  console.log("\n=======================");
+  console.log("WRITE PERMISSIONS");
+  for (const permission of path_permissions.filter((x) => x.writeable)) {
+    console.log(permission.toString());
+  }
+  console.log("\n=======================");
+}

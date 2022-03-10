@@ -15,6 +15,7 @@ import {
   Leaf,
 } from "./lisp";
 import {
+  Entrypoint,
   get_permissions,
   log_permissions,
   PathPermission,
@@ -63,8 +64,7 @@ export type State = Immutable<{
   >;
   labels: Array<[string, PathString]>;
   higher_structs: Array<[Struct, PathString]>;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
+  entrypoints: ReadonlyArray<Entrypoint>;
   checks: Record<string, Result<boolean>>;
   found: boolean | undefined;
 }>;
@@ -383,11 +383,7 @@ export function get_creation_paths(
   state: State
 ): HashSet<Path> {
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
-    get_permissions(
-      struct,
-      state.user_paths as PathString[],
-      state.borrows as string[]
-    ),
+    get_permissions(struct, state.entrypoints as ReadonlyArray<Entrypoint>),
     state.labels
   );
   let paths: HashSet<Path> = HashSet.of();
@@ -423,14 +419,9 @@ export function get_writeable_paths(
 ): HashSet<Path> {
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,
-    state.user_paths as PathString[],
-    state.borrows as string[]
+    state.entrypoints as ReadonlyArray<Entrypoint>
   );
-  log_permissions(
-    struct,
-    state.user_paths as PathString[],
-    state.borrows as string[]
-  );
+  log_permissions(struct, state.entrypoints as ReadonlyArray<Entrypoint>);
   let writeable_paths: HashSet<Path> = HashSet.of();
   for (const path of paths) {
     for (const permission of permissions) {
@@ -456,13 +447,11 @@ export function get_writeable_paths(
 export function get_filter_paths(
   struct: Struct,
   labels: Array<[string, PathString]>,
-  user_paths: Array<PathString>,
-  borrows: Array<string>
+  entrypoints: ReadonlyArray<Entrypoint>
 ): HashSet<FilterPath> {
   const permissions: HashSet<PathPermission> = get_permissions(
     struct,
-    user_paths as PathString[],
-    borrows as string[]
+    entrypoints
   );
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
     permissions,

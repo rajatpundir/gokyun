@@ -10,7 +10,7 @@ import { Text, Input, TextArea, Pressable, Row } from "native-base";
 import Checkbox from "expo-checkbox";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { PathPermission, get_permissions } from "./permissions";
+import { PathPermission, get_permissions, Entrypoint } from "./permissions";
 import { apply, arrow } from "./prelude";
 import { OrFilter, FilterPath, AndFilter } from "./db";
 import {
@@ -1768,11 +1768,7 @@ function get_other_filter_paths(
   labels: Immutable<Array<[string, PathString]>>
 ): HashSet<FilterPath> {
   const labeled_permissions: HashSet<PathPermission> = get_labeled_permissions(
-    get_permissions(
-      struct,
-      state.user_paths as PathString[],
-      state.borrows as string[]
-    ),
+    get_permissions(struct, state.entrypoints as ReadonlyArray<Entrypoint>),
     get_upscaled_labels(state, path, labels)
   );
   const path_prefix: ReadonlyArray<string> = [

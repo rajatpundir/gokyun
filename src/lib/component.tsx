@@ -29,6 +29,7 @@ import { BrokerKey, getState, setState, subscribe } from "./store";
 import { useBSTheme, useTheme } from "./theme";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
+import { Entrypoint } from "./permissions";
 
 export type ComponentViews = Record<
   string,
@@ -65,8 +66,7 @@ export function useComponent(props: {
   extensions: State["extensions"];
   labels: State["labels"];
   higher_structs: State["higher_structs"];
-  user_paths: State["user_paths"];
-  borrows: State["borrows"];
+  entrypoints: State["entrypoints"];
   create: ComponentViews[string]["create"];
   update: ComponentViews[string]["update"];
   show: ComponentViews[string]["show"];
@@ -88,8 +88,7 @@ export function useComponent(props: {
     extensions: props.extensions,
     higher_structs: props.higher_structs,
     labels: props.labels,
-    user_paths: props.user_paths,
-    borrows: props.borrows,
+    entrypoints: props.entrypoints,
     found: props.found,
   });
 
@@ -116,8 +115,7 @@ export function useComponent(props: {
             get_filter_paths(
               props.struct,
               state.labels as Array<[string, PathString]>,
-              state.user_paths as Array<PathString>,
-              state.borrows as Array<string>
+              state.entrypoints as ReadonlyArray<Entrypoint>
             ),
             []
           );
@@ -268,8 +266,7 @@ export function useComponent(props: {
 
 export function OtherComponent(props: {
   struct: Struct;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
+  entrypoints: ReadonlyArray<Entrypoint>;
   variable: Variable;
   selected: boolean;
   update_parent_values: () => void;
@@ -287,8 +284,7 @@ export function OtherComponent(props: {
     labels: props.variable.paths
       .toArray()
       .map((v) => [v.label, [v.path[0].map((x) => x[0]), v.path[1][0]]]),
-    user_paths: props.user_paths,
-    borrows: props.borrows,
+    entrypoints: props.entrypoints,
     create: props.view.create,
     update: props.view.update,
     show: props.view.show,
