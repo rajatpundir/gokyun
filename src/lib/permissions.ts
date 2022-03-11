@@ -1,5 +1,5 @@
 import { HashSet } from "prelude-ts";
-import { get_struct, StructName, structs } from "../schema";
+import { get_struct, StructName, structs } from "../schema/struct";
 import { get_path_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
@@ -11,8 +11,6 @@ import {
   StrongEnum,
   Struct,
 } from "./variable";
-
-// TODO. Paths that are in output of any trigger updates should not be writeable.
 
 export class PathPermission {
   path: [Array<[string, Struct]>, [string, StrongEnum]];
