@@ -1,5 +1,5 @@
 import { HashSet } from "prelude-ts";
-import { get_struct, StructName } from "../schema";
+import { get_struct, StructName, structs } from "../schema";
 import { get_path_type } from "./commons";
 import { errors, ErrMsg } from "./errors";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
@@ -11,6 +11,8 @@ import {
   StrongEnum,
   Struct,
 } from "./variable";
+
+// TODO. Paths that are in output of any trigger updates should not be writeable.
 
 export class PathPermission {
   path: [Array<[string, Struct]>, [string, StrongEnum]];
@@ -326,6 +328,38 @@ export function get_permissions(
             }
           } else {
             console.log("[PERMISSIONS]: Error");
+          }
+        }
+      }
+    }
+  }
+  // Mark outputs of trigger updates as non-writeable
+  for (const struct_name of Object.keys(structs)) {
+    const struct = get_struct(struct_name as StructName);
+    for (const trigger_name of Object.keys(struct.triggers)) {
+      const trigger = struct.triggers[trigger_name];
+      if (trigger.operation.op === "update") {
+        for (const path of trigger.operation.path_updates.map((x) => x[0])) {
+          const result = get_path_permission(struct, path);
+          if (unwrap(result)) {
+            if (result.value.path[0].length !== 0) {
+              const value =
+                result.value.path[0][result.value.path[0].length - 1];
+              if (value[1].name === target_struct.name) {
+                const result = path_permissions.findAny(
+                  (x) => x.path[0].length === 0 && x.path[1][0] === value[0]
+                );
+                if (result.isSome()) {
+                  path_permissions = path_permissions.remove(result.get());
+                  path_permissions = path_permissions.add(
+                    apply(result.get(), (it) => {
+                      it.writeable = false;
+                      return it;
+                    })
+                  );
+                }
+              }
+            }
           }
         }
       }

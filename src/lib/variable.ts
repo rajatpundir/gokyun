@@ -31,9 +31,12 @@ export type StructPermissions = {
 
 export type StructTrigger = {
   // Snapshot of paths is taken as per the name indicates
-  event: ReadonlyArray<
-    "after_creation" | "before_update" | "after_update" | "before_deletion"
-  >;
+  event: {
+    after_creation?: boolean;
+    before_update?: boolean;
+    after_update?: boolean;
+    before_deletion?: boolean;
+  };
   monitor: ReadonlyArray<PathString>;
   operation:
     | {

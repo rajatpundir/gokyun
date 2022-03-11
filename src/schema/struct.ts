@@ -77,7 +77,7 @@ import Clan_Product_Order from "./structs/clan/Clan_Product_Order";
 import Clan_Product_Order_Item from "./structs/clan/Clan_Product_Order_Item";
 import Clan_Service_Order from "./structs/clan/Clan_Service_Order";
 
-const structs = {
+export const structs = {
   Test: Test,
   Test2: Test2,
 
