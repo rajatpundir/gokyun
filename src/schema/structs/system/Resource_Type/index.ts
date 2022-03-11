@@ -17,8 +17,7 @@ export default {
   },
   uniqueness: [[["type"], "subtype"]],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: ["type", "subtype"],
   },
   triggers: {},

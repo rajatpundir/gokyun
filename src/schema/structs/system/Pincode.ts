@@ -36,8 +36,7 @@ export default {
   },
   uniqueness: [[["country"], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: ["country", "name"],
   },
   triggers: {},

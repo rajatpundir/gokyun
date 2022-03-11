@@ -23,8 +23,7 @@ export default {
   },
   uniqueness: [[[], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: ["name", "private_resource_tag_count", "public_resource_tag_count"],
   },
   triggers: {},

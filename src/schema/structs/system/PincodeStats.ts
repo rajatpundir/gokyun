@@ -19,8 +19,7 @@ export default {
   },
   uniqueness: [[["from"], "to"]],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: ["from", "to", "average_time"],
   },
   triggers: {},

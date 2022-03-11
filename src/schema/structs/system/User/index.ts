@@ -31,8 +31,7 @@ export default {
     [[], "nickname"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: [
       "nickname",
       "language",

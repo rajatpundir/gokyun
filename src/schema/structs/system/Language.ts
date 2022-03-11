@@ -16,8 +16,7 @@ export default {
   },
   uniqueness: [[[], "code"]],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: ["code"],
   },
   triggers: {},
