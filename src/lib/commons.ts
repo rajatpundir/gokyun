@@ -39,7 +39,6 @@ import {
   Struct,
   compare_paths,
   concat_path_strings,
-  WeakEnum,
   get_path_string,
 } from "./variable";
 import { Dimensions } from "react-native";

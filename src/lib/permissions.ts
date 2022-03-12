@@ -16,6 +16,9 @@ import {
   Struct,
 } from "./variable";
 
+// TODO. Add fields for marking trigger output, its dependencies and check dependencies.
+// This will simplify commons.ts
+
 export class PathPermission {
   path: [Array<[string, Struct]>, [string, StrongEnum]];
   writeable: boolean = false;
