@@ -8,8 +8,7 @@ export default {
   },
   uniqueness: [],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       clan: {
         read: ["listed_alliance_service"],
         write: [],

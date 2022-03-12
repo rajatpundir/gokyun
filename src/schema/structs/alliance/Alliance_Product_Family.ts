@@ -31,8 +31,7 @@ export default {
     [["alliance"], "order"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance: {
         read: [],
         write: [

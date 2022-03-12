@@ -5,8 +5,7 @@ export default {
   },
   uniqueness: [[["guild"], "user"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       guild: {
         read: ["user"],
         write: [],

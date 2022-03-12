@@ -31,8 +31,7 @@ export default {
     [["user_product_family_property"], "order"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user_product_family_property: {
         read: [],
         write: ["name", "order"],

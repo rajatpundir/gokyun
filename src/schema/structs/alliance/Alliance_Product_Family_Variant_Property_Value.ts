@@ -33,8 +33,7 @@ export default {
     [["alliance_product_family_variant"], "alliance_product_family_property"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_product_family_variant: {
         read: [],
         write: [

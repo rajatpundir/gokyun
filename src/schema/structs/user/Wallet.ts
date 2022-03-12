@@ -28,8 +28,7 @@ export default {
   },
   uniqueness: [[["user"], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user: {
         read: ["copper", "silver", "gold"],
         write: [],

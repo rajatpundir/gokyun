@@ -24,8 +24,7 @@ export default {
     [["alliance_service"], "order"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user: {
         read: [],
         write: ["name"],

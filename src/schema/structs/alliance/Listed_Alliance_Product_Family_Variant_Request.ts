@@ -31,8 +31,7 @@ export default {
     [["alliance_member"], "user_product_family_variant"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_product_family_variant: {
         read: ["alliance_member", "user_product_family_variant"],
         write: [],

@@ -24,8 +24,7 @@ export default {
   },
   uniqueness: [],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       wallet: {
         read: [],
         write: ["name"],

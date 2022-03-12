@@ -33,8 +33,7 @@ export default {
     [["user_product_family_variant"], "user_product_family_property"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user_product_family_variant: {
         read: [],
         write: [

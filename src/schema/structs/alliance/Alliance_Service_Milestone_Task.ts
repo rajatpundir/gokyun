@@ -8,8 +8,7 @@ export default {
   },
   uniqueness: [[["alliance_service_milestone"], "alliance_service_task"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_service_milestone: {
         read: [],
         write: [],

@@ -24,8 +24,7 @@ export default {
   },
   uniqueness: [[["alliance_service_task"], "language"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_service_task: {
         read: [],
         write: ["language", "name", "description"],

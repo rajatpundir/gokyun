@@ -34,8 +34,7 @@ export default {
     [["user_product"], "order"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user_product: {
         read: [],
         write: ["order", "name", "quantity", "price"],

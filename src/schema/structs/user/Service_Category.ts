@@ -18,11 +18,7 @@ export default {
     translation_count: { type: "u32", default: new Decimal(0) },
   },
   uniqueness: [],
-  permissions: {
-    borrow: {},
-    ownership: {},
-    public: ["parent", "name"],
-  },
+  permissions: { private: {}, public: ["parent", "name"] },
   triggers: {},
   checks: {
     name_cannot_be_empty: [

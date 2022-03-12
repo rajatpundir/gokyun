@@ -21,8 +21,7 @@ export default {
   },
   uniqueness: [[["alliance"], "alliance_product"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance: {
         read: [],
         write: ["alliance_product", "markup"],

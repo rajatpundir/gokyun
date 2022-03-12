@@ -22,8 +22,7 @@ export default {
   },
   uniqueness: [[["alliance_service"], "alliance_member"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_service: {
         read: [],
         write: [],

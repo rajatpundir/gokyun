@@ -19,7 +19,7 @@ export type StructPermissions = {
         struct_path: PathString;
         permission_name: string;
       }>;
-      up: ReadonlyArray<{
+      up?: ReadonlyArray<{
         struct_path_from_higher_struct: PathString;
         higher_struct: string;
         higher_struct_permission_name: string;

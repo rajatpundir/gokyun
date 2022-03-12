@@ -5,8 +5,7 @@ export default {
   },
   uniqueness: [[["private_resource"], "tag"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       private_resource: {
         read: ["tag"],
         write: [],

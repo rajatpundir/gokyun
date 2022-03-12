@@ -28,8 +28,7 @@ export default {
   },
   uniqueness: [[["alliance_product_family"], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_product_family: {
         read: [],
         write: ["name"],

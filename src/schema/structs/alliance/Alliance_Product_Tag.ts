@@ -18,8 +18,7 @@ export default {
   },
   uniqueness: [[["alliance_product"], "tag"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_product: {
         read: [],
         write: ["tag"],

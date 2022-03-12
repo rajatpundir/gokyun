@@ -31,8 +31,7 @@ export default {
     [["alliance_product_family_property"], "order"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_product_family_property: {
         read: [],
         write: ["name", "order"],

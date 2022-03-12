@@ -6,8 +6,7 @@ export default {
   },
   uniqueness: [[["alliance"], "user"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance: {
         read: ["user"],
         write: [],

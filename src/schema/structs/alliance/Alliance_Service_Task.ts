@@ -21,8 +21,7 @@ export default {
   },
   uniqueness: [[["alliance_service"], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_service: {
         read: [],
         write: ["name", "price"],

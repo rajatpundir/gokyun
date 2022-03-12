@@ -26,8 +26,7 @@ export default {
   },
   uniqueness: [[["alliance_product_family_property"], "language"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_product_family_property: {
         read: [],
         write: ["language", "name"],

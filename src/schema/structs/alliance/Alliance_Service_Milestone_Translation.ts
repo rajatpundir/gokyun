@@ -27,8 +27,7 @@ export default {
   },
   uniqueness: [[["alliance_service_milsestone"], "language"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance_service_milsestone: {
         read: [],
         write: ["language", "name", "description"],

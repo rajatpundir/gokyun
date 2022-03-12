@@ -220,35 +220,41 @@ function get_private_permissions(
           }
         }
         // traverse all ups recursively
-        for (const up of permission.up) {
-          const higher_struct = get_struct(up.higher_struct as StructName);
-          const result = get_path_type(
-            higher_struct,
-            up.struct_path_from_higher_struct
-          );
-          if (unwrap(result)) {
-            const field_struct_name = result.value;
-            if (field_struct_name[0] === "other") {
-              const result = get_private_permissions(
-                higher_struct,
-                up.higher_struct_permission_name,
-                target_struct,
-                stack
-              );
-              if (unwrap(result)) {
-                for (const path_permission of result.value) {
-                  const result = path_permissions.findAny((x) =>
-                    x.equals(path_permission)
-                  );
-                  if (result.isSome()) {
-                    if (!result.get().writeable) {
-                      path_permissions = path_permissions
-                        .remove(result.get())
-                        .add(path_permission);
+        if (permission.up !== undefined) {
+          for (const up of permission.up) {
+            const higher_struct = get_struct(up.higher_struct as StructName);
+            const result = get_path_type(
+              higher_struct,
+              up.struct_path_from_higher_struct
+            );
+            if (unwrap(result)) {
+              const field_struct_name = result.value;
+              if (field_struct_name[0] === "other") {
+                const result = get_private_permissions(
+                  higher_struct,
+                  up.higher_struct_permission_name,
+                  target_struct,
+                  stack
+                );
+                if (unwrap(result)) {
+                  for (const path_permission of result.value) {
+                    const result = path_permissions.findAny((x) =>
+                      x.equals(path_permission)
+                    );
+                    if (result.isSome()) {
+                      if (!result.get().writeable) {
+                        path_permissions = path_permissions
+                          .remove(result.get())
+                          .add(path_permission);
+                      }
+                    } else {
+                      path_permissions = path_permissions.add(path_permission);
                     }
-                  } else {
-                    path_permissions = path_permissions.add(path_permission);
                   }
+                } else {
+                  return new Err(
+                    new CustomError([errors.ErrUnexpected] as ErrMsg)
+                  );
                 }
               } else {
                 return new Err(
@@ -258,8 +264,6 @@ function get_private_permissions(
             } else {
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
-          } else {
-            return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         }
       } else {

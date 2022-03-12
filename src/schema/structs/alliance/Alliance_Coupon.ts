@@ -28,8 +28,7 @@ export default {
   },
   uniqueness: [[["alliance"], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance: {
         read: [
           "name",

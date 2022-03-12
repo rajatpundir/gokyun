@@ -35,9 +35,9 @@ export default {
   },
   uniqueness: [],
   permissions: {
-    borrow: {},
-    ownership: {
-      user: {
+    private: {
+      default: {
+        entrypoint: [[], "user"],
         read: [],
         write: [
           "str",
@@ -57,6 +57,7 @@ export default {
           "timestamp",
           "user",
         ],
+        down: [],
       },
     },
     public: [

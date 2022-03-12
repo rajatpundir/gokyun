@@ -6,8 +6,7 @@ export default {
   },
   uniqueness: [],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       clan: {
         read: ["product_count", "product_price_sum"],
         write: [],

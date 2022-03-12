@@ -30,8 +30,7 @@ export default {
   },
   uniqueness: [[["alliance"], "name"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance: {
         read: [],
         write: ["name", "language", "description", "min_price", "max_price"],

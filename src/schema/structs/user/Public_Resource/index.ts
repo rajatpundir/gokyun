@@ -20,8 +20,7 @@ export default {
   },
   uniqueness: [[["owner"], "url"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       owner: {
         read: ["resource_type", "url"],
         write: [],

@@ -13,8 +13,7 @@ export default {
   },
   uniqueness: [[["clan_product_order_draft"], "listed_alliance_product"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       clan_product_order_draft: {
         read: ["listed_alliance_product", "price"],
         write: [],

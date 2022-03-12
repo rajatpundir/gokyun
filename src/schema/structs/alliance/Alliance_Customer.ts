@@ -11,8 +11,7 @@ export default {
   },
   uniqueness: [[["alliance"], "clan"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       alliance: {
         read: ["clan", "order_count", "order_price_sum", "order_price_mean"],
         write: [],

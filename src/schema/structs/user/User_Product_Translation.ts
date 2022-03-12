@@ -27,8 +27,7 @@ export default {
   },
   uniqueness: [[["user_product"], "language"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user_product: {
         read: [],
         write: ["language", "name", "description"],

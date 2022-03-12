@@ -30,8 +30,7 @@ export default {
     [["alliance"], "order"],
   ],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       user: {
         read: [],
         write: [

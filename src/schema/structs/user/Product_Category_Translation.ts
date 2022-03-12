@@ -23,8 +23,7 @@ export default {
   },
   uniqueness: [[["product_category"], "language"]],
   permissions: {
-    borrow: {},
-    ownership: {},
+    private: {},
     public: ["product_category", "language", "name"],
   },
   triggers: {

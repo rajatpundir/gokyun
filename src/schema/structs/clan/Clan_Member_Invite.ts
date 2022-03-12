@@ -6,8 +6,7 @@ export default {
   },
   uniqueness: [[["clan"], "user"]],
   permissions: {
-    borrow: {},
-    ownership: {
+    private: {
       clan: {
         read: ["user"],
         write: [],
