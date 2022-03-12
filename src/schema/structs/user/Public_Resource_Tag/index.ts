@@ -6,12 +6,16 @@ export default {
   uniqueness: [[["public_resource"], "tag"]],
   permissions: {
     private: {
-      public_resource: {
-        read: ["tag"],
+      owner: {
+        entrypoint: [["public_resource"], "owner"],
+        read: ["public_resource", "tag"],
         write: [],
+        down: [
+          { struct_path: [[], "public_resource"], permission_name: "owner" },
+        ],
       },
     },
-    public: [],
+    public: ["public_resource", "tag"],
   },
   triggers: {},
   checks: {},

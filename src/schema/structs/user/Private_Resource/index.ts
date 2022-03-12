@@ -22,8 +22,10 @@ export default {
   permissions: {
     private: {
       owner: {
-        read: ["resource_type", "url"],
+        entrypoint: [[], "owner"],
+        read: ["resource_type", "url", "tag_count", "owner"],
         write: [],
+        down: [],
       },
     },
     public: [],
