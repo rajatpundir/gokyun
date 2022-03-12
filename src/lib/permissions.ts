@@ -82,7 +82,7 @@ function get_path_permission(
 function get_public_permissions(struct: Struct): HashSet<PathPermission> {
   let path_permissions: HashSet<PathPermission> = HashSet.of();
   for (const field_name of Object.keys(struct.fields)) {
-    if (field_name in struct.permissions.public) {
+    if (struct.permissions.public.includes(field_name)) {
       const field = struct.fields[field_name];
       path_permissions = path_permissions.add(
         apply(
@@ -131,15 +131,15 @@ function get_private_permissions(
         // Add read, write, public permissions
         for (const field_name of Object.keys(struct.fields)) {
           if (
-            field_name in permission.read ||
-            field_name in permission.write ||
-            field_name in struct.permissions.public
+            permission.read.includes(field_name) ||
+            permission.write.includes(field_name) ||
+            struct.permissions.public.includes(field_name)
           ) {
             const field = struct.fields[field_name];
             const path_permission = apply(
               new PathPermission([[], [field_name, get_strong_enum(field)]]),
               (it) => {
-                it.writeable = field_name in permission.write;
+                it.writeable = permission.write.includes(field_name);
                 it.label = field_name;
                 return it;
               }
@@ -294,7 +294,6 @@ export function get_permissions(
   let path_permissions: HashSet<PathPermission> =
     get_public_permissions(target_struct);
   if (entrypoints.length !== 0) {
-    let path_permissions: HashSet<PathPermission> = HashSet.of();
     for (const entrypoint of entrypoints) {
       const [source_struct, source_entrypoint] = arrow(() => {
         if (Array.isArray(entrypoint)) {
