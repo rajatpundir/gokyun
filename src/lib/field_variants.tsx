@@ -1634,6 +1634,7 @@ function Timestamp_Field(
 
 type OtherFieldProps = CommonProps & {
   labels: Immutable<Array<[string, PathString]>>;
+  searchable?: boolean;
 };
 
 function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
@@ -1669,6 +1670,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
           "values",
           get_upscaled_paths(props.path, variable, props.state.labels),
         ]),
+      searchable: props.searchable,
     };
     switch (props.options[0]) {
       case "list": {

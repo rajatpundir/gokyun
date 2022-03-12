@@ -155,6 +155,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                     title: "Select User",
                   },
                 ],
+                searchable: true,
                 RenderVariant: (props: RenderListVariantProps) => (
                   <SearchWrapper
                     {...props}

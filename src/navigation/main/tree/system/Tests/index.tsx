@@ -69,6 +69,7 @@ export default function Component(props: ParentNavigatorProps<"Tests">) {
             ],
           },
         ]}
+        searchable={true}
         RenderVariant={(props) => (
           <SearchWrapper
             {...props}

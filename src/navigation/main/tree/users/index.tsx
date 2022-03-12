@@ -62,6 +62,7 @@ export default function Component(
             ],
           },
         ]}
+        searchable={true}
         RenderVariant={(props) => (
           <SearchWrapper
             {...props}

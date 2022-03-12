@@ -433,16 +433,17 @@ export type CommonProps = {
   limit: Decimal;
   options: ListVariantOptions;
   RenderVariant?: (props: RenderListVariantProps) => JSX.Element;
+  searchable?: boolean;
 };
 
-type ListSpecificProps = CommonProps & {
+type ListProps = CommonProps & {
   selected: Decimal;
   struct: Struct;
   filters: [OrFilter, HashSet<AndFilter>];
   update_parent_values?: (variable: Variable) => void;
 };
 
-export function List(props: CommonProps & ListSpecificProps): JSX.Element {
+export function List(props: ListProps): JSX.Element {
   const bs_theme = useBSTheme();
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
@@ -462,24 +463,27 @@ export function List(props: CommonProps & ListSpecificProps): JSX.Element {
     const get_vars = async () => {
       request_counter.current += 1;
       const request_count = request_counter.current;
-      setTimeout(async () => {
-        if (request_count === request_counter.current) {
-          const variables = await get_variables(
-            state.struct,
-            undefined,
-            state.init_filter,
-            state.filters,
-            state.limit,
-            state.offset,
-            []
-          );
+      setTimeout(
+        async () => {
           if (request_count === request_counter.current) {
-            if (unwrap(variables)) {
-              dispatch(["variables", variables.value]);
+            const variables = await get_variables(
+              state.struct,
+              undefined,
+              state.init_filter,
+              state.filters,
+              state.limit,
+              state.offset,
+              []
+            );
+            if (request_count === request_counter.current) {
+              if (unwrap(variables)) {
+                dispatch(["variables", variables.value]);
+              }
             }
           }
-        }
-      }, 100);
+        },
+        props.searchable ? 10000 : 0
+      );
     };
     get_vars();
   }, [
@@ -686,7 +690,7 @@ export type ModalSpecificProps = {
   title: string;
 };
 
-export type SelectionModalProps = ListSpecificProps & ModalSpecificProps;
+export type SelectionModalProps = ListProps & ModalSpecificProps;
 
 export function SelectionModal(
   props: RootNavigatorProps<"SelectionModal">
