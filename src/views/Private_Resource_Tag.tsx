@@ -1,6 +1,7 @@
 import React from "react";
 import { Column, Text } from "native-base";
 import { ComponentViews, arrow, useTheme, Field } from "../lib";
+import Decimal from "decimal.js";
 
 const views = {};
 
@@ -22,8 +23,6 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
     >
       <Text>
         {props.state.id.toString()}
-        {": "}
-        <Field {...props} path={[[], "tag"]} />
         <Field {...props} path={[["tag"], "name"]} />
       </Text>
     </Column>

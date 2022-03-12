@@ -187,8 +187,8 @@ function get_private_permissions(
                 stack
               );
               if (unwrap(result)) {
-                for (const path_permission of result.value.map(
-                  (x) =>
+                for (const path_permission of result.value.map((x) =>
+                  apply(
                     new PathPermission([
                       [
                         ...prefix_path_permission.path[0],
@@ -199,7 +199,13 @@ function get_private_permissions(
                         ...x.path[0],
                       ],
                       x.path[1],
-                    ])
+                    ]),
+                    (it) => {
+                      it.label = x.label;
+                      it.writeable = x.writeable;
+                      return it;
+                    }
+                  )
                 )) {
                   const result = path_permissions.findAny((x) =>
                     x.equals(path_permission)
@@ -380,18 +386,20 @@ export function log_permissions(
   target_struct: Struct,
   entrypoints: ReadonlyArray<Entrypoint>
 ) {
-  const path_permissions = get_permissions(target_struct, entrypoints);
-  console.log("\n=======================");
-  console.log("STRUCT: ", target_struct.name);
-  console.log("\n=======================");
-  console.log("READ PERMISSIONS");
-  for (const permission of path_permissions.filter((x) => !x.writeable)) {
-    console.log(permission.toString());
+  if (false) {
+    const path_permissions = get_permissions(target_struct, entrypoints);
+    console.log("\n=======================");
+    console.log("STRUCT: ", target_struct.name);
+    console.log("\n=======================");
+    console.log("READ PERMISSIONS");
+    for (const permission of path_permissions.filter((x) => !x.writeable)) {
+      console.log(permission.toString());
+    }
+    console.log("\n=======================");
+    console.log("WRITE PERMISSIONS");
+    for (const permission of path_permissions.filter((x) => x.writeable)) {
+      console.log(permission.toString());
+    }
+    console.log("\n=======================");
   }
-  console.log("\n=======================");
-  console.log("WRITE PERMISSIONS");
-  for (const permission of path_permissions.filter((x) => x.writeable)) {
-    console.log(permission.toString());
-  }
-  console.log("\n=======================");
 }

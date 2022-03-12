@@ -426,8 +426,8 @@ function query(
     .toString()} OFFSET ${offset.abs().truncated().toString()}`;
 
   const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${having_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
-  // console.log("FINAL STMT = ", final_stmt);
-  // console.log("ARGS:", args);
+  console.log("FINAL STMT = ", final_stmt);
+  console.log("ARGS:", args);
   return execute_transaction(final_stmt, args);
 }
 
