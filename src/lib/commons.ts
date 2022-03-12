@@ -867,7 +867,7 @@ export async function run_triggers(
       const trigger = struct.triggers[trigger_name];
       if (trigger.operation.op === "update") {
         if (state.id.equals(-1)) {
-          if (trigger.event.includes("after_creation")) {
+          if (trigger.event.after_creation) {
             run_path_updates(
               state,
               dispatch,
@@ -876,7 +876,7 @@ export async function run_triggers(
             );
           }
         } else {
-          if (trigger.event.includes("after_update")) {
+          if (trigger.event.after_update) {
             run_path_updates(
               state,
               dispatch,
@@ -1075,35 +1075,6 @@ export function get_decimal_keyboard_type(
       return "number-pad";
   }
   return "numbers-and-punctuation";
-}
-
-export function get_path_type(
-  struct: Struct,
-  path: PathString
-): Result<[Exclude<WeakEnum["type"], "other">] | ["other", Struct]> {
-  const [check, field_name] = [
-    path[0].length !== 0,
-    path[0].length !== 0 ? path[0][0] : path[1],
-  ];
-  if (field_name in struct.fields) {
-    const field = struct.fields[field_name];
-    if (check && field.type === "other") {
-      const other_struct = get_struct(field.other as StructName);
-      return get_path_type(other_struct, [path[0].slice(1), path[1]]);
-    } else {
-      if (field.type === "other") {
-        const other_struct = get_struct(field.other as StructName);
-        return new Ok([field.type, other_struct] as
-          | [Exclude<WeakEnum["type"], "other">]
-          | ["other", Struct]);
-      } else {
-        return new Ok([field.type] as
-          | [Exclude<WeakEnum["type"], "other">]
-          | ["other", Struct]);
-      }
-    }
-  }
-  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
 
 export function get_symbols_for_paths(

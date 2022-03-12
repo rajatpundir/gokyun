@@ -1,9 +1,9 @@
 import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
+import { Immutable } from "immer";
 import { BooleanLispExpression, LispExpression } from "./lisp";
 import { ErrMsg } from "./errors";
 import { arrow } from "./prelude";
-import { Immutable } from "immer";
 
 export type PathString = [ReadonlyArray<string>, string];
 

@@ -1,6 +1,10 @@
 import { HashSet } from "prelude-ts";
-import { get_struct, StructName, structs } from "../schema/struct";
-import { get_path_type } from "./commons";
+import {
+  get_path_type,
+  get_struct,
+  StructName,
+  structs,
+} from "../schema/struct";
 import { errors, ErrMsg } from "./errors";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import {

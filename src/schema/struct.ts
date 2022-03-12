@@ -3,9 +3,10 @@ import {
   StructPermissions,
   StructTrigger,
   Struct,
+  PathString,
 } from "../lib/variable";
 import { BooleanLispExpression } from "../lib/lisp";
-import { ErrMsg } from "../lib/errors";
+import { ErrMsg, errors } from "../lib/errors";
 
 import Test from "./structs/test/Test";
 import Test2 from "./structs/test/Test2";
@@ -76,6 +77,7 @@ import Clan_Product_Order_Draft_Item from "./structs/clan/Clan_Product_Order_Dra
 import Clan_Product_Order from "./structs/clan/Clan_Product_Order";
 import Clan_Product_Order_Item from "./structs/clan/Clan_Product_Order_Item";
 import Clan_Service_Order from "./structs/clan/Clan_Service_Order";
+import { CustomError, Err, Ok, Result } from "../lib/prelude";
 
 export const structs = {
   Test: Test,
@@ -189,4 +191,33 @@ export function get_struct(struct_name: StructName): Struct {
     struct.fields[fieldName] = structDef.fields[fieldName];
   }
   return struct;
+}
+
+export function get_path_type(
+  struct: Struct,
+  path: PathString
+): Result<[Exclude<WeakEnum["type"], "other">] | ["other", Struct]> {
+  const [check, field_name] = [
+    path[0].length !== 0,
+    path[0].length !== 0 ? path[0][0] : path[1],
+  ];
+  if (field_name in struct.fields) {
+    const field = struct.fields[field_name];
+    if (check && field.type === "other") {
+      const other_struct = get_struct(field.other as StructName);
+      return get_path_type(other_struct, [path[0].slice(1), path[1]]);
+    } else {
+      if (field.type === "other") {
+        const other_struct = get_struct(field.other as StructName);
+        return new Ok([field.type, other_struct] as
+          | [Exclude<WeakEnum["type"], "other">]
+          | ["other", Struct]);
+      } else {
+        return new Ok([field.type] as
+          | [Exclude<WeakEnum["type"], "other">]
+          | ["other", Struct]);
+      }
+    }
+  }
+  return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }
