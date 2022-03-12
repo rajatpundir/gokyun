@@ -1,4 +1,6 @@
 import React from "react";
+import Decimal from "decimal.js";
+import { HashSet } from "prelude-ts";
 import { Column, Text } from "native-base";
 import {
   ComponentViews,
@@ -11,9 +13,9 @@ import {
   OrFilter,
   OtherComponent,
   Entrypoint,
+  apply,
+  FilterPath,
 } from "../lib";
-import Decimal from "decimal.js";
-import { HashSet } from "prelude-ts";
 import { get_struct } from "../schema";
 import Private_Resource_Tag from "./Private_Resource_Tag";
 
@@ -62,6 +64,23 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                     ["name", [["tag"], "name"]],
                   ],
                   entrypoints
+                ).add(
+                  apply(
+                    new FilterPath(
+                      "private_resource",
+                      [[], "private_resource"],
+                      [
+                        "other",
+                        ["==", props.state.id as Decimal],
+                        get_struct("Private_Resource"),
+                      ],
+                      undefined
+                    ),
+                    (it) => {
+                      it.active = true;
+                      return it;
+                    }
+                  )
                 )
               ),
               HashSet.of(),

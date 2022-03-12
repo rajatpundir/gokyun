@@ -9,7 +9,13 @@ export {
   AppHeader,
   Identity,
 } from "./component";
-export { create_level, activate_level, remove_level, OrFilter } from "./db";
+export {
+  create_level,
+  activate_level,
+  remove_level,
+  OrFilter,
+  FilterPath,
+} from "./db";
 export { replace_variable } from "./db_variables";
 export { Field } from "./field";
 export {

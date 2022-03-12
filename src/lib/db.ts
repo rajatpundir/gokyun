@@ -1162,7 +1162,7 @@ export async function get_variables(
       offset,
       existences
     );
-    // console.log(result_set);
+    console.log(result_set);
     for (const result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
