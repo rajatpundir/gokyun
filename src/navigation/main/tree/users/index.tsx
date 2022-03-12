@@ -10,15 +10,14 @@ import {
   OtherComponent,
   SearchWrapper,
   List,
-  PathString,
+  Entrypoint,
 } from "../../../../lib";
 
 export default function Component(
   props: ParentNavigatorProps<"Users">
 ): JSX.Element {
   const struct = get_struct("User");
-  const user_paths: Array<PathString> = [];
-  const borrows: Array<string> = [];
+  const entrypoints: Array<Entrypoint> = [];
   return (
     <>
       <List
@@ -38,8 +37,7 @@ export default function Component(
                 ["Mobile", [[], "mobile"]],
                 ["Product Count", [[], "product_count"]],
               ],
-              user_paths,
-              borrows
+              entrypoints
             )
           ),
           HashSet.of(),
@@ -48,8 +46,7 @@ export default function Component(
         options={[
           "list",
           {
-            user_paths: user_paths,
-            borrows: borrows,
+            entrypoints: entrypoints,
             RenderElement: [
               (props) => (
                 <OtherComponent {...props} view={views.User["Default"]} />

@@ -9,15 +9,14 @@ import {
   OtherComponent,
   Identity,
   List,
-  PathString,
+  Entrypoint,
 } from "../../../../lib";
 import { get_struct } from "../../../../schema";
 import { views } from "../../../../views";
 
 export default function Component(props: ParentNavigatorProps<"Images">) {
   const struct = get_struct("Private_Resource");
-  const user_paths: Array<PathString> = [[[], "owner"]];
-  const borrows: Array<string> = [];
+  const entrypoints: Array<Entrypoint> = [[[], "owner"]];
   return (
     <List
       selected={new Decimal(-1)}
@@ -28,7 +27,7 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
           [false, undefined],
           [false, undefined],
           [false, undefined],
-          get_filter_paths(struct, [["url", [[], "url"]]], user_paths, borrows)
+          get_filter_paths(struct, [["url", [[], "url"]]], entrypoints)
         ),
         HashSet.of(),
       ]}
@@ -36,8 +35,7 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
       options={[
         "list",
         {
-          user_paths: user_paths,
-          borrows: borrows,
+          entrypoints: entrypoints,
           RenderElement: [
             (props) => (
               <OtherComponent

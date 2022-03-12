@@ -117,7 +117,7 @@ type FxChecks = Record<string, [BooleanLispExpression, ErrMsg]>;
 
 export type FxResult = Record<string, StrongEnum>;
 
-// Ownership or borrowing over inputs provided will be checked
+// Ownership over inputs provided will be checked
 // But outputs does not have anything to do with ownership
 export class Fx {
   name: string;

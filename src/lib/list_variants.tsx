@@ -15,6 +15,7 @@ import { tw } from "./tailwind";
 import { ListAction, ListState, RenderListElement } from "./list";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { useBSTheme, useTheme } from "./theme";
+import { Entrypoint } from "./permissions";
 
 export function ListVariant(
   props: VariantCommonProps & {
@@ -56,8 +57,7 @@ type VariantCommonProps = {
 
 type FlatlistVariantProps = {
   RenderElement: RenderListElement;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
+  entrypoints: Array<Entrypoint>;
   horizontal?: boolean;
   title?: string;
   element?: JSX.Element;
@@ -76,8 +76,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
       return (
         <ElementJSX
           struct={props.state.struct}
-          user_paths={props.user_paths}
-          borrows={props.borrows}
+          entrypoints={props.entrypoints}
           variable={list_item.item}
           selected={list_item.item.id.equals(props.selected)}
           update_parent_values={() =>

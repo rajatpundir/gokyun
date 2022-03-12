@@ -91,8 +91,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                 options: [
                   "list",
                   {
-                    user_paths: [],
-                    borrows: [],
+                    entrypoints: [],
                     element: arrow(() => {
                       const result = get_path(props.state, [[], "user"]);
                       if (unwrap(result)) {

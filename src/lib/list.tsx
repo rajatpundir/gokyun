@@ -21,6 +21,7 @@ import { ListVariant, ListVariantOptions } from "./list_variants";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { BrokerKey, subscribe } from "./store";
 import { useBSTheme } from "./theme";
+import { Entrypoint } from "./permissions";
 
 // TODO. Handle large virtualized list, shouldComponentUpdate
 
@@ -407,8 +408,7 @@ function reducer(state: Draft<ListState>, action: ListAction) {
 
 type RenderListItemProps = {
   struct: Struct;
-  user_paths: Array<PathString>;
-  borrows: Array<string>;
+  entrypoints: Array<Entrypoint>;
   variable: Variable;
   selected: boolean;
   update_parent_values: () => void;

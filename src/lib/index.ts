@@ -19,6 +19,7 @@ export {
   SelectionModalProps,
   List,
 } from "./list";
+export { Entrypoint } from "./permissions";
 export { arrow, apply, unwrap, Resource, get_resource } from "./prelude";
 export { tw } from "./tailwind";
 export { Template } from "./templates";

@@ -9,7 +9,7 @@ import {
   OtherComponent,
   List,
   Identity,
-  PathString,
+  Entrypoint,
 } from "../../../../../lib";
 import { get_struct } from "../../../../../schema";
 import { views } from "../../../../../views";
@@ -18,8 +18,7 @@ export default function Component(
   props: ParentNavigatorProps<"Resource_Types">
 ) {
   const struct = get_struct("Resource_Type");
-  const user_paths: Array<PathString> = [];
-  const borrows: Array<string> = [];
+  const entrypoints: Array<Entrypoint> = [];
   return (
     <List
       selected={new Decimal(-1)}
@@ -36,8 +35,7 @@ export default function Component(
               ["type", [[], "type"]],
               ["subtype", [[], "subtype"]],
             ],
-            user_paths,
-            borrows
+            entrypoints
           )
         ),
         HashSet.of(),
@@ -46,8 +44,7 @@ export default function Component(
       options={[
         "list",
         {
-          user_paths: user_paths,
-          borrows: borrows,
+          entrypoints: entrypoints,
           RenderElement: [
             (props) => (
               <OtherComponent

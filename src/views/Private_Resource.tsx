@@ -10,7 +10,7 @@ import {
   Identity,
   OrFilter,
   OtherComponent,
-  PathString,
+  Entrypoint,
 } from "../lib";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
@@ -42,8 +42,9 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       </Text>
       {arrow(() => {
         const struct = get_struct("Private_Resource_Tag");
-        const user_paths: Array<PathString> = [[["private_resource"], "owner"]];
-        const borrows: Array<string> = [];
+        const entrypoints: Array<Entrypoint> = [
+          [["private_resource"], "owner"],
+        ];
         return (
           <List
             selected={new Decimal(-1)}
@@ -60,8 +61,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                     ["tag", [[], "tag"]],
                     ["name", [["tag"], "name"]],
                   ],
-                  user_paths,
-                  borrows
+                  entrypoints
                 )
               ),
               HashSet.of(),
@@ -70,8 +70,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
             options={[
               "list",
               {
-                user_paths: user_paths,
-                borrows: borrows,
+                entrypoints: entrypoints,
                 RenderElement: [
                   (props) => (
                     <OtherComponent
