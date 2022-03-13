@@ -57,7 +57,7 @@ export function terminal(args: TerminalArgs) {
               }
             }
             case "db": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }
@@ -65,7 +65,7 @@ export function terminal(args: TerminalArgs) {
               });
             }
             case "db_variables": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }
@@ -73,7 +73,7 @@ export function terminal(args: TerminalArgs) {
               });
             }
             case "compose": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }
@@ -81,7 +81,7 @@ export function terminal(args: TerminalArgs) {
               });
             }
             case "transform": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }
@@ -89,7 +89,7 @@ export function terminal(args: TerminalArgs) {
               });
             }
             case "fx": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }
@@ -97,7 +97,7 @@ export function terminal(args: TerminalArgs) {
               });
             }
             case "permissions": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }

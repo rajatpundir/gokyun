@@ -46,6 +46,9 @@ export async function load_data() {
       new Decimal(0)
     );
     console.log(result);
+    console.log(
+      "-------------------------------------------------------------------"
+    );
     result = await compose.value.exec(
       {
         resource_type: {
@@ -78,6 +81,8 @@ export async function load_data() {
       new Decimal(0)
     );
     console.log(result);
+    console.log(
+      "-------------------------------------------------------------------"
+    );
   }
-  console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 }

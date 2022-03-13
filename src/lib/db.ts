@@ -87,10 +87,12 @@ export function execute_transaction(
         tx.executeSql(sql, args, (_, result_set) => resolve(result_set));
       },
       (err) => {
-        terminal([
-          "error",
-          ["db", `\nTRANSACTION ERROR: \n${sql}\n${args}\n${err}\n`],
-        ]);
+        if (!err.message.includes("UNIQUE constraint failed")) {
+          terminal([
+            "error",
+            ["db", `\nTRANSACTION ERROR: \n${sql}\n${args}\n${err}\n`],
+          ]);
+        }
         reject(String(err));
       }
     );
