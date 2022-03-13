@@ -27,7 +27,17 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
           [false, undefined],
           [false, undefined],
           [false, undefined],
-          get_filter_paths(struct, [["url", [[], "url"]]], entrypoints)
+          get_filter_paths(
+            struct,
+            [
+              ["type", [["resource_type"], "type"]],
+              ["subtype", [["resource_type"], "subtype"]],
+              ["url", [[], "url"]],
+              ["tag_count", [[], "tag_count"]],
+              ["owner", [[], "owner"]],
+            ],
+            entrypoints
+          )
         ),
         HashSet.of(),
       ]}

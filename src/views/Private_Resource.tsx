@@ -23,6 +23,7 @@ const views = { Private_Resource_Tag };
 
 const common_default_component: ComponentViews[string]["show"] = (props) => {
   const theme = useTheme();
+  console.log(props.state.values.length());
   return (
     <Column
       p={"2"}
@@ -39,7 +40,13 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
     >
       <Text>
         {props.state.id.toString()}
-        {": "}
+        {"\n"}
+        <Field {...props} path={[["resource_type"], "type"]} />
+        {"\n"}
+        <Field {...props} path={[["resource_type"], "subtype"]} />
+        {"\n"}
+        <Field {...props} path={[[], "tag_count"]} />
+        {"\n"}
         <Field {...props} path={[[], "url"]} />
       </Text>
       {arrow(() => {
