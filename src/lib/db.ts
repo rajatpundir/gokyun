@@ -23,6 +23,7 @@ import {
 } from "./variable";
 import { ErrMsg, errors } from "./errors";
 import { get_struct, StructName } from "../schema/struct";
+import { terminal } from "./terminal";
 
 // TODO. Add Existence functionality
 
@@ -70,7 +71,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
     ],
     false,
     () => {
-      // console.log("Successfully run statements")
+      // terminal.log_db("Successfully run statements")
     }
   );
   return db;
@@ -86,15 +87,7 @@ export function execute_transaction(
         tx.executeSql(sql, args, (_, result_set) => resolve(result_set));
       },
       (err) => {
-        console.log(
-          "\nTRANSACTION ERROR: \n",
-          sql,
-          "\n",
-          args,
-          "\n",
-          err,
-          "\n"
-        );
+        terminal(["db", `\nTRANSACTION ERROR: \n${sql}\n${args}\n${err}\n`]);
         reject(String(err));
       }
     );
@@ -426,8 +419,8 @@ function query(
     .toString()} OFFSET ${offset.abs().truncated().toString()}`;
 
   const final_stmt = `\n\n${select_stmt} \n\n${from_stmt} \n\n${where_stmt}  \n\n${group_by_stmt} \n\n${having_stmt} \n\n${order_by_stmt}  \n\n${limit_offset_stmt};\n\n`;
-  console.log("FINAL STMT = ", final_stmt);
-  console.log("ARGS:", args);
+  terminal(["db", `FINAL STMT = ${final_stmt}`]);
+  terminal(["db", `ARGS: ${args}`]);
   return execute_transaction(final_stmt, args);
 }
 
@@ -1162,7 +1155,7 @@ export async function get_variables(
       offset,
       existences
     );
-    console.log(result_set);
+    terminal(["db", `${result_set}`]);
     for (const result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
@@ -1331,12 +1324,12 @@ export async function get_variables(
           )
         );
       } catch (err) {
-        console.log("SOMOMOMOMOMOEETTHHIINNNGG1111111111111", err);
+        terminal(["db", `[ERROR] ${err}`]);
       }
     }
     return new Ok(variables);
   } catch (err) {
-    console.log("SOMOMOMOMOMOEETTHHIINNNGG", err);
+    terminal(["db", `[ERROR] ${err}`]);
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
 }
