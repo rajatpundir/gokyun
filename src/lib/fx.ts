@@ -526,14 +526,14 @@ export class Fx {
                 );
                 if (unwrap(variable)) {
                   await replace_variable(
-                    level,
                     new Variable(
                       struct,
                       arg.value,
                       variable.value.created_at,
                       new Date(),
                       HashSet.ofIterable(paths)
-                    )
+                    ),
+                    level
                   );
                 } else {
                   continue;
@@ -555,14 +555,14 @@ export class Fx {
                 );
                 if (unwrap(variable)) {
                   await replace_variable(
-                    level,
                     new Variable(
                       struct,
                       input.default,
                       variable.value.created_at,
                       new Date(),
                       HashSet.ofIterable(paths)
-                    )
+                    ),
+                    level
                   );
                 } else {
                   continue;
@@ -1308,11 +1308,11 @@ export class Fx {
                 }
                 case "replace": {
                   await replace_variable(
-                    level,
                     apply(variable, (it) => {
                       it.paths = HashSet.ofIterable(paths);
                       return it;
-                    })
+                    }),
+                    level
                   );
                   computed_outputs[output_name] = {
                     type: "other",
@@ -1344,7 +1344,7 @@ export class Fx {
                       new Date(),
                       HashSet.ofIterable(paths)
                     );
-                    await replace_variable(level, variable);
+                    await replace_variable(variable, level);
                     computed_outputs[output_name] = {
                       type: "other",
                       other: variable.struct.name,

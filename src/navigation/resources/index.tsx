@@ -43,8 +43,8 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
         }}
       >
         <TopTab.Screen name="Linker" component={Linker} />
-        <TopTab.Screen name="Community" component={Community} />
         <TopTab.Screen name="Personal" component={Personal} />
+        <TopTab.Screen name="Community" component={Community} />
       </TopTab.Navigator>
     </>
   );
