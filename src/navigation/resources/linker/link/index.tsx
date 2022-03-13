@@ -6,7 +6,6 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import Decimal from "decimal.js";
-import { HashSet } from "prelude-ts";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 import {
   Column,
@@ -17,7 +16,7 @@ import {
   Image,
   ScrollView,
 } from "native-base";
-import { get_struct } from "../../../../schema";
+import { get_compose } from "../../../../schema";
 import {
   useTheme,
   useBSTheme,
@@ -25,9 +24,8 @@ import {
   get_resource,
   arrow,
   tw,
-  useComponent,
+  unwrap,
 } from "../../../../lib";
-import { views } from "../../../../views";
 import { ids } from "../../../../schema/ids";
 
 // Higher existence for searching via keywords
@@ -318,62 +316,85 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                   </Text>
                   <Row space={"2"}>
                     <Pressable
-                      onPress={() => {
-                        const resource_id: Decimal = arrow(() => {
-                          switch (resource.type) {
-                            case "image": {
-                              switch (resource.subtype) {
-                                case "png": {
-                                  return ids.ResourceType["image/png"]._id;
+                      onPress={async () => {
+                        const compose = get_compose("Create_Private_Resource");
+                        if (unwrap(compose)) {
+                          const resource_id: Decimal = arrow(() => {
+                            switch (resource.type) {
+                              case "image": {
+                                switch (resource.subtype) {
+                                  case "png": {
+                                    return ids.ResourceType["image/png"]._id;
+                                  }
+                                  case "jpeg": {
+                                    return ids.ResourceType["image/jpeg"]._id;
+                                  }
+                                  case "webp": {
+                                    return ids.ResourceType["image/webp"]._id;
+                                  }
+                                  default: {
+                                    const _exhaustiveCheck: never = resource;
+                                    return _exhaustiveCheck;
+                                  }
                                 }
-                                case "jpeg": {
-                                  return ids.ResourceType["image/jpeg"]._id;
+                              }
+                              case "video": {
+                                switch (resource.subtype) {
+                                  case "mp4": {
+                                    return ids.ResourceType["video/mp4"]._id;
+                                  }
+                                  default: {
+                                    const _exhaustiveCheck: never = resource;
+                                    return _exhaustiveCheck;
+                                  }
                                 }
-                                case "webp": {
-                                  return ids.ResourceType["image/webp"]._id;
+                              }
+                              case "application": {
+                                switch (resource.subtype) {
+                                  case "pdf": {
+                                    return ids.ResourceType["application/pdf"]
+                                      ._id;
+                                  }
+                                  default: {
+                                    const _exhaustiveCheck: never = resource;
+                                    return _exhaustiveCheck;
+                                  }
                                 }
-                                default: {
-                                  const _exhaustiveCheck: never = resource;
-                                  return _exhaustiveCheck;
+                              }
+                              case "text": {
+                                switch (resource.subtype) {
+                                  case "youtube": {
+                                    return ids.ResourceType["text/youtube"]._id;
+                                  }
+                                  default: {
+                                    const _exhaustiveCheck: never = resource;
+                                    return _exhaustiveCheck;
+                                  }
                                 }
                               }
                             }
-                            case "video": {
-                              switch (resource.subtype) {
-                                case "mp4": {
-                                  return ids.ResourceType["video/mp4"]._id;
-                                }
-                                default: {
-                                  const _exhaustiveCheck: never = resource;
-                                  return _exhaustiveCheck;
-                                }
-                              }
-                            }
-                            case "application": {
-                              switch (resource.subtype) {
-                                case "pdf": {
-                                  return ids.ResourceType["application/pdf"]
-                                    ._id;
-                                }
-                                default: {
-                                  const _exhaustiveCheck: never = resource;
-                                  return _exhaustiveCheck;
-                                }
-                              }
-                            }
-                            case "text": {
-                              switch (resource.subtype) {
-                                case "youtube": {
-                                  return ids.ResourceType["text/youtube"]._id;
-                                }
-                                default: {
-                                  const _exhaustiveCheck: never = resource;
-                                  return _exhaustiveCheck;
-                                }
-                              }
-                            }
+                          });
+                          const result = await compose.value.run({
+                            resource_type: {
+                              type: "other",
+                              other: "Resource_Type",
+                              value: resource_id,
+                            },
+                            url: {
+                              type: "str",
+                              value: resource.url,
+                            },
+                            tags: {
+                              type: "list",
+                              value: [],
+                            },
+                          });
+                          if (unwrap(result)) {
+                            bsm_ref.current?.forceClose();
+                          } else {
+                            // show toast
                           }
-                        });
+                        }
                       }}
                       backgroundColor={bs_theme.primary}
                       borderRadius={"xs"}
@@ -408,28 +429,4 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
       </Column>
     </ScrollView>
   );
-}
-
-export function ResourceComponent() {
-  const struct = get_struct("Resource_Type");
-  const [state, dispatch, jsx] = useComponent({
-    struct: struct,
-    id: new Decimal(-1),
-    created_at: new Date(),
-    updated_at: new Date(),
-    values: HashSet.of(),
-    init_values: HashSet.of(),
-    extensions: {},
-    labels: [
-      ["type", [[], "type"]],
-      ["type name", [["type"], "name"]],
-      ["url", [[], "lstr"]],
-      ["name", [[], "str"]],
-    ],
-    higher_structs: [],
-    entrypoints: [[[], "user"]],
-    create: views.Test["Default"].create,
-    update: views.Test["Default"].update,
-    show: views.Test["Default"].show,
-  });
 }
