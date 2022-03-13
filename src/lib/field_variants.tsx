@@ -37,6 +37,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { SheetVariantProps } from "./list_variants";
 import { cloneDeep } from "lodash";
 import { useTheme } from "./theme";
+import { terminal } from "./terminal";
 
 type FieldVariant = {
   str: [
@@ -238,7 +239,7 @@ function Str(props: ComponentProps & StrFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -328,7 +329,7 @@ function Lstr(props: ComponentProps & LstrFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -417,7 +418,7 @@ function Clob(props: ComponentProps & ClobFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -535,7 +536,7 @@ function I_32(props: ComponentProps & I32FieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -653,7 +654,7 @@ function U_32(props: ComponentProps & U32FieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -771,7 +772,7 @@ function I_64(props: ComponentProps & I64FieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -889,7 +890,7 @@ function U_64(props: ComponentProps & U64FieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1007,7 +1008,7 @@ function I_Double(props: ComponentProps & IDoubleFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1125,7 +1126,7 @@ function U_Double(props: ComponentProps & UDoubleFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1243,7 +1244,7 @@ function I_Decimal(props: ComponentProps & IDecimalFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1361,7 +1362,7 @@ function U_Decimal(props: ComponentProps & UDecimalFieldProps): JSX.Element {
       );
     });
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1400,7 +1401,7 @@ function Bool_Switch(props: ComponentProps & BoolFieldProps): JSX.Element {
       </Text>
     );
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1436,7 +1437,7 @@ function Bool_Checkbox(props: ComponentProps & BoolFieldProps): JSX.Element {
       </Text>
     );
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1487,7 +1488,7 @@ function Date_Field(props: ComponentProps & DateFieldProps): JSX.Element {
       </Text>
     );
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1538,7 +1539,7 @@ function Time_Field(props: ComponentProps & TimeFieldProps): JSX.Element {
       </Text>
     );
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1628,7 +1629,7 @@ function Timestamp_Field(
       </Text>
     );
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 
@@ -1759,7 +1760,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
       }
     }
   }
-  console.log("[ERROR] Invalid path: ", props.path);
+  terminal(["error", ["field_variants", `Invalid path: ${props.path}`]]);
   return <></>;
 }
 

@@ -7,6 +7,7 @@ import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
 import { Bool, BooleanLispExpression, Symbol } from "./lisp";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { terminal } from "./terminal";
 import { TransformArgs, TransformResult } from "./transform";
 import { compare_paths, PathString, StrongEnum, WeakEnum } from "./variable";
 
@@ -245,7 +246,7 @@ export class Compose {
     args: ComposeArgs,
     level: Decimal
   ): Promise<Result<ComposeResult>> {
-    console.log("\n[COMPOSE]", this.name, "\n", args, "\n");
+    terminal(["compose", `\n[COMPOSE] ${this.name}\n ${args}\n`]);
     const result = await get_symbols_for_fx_compose_paths(
       level,
       arrow(() => {
@@ -283,15 +284,15 @@ export class Compose {
           const expr_result = result.value;
           if (expr_result instanceof Bool) {
             if (!expr_result.value) {
-              console.log("COMPOSE", 1);
+              terminal(["error", ["compose", `1`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
-            console.log("COMPOSE", 2);
+            terminal(["error", ["compose", `2`]]);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         } else {
-          console.log("COMPOSE", 3);
+          terminal(["error", ["compose", `3`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       }
@@ -306,7 +307,7 @@ export class Compose {
               if (arg.type === input.type) {
                 computed_outputs[input_name] = arg.value;
               } else {
-                console.log("COMPOSE", 4);
+                terminal(["error", ["compose", `4`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -319,7 +320,7 @@ export class Compose {
                     value: arg.value,
                   } as StrongEnum;
                 } else {
-                  console.log("COMPOSE", 5);
+                  terminal(["error", ["compose", `5`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -333,7 +334,7 @@ export class Compose {
                     value: arg.value,
                   };
                 } else {
-                  console.log("COMPOSE", 6);
+                  terminal(["error", ["compose", `6`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -359,7 +360,7 @@ export class Compose {
                   };
                 }
               } else {
-                console.log("COMPOSE", 7);
+                terminal(["error", ["compose", `7`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -376,7 +377,7 @@ export class Compose {
         level
       );
     } else {
-      console.log("COMPOSE", 8);
+      terminal(["error", ["compose", `8`]]);
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
   }
@@ -453,11 +454,11 @@ export class Compose {
             }
           }
         } else {
-          console.log("COMPOSE", 9);
+          terminal(["error", ["compose", `9`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       } else {
-        console.log("COMPOSE", 10);
+        terminal(["error", ["compose", `10`]]);
         return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
       }
     } else {
@@ -564,7 +565,7 @@ export class Compose {
                           }
                         });
                       } else {
-                        console.log("COMPOSE", 11);
+                        terminal(["error", ["compose", `11`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -580,7 +581,7 @@ export class Compose {
                           value: arg.value,
                         };
                       } else {
-                        console.log("COMPOSE", 12);
+                        terminal(["error", ["compose", `12`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -648,7 +649,7 @@ export class Compose {
                         };
                       }
                     } else {
-                      console.log("COMPOSE", 13);
+                      terminal(["error", ["compose", `13`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -717,7 +718,7 @@ export class Compose {
                               }
                             });
                           } else {
-                            console.log("COMPOSE", 14);
+                            terminal(["error", ["compose", `14`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
@@ -733,26 +734,26 @@ export class Compose {
                               value: arg.value,
                             };
                           } else {
-                            console.log("COMPOSE", 15);
+                            terminal(["error", ["compose", `15`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
                           }
                         }
                       } else {
-                        console.log("COMPOSE", 16);
+                        terminal(["error", ["compose", `16`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
                       }
                     } else {
-                      console.log("COMPOSE", 17);
+                      terminal(["error", ["compose", `17`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
                     }
                   } else {
-                    console.log("COMPOSE", 18);
+                    terminal(["error", ["compose", `18`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -822,7 +823,7 @@ export class Compose {
                                 }
                               });
                             } else {
-                              console.log("COMPOSE", 19);
+                              terminal(["error", ["compose", `19`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -840,7 +841,7 @@ export class Compose {
                                 value: arg.value,
                               };
                             } else {
-                              console.log("COMPOSE", 20);
+                              terminal(["error", ["compose", `20`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -849,25 +850,25 @@ export class Compose {
                             }
                           }
                         } else {
-                          console.log("COMPOSE", 21);
+                          terminal(["error", ["compose", `21`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       } else {
-                        console.log("COMPOSE", 22);
+                        terminal(["error", ["compose", `22`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
                       }
                     } else {
-                      console.log("COMPOSE", 23);
+                      terminal(["error", ["compose", `23`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
                     }
                   } else {
-                    console.log("COMPOSE", 24);
+                    terminal(["error", ["compose", `24`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -880,7 +881,7 @@ export class Compose {
                 }
               }
             } else {
-              console.log("COMPOSE", 25);
+              terminal(["error", ["compose", `25`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           }
@@ -895,12 +896,15 @@ export class Compose {
             }
             if (step.output !== undefined) {
               for (const output_name of Object.keys(step.output)) {
-                console.log(output_name, computed_output.value);
+                terminal([
+                  "compose",
+                  `${output_name} ${computed_output.value}`,
+                ]);
                 const value: string = step.output[output_name];
                 if (value in computed_output.value) {
                   computed_outputs[output_name] = computed_output.value[value];
                 } else {
-                  console.log("COMPOSE", 26);
+                  terminal(["error", ["compose", `26`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -908,11 +912,11 @@ export class Compose {
               }
             }
           } else {
-            console.log("COMPOSE", 27);
+            terminal(["error", ["compose", `27`]]);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         } else {
-          console.log("COMPOSE", 28);
+          terminal(["error", ["compose", `28`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
@@ -987,7 +991,7 @@ export class Compose {
                         }
                       });
                     } else {
-                      console.log("COMPOSE", 29);
+                      terminal(["error", ["compose", `29`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -1000,7 +1004,7 @@ export class Compose {
                         value: arg.value,
                       };
                     } else {
-                      console.log("COMPOSE", 30);
+                      terminal(["error", ["compose", `30`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -1069,7 +1073,7 @@ export class Compose {
                         };
                       }
                     } else {
-                      console.log("COMPOSE", 31);
+                      terminal(["error", ["compose", `31`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -1144,7 +1148,7 @@ export class Compose {
                             }
                           });
                         } else {
-                          console.log("COMPOSE", 32);
+                          terminal(["error", ["compose", `32`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1160,26 +1164,26 @@ export class Compose {
                             value: arg.value,
                           };
                         } else {
-                          console.log("COMPOSE", 33);
+                          terminal(["error", ["compose", `33`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       }
                     } else {
-                      console.log("COMPOSE", 34);
+                      terminal(["error", ["compose", `34`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
                     }
                   } else {
-                    console.log("COMPOSE", 35);
+                    terminal(["error", ["compose", `35`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("COMPOSE", 36);
+                  terminal(["error", ["compose", `36`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1249,7 +1253,7 @@ export class Compose {
                               }
                             });
                           } else {
-                            console.log("COMPOSE", 37);
+                            terminal(["error", ["compose", `37`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
@@ -1265,7 +1269,7 @@ export class Compose {
                               value: arg.value,
                             };
                           } else {
-                            console.log("COMPOSE", 38);
+                            terminal(["error", ["compose", `38`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
@@ -1289,19 +1293,19 @@ export class Compose {
                         };
                       }
                     } else {
-                      console.log("COMPOSE", 39);
+                      terminal(["error", ["compose", `39`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
                     }
                   } else {
-                    console.log("COMPOSE", 40);
+                    terminal(["error", ["compose", `40`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("COMPOSE", 41);
+                  terminal(["error", ["compose", `41`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1318,13 +1322,13 @@ export class Compose {
                       value: step_output.value,
                     };
                   } else {
-                    console.log("COMPOSE", 42);
+                    terminal(["error", ["compose", `42`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("COMPOSE", 43);
+                  terminal(["error", ["compose", `43`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1352,7 +1356,7 @@ export class Compose {
                 if (value in computed_output.value) {
                   computed_outputs[output_name] = computed_output.value[value];
                 } else {
-                  console.log("COMPOSE", 44);
+                  terminal(["error", ["compose", `44`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1360,11 +1364,11 @@ export class Compose {
               }
             }
           } else {
-            console.log("COMPOSE", 45);
+            terminal(["error", ["compose", `45`]]);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         } else {
-          console.log("COMPOSE", 46);
+          terminal(["error", ["compose", `46`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
@@ -1395,7 +1399,7 @@ export class Compose {
                           transform_arg[field_name] = inject_arg;
                         }
                       } else {
-                        console.log("COMPOSE", 47);
+                        terminal(["error", ["compose", `47`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1415,19 +1419,19 @@ export class Compose {
                             transform_arg[field_name] =
                               inject_step_output.value[inject_fx_output_name];
                           } else {
-                            console.log("COMPOSE", 48);
+                            terminal(["error", ["compose", `48`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
                           }
                         } else {
-                          console.log("COMPOSE", 49);
+                          terminal(["error", ["compose", `49`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       } else {
-                        console.log("COMPOSE", 50);
+                        terminal(["error", ["compose", `50`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1450,19 +1454,19 @@ export class Compose {
                                 inject_compose_output_name
                               ];
                           } else {
-                            console.log("COMPOSE", 51);
+                            terminal(["error", ["compose", `51`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
                           }
                         } else {
-                          console.log("COMPOSE", 52);
+                          terminal(["error", ["compose", `52`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       } else {
-                        console.log("COMPOSE", 53);
+                        terminal(["error", ["compose", `53`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1477,13 +1481,13 @@ export class Compose {
                         if (inject.type === inject_step_output.type) {
                           transform_arg[field_name] = inject_step_output.value;
                         } else {
-                          console.log("COMPOSE", 54);
+                          terminal(["error", ["compose", `54`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       } else {
-                        console.log("COMPOSE", 55);
+                        terminal(["error", ["compose", `55`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1524,7 +1528,7 @@ export class Compose {
                                   transform_arg[field_name] = inject_arg;
                                 }
                               } else {
-                                console.log("COMPOSE", 56);
+                                terminal(["error", ["compose", `56`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -1549,7 +1553,7 @@ export class Compose {
                                         inject_fx_output_name
                                       ];
                                   } else {
-                                    console.log("COMPOSE", 57);
+                                    terminal(["error", ["compose", `57`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1557,7 +1561,7 @@ export class Compose {
                                     );
                                   }
                                 } else {
-                                  console.log("COMPOSE", 58);
+                                  terminal(["error", ["compose", `58`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -1565,7 +1569,7 @@ export class Compose {
                                   );
                                 }
                               } else {
-                                console.log("COMPOSE", 59);
+                                terminal(["error", ["compose", `59`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -1592,7 +1596,7 @@ export class Compose {
                                         inject_compose_output_name
                                       ];
                                   } else {
-                                    console.log("COMPOSE", 60);
+                                    terminal(["error", ["compose", `60`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1600,7 +1604,7 @@ export class Compose {
                                     );
                                   }
                                 } else {
-                                  console.log("COMPOSE", 61);
+                                  terminal(["error", ["compose", `61`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -1608,7 +1612,7 @@ export class Compose {
                                   );
                                 }
                               } else {
-                                console.log("COMPOSE", 62);
+                                terminal(["error", ["compose", `62`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -1626,7 +1630,7 @@ export class Compose {
                                   transform_arg[field_name] =
                                     inject_step_output.value;
                                 } else {
-                                  console.log("COMPOSE", 63);
+                                  terminal(["error", ["compose", `63`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -1634,7 +1638,7 @@ export class Compose {
                                   );
                                 }
                               } else {
-                                console.log("COMPOSE", 64);
+                                terminal(["error", ["compose", `64`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -1653,7 +1657,7 @@ export class Compose {
                       transform_base.push(transform_arg);
                     }
                   } else {
-                    console.log("COMPOSE", 65);
+                    terminal(["error", ["compose", `65`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -1688,7 +1692,7 @@ export class Compose {
                               transform_arg[field_name] =
                                 arg_value[ref_field_name];
                             } else {
-                              console.log("COMPOSE", 66);
+                              terminal(["error", ["compose", `66`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -1713,7 +1717,7 @@ export class Compose {
                                       transform_arg[field_name] = inject_arg;
                                     }
                                   } else {
-                                    console.log("COMPOSE", 67);
+                                    terminal(["error", ["compose", `67`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1742,7 +1746,7 @@ export class Compose {
                                             inject_fx_output_name
                                           ];
                                       } else {
-                                        console.log("COMPOSE", 68);
+                                        terminal(["error", ["compose", `68`]]);
                                         return new Err(
                                           new CustomError([
                                             errors.ErrUnexpected,
@@ -1750,7 +1754,7 @@ export class Compose {
                                         );
                                       }
                                     } else {
-                                      console.log("COMPOSE", 69);
+                                      terminal(["error", ["compose", `69`]]);
                                       return new Err(
                                         new CustomError([
                                           errors.ErrUnexpected,
@@ -1758,7 +1762,7 @@ export class Compose {
                                       );
                                     }
                                   } else {
-                                    console.log("COMPOSE", 70);
+                                    terminal(["error", ["compose", `70`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1787,7 +1791,7 @@ export class Compose {
                                             inject_compose_output_name
                                           ];
                                       } else {
-                                        console.log("COMPOSE", 71);
+                                        terminal(["error", ["compose", `71`]]);
                                         return new Err(
                                           new CustomError([
                                             errors.ErrUnexpected,
@@ -1795,7 +1799,7 @@ export class Compose {
                                         );
                                       }
                                     } else {
-                                      console.log("COMPOSE", 72);
+                                      terminal(["error", ["compose", `72`]]);
                                       return new Err(
                                         new CustomError([
                                           errors.ErrUnexpected,
@@ -1803,7 +1807,7 @@ export class Compose {
                                       );
                                     }
                                   } else {
-                                    console.log("COMPOSE", 73);
+                                    terminal(["error", ["compose", `73`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1823,7 +1827,7 @@ export class Compose {
                                       transform_arg[field_name] =
                                         inject_step_output.value;
                                     } else {
-                                      console.log("COMPOSE", 74);
+                                      terminal(["error", ["compose", `74`]]);
                                       return new Err(
                                         new CustomError([
                                           errors.ErrUnexpected,
@@ -1831,7 +1835,7 @@ export class Compose {
                                       );
                                     }
                                   } else {
-                                    console.log("COMPOSE", 75);
+                                    terminal(["error", ["compose", `75`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1850,25 +1854,25 @@ export class Compose {
                           transform_base.push(transform_arg);
                         }
                       } else {
-                        console.log("COMPOSE", 76);
+                        terminal(["error", ["compose", `76`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
                       }
                     } else {
-                      console.log("COMPOSE", 77);
+                      terminal(["error", ["compose", `77`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
                     }
                   } else {
-                    console.log("COMPOSE", 78);
+                    terminal(["error", ["compose", `78`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("COMPOSE", 79);
+                  terminal(["error", ["compose", `79`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1890,7 +1894,7 @@ export class Compose {
                         if (ref_field_name in arg_value) {
                           transform_arg[field_name] = arg_value[ref_field_name];
                         } else {
-                          console.log("COMPOSE", 80);
+                          terminal(["error", ["compose", `80`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1912,7 +1916,7 @@ export class Compose {
                                   transform_arg[field_name] = inject_arg;
                                 }
                               } else {
-                                console.log("COMPOSE", 81);
+                                terminal(["error", ["compose", `81`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -1937,7 +1941,7 @@ export class Compose {
                                         inject_fx_output_name
                                       ];
                                   } else {
-                                    console.log("COMPOSE", 82);
+                                    terminal(["error", ["compose", `82`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1945,7 +1949,7 @@ export class Compose {
                                     );
                                   }
                                 } else {
-                                  console.log("COMPOSE", 83);
+                                  terminal(["error", ["compose", `83`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -1953,7 +1957,7 @@ export class Compose {
                                   );
                                 }
                               } else {
-                                console.log("COMPOSE", 84);
+                                terminal(["error", ["compose", `84`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -1980,7 +1984,7 @@ export class Compose {
                                         inject_compose_output_name
                                       ];
                                   } else {
-                                    console.log("COMPOSE", 85);
+                                    terminal(["error", ["compose", `85`]]);
                                     return new Err(
                                       new CustomError([
                                         errors.ErrUnexpected,
@@ -1988,7 +1992,7 @@ export class Compose {
                                     );
                                   }
                                 } else {
-                                  console.log("COMPOSE", 86);
+                                  terminal(["error", ["compose", `86`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -1996,7 +2000,7 @@ export class Compose {
                                   );
                                 }
                               } else {
-                                console.log("COMPOSE", 87);
+                                terminal(["error", ["compose", `87`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -2014,7 +2018,7 @@ export class Compose {
                                   transform_arg[field_name] =
                                     inject_step_output.value;
                                 } else {
-                                  console.log("COMPOSE", 88);
+                                  terminal(["error", ["compose", `88`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -2022,7 +2026,7 @@ export class Compose {
                                   );
                                 }
                               } else {
-                                console.log("COMPOSE", 89);
+                                terminal(["error", ["compose", `89`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -2041,13 +2045,13 @@ export class Compose {
                       transform_base.push(transform_arg);
                     }
                   } else {
-                    console.log("COMPOSE", 90);
+                    terminal(["error", ["compose", `90`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("COMPOSE", 91);
+                  terminal(["error", ["compose", `91`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -2128,7 +2132,7 @@ export class Compose {
                               }
                             });
                           } else {
-                            console.log("COMPOSE", 92);
+                            terminal(["error", ["compose", `92`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
@@ -2144,7 +2148,7 @@ export class Compose {
                               value: arg.value,
                             };
                           } else {
-                            console.log("COMPOSE", 93);
+                            terminal(["error", ["compose", `93`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
@@ -2215,7 +2219,7 @@ export class Compose {
                                   }
                                 });
                               } else {
-                                console.log("COMPOSE", 94);
+                                terminal(["error", ["compose", `94`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -2233,7 +2237,7 @@ export class Compose {
                                   value: arg.value,
                                 };
                               } else {
-                                console.log("COMPOSE", 95);
+                                terminal(["error", ["compose", `95`]]);
                                 return new Err(
                                   new CustomError([
                                     errors.ErrUnexpected,
@@ -2242,19 +2246,19 @@ export class Compose {
                               }
                             }
                           } else {
-                            console.log("COMPOSE", 96);
+                            terminal(["error", ["compose", `96`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
                           }
                         } else {
-                          console.log("COMPOSE", 97);
+                          terminal(["error", ["compose", `97`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       } else {
-                        console.log("COMPOSE", 98);
+                        terminal(["error", ["compose", `98`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -2323,7 +2327,7 @@ export class Compose {
                                     }
                                   });
                                 } else {
-                                  console.log("COMPOSE", 99);
+                                  terminal(["error", ["compose", `99`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -2341,7 +2345,7 @@ export class Compose {
                                     value: arg.value,
                                   };
                                 } else {
-                                  console.log("COMPOSE", 100);
+                                  terminal(["error", ["compose", `100`]]);
                                   return new Err(
                                     new CustomError([
                                       errors.ErrUnexpected,
@@ -2350,7 +2354,7 @@ export class Compose {
                                 }
                               }
                             } else {
-                              console.log("COMPOSE", 101);
+                              terminal(["error", ["compose", `101`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -2358,19 +2362,19 @@ export class Compose {
                               );
                             }
                           } else {
-                            console.log("COMPOSE", 102);
+                            terminal(["error", ["compose", `102`]]);
                             return new Err(
                               new CustomError([errors.ErrUnexpected] as ErrMsg)
                             );
                           }
                         } else {
-                          console.log("COMPOSE", 103);
+                          terminal(["error", ["compose", `103`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       } else {
-                        console.log("COMPOSE", 104);
+                        terminal(["error", ["compose", `104`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -2384,7 +2388,7 @@ export class Compose {
                   }
                 }
               } else {
-                console.log("COMPOSE", 105);
+                terminal(["error", ["compose", `105`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -2407,11 +2411,11 @@ export class Compose {
               computed_outputs[step.output] = computed_output.value;
             }
           } else {
-            console.log("COMPOSE", 106);
+            terminal(["error", ["compose", `106`]]);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         } else {
-          console.log("COMPOSE", 107);
+          terminal(["error", ["compose", `107`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
@@ -2421,7 +2425,7 @@ export class Compose {
         return _exhaustiveCheck;
       }
     }
-    console.log("[STEP]", step.name ? step.name : "");
+    terminal(["compose", `[STEP] ${step.name ? step.name : ""}`]);
     return new Ok(computed_outputs);
   }
 }

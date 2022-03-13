@@ -43,6 +43,7 @@ import {
   WeakEnum,
 } from "./variable";
 import { ComposeArgs, ComposeInputs } from "./compose";
+import { terminal } from "./terminal";
 
 // Note. Trigger fields will be passed to fx for creation of variables, on client side, but absent on server side
 
@@ -152,7 +153,7 @@ export class Fx {
   }
 
   async exec(args: FxArgs, level: Decimal): Promise<Result<FxResult>> {
-    console.log("\n[FX]", this.name, "\n", args, "\n");
+    terminal(["fx", `\n[FX] ${this.name}\n ${args}\n`]);
     const result = await get_symbols_for_fx_compose_paths(
       level,
       arrow(() => {
@@ -230,15 +231,15 @@ export class Fx {
           const expr_result = result.value;
           if (expr_result instanceof Bool) {
             if (!expr_result.value) {
-              console.log("FX", 1);
+              terminal(["error", ["fx", `1`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
-            console.log("FX", 2);
+            terminal(["error", ["fx", `2`]]);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         } else {
-          console.log("FX", 3);
+          terminal(["error", ["fx", `3`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
       }
@@ -360,7 +361,7 @@ export class Fx {
                             })
                           );
                         } else {
-                          console.log("FX", 4);
+                          terminal(["error", ["fx", `4`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -382,7 +383,7 @@ export class Fx {
                             })
                           );
                         } else {
-                          console.log("FX", 5);
+                          terminal(["error", ["fx", `5`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -404,7 +405,7 @@ export class Fx {
                             })
                           );
                         } else {
-                          console.log("FX", 6);
+                          terminal(["error", ["fx", `6`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -423,7 +424,7 @@ export class Fx {
                             })
                           );
                         } else {
-                          console.log("FX", 7);
+                          terminal(["error", ["fx", `7`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -444,7 +445,7 @@ export class Fx {
                             })
                           );
                         } else {
-                          console.log("FX", 8);
+                          terminal(["error", ["fx", `8`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -464,7 +465,7 @@ export class Fx {
                             })
                           );
                         } else {
-                          console.log("FX", 9);
+                          terminal(["error", ["fx", `9`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -477,7 +478,7 @@ export class Fx {
                       }
                     }
                   } else {
-                    console.log("FX", 10);
+                    terminal(["error", ["fx", `10`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -486,7 +487,7 @@ export class Fx {
                   continue;
                 }
               } else {
-                console.log("FX", 11);
+                terminal(["error", ["fx", `11`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -518,7 +519,7 @@ export class Fx {
                   continue;
                 }
               } else {
-                console.log("FX", 12);
+                terminal(["error", ["fx", `12`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -547,7 +548,7 @@ export class Fx {
                   continue;
                 }
               } else {
-                console.log("FX", 13);
+                terminal(["error", ["fx", `13`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -561,13 +562,13 @@ export class Fx {
               if (arg.type === input.type && arg.other === input.other) {
                 await remove_variables_in_db(level, struct.name, [arg.value]);
               } else {
-                console.log("FX", 14);
+                terminal(["error", ["fx", `14`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
               }
             } else {
-              console.log("FX", 15);
+              terminal(["error", ["fx", `15`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           }
@@ -592,7 +593,7 @@ export class Fx {
                       value: expr_result.value,
                     };
                   } else {
-                    console.log("FX", 16);
+                    terminal(["error", ["fx", `16`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -609,7 +610,7 @@ export class Fx {
                       value: new Decimal(expr_result.value),
                     };
                   } else {
-                    console.log("FX", 17);
+                    terminal(["error", ["fx", `17`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -626,7 +627,7 @@ export class Fx {
                       value: new Decimal(expr_result.value),
                     };
                   } else {
-                    console.log("FX", 18);
+                    terminal(["error", ["fx", `18`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -640,7 +641,7 @@ export class Fx {
                       value: expr_result.value,
                     };
                   } else {
-                    console.log("FX", 19);
+                    terminal(["error", ["fx", `19`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -656,7 +657,7 @@ export class Fx {
                       value: new Date(expr_result.value),
                     };
                   } else {
-                    console.log("FX", 20);
+                    terminal(["error", ["fx", `20`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -671,7 +672,7 @@ export class Fx {
                       value: new Decimal(expr_result.value),
                     };
                   } else {
-                    console.log("FX", 21);
+                    terminal(["error", ["fx", `21`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -684,7 +685,7 @@ export class Fx {
                 }
               }
             } else {
-              console.log("FX", 22);
+              terminal(["error", ["fx", `22`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
             break;
@@ -728,7 +729,7 @@ export class Fx {
                           ])
                         );
                       } else {
-                        console.log("FX", 23);
+                        terminal(["error", ["fx", `23`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -753,7 +754,7 @@ export class Fx {
                           ])
                         );
                       } else {
-                        console.log("FX", 24);
+                        terminal(["error", ["fx", `24`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -778,7 +779,7 @@ export class Fx {
                           ])
                         );
                       } else {
-                        console.log("FX", 25);
+                        terminal(["error", ["fx", `25`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -800,7 +801,7 @@ export class Fx {
                           ])
                         );
                       } else {
-                        console.log("FX", 26);
+                        terminal(["error", ["fx", `26`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -824,7 +825,7 @@ export class Fx {
                           ])
                         );
                       } else {
-                        console.log("FX", 27);
+                        terminal(["error", ["fx", `27`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -847,7 +848,7 @@ export class Fx {
                           ])
                         );
                       } else {
-                        console.log("FX", 28);
+                        terminal(["error", ["fx", `28`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -860,13 +861,13 @@ export class Fx {
                     }
                   }
                 } else {
-                  console.log("FX", 29);
+                  terminal(["error", ["fx", `29`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
               } else {
-                console.log("FX", 30);
+                terminal(["error", ["fx", `30`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -914,7 +915,7 @@ export class Fx {
                                 )
                               );
                             } else {
-                              console.log("FX", 30.1);
+                              terminal(["error", ["fx", `30.1`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -943,7 +944,7 @@ export class Fx {
                                 )
                               );
                             } else {
-                              console.log("FX", 30.2);
+                              terminal(["error", ["fx", `30.2`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -972,7 +973,7 @@ export class Fx {
                                 )
                               );
                             } else {
-                              console.log("FX", 30.3);
+                              terminal(["error", ["fx", `30.3`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -995,7 +996,7 @@ export class Fx {
                                 )
                               );
                             } else {
-                              console.log("FX", 30.4);
+                              terminal(["error", ["fx", `30.4`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -1020,7 +1021,7 @@ export class Fx {
                                 )
                               );
                             } else {
-                              console.log("FX", 30.5);
+                              terminal(["error", ["fx", `30.5`]]);
                               return new Err(
                                 new CustomError([
                                   errors.ErrUnexpected,
@@ -1052,20 +1053,20 @@ export class Fx {
                             )
                           );
                         } else {
-                          console.log("FX", 30.6);
+                          terminal(["error", ["fx", `30.6`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
                         }
                       }
                     } else {
-                      console.log("FX", 30.7);
+                      terminal(["error", ["fx", `30.7`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
                     }
                   } else {
-                    console.log("FX", 31);
+                    terminal(["error", ["fx", `31`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -1125,7 +1126,7 @@ export class Fx {
                             ])
                           );
                         } else {
-                          console.log("FX", 32);
+                          terminal(["error", ["fx", `32`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1150,7 +1151,7 @@ export class Fx {
                             ])
                           );
                         } else {
-                          console.log("FX", 33);
+                          terminal(["error", ["fx", `33`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1175,7 +1176,7 @@ export class Fx {
                             ])
                           );
                         } else {
-                          console.log("FX", 34);
+                          terminal(["error", ["fx", `34`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1197,7 +1198,7 @@ export class Fx {
                             ])
                           );
                         } else {
-                          console.log("FX", 35);
+                          terminal(["error", ["fx", `35`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1221,7 +1222,7 @@ export class Fx {
                             ])
                           );
                         } else {
-                          console.log("FX", 36);
+                          terminal(["error", ["fx", `36`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1244,7 +1245,7 @@ export class Fx {
                             ])
                           );
                         } else {
-                          console.log("FX", 37);
+                          terminal(["error", ["fx", `37`]]);
                           return new Err(
                             new CustomError([errors.ErrUnexpected] as ErrMsg)
                           );
@@ -1258,7 +1259,7 @@ export class Fx {
                     }
                   }
                 } else {
-                  console.log("FX", 38);
+                  terminal(["error", ["fx", `38`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1272,7 +1273,7 @@ export class Fx {
               // replace -> replace
               switch (output.op) {
                 case "insert": {
-                  console.log("FX", 39);
+                  terminal(["error", ["fx", `39`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1330,7 +1331,7 @@ export class Fx {
                       value: variable.id,
                     };
                   } else {
-                    console.log("FX", 40);
+                    terminal(["error", ["fx", `40`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -1376,7 +1377,7 @@ export class Fx {
                           )
                         );
                       } else {
-                        console.log("FX", 41);
+                        terminal(["error", ["fx", `41`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1400,7 +1401,7 @@ export class Fx {
                           )
                         );
                       } else {
-                        console.log("FX", 42);
+                        terminal(["error", ["fx", `42`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1424,7 +1425,7 @@ export class Fx {
                           )
                         );
                       } else {
-                        console.log("FX", 43);
+                        terminal(["error", ["fx", `43`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1442,7 +1443,7 @@ export class Fx {
                           )
                         );
                       } else {
-                        console.log("FX", 44);
+                        terminal(["error", ["fx", `44`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1465,7 +1466,7 @@ export class Fx {
                           )
                         );
                       } else {
-                        console.log("FX", 45);
+                        terminal(["error", ["fx", `45`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1488,7 +1489,7 @@ export class Fx {
                           )
                         );
                       } else {
-                        console.log("FX", 46);
+                        terminal(["error", ["fx", `46`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -1501,13 +1502,13 @@ export class Fx {
                     }
                   }
                 } else {
-                  console.log("FX", 47);
+                  terminal(["error", ["fx", `47`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
               } else {
-                console.log("FX", 48);
+                terminal(["error", ["fx", `48`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -1536,7 +1537,7 @@ export class Fx {
                 result.value.map((x) => x.id)
               );
             } else {
-              console.log("FX", 49);
+              terminal(["error", ["fx", `49`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
             break;
@@ -1547,10 +1548,10 @@ export class Fx {
           }
         }
       }
-      console.log("[SUCCESS]");
+      terminal(["fx", `[SUCCESS] [FX] ${this.name}`]);
       return new Ok(computed_outputs);
     } else {
-      console.log("FX", 50);
+      terminal(["error", ["fx", `50`]]);
       return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
     }
   }
@@ -1562,7 +1563,6 @@ export async function get_symbols_for_fx_compose_paths(
   value: [FxInputs, FxArgs] | [ComposeInputs, ComposeArgs]
 ): Promise<Result<Record<string, Symbol>>> {
   const [inputs, args] = value;
-  // console.log(paths);
   const symbols: Record<string, Symbol> = {};
   for (const input_name of Object.keys(inputs)) {
     const input = inputs[input_name];
@@ -1764,13 +1764,13 @@ export async function get_symbols_for_fx_compose_paths(
                       values: get_symbols_for_paths(variable.value.paths),
                     });
                   } else {
-                    console.log("FX", 51);
+                    terminal(["error", ["fx", `51`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("FX", 52);
+                  terminal(["error", ["fx", `52`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1790,13 +1790,13 @@ export async function get_symbols_for_fx_compose_paths(
                       values: get_symbols_for_paths(variable.value.paths),
                     });
                   } else {
-                    console.log("FX", 53);
+                    terminal(["error", ["fx", `53`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
                   }
                 } else {
-                  console.log("FX", 54);
+                  terminal(["error", ["fx", `54`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1811,7 +1811,7 @@ export async function get_symbols_for_fx_compose_paths(
                     values: {},
                   });
                 } else {
-                  console.log("FX", 55);
+                  terminal(["error", ["fx", `55`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1823,7 +1823,7 @@ export async function get_symbols_for_fx_compose_paths(
                     values: {},
                   });
                 } else {
-                  console.log("FX", 56);
+                  terminal(["error", ["fx", `56`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1831,7 +1831,7 @@ export async function get_symbols_for_fx_compose_paths(
               }
             }
           } else {
-            console.log("FX", 57);
+            terminal(["error", ["fx", `57`]]);
             return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
           }
         }

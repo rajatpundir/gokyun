@@ -7,6 +7,7 @@ import Public_Resource_Tag from "./structs/user/Public_Resource_Tag/fx";
 import { errors, ErrMsg } from "../lib/errors";
 import { Fx } from "../lib/fx";
 import { Result, Ok, Err, CustomError } from "../lib/prelude";
+import { terminal } from "../lib/terminal";
 
 // All structs are created via Fx
 
@@ -63,6 +64,6 @@ export function get_fx(
       return new Ok(schema[fx_name]);
     }
   }
-  console.log("[ERROR] Invalid fx:", fx_name);
+  terminal(["error", ["schema", `Invalid fx: ${fx_name}`]]);
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

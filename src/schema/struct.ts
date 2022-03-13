@@ -78,6 +78,7 @@ import Clan_Product_Order from "./structs/clan/Clan_Product_Order";
 import Clan_Product_Order_Item from "./structs/clan/Clan_Product_Order_Item";
 import Clan_Service_Order from "./structs/clan/Clan_Service_Order";
 import { CustomError, Err, Ok, Result } from "../lib/prelude";
+import { terminal } from "../lib/terminal";
 
 export const structs = {
   Test: Test,
@@ -176,7 +177,7 @@ const schema = structs as any as Record<
 
 export function get_struct(struct_name: StructName): Struct {
   if (!(struct_name in schema)) {
-    console.log("[ERROR] Invalid struct:", struct_name);
+    terminal(["error", ["schema", `Invalid struct: ${struct_name}`]]);
   }
   const structDef = schema[struct_name];
   const struct: Struct = new Struct(

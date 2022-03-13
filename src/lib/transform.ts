@@ -8,6 +8,7 @@ import { FilterPath, get_variables, OrFilter } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs } from "./fx";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { terminal } from "./terminal";
 import {
   compare_paths,
   get_flattened_path,
@@ -76,7 +77,7 @@ export class Transform {
     args: TransformArgs,
     level: Decimal
   ): Promise<Result<TransformResult>> {
-    console.log("\n[TRANSFORM]", this.name, "\n", args, "\n");
+    terminal(["transform", `\n[TRANSFORM] ${this.name}\n ${args}\n`]);
     const computed_outputs: Array<Record<string, StrongEnum> | ComposeResult> =
       [];
     switch (this.type) {
@@ -159,7 +160,7 @@ export class Transform {
                         })
                       );
                     } else {
-                      console.log("TRANSFORM", 1);
+                      terminal(["error", ["transform", `1`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -178,7 +179,7 @@ export class Transform {
                         )
                       );
                     } else {
-                      console.log("TRANSFORM", 2);
+                      terminal(["error", ["transform", `2`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -273,7 +274,7 @@ export class Transform {
                       }
                     }
                   } else {
-                    console.log("TRANSFORM", 3);
+                    terminal(["error", ["transform", `3`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -315,7 +316,7 @@ export class Transform {
                     );
                   }
                 } else {
-                  console.log("TRANSFORM", 4);
+                  terminal(["error", ["transform", `4`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -351,7 +352,7 @@ export class Transform {
                     if (path.isSome()) {
                       fx_args[input_name] = path.get().path[1][1];
                     } else {
-                      console.log("TRANSFORM", 5);
+                      terminal(["error", ["transform", `5`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -366,7 +367,7 @@ export class Transform {
                           input_name
                         ] as StrongEnum;
                       } else {
-                        console.log("TRANSFORM", 6);
+                        terminal(["error", ["transform", `6`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -381,13 +382,13 @@ export class Transform {
                           args.base.length - 1
                         ] as StrongEnum;
                       } else {
-                        console.log("TRANSFORM", 7);
+                        terminal(["error", ["transform", `7`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
                       }
                     } else {
-                      console.log("TRANSFORM", 8);
+                      terminal(["error", ["transform", `8`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -453,7 +454,7 @@ export class Transform {
                       };
                     }
                   } else {
-                    console.log("TRANSFORM", 9);
+                    terminal(["error", ["transform", `9`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -463,14 +464,14 @@ export class Transform {
                 if (unwrap(computed_output)) {
                   computed_outputs.push(computed_output.value);
                 } else {
-                  console.log("TRANSFORM", 10);
+                  terminal(["error", ["transform", `10`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
                 }
               }
             } else {
-              console.log("TRANSFORM", 11);
+              terminal(["error", ["transform", `11`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
@@ -483,7 +484,7 @@ export class Transform {
                   if (!Array.isArray(arg[input_name])) {
                     fx_args[input_name] = arg[input_name] as StrongEnum;
                   } else {
-                    console.log("TRANSFORM", 12);
+                    terminal(["error", ["transform", `12`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -497,7 +498,7 @@ export class Transform {
                       input_name
                     ] as StrongEnum;
                   } else {
-                    console.log("TRANSFORM", 13);
+                    terminal(["error", ["transform", `13`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -563,7 +564,7 @@ export class Transform {
                     };
                   }
                 } else {
-                  console.log("TRANSFORM", 14);
+                  terminal(["error", ["transform", `14`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -573,7 +574,7 @@ export class Transform {
               if (unwrap(computed_output)) {
                 computed_outputs.push(computed_output.value);
               } else {
-                console.log("TRANSFORM", 15);
+                terminal(["error", ["transform", `15`]]);
                 return new Err(
                   new CustomError([errors.ErrUnexpected] as ErrMsg)
                 );
@@ -581,7 +582,7 @@ export class Transform {
             }
           }
         } else {
-          console.log("TRANSFORM", 16);
+          terminal(["error", ["transform", `16`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
@@ -665,7 +666,7 @@ export class Transform {
                         })
                       );
                     } else {
-                      console.log("TRANSFORM", 17);
+                      terminal(["error", ["transform", `17`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -684,7 +685,7 @@ export class Transform {
                         )
                       );
                     } else {
-                      console.log("TRANSFORM", 18);
+                      terminal(["error", ["transform", `18`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -779,7 +780,7 @@ export class Transform {
                       }
                     }
                   } else {
-                    console.log("TRANSFORM", 19);
+                    terminal(["error", ["transform", `19`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -821,7 +822,7 @@ export class Transform {
                     );
                   }
                 } else {
-                  console.log("TRANSFORM", 20);
+                  terminal(["error", ["transform", `20`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -857,7 +858,7 @@ export class Transform {
                     if (path.isSome()) {
                       compose_args[input_name] = path.get().path[1][1];
                     } else {
-                      console.log("TRANSFORM", 21);
+                      terminal(["error", ["transform", `21`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -899,7 +900,7 @@ export class Transform {
                         };
                       }
                     } else {
-                      console.log("TRANSFORM", 22);
+                      terminal(["error", ["transform", `22`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -969,7 +970,7 @@ export class Transform {
                           };
                         }
                       } else {
-                        console.log("TRANSFORM", 23);
+                        terminal(["error", ["transform", `23`]]);
                         return new Err(
                           new CustomError([errors.ErrUnexpected] as ErrMsg)
                         );
@@ -983,7 +984,7 @@ export class Transform {
                   if (unwrap(computed_output)) {
                     computed_outputs.push(computed_output.value);
                   } else {
-                    console.log("TRANSFORM", 24);
+                    terminal(["error", ["transform", `24`]]);
                     return new Err(
                       new CustomError([errors.ErrUnexpected] as ErrMsg)
                     );
@@ -991,7 +992,7 @@ export class Transform {
                 }
               }
             } else {
-              console.log("TRANSFORM", 25);
+              terminal(["error", ["transform", `25`]]);
               return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
             }
           } else {
@@ -1089,7 +1090,7 @@ export class Transform {
                         };
                       }
                     } else {
-                      console.log("TRANSFORM", 26);
+                      terminal(["error", ["transform", `26`]]);
                       return new Err(
                         new CustomError([errors.ErrUnexpected] as ErrMsg)
                       );
@@ -1100,7 +1101,7 @@ export class Transform {
                 if (unwrap(computed_output)) {
                   computed_outputs.push(computed_output.value);
                 } else {
-                  console.log("TRANSFORM", 27);
+                  terminal(["error", ["transform", `27`]]);
                   return new Err(
                     new CustomError([errors.ErrUnexpected] as ErrMsg)
                   );
@@ -1109,7 +1110,7 @@ export class Transform {
             }
           }
         } else {
-          console.log("TRANSFORM", 28);
+          terminal(["error", ["transform", `28`]]);
           return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
         }
         break;
@@ -1119,7 +1120,7 @@ export class Transform {
         return _exhaustiveCheck;
       }
     }
-    console.log("[SUCCESS]");
+    terminal(["transform", `[SUCCESS] [TRANSFORM] ${this.name}`]);
     return new Ok(computed_outputs);
   }
 }

@@ -5,6 +5,7 @@ import { ErrMsg, errors } from "./errors";
 import { execute_transaction } from "./db";
 import { StrongEnum, Variable } from "./variable";
 import { getState, BrokerKey } from "./store";
+import { terminal } from "./terminal";
 
 async function replace_variable_in_db(
   level: Decimal,
@@ -44,7 +45,10 @@ async function replace_variable_in_db(
     >
   >
 > {
-  console.log("REPLACE: ", level.toString(), struct_name, id.toString());
+  terminal([
+    "db_variables",
+    `REPLACE: ${level.toString()} ${struct_name} ${id.toString()}`,
+  ]);
   const changes = {} as Record<
     BrokerKey,
     {
@@ -311,7 +315,7 @@ export async function remove_variables_in_db(
   struct_name: string,
   ids: ReadonlyArray<Decimal>
 ): Promise<Result<[]>> {
-  console.log("REMOVE: ", struct_name, ids);
+  terminal(["db_variables", `REMOVE: ${struct_name} ${ids}`]);
   try {
     if (level.equals(0)) {
       for (const id of ids) {

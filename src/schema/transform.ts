@@ -1,5 +1,6 @@
 import { errors, ErrMsg } from "../lib/errors";
 import { Result, Ok, Err, CustomError } from "../lib/prelude";
+import { terminal } from "../lib/terminal";
 import { Transform } from "../lib/transform";
 import Tag from "./structs/system/Tag/transform";
 import Private_Resource_Tag from "./structs/user/Private_Resource_Tag/transform";
@@ -28,6 +29,6 @@ export function get_transform(
       return new Ok(schema[transform_name]);
     }
   }
-  console.log("[ERROR] Invalid transform:", transform_name);
+  terminal(["error", ["schema", `Invalid transform: ${transform_name}`]]);
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
 }

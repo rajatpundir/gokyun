@@ -71,7 +71,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
     ],
     false,
     () => {
-      // terminal.log_db("Successfully run statements")
+      terminal(["db", `Successfully run statements`]);
     }
   );
   return db;
@@ -87,7 +87,10 @@ export function execute_transaction(
         tx.executeSql(sql, args, (_, result_set) => resolve(result_set));
       },
       (err) => {
-        terminal(["db", `\nTRANSACTION ERROR: \n${sql}\n${args}\n${err}\n`]);
+        terminal([
+          "error",
+          ["db", `\nTRANSACTION ERROR: \n${sql}\n${args}\n${err}\n`],
+        ]);
         reject(String(err));
       }
     );
@@ -1324,12 +1327,12 @@ export async function get_variables(
           )
         );
       } catch (err) {
-        terminal(["db", `[ERROR] ${err}`]);
+        terminal(["error", ["db", `${err}`]]);
       }
     }
     return new Ok(variables);
   } catch (err) {
-    terminal(["db", `[ERROR] ${err}`]);
+    terminal(["error", ["db", `${err}`]]);
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
 }

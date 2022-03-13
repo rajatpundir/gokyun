@@ -7,6 +7,7 @@ import {
 } from "../schema/struct";
 import { errors, ErrMsg } from "./errors";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { terminal } from "./terminal";
 import {
   compare_paths,
   get_strong_enum,
@@ -341,7 +342,7 @@ export function get_permissions(
               }
             }
           } else {
-            console.log("[PERMISSIONS]: Error");
+            terminal(["error", ["permissions", ""]]);
           }
         }
       }
@@ -386,20 +387,18 @@ export function log_permissions(
   target_struct: Struct,
   entrypoints: ReadonlyArray<Entrypoint>
 ) {
-  if (false) {
-    const path_permissions = get_permissions(target_struct, entrypoints);
-    console.log("\n=======================");
-    console.log("STRUCT: ", target_struct.name);
-    console.log("\n=======================");
-    console.log("READ PERMISSIONS");
-    for (const permission of path_permissions.filter((x) => !x.writeable)) {
-      console.log(permission.toString());
-    }
-    console.log("\n=======================");
-    console.log("WRITE PERMISSIONS");
-    for (const permission of path_permissions.filter((x) => x.writeable)) {
-      console.log(permission.toString());
-    }
-    console.log("\n=======================");
+  const path_permissions = get_permissions(target_struct, entrypoints);
+  terminal(["permissions", "\n======================="]);
+  terminal(["permissions", `STRUCT: ${target_struct.name}`]);
+  terminal(["permissions", "\n======================="]);
+  terminal(["permissions", "READ PERMISSIONS"]);
+  for (const permission of path_permissions.filter((x) => !x.writeable)) {
+    terminal(["permissions", permission.toString()]);
   }
+  terminal(["permissions", "\n======================="]);
+  terminal(["permissions", "WRITE PERMISSIONS"]);
+  for (const permission of path_permissions.filter((x) => x.writeable)) {
+    terminal(["permissions", permission.toString()]);
+  }
+  terminal(["permissions", "\n======================="]);
 }
