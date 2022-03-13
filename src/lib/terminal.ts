@@ -9,6 +9,7 @@ type TerminalArgs =
         | ["fx", string]
         | ["permissions", string]
         | ["db", string]
+        | ["db_variables", string]
         | ["field_variants", string]
         | ["schema", string]
       )
@@ -43,6 +44,9 @@ export function terminal(args: TerminalArgs) {
                 }
                 case "db": {
                   return `[ERROR] [DB] ${value[1]}`;
+                }
+                case "db_variables": {
+                  return `[ERROR] [DB_VARIABLES] ${value[1]}`;
                 }
                 case "field_variants": {
                   return `[ERROR] [FIELD_VARIANTS] ${value[1]}`;

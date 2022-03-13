@@ -28,7 +28,6 @@ export async function load_user() {
   for (let key of Object.keys(user_ids.User)) {
     const value = user_ids.User[key as keyof typeof user_ids.User];
     await replace_variable(
-      new Decimal(0),
       new Variable(
         struct,
         value._id,
@@ -52,7 +51,8 @@ export async function load_user() {
             ["product_count", { type: "u32", value: value.product_count }],
           ]),
         ])
-      )
+      ),
+      new Decimal(0)
     );
   }
 }

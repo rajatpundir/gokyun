@@ -18,9 +18,6 @@ import {
   Path,
   apply,
   get_fx_args,
-  create_level,
-  activate_level,
-  remove_level,
 } from "../../lib";
 
 export default function Component(
@@ -140,62 +137,45 @@ export default function Component(
                 <Row space={"2"}>
                   <Pressable
                     onPress={async () => {
-                      const level = await create_level();
-                      if (unwrap(level)) {
-                        if (state1.id.equals(-1)) {
-                          const fx = get_fx("Create_Test");
-                          const args = get_fx_args(
-                            {
-                              str: [[], "str"],
-                              lstr: [[], "lstr"],
-                              clob: [[], "clob"],
-                              u32: [[], "u32"],
-                              i32: [[], "i32"],
-                              u64: [[], "u64"],
-                              i64: [[], "i64"],
-                              udouble: [[], "udouble"],
-                              idouble: [[], "idouble"],
-                              udecimal: [[], "udecimal"],
-                              idecimal: [[], "idecimal"],
-                              bool: [[], "bool"],
-                              date: [[], "date"],
-                              time: [[], "time"],
-                              timestamp: [[], "timestamp"],
-                              user: [[], "user"],
-                            },
-                            state1.values as HashSet<Path>
-                          );
-                          if (unwrap(fx) && unwrap(args)) {
-                            const result = await fx.value.exec(
-                              args.value,
-                              level.value
-                            );
-                            if (unwrap(result)) {
-                              await activate_level(level.value);
-                              props.navigation.goBack();
-                            } else {
-                              await remove_level(level.value);
-                            }
-                          } else {
-                            await remove_level(level.value);
-                          }
-                        } else {
-                          const result = await replace_variable(
-                            level.value,
-                            new Variable(
-                              struct1,
-                              state1.id as Decimal,
-                              state1.created_at,
-                              state1.updated_at,
-                              state1.values.filter((x) => x.modified)
-                            )
-                          );
+                      if (state1.id.equals(-1)) {
+                        const fx = get_fx("Create_Test");
+                        const args = get_fx_args(
+                          {
+                            str: [[], "str"],
+                            lstr: [[], "lstr"],
+                            clob: [[], "clob"],
+                            u32: [[], "u32"],
+                            i32: [[], "i32"],
+                            u64: [[], "u64"],
+                            i64: [[], "i64"],
+                            udouble: [[], "udouble"],
+                            idouble: [[], "idouble"],
+                            udecimal: [[], "udecimal"],
+                            idecimal: [[], "idecimal"],
+                            bool: [[], "bool"],
+                            date: [[], "date"],
+                            time: [[], "time"],
+                            timestamp: [[], "timestamp"],
+                            user: [[], "user"],
+                          },
+                          state1.values as HashSet<Path>
+                        );
+                        if (unwrap(fx) && unwrap(args)) {
+                          const result = await fx.value.run(args.value);
                           if (unwrap(result)) {
-                            await activate_level(level.value);
-                          } else {
-                            await remove_level(level.value);
+                            props.navigation.goBack();
                           }
                         }
+                      } else {
+                        await replace_variable(
+                          new Variable(
+                            struct1,
+                            state1.id as Decimal,
+                            state1.created_at,
+                            state1.updated_at,
+                            state1.values.filter((x) => x.modified)
+                          )
+                        );
                       }
                     }}
                     flexDirection={"row"}
@@ -255,30 +235,17 @@ export default function Component(
                       </Row>
                     }
                     onPress={async () => {
-                      const level = await create_level();
-                      if (unwrap(level)) {
-                        const fx = get_fx("Delete_Test");
-                        if (unwrap(fx)) {
-                          const result = await fx.value.exec(
-                            {
-                              test: {
-                                type: "other",
-                                other: struct1.name,
-                                value: state1.id as Decimal,
-                              },
-                            },
-                            level.value
-                          );
-                          if (unwrap(result)) {
-                            await activate_level(level.value);
-                          } else {
-                            await remove_level(level.value);
-                          }
-                        } else {
-                          await remove_level(level.value);
-                        }
-                        props.navigation.goBack();
+                      const fx = get_fx("Delete_Test");
+                      if (unwrap(fx)) {
+                        await fx.value.run({
+                          test: {
+                            type: "other",
+                            other: struct1.name,
+                            value: state1.id as Decimal,
+                          },
+                        });
                       }
+                      props.navigation.goBack();
                     }}
                   />
                   <Pressable

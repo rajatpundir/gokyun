@@ -34,7 +34,6 @@ export async function load_test() {
   for (let key of Object.keys(test_ids.Test)) {
     const value = test_ids.Test[key as keyof typeof test_ids.Test];
     await replace_variable(
-      new Decimal(0),
       new Variable(
         struct,
         value._id,
@@ -76,7 +75,8 @@ export async function load_test() {
             ["user", { type: "other", other: "User", value: value.user }],
           ]),
         ])
-      )
+      ),
+      new Decimal(0)
     );
   }
 }

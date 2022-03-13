@@ -1,8 +1,13 @@
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { apply, CustomError, Err, Ok, Result, unwrap } from "./prelude";
+import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { ErrMsg, errors } from "./errors";
-import { execute_transaction } from "./db";
+import {
+  activate_level,
+  create_level,
+  execute_transaction,
+  remove_level,
+} from "./db";
 import { StrongEnum, Variable } from "./variable";
 import { getState, BrokerKey } from "./store";
 import { terminal } from "./terminal";
@@ -305,6 +310,7 @@ async function replace_variable_in_db(
       }
     }
   } catch (err) {
+    terminal(["error", ["db_variables", ``]]);
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
   return new Ok(changes);
@@ -367,14 +373,15 @@ export async function remove_variables_in_db(
       );
     }
   } catch (err) {
+    terminal(["error", ["db_variables", ``]]);
     return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
   }
   return new Ok([] as []);
 }
 
 export async function replace_variable(
-  level: Decimal,
   variable: Variable,
+  lvl?: Decimal,
   requested_at: Date = new Date(),
   entrypoint: boolean = true
 ): Promise<
@@ -389,53 +396,73 @@ export async function replace_variable(
     >
   >
 > {
-  let changes = {} as Record<
-    BrokerKey,
-    {
-      create: Array<number>;
-      update: Array<number>;
-      remove: Array<number>;
-    }
-  >;
-  try {
-    const result = await replace_variable_in_db(
-      level,
-      requested_at,
-      variable.struct.name,
-      variable.id,
-      variable.created_at,
-      variable.updated_at,
-      variable.paths.toArray().map((x) => [
-        x.path[0].map((y) => [
-          y[0],
-          {
-            created_at: y[1].created_at,
-            updated_at: y[1].updated_at,
-            value: {
-              type: "other",
-              other: y[1].struct.name,
-              value: y[1].id,
+  const level = await arrow(() => {
+    if (lvl !== undefined) {
+      return new Ok(lvl);
+    } else return create_level();
+  });
+  if (unwrap(level)) {
+    let changes = {} as Record<
+      BrokerKey,
+      {
+        create: Array<number>;
+        update: Array<number>;
+        remove: Array<number>;
+      }
+    >;
+    try {
+      const result = await replace_variable_in_db(
+        level.value,
+        requested_at,
+        variable.struct.name,
+        variable.id,
+        variable.created_at,
+        variable.updated_at,
+        variable.paths.toArray().map((x) => [
+          x.path[0].map((y) => [
+            y[0],
+            {
+              created_at: y[1].created_at,
+              updated_at: y[1].updated_at,
+              value: {
+                type: "other",
+                other: y[1].struct.name,
+                value: y[1].id,
+              },
             },
-          },
-        ]),
-        x.path[1],
-      ])
-    );
-    if (unwrap(result)) {
-      changes = result.value;
+          ]),
+          x.path[1],
+        ])
+      );
+      if (unwrap(result)) {
+        changes = result.value;
+        if (lvl === undefined) {
+          await activate_level(level.value);
+        }
+      } else {
+        if (lvl === undefined) {
+          await remove_level(level.value);
+        }
+      }
+    } catch (err) {
+      terminal(["error", ["db_variables", ``]]);
+      return new Err(
+        new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg)
+      );
     }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+    if (entrypoint) {
+      getState().announce_message(changes);
+    }
+    return new Ok(changes);
+  } else {
+    terminal(["error", ["db_variables", ``]]);
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
-  if (entrypoint) {
-    getState().announce_message(changes);
-  }
-  return new Ok(changes);
 }
 
 export async function replace_variables(
-  level: Decimal,
   variables: HashSet<Variable>,
+  lvl?: Decimal,
   requested_at: Date = new Date()
 ): Promise<
   Result<
@@ -449,49 +476,72 @@ export async function replace_variables(
     >
   >
 > {
-  const changes = {} as Record<
-    BrokerKey,
-    {
-      create: Array<number>;
-      update: Array<number>;
-      remove: Array<number>;
-    }
-  >;
-  try {
-    for (const variable of variables) {
-      const result = await replace_variable(
-        level,
-        variable,
-        requested_at,
-        false
-      );
-      if (unwrap(result)) {
-        for (const struct_name of Object.keys(result.value)) {
-          if (struct_name in changes) {
-            changes[struct_name as BrokerKey] = {
-              create: changes[struct_name as BrokerKey].create.concat(
-                result.value[struct_name as BrokerKey].create
-              ),
-              update: changes[struct_name as BrokerKey].update.concat(
-                result.value[struct_name as BrokerKey].update
-              ),
-              remove: changes[struct_name as BrokerKey].remove.concat(
-                result.value[struct_name as BrokerKey].remove
-              ),
-            };
-          } else {
-            changes[struct_name as BrokerKey] = {
-              create: result.value[struct_name as BrokerKey].create,
-              update: result.value[struct_name as BrokerKey].update,
-              remove: result.value[struct_name as BrokerKey].remove,
-            };
+  const level = await arrow(() => {
+    if (lvl !== undefined) {
+      return new Ok(lvl);
+    } else return create_level();
+  });
+  if (unwrap(level)) {
+    const changes = {} as Record<
+      BrokerKey,
+      {
+        create: Array<number>;
+        update: Array<number>;
+        remove: Array<number>;
+      }
+    >;
+    try {
+      for (const variable of variables) {
+        const result: Result<
+          Record<
+            BrokerKey,
+            {
+              create: Array<number>;
+              update: Array<number>;
+              remove: Array<number>;
+            }
+          >
+        > = await replace_variable(variable, level.value, requested_at, false);
+        if (unwrap(result)) {
+          for (const struct_name of Object.keys(result.value)) {
+            if (struct_name in changes) {
+              changes[struct_name as BrokerKey] = {
+                create: changes[struct_name as BrokerKey].create.concat(
+                  result.value[struct_name as BrokerKey].create
+                ),
+                update: changes[struct_name as BrokerKey].update.concat(
+                  result.value[struct_name as BrokerKey].update
+                ),
+                remove: changes[struct_name as BrokerKey].remove.concat(
+                  result.value[struct_name as BrokerKey].remove
+                ),
+              };
+            } else {
+              changes[struct_name as BrokerKey] = {
+                create: result.value[struct_name as BrokerKey].create,
+                update: result.value[struct_name as BrokerKey].update,
+                remove: result.value[struct_name as BrokerKey].remove,
+              };
+            }
           }
         }
       }
+      if (lvl === undefined) {
+        await activate_level(level.value);
+      }
+    } catch (err) {
+      if (lvl === undefined) {
+        await remove_level(level.value);
+      }
+      terminal(["error", ["db_variables", ``]]);
+      return new Err(
+        new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg)
+      );
     }
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
+    getState().announce_message(changes);
+    return new Ok(changes);
+  } else {
+    terminal(["error", ["db_variables", ``]]);
+    return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
   }
-  getState().announce_message(changes);
-  return new Ok(changes);
 }

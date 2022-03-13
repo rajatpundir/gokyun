@@ -32,9 +32,6 @@ import {
   useTheme,
   apply,
   Path,
-  activate_level,
-  create_level,
-  remove_level,
 } from "../lib";
 import { get_fx } from "../schema";
 
@@ -435,24 +432,15 @@ export default {
             >
               <Pressable
                 onPress={async () => {
-                  const level = await create_level();
-                  if (unwrap(level)) {
-                    const result = await replace_variable(
-                      level.value,
-                      new Variable(
-                        props.struct,
-                        props.state.id as Decimal,
-                        props.state.created_at,
-                        props.state.updated_at,
-                        props.state.values.filter((x) => x.modified)
-                      )
-                    );
-                    if (unwrap(result)) {
-                      await activate_level(level.value);
-                    } else {
-                      await remove_level(level.value);
-                    }
-                  }
+                  await replace_variable(
+                    new Variable(
+                      props.struct,
+                      props.state.id as Decimal,
+                      props.state.created_at,
+                      props.state.updated_at,
+                      props.state.values.filter((x) => x.modified)
+                    )
+                  );
                 }}
                 flexDirection={"row"}
                 alignItems={"center"}
@@ -549,28 +537,15 @@ export default {
                   </Row>
                 }
                 onPress={async () => {
-                  const level = await create_level();
-                  if (unwrap(level)) {
-                    const fx = get_fx("Delete_Test");
-                    if (unwrap(fx)) {
-                      const result = await fx.value.exec(
-                        {
-                          test: {
-                            type: "other",
-                            other: props.struct.name,
-                            value: props.state.id as Decimal,
-                          },
-                        },
-                        level.value
-                      );
-                      if (unwrap(result)) {
-                        await activate_level(level.value);
-                      } else {
-                        await remove_level(level.value);
-                      }
-                    } else {
-                      await remove_level(level.value);
-                    }
+                  const fx = get_fx("Delete_Test");
+                  if (unwrap(fx)) {
+                    const result = await fx.value.run({
+                      test: {
+                        type: "other",
+                        other: props.struct.name,
+                        value: props.state.id as Decimal,
+                      },
+                    });
                   }
                 }}
               />

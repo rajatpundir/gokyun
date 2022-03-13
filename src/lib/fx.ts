@@ -2,11 +2,14 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_symbols_for_paths, inject_system_constants } from "./commons";
 import {
+  activate_level,
+  create_level,
   FilterPath,
   get_incremented_struct_counter,
   get_variable,
   get_variables,
   OrFilter,
+  remove_level,
 } from "./db";
 import { remove_variables_in_db, replace_variable } from "./db_variables";
 import { ErrMsg, errors } from "./errors";
@@ -150,6 +153,23 @@ export class Fx {
 
   toString(): string {
     return String(this.name);
+  }
+
+  async run(args: FxArgs): Promise<Result<FxResult>> {
+    const level = await create_level();
+    if (unwrap(level)) {
+      const result = await this.exec(args, level.value);
+      if (unwrap(result)) {
+        await activate_level(level.value);
+      } else {
+        terminal(["error", ["fx", `0`]]);
+        await remove_level(level.value);
+      }
+      return result;
+    } else {
+      terminal(["error", ["fx", `0.1`]]);
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+    }
   }
 
   async exec(args: FxArgs, level: Decimal): Promise<Result<FxResult>> {

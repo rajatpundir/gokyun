@@ -4,7 +4,14 @@ import { ComposeName, get_compose } from "../schema/compose";
 import { FxName, get_fx } from "../schema/fx";
 import { get_path_type, get_struct, StructName } from "../schema/struct";
 import { ComposeArgs, ComposeResult } from "./compose";
-import { FilterPath, get_variables, OrFilter } from "./db";
+import {
+  activate_level,
+  create_level,
+  FilterPath,
+  get_variables,
+  OrFilter,
+  remove_level,
+} from "./db";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs } from "./fx";
 import { arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
@@ -71,6 +78,23 @@ export class Transform {
 
   toString(): string {
     return String(this.name);
+  }
+
+  async run(args: TransformArgs): Promise<Result<TransformResult>> {
+    const level = await create_level();
+    if (unwrap(level)) {
+      const result = await this.exec(args, level.value);
+      if (unwrap(result)) {
+        await activate_level(level.value);
+      } else {
+        terminal(["error", ["transform", `0`]]);
+        await remove_level(level.value);
+      }
+      return result;
+    } else {
+      terminal(["error", ["transform", `0.1`]]);
+      return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
+    }
   }
 
   async exec(

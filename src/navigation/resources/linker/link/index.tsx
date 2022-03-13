@@ -28,6 +28,7 @@ import {
   useComponent,
 } from "../../../../lib";
 import { views } from "../../../../views";
+import { ids } from "../../../../schema/ids";
 
 // Higher existence for searching via keywords
 
@@ -317,7 +318,63 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                   </Text>
                   <Row space={"2"}>
                     <Pressable
-                      onPress={() => {}}
+                      onPress={() => {
+                        const resource_id: Decimal = arrow(() => {
+                          switch (resource.type) {
+                            case "image": {
+                              switch (resource.subtype) {
+                                case "png": {
+                                  return ids.ResourceType["image/png"]._id;
+                                }
+                                case "jpeg": {
+                                  return ids.ResourceType["image/jpeg"]._id;
+                                }
+                                case "webp": {
+                                  return ids.ResourceType["image/webp"]._id;
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = resource;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            }
+                            case "video": {
+                              switch (resource.subtype) {
+                                case "mp4": {
+                                  return ids.ResourceType["video/mp4"]._id;
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = resource;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            }
+                            case "application": {
+                              switch (resource.subtype) {
+                                case "pdf": {
+                                  return ids.ResourceType["application/pdf"]
+                                    ._id;
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = resource;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            }
+                            case "text": {
+                              switch (resource.subtype) {
+                                case "youtube": {
+                                  return ids.ResourceType["text/youtube"]._id;
+                                }
+                                default: {
+                                  const _exhaustiveCheck: never = resource;
+                                  return _exhaustiveCheck;
+                                }
+                              }
+                            }
+                          }
+                        });
+                      }}
                       backgroundColor={bs_theme.primary}
                       borderRadius={"xs"}
                       px={"2"}

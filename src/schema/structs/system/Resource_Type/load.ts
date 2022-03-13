@@ -47,7 +47,6 @@ export async function load_resource_type() {
         key as keyof typeof resource_type_ids.ResourceType
       ];
     await replace_variable(
-      new Decimal(0),
       new Variable(
         struct,
         value._id,
@@ -60,7 +59,8 @@ export async function load_resource_type() {
             ["subtype", { type: "str", value: value.subtype }],
           ]),
         ])
-      )
+      ),
+      new Decimal(0)
     );
   }
 }
