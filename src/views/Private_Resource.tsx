@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { Column, Text } from "native-base";
@@ -15,6 +15,10 @@ import {
   Entrypoint,
   apply,
   FilterPath,
+  compare_paths,
+  get_path_string,
+  get_resource,
+  Resource,
 } from "../lib";
 import { get_struct } from "../schema";
 import Private_Resource_Tag from "./Private_Resource_Tag";
@@ -23,7 +27,37 @@ const views = { Private_Resource_Tag };
 
 const common_default_component: ComponentViews[string]["show"] = (props) => {
   const theme = useTheme();
-  console.log(props.state.values.length());
+  const [resource, set_resource] = useState(undefined as Resource);
+  useEffect(() => {
+    arrow(async () => {
+      const url = props.state.values.findAny((x) =>
+        compare_paths(get_path_string(x), [[], "url"])
+      );
+      const mime_type = props.state.values.findAny((x) =>
+        compare_paths(get_path_string(x), [["resource_type"], "type"])
+      );
+      const mime_subtype = props.state.values.findAny((x) =>
+        compare_paths(get_path_string(x), [["resource_type"], "subtype"])
+      );
+      if (url.isSome() && mime_type.isSome() && mime_subtype.isSome()) {
+        const url_value = url.get().path[1][1];
+        const mime_type_value = mime_type.get().path[1][1];
+        const mime_subtype_value = mime_subtype.get().path[1][1];
+        if (
+          url_value.type === "str" &&
+          mime_type_value.type === "str" &&
+          mime_subtype_value.type === "str"
+        ) {
+          set_resource(await get_resource(new URL(url_value.value)));
+          console.log(
+            url_value.value,
+            mime_type_value.value,
+            mime_subtype_value.value
+          );
+        }
+      }
+    });
+  }, [props.state.values]);
   return (
     <Column
       p={"2"}
