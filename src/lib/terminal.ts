@@ -93,7 +93,7 @@ export function terminal(args: TerminalArgs) {
               });
             }
             case "fx": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }

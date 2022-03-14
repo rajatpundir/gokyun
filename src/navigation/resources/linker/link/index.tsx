@@ -233,7 +233,6 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                 p={"4"}
                 m={"2"}
                 onPress={async () => {
-                  console.log("something.................");
                   const compose = get_compose("Create_Private_Resource");
                   if (unwrap(compose)) {
                     const resource_id: Decimal = arrow(() => {

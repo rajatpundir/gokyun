@@ -3,7 +3,7 @@ import { ComposeName, get_compose } from "../schema/compose";
 import { FxName, get_fx } from "../schema/fx";
 import { get_path_type, get_struct, StructName } from "../schema/struct";
 import { get_transform, TransformName } from "../schema/transform";
-import { activate_level, create_level, remove_level } from "./db";
+import { create_level, remove_level } from "./db";
 import { ErrMsg, errors } from "./errors";
 import { FxArgs, get_symbols_for_fx_compose_paths } from "./fx";
 import { Bool, BooleanLispExpression, Symbol } from "./lisp";
@@ -247,9 +247,7 @@ export class Compose {
     const level = await create_level();
     if (unwrap(level)) {
       const result = await this.exec(args, level.value);
-      if (unwrap(result)) {
-        await activate_level(level.value);
-      } else {
+      if (!unwrap(result)) {
         terminal(["error", ["compose", `0`]]);
         await remove_level(level.value);
       }

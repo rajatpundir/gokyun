@@ -14,7 +14,7 @@ export async function load_data() {
   await load_test();
   const compose = get_compose("Create_Private_Resource");
   if (unwrap(compose)) {
-    let result = await compose.value.exec(
+    let result = await compose.value.run(
       {
         resource_type: {
           type: "other",
@@ -43,14 +43,14 @@ export async function load_data() {
             },
           ],
         },
-      },
-      new Decimal(0)
+      }
+      // new Decimal(0)
     );
     console.log(result);
     console.log(
       "-------------------------------------------------------------------"
     );
-    result = await compose.value.exec(
+    result = await compose.value.run(
       {
         resource_type: {
           type: "other",
@@ -78,8 +78,8 @@ export async function load_data() {
             },
           ],
         },
-      },
-      new Decimal(0)
+      }
+      // new Decimal(0)
     );
     console.log(result);
     console.log(

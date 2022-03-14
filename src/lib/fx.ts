@@ -2,7 +2,6 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { get_symbols_for_paths, inject_system_constants } from "./commons";
 import {
-  activate_level,
   create_level,
   FilterPath,
   get_incremented_struct_counter,
@@ -159,9 +158,7 @@ export class Fx {
     const level = await create_level();
     if (unwrap(level)) {
       const result = await this.exec(args, level.value);
-      if (unwrap(result)) {
-        await activate_level(level.value);
-      } else {
+      if (!unwrap(result)) {
         terminal(["error", ["fx", `0`]]);
         await remove_level(level.value);
       }

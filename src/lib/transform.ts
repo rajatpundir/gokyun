@@ -5,7 +5,6 @@ import { FxName, get_fx } from "../schema/fx";
 import { get_path_type, get_struct, StructName } from "../schema/struct";
 import { ComposeArgs, ComposeResult } from "./compose";
 import {
-  activate_level,
   create_level,
   FilterPath,
   get_variables,
@@ -84,9 +83,7 @@ export class Transform {
     const level = await create_level();
     if (unwrap(level)) {
       const result = await this.exec(args, level.value);
-      if (unwrap(result)) {
-        await activate_level(level.value);
-      } else {
+      if (!unwrap(result)) {
         terminal(["error", ["transform", `0`]]);
         await remove_level(level.value);
       }

@@ -2,12 +2,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { apply, arrow, CustomError, Err, Ok, Result, unwrap } from "./prelude";
 import { ErrMsg, errors } from "./errors";
-import {
-  activate_level,
-  create_level,
-  execute_transaction,
-  remove_level,
-} from "./db";
+import { create_level, execute_transaction, remove_level } from "./db";
 import { StrongEnum, Variable } from "./variable";
 import { getState, BrokerKey } from "./store";
 import { terminal } from "./terminal";
@@ -436,9 +431,6 @@ export async function replace_variable(
       );
       if (unwrap(result)) {
         changes = result.value;
-        if (lvl === undefined) {
-          await activate_level(level.value);
-        }
       } else {
         if (lvl === undefined) {
           await remove_level(level.value);
@@ -525,9 +517,6 @@ export async function replace_variables(
             }
           }
         }
-      }
-      if (lvl === undefined) {
-        await activate_level(level.value);
       }
     } catch (err) {
       if (lvl === undefined) {

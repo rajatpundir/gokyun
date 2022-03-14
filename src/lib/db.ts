@@ -41,7 +41,7 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
       { sql: `DROP TABLE IF EXISTS "PARAMS";`, args: [] },
       { sql: `DROP TABLE IF EXISTS "COUNTERS";`, args: [] },
       {
-        sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "active" INTEGER NOT NULL DEFAULT 0, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
+        sql: `CREATE TABLE IF NOT EXISTS "LEVELS" ("id" INTEGER NOT NULL UNIQUE, "created_at" INTEGER NOT NULL, PRIMARY KEY("id" AUTOINCREMENT));`,
         args: [],
       },
       {
@@ -65,8 +65,8 @@ const db = apply(SQLite.openDatabase(db_name), (db) => {
         args: [],
       },
       {
-        sql: `REPLACE INTO "LEVELS"("id", "active", "created_at") VALUES (?, ?, ?);`,
-        args: [0, 1, 0],
+        sql: `REPLACE INTO "LEVELS"("id", "created_at") VALUES (?, ?);`,
+        args: [0, 0],
       },
     ],
     false,
@@ -260,7 +260,7 @@ function query(
 
   if (level !== undefined) {
     const value: Decimal = level;
-    let stmt = `v1.level = '${value.abs().truncated().toString()}'`;
+    let stmt = `v1.level <= '${value.abs().truncated().toString()}'`;
     append_to_where_stmt(stmt);
   }
   append_to_where_stmt(`v1.struct_name = '${struct.name}'`);
@@ -268,10 +268,10 @@ function query(
   let from_stmt: string =
     "FROM vars AS v1 LEFT JOIN vals as v2 ON (v2.level <= v1.level AND v2.struct_name = v1.struct_name AND v2.variable_id = v1.id)";
   append_to_where_stmt(
-    `v1.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v1.struct_name AND vars.id = v1.id AND removed_vars.id IS NULL)`
+    `v1.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE vars.struct_name = v1.struct_name AND vars.id = v1.id AND removed_vars.id IS NULL)`
   );
   append_to_where_stmt(
-    `v2.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v2.struct_name AND vals.variable_id = v2.variable_id AND vals.field_name = v2.field_name AND removed_vars.id IS NULL)`
+    `v2.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE vals.struct_name = v2.struct_name AND vals.variable_id = v2.variable_id AND vals.field_name = v2.field_name AND removed_vars.id IS NULL)`
   );
 
   for (let i = 1; i < join_count; i++) {
@@ -281,10 +281,10 @@ function query(
     from_stmt += `\n LEFT JOIN vars AS v${var_ref} ON (v${var_ref}.level <= v${prev_val_ref}.level AND v${var_ref}.struct_name = v${prev_val_ref}.field_struct_name AND  v${var_ref}.id = v${prev_val_ref}.integer_value)`;
     from_stmt += `\n LEFT JOIN vals AS v${next_val_ref} ON (v${next_val_ref}.level <= v${var_ref}.level AND v${next_val_ref}.struct_name = v${var_ref}.struct_name AND v${next_val_ref}.variable_id = v${var_ref}.id)`;
     append_to_where_stmt(
-      `v${var_ref}.level IS NULL OR v${var_ref}.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE  levels.active = 1 AND vars.struct_name = v${var_ref}.struct_name AND vars.id = v${var_ref}.id AND removed_vars.id IS NULL)`
+      `v${var_ref}.level IS NULL OR v${var_ref}.level = (SELECT MAX(vars.level) FROM vars INNER JOIN levels ON (vars.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vars.level AND removed_vars.struct_name = vars.struct_name AND removed_vars.id = vars.id) WHERE vars.struct_name = v${var_ref}.struct_name AND vars.id = v${var_ref}.id AND removed_vars.id IS NULL)`
     );
     append_to_where_stmt(
-      `v${next_val_ref}.level IS NULL OR v${next_val_ref}.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE levels.active = 1 AND vals.struct_name = v${next_val_ref}.struct_name AND vals.variable_id = v${next_val_ref}.variable_id AND vals.field_name = v${next_val_ref}.field_name AND removed_vars.id IS NULL)`
+      `v${next_val_ref}.level IS NULL OR v${next_val_ref}.level = (SELECT MAX(vals.level) FROM vals INNER JOIN levels ON (vals.level = levels.id) LEFT JOIN removed_vars ON(removed_vars.level = vals.level AND removed_vars.struct_name = vals.struct_name AND removed_vars.id = vals.variable_id) WHERE vals.struct_name = v${next_val_ref}.struct_name AND vals.variable_id = v${next_val_ref}.variable_id AND vals.field_name = v${next_val_ref}.field_name AND removed_vars.id IS NULL)`
     );
   }
 
@@ -840,28 +840,6 @@ export async function create_level(): Promise<Result<Decimal>> {
     return new Ok(level);
   }
   return new Err(new CustomError([errors.ErrUnexpected] as ErrMsg));
-}
-
-export async function activate_level(id: Decimal): Promise<Result<[]>> {
-  try {
-    await execute_transaction(`UPDATE "LEVELS" SET active = 1 WHERE id = ?;`, [
-      id.abs().truncated().toString(),
-    ]);
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
-}
-
-export async function deactivate_level(id: Decimal): Promise<Result<[]>> {
-  try {
-    await execute_transaction(`UPDATE "LEVELS" SET active = 0 WHERE id = ?;`, [
-      id.abs().truncated().toString(),
-    ]);
-  } catch (err) {
-    return new Err(new CustomError([errors.CustomMsg, { msg: err }] as ErrMsg));
-  }
-  return new Ok([] as []);
 }
 
 export async function remove_level(id: Decimal): Promise<Result<[]>> {
