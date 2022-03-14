@@ -61,7 +61,7 @@ export function terminal(args: TerminalArgs) {
               }
             }
             case "db": {
-              return apply(true, (debug) => {
+              return apply(false, (debug) => {
                 if (debug) {
                   return args[1];
                 }

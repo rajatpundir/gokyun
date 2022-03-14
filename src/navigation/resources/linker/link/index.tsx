@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Keyboard } from "react-native";
 import * as Clipboard from "expo-clipboard";
-import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
+import { HashSet } from "prelude-ts";
 import Decimal from "decimal.js";
-import { NavigatorProps as ParentNavigatorProps } from "..";
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import {
   Column,
   Input,
@@ -13,25 +14,25 @@ import {
   View,
   Fab,
   Icon,
-  KeyboardAvoidingView,
+  useToast,
+  Spinner,
 } from "native-base";
+import { NavigatorProps as ParentNavigatorProps } from "..";
 import { get_compose } from "../../../../schema";
 import {
   useTheme,
   Resource,
   get_resource,
   arrow,
-  tw,
   unwrap,
   ResourceComponent,
 } from "../../../../lib";
 import { ids } from "../../../../schema/ids";
-import { HashSet } from "prelude-ts";
-import { Platform } from "react-native";
 
 // Higher existence for searching via keywords
 
 export default function Component(props: ParentNavigatorProps<"Link">) {
+  const toast = useToast();
   const theme = useTheme();
   const [local_val, set_local_val] = useState("");
   const [has_errors, set_has_errors] = useState(false);
@@ -40,6 +41,26 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
   const [copied_url, set_copied_url] = React.useState(
     undefined as string | undefined
   );
+  const [loading, set_loading] = useState(false);
+  const [is_keyboard_visible, set_keyboard_visible] = useState(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        set_keyboard_visible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        set_keyboard_visible(false);
+      }
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   useEffect(() => {
     let mounted = true;
     const fetch_copied_url = () => {
@@ -219,110 +240,127 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
               </Column>
             </Column>
           </ScrollView>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1 }}
-          >
-            {resource !== undefined ? (
-              <Fab
-                icon={
-                  <Icon color="white" as={<Feather name="link" />} size="sm" />
-                }
-                placement="bottom-right"
-                size={"md"}
-                p={"4"}
-                m={"2"}
-                onPress={async () => {
-                  const compose = get_compose("Create_Private_Resource");
-                  if (unwrap(compose)) {
-                    const resource_id: Decimal = arrow(() => {
-                      switch (resource.type) {
-                        case "image": {
-                          switch (resource.subtype) {
-                            case "png": {
-                              return ids.ResourceType["image/png"]._id;
-                            }
-                            case "jpeg": {
-                              return ids.ResourceType["image/jpeg"]._id;
-                            }
-                            case "webp": {
-                              return ids.ResourceType["image/webp"]._id;
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = resource;
-                              return _exhaustiveCheck;
-                            }
+          {resource !== undefined && !is_keyboard_visible ? (
+            <Fab
+              icon={
+                <Icon
+                  color="white"
+                  as={
+                    loading ? (
+                      <Spinner size={"lg"} color={theme.primary} />
+                    ) : (
+                      <Feather name="link" />
+                    )
+                  }
+                  size="sm"
+                />
+              }
+              backgroundColor={loading ? theme.background : theme.primary}
+              placement="bottom-right"
+              size={"md"}
+              p={"4"}
+              m={"2"}
+              onPress={async () => {
+                const compose = get_compose("Create_Private_Resource");
+                if (unwrap(compose)) {
+                  const resource_id: Decimal = arrow(() => {
+                    switch (resource.type) {
+                      case "image": {
+                        switch (resource.subtype) {
+                          case "png": {
+                            return ids.ResourceType["image/png"]._id;
                           }
-                        }
-                        case "video": {
-                          switch (resource.subtype) {
-                            case "mp4": {
-                              return ids.ResourceType["video/mp4"]._id;
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = resource;
-                              return _exhaustiveCheck;
-                            }
+                          case "jpeg": {
+                            return ids.ResourceType["image/jpeg"]._id;
                           }
-                        }
-                        case "application": {
-                          switch (resource.subtype) {
-                            case "pdf": {
-                              return ids.ResourceType["application/pdf"]._id;
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = resource;
-                              return _exhaustiveCheck;
-                            }
+                          case "webp": {
+                            return ids.ResourceType["image/webp"]._id;
                           }
-                        }
-                        case "text": {
-                          switch (resource.subtype) {
-                            case "youtube": {
-                              return ids.ResourceType["text/youtube"]._id;
-                            }
-                            default: {
-                              const _exhaustiveCheck: never = resource;
-                              return _exhaustiveCheck;
-                            }
+                          default: {
+                            const _exhaustiveCheck: never = resource;
+                            return _exhaustiveCheck;
                           }
                         }
                       }
-                    });
-                    const result = await compose.value.run({
-                      resource_type: {
-                        type: "other",
-                        other: "Resource_Type",
-                        value: resource_id,
-                      },
-                      url: {
-                        type: "str",
-                        value: resource.url,
-                      },
-                      tags: {
-                        type: "list",
-                        value: tags.toArray().map((x) => {
-                          return {
-                            name: {
-                              type: "str",
-                              value: x,
-                            },
-                          };
-                        }),
-                      },
-                    });
-                    if (unwrap(result)) {
-                      // show toast
-                    } else {
-                      // show toast
+                      case "video": {
+                        switch (resource.subtype) {
+                          case "mp4": {
+                            return ids.ResourceType["video/mp4"]._id;
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = resource;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      }
+                      case "application": {
+                        switch (resource.subtype) {
+                          case "pdf": {
+                            return ids.ResourceType["application/pdf"]._id;
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = resource;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      }
+                      case "text": {
+                        switch (resource.subtype) {
+                          case "youtube": {
+                            return ids.ResourceType["text/youtube"]._id;
+                          }
+                          default: {
+                            const _exhaustiveCheck: never = resource;
+                            return _exhaustiveCheck;
+                          }
+                        }
+                      }
                     }
+                  });
+                  set_loading(true);
+                  const result = await compose.value.run({
+                    resource_type: {
+                      type: "other",
+                      other: "Resource_Type",
+                      value: resource_id,
+                    },
+                    url: {
+                      type: "str",
+                      value: resource.url,
+                    },
+                    tags: {
+                      type: "list",
+                      value: tags.toArray().map((x) => {
+                        return {
+                          name: {
+                            type: "str",
+                            value: x,
+                          },
+                        };
+                      }),
+                    },
+                  });
+                  set_loading(false);
+                  if (unwrap(result)) {
+                    set_resource(undefined);
+                    set_local_val("");
+                    set_has_errors(false);
+                    toast.show({
+                      title: "Resource created successfully",
+                      status: "success",
+                    });
+                  } else {
+                    toast.show({
+                      title: "Resource could not be created",
+                      status: "error",
+                    });
                   }
-                }}
-              />
-            ) : (
-              <></>
-            )}
-          </KeyboardAvoidingView>
+                }
+              }}
+            />
+          ) : (
+            <></>
+          )}
         </>
       ) : (
         <></>
