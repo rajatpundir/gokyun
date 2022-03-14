@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { Column, Text } from "native-base";
+import { Column, Row, Text, Image } from "native-base";
 import {
   ComponentViews,
   arrow,
@@ -22,6 +22,8 @@ import {
 } from "../lib";
 import { get_struct } from "../schema";
 import Private_Resource_Tag from "./Private_Resource_Tag";
+import WebView from "react-native-webview";
+import VideoPlayer from "expo-video-player";
 
 const views = { Private_Resource_Tag };
 
@@ -73,16 +75,151 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       })}
     >
       <Text>
-        {props.state.id.toString()}
-        {"\n"}
-        <Field {...props} path={[["resource_type"], "type"]} />
-        {"\n"}
-        <Field {...props} path={[["resource_type"], "subtype"]} />
-        {"\n"}
+        {"Tag count: "}
         <Field {...props} path={[[], "tag_count"]} />
-        {"\n"}
-        <Field {...props} path={[[], "url"]} />
       </Text>
+      {resource !== undefined ? (
+        <Column
+          borderColor={theme.border}
+          borderWidth={"1"}
+          borderRadius={"xs"}
+        >
+          <Row>
+            {arrow(() => {
+              switch (resource.type) {
+                case "image": {
+                  switch (resource.subtype) {
+                    case "png":
+                    case "jpeg":
+                    case "webp": {
+                      return (
+                        <Image
+                          source={{
+                            uri: resource.url,
+                          }}
+                          resizeMode="contain"
+                          width={"full"}
+                          height={resource.height}
+                          maxHeight={"80"}
+                          alt="*"
+                          fallbackElement={
+                            <Text fontSize={"xs"} color={theme.error}>
+                              * Unable to load image, please check url
+                            </Text>
+                          }
+                        />
+                      );
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = resource;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                case "video": {
+                  switch (resource.subtype) {
+                    case "mp4": {
+                      return (
+                        <VideoPlayer
+                          videoProps={{
+                            source: {
+                              uri: resource.url,
+                            },
+                            resizeMode: "contain",
+                          }}
+                          fullscreen={{
+                            visible: false,
+                          }}
+                          style={{
+                            height: 240,
+                            videoBackgroundColor: theme.background,
+                          }}
+                        />
+                      );
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = resource;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                case "application": {
+                  switch (resource.subtype) {
+                    case "pdf": {
+                      return (
+                        <Column flex={"1"}>
+                          <WebView
+                            source={{
+                              uri: `http://docs.google.com/gview?embedded=true&url=${resource.url}`,
+                            }}
+                            nestedScrollEnabled={true}
+                            style={{ height: 240 }}
+                          />
+                        </Column>
+                      );
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = resource;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                case "text": {
+                  switch (resource.subtype) {
+                    case "youtube": {
+                      return (
+                        <Column flex={"1"}>
+                          <WebView
+                            originWhitelist={["*"]}
+                            source={{
+                              html: `
+                                  <html>
+                                  <style>
+                                      html {
+                                      overflow: hidden;
+                                      background-color: black;
+                                      }
+                                      html,
+                                      body,
+                                      div,
+                                      iframe {
+                                      margin: 0px;
+                                      padding: 0px;
+                                      height: 100%;
+                                      border: none;
+                                      display: block;
+                                      width: 100%;
+                                      border: none;
+                                      overflow: hidden;
+                                      }
+                                  </style>
+                                  <body>
+                                    <iframe src="https://www.youtube-nocookie.com/embed/${resource.url}?controls=0"></iframe>
+                                  </body>
+                                  </html>`,
+                            }}
+                            style={{ height: 210 }}
+                          />
+                        </Column>
+                      );
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = resource;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                }
+                default: {
+                  const _exhaustiveCheck: never = resource;
+                  return _exhaustiveCheck;
+                }
+              }
+            })}
+          </Row>
+        </Column>
+      ) : (
+        <></>
+      )}
       {arrow(() => {
         const struct = get_struct("Private_Resource_Tag");
         const entrypoints: Array<Entrypoint> = [

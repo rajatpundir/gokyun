@@ -23,7 +23,8 @@ export async function load_data() {
         },
         url: {
           type: "str",
-          value: "some_url",
+          value:
+            "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg",
         },
         tags: {
           type: "list",
@@ -58,7 +59,7 @@ export async function load_data() {
         },
         url: {
           type: "str",
-          value: "some_url2",
+          value: "http://www.clipartbest.com/cliparts/RTG/yBy/RTGyBy7yc.png",
         },
         tags: {
           type: "list",
