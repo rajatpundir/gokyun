@@ -1,30 +1,29 @@
 import React from "react";
-import { Column, Text } from "native-base";
-import { ComponentViews, arrow, useTheme, Field } from "../lib";
+import { Pressable, View } from "native-base";
+import { ComponentViews, useTheme, Field } from "../lib";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const views = {};
 
 const common_default_component: ComponentViews[string]["show"] = (props) => {
   const theme = useTheme();
   return (
-    <Column
-      p={"2"}
-      m={"1"}
+    <View
+      my={"1"}
+      px={"1"}
+      py={"0.5"}
+      flexDirection={"row"}
+      alignItems={"center"}
       borderWidth={"1"}
       borderRadius={"md"}
-      borderColor={theme.border}
-      backgroundColor={arrow(() => {
-        if (props.selected) {
-          return theme.background;
-        }
-        return theme.background;
-      })}
+      borderColor={theme.primary}
+      flexShrink={"1"}
     >
-      <Text>
-        {props.state.id.toString()}{" "}
-        <Field {...props} path={[["tag"], "name"]} />
-      </Text>
-    </Column>
+      <Field {...props} path={[["tag"], "name"]} />
+      <Pressable onPress={() => {}}>
+        <MaterialIcons name="clear" size={20} color={theme.placeholder} />
+      </Pressable>
+    </View>
   );
 };
 
