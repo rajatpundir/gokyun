@@ -23,6 +23,7 @@ import {
 } from "../lib";
 import { get_struct } from "../schema";
 import Private_Resource_Tag from "./Private_Resource_Tag";
+import { RenderWrappedItemProps } from "../lib/list_variants";
 
 const views = { Private_Resource_Tag };
 
@@ -135,18 +136,15 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
             ]}
             limit={new Decimal(10)}
             options={[
-              "list",
+              "row",
               {
                 entrypoints: entrypoints,
-                RenderElement: [
-                  (props) => (
-                    <OtherComponent
-                      {...props}
-                      view={views.Private_Resource_Tag["Default"]}
-                    />
-                  ),
-                  {},
-                ],
+                RenderElement: (props: RenderWrappedItemProps) => (
+                  <OtherComponent
+                    {...props}
+                    view={views.Private_Resource_Tag["Default"]}
+                  />
+                ),
               },
             ]}
             RenderVariant={(props) => <Identity {...props} />}

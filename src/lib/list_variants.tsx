@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import Decimal from "decimal.js";
-import { Menu, Text, Pressable, Row } from "native-base";
+import { Menu, Text, Pressable, Row, Column } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import {
@@ -10,7 +10,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { apply, arrow } from "./prelude";
-import { PathString, Variable } from "./variable";
+import { Struct, Variable } from "./variable";
 import { tw } from "./tailwind";
 import { ListAction, ListState, RenderListElement } from "./list";
 import { BottomSheetModalMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
@@ -32,6 +32,12 @@ export function ListVariant(
     case "sheet": {
       return <SheetVariant {...props} {...props.options[1]} />;
     }
+    case "row": {
+      return <RowVariant {...props} {...props.options[1]} />;
+    }
+    case "column": {
+      return <ColumnVariant {...props} {...props.options[1]} />;
+    }
     default: {
       const _exhaustiveCheck: never = props.options[0];
       return _exhaustiveCheck;
@@ -42,7 +48,9 @@ export function ListVariant(
 export type ListVariantOptions =
   | ["list", FlatlistVariantProps]
   | ["menu", MenuVariantProps]
-  | ["sheet", SheetVariantProps];
+  | ["sheet", SheetVariantProps]
+  | ["row", RowVariantProps]
+  | ["column", ColumnVariantProps];
 
 type VariantCommonProps = {
   state: ListState;
@@ -352,5 +360,57 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
         />
       </BottomSheetModal>
     </Portal>
+  );
+}
+
+export type RenderWrappedItemProps = {
+  struct: Struct;
+  entrypoints: Array<Entrypoint>;
+  variable: Variable;
+  selected: boolean;
+  update_parent_values: () => void;
+};
+
+type RowVariantProps = {
+  RenderElement: (props: RenderWrappedItemProps) => JSX.Element;
+  entrypoints: Array<Entrypoint>;
+};
+
+function RowVariant(props: VariantCommonProps & RowVariantProps) {
+  return (
+    <Row space={"1"} flexWrap={"wrap"}>
+      {props.state.variables.map((variable) => (
+        <props.RenderElement
+          key={variable.id.toString()}
+          struct={props.state.struct}
+          entrypoints={props.entrypoints}
+          variable={variable}
+          selected={variable.id.equals(props.selected)}
+          update_parent_values={() => props.update_parent_values(variable)}
+        />
+      ))}
+    </Row>
+  );
+}
+
+type ColumnVariantProps = {
+  RenderElement: (props: RenderWrappedItemProps) => JSX.Element;
+  entrypoints: Array<Entrypoint>;
+};
+
+function ColumnVariant(props: VariantCommonProps & ColumnVariantProps) {
+  return (
+    <Column space={"1"} flexWrap={"wrap"}>
+      {props.state.variables.map((variable) => (
+        <props.RenderElement
+          key={variable.id.toString()}
+          struct={props.state.struct}
+          entrypoints={props.entrypoints}
+          variable={variable}
+          selected={variable.id.equals(props.selected)}
+          update_parent_values={() => props.update_parent_values(variable)}
+        />
+      ))}
+    </Column>
   );
 }

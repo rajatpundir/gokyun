@@ -1754,6 +1754,12 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
           return props.options[1].element;
         }
       }
+      case "row": {
+        return <List {...list_props} />;
+      }
+      case "column": {
+        return <List {...list_props} />;
+      }
       default: {
         const _exhaustiveCheck: never = props.options[0];
         return _exhaustiveCheck;
