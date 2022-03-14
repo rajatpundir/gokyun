@@ -8,6 +8,7 @@ export {
   ModalHeader,
   AppHeader,
   Identity,
+  ResourceComponent,
 } from "./component";
 export { OrFilter, FilterPath } from "./db";
 export { replace_variable } from "./db_variables";

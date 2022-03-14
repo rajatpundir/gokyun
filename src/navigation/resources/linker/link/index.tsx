@@ -1,21 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import VideoPlayer from "expo-video-player";
 import * as Clipboard from "expo-clipboard";
-import { WebView } from "react-native-webview";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import Decimal from "decimal.js";
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import {
-  Column,
-  Input,
-  Pressable,
-  Row,
-  Text,
-  Image,
-  ScrollView,
-} from "native-base";
+import { Column, Input, Pressable, Row, Text, ScrollView } from "native-base";
 import { get_compose } from "../../../../schema";
 import {
   useTheme,
@@ -25,6 +15,7 @@ import {
   arrow,
   tw,
   unwrap,
+  ResourceComponent,
 } from "../../../../lib";
 import { ids } from "../../../../schema/ids";
 
@@ -145,136 +136,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
             borderRadius={"xs"}
           >
             <Row>
-              {arrow(() => {
-                switch (resource.type) {
-                  case "image": {
-                    switch (resource.subtype) {
-                      case "png":
-                      case "jpeg":
-                      case "webp": {
-                        return (
-                          <Image
-                            source={{
-                              uri: resource.url,
-                            }}
-                            resizeMode="contain"
-                            width={"full"}
-                            height={resource.height}
-                            maxHeight={"80"}
-                            alt="*"
-                            fallbackElement={
-                              <Text fontSize={"xs"} color={theme.error}>
-                                * Unable to load image, please check url
-                              </Text>
-                            }
-                          />
-                        );
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = resource;
-                        return _exhaustiveCheck;
-                      }
-                    }
-                  }
-                  case "video": {
-                    switch (resource.subtype) {
-                      case "mp4": {
-                        return (
-                          <VideoPlayer
-                            videoProps={{
-                              source: {
-                                uri: resource.url,
-                              },
-                              resizeMode: "contain",
-                            }}
-                            fullscreen={{
-                              visible: false,
-                            }}
-                            style={{
-                              height: 240,
-                              videoBackgroundColor: theme.background,
-                            }}
-                          />
-                        );
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = resource;
-                        return _exhaustiveCheck;
-                      }
-                    }
-                  }
-                  case "application": {
-                    switch (resource.subtype) {
-                      case "pdf": {
-                        return (
-                          <Column flex={"1"}>
-                            <WebView
-                              source={{
-                                uri: `http://docs.google.com/gview?embedded=true&url=${resource.url}`,
-                              }}
-                              nestedScrollEnabled={true}
-                              style={{ height: 240 }}
-                            />
-                          </Column>
-                        );
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = resource;
-                        return _exhaustiveCheck;
-                      }
-                    }
-                  }
-                  case "text": {
-                    switch (resource.subtype) {
-                      case "youtube": {
-                        return (
-                          <Column flex={"1"}>
-                            <WebView
-                              originWhitelist={["*"]}
-                              source={{
-                                html: `
-                                  <html>
-                                  <style>
-                                      html {
-                                      overflow: hidden;
-                                      background-color: black;
-                                      }
-                                      html,
-                                      body,
-                                      div,
-                                      iframe {
-                                      margin: 0px;
-                                      padding: 0px;
-                                      height: 100%;
-                                      border: none;
-                                      display: block;
-                                      width: 100%;
-                                      border: none;
-                                      overflow: hidden;
-                                      }
-                                  </style>
-                                  <body>
-                                    <iframe src="https://www.youtube-nocookie.com/embed/${resource.url}?controls=0"></iframe>
-                                  </body>
-                                  </html>`,
-                              }}
-                              style={{ height: 210 }}
-                            />
-                          </Column>
-                        );
-                      }
-                      default: {
-                        const _exhaustiveCheck: never = resource;
-                        return _exhaustiveCheck;
-                      }
-                    }
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = resource;
-                    return _exhaustiveCheck;
-                  }
-                }
-              })}
+              <ResourceComponent resource={resource} />
             </Row>
             <Row justifyContent={"flex-end"} m={"2"}>
               <Pressable

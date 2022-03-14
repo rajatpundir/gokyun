@@ -4,7 +4,7 @@ import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useImmerReducer } from "use-immer";
 import { OrFilter, FilterPath, get_variable, AndFilter } from "./db";
-import { apply, arrow, unwrap } from "./prelude";
+import { apply, arrow, Resource, unwrap } from "./prelude";
 import { compare_paths, Path, PathString, Struct, Variable } from "./variable";
 import {
   State,
@@ -24,12 +24,22 @@ import {
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { tw } from "./tailwind";
-import { Text, Input, Pressable, Row, Column, Spinner } from "native-base";
+import {
+  Text,
+  Input,
+  Pressable,
+  Row,
+  Column,
+  Spinner,
+  Image,
+} from "native-base";
 import { BrokerKey, getState, setState, subscribe } from "./store";
 import { useBSTheme, useTheme } from "./theme";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { Portal } from "@gorhom/portal";
 import { Entrypoint } from "./permissions";
+import VideoPlayer from "expo-video-player";
+import WebView from "react-native-webview";
 
 export type ComponentViews = Record<
   string,
@@ -723,4 +733,139 @@ export function DeleteButton(props: {
       </Portal>
     </>
   );
+}
+
+export function ResourceComponent(props: { resource: Resource }) {
+  const theme = useTheme();
+  if (props.resource !== undefined) {
+    switch (props.resource.type) {
+      case "image": {
+        switch (props.resource.subtype) {
+          case "png":
+          case "jpeg":
+          case "webp": {
+            return (
+              <Image
+                source={{
+                  uri: props.resource.url,
+                }}
+                resizeMode="contain"
+                width={"full"}
+                height={props.resource.height}
+                maxHeight={"80"}
+                alt="*"
+                fallbackElement={
+                  <Text fontSize={"xs"} color={theme.error}>
+                    * Unable to load image, please check url
+                  </Text>
+                }
+              />
+            );
+          }
+          default: {
+            const _exhaustiveCheck: never = props.resource;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+      case "video": {
+        switch (props.resource.subtype) {
+          case "mp4": {
+            return (
+              <VideoPlayer
+                videoProps={{
+                  source: {
+                    uri: props.resource.url,
+                  },
+                  resizeMode: "contain",
+                }}
+                fullscreen={{
+                  visible: false,
+                }}
+                style={{
+                  height: 240,
+                  videoBackgroundColor: theme.background,
+                }}
+              />
+            );
+          }
+          default: {
+            const _exhaustiveCheck: never = props.resource;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+      case "application": {
+        switch (props.resource.subtype) {
+          case "pdf": {
+            return (
+              <Column flex={"1"}>
+                <WebView
+                  source={{
+                    uri: `http://docs.google.com/gview?embedded=true&url=${props.resource.url}`,
+                  }}
+                  nestedScrollEnabled={true}
+                  style={{ height: 240 }}
+                />
+              </Column>
+            );
+          }
+          default: {
+            const _exhaustiveCheck: never = props.resource;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+      case "text": {
+        switch (props.resource.subtype) {
+          case "youtube": {
+            return (
+              <Column flex={"1"}>
+                <WebView
+                  originWhitelist={["*"]}
+                  source={{
+                    html: `
+                        <html>
+                        <style>
+                            html {
+                            overflow: hidden;
+                            background-color: black;
+                            }
+                            html,
+                            body,
+                            div,
+                            iframe {
+                            margin: 0px;
+                            padding: 0px;
+                            height: 100%;
+                            border: none;
+                            display: block;
+                            width: 100%;
+                            border: none;
+                            overflow: hidden;
+                            }
+                        </style>
+                        <body>
+                          <iframe src="https://www.youtube-nocookie.com/embed/${props.resource.url}?controls=0"></iframe>
+                        </body>
+                        </html>`,
+                  }}
+                  style={{ height: 210 }}
+                />
+              </Column>
+            );
+          }
+          default: {
+            const _exhaustiveCheck: never = props.resource;
+            return _exhaustiveCheck;
+          }
+        }
+      }
+      default: {
+        const _exhaustiveCheck: never = props.resource;
+        return _exhaustiveCheck;
+      }
+    }
+  }
+  return <></>;
 }
