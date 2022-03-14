@@ -198,6 +198,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                     placeholderTextColor={theme.placeholder}
                   />
                   <Pressable
+                    p={"1.5"}
                     justifyContent={"center"}
                     alignItems={"center"}
                     borderWidth={"1"}
@@ -209,7 +210,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                       }
                     }}
                   >
-                    <AntDesign name="plus" size={31} color={theme.primary} />
+                    <AntDesign name="plus" size={20} color={theme.primary} />
                   </Pressable>
                 </Row>
                 <Row space={"1"} my={"2"} mx={"2"} flexWrap={"wrap"}>
