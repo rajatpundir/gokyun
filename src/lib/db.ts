@@ -260,7 +260,8 @@ function query(
 
   if (level !== undefined) {
     const value: Decimal = level;
-    let stmt = `v1.level <= '${value.abs().truncated().toString()}'`;
+    // TODO. MAybe less than equals should be used here.
+    let stmt = `v1.level = '${value.abs().truncated().toString()}'`;
     append_to_where_stmt(stmt);
   }
   append_to_where_stmt(`v1.struct_name = '${struct.name}'`);
@@ -1138,7 +1139,7 @@ export async function get_variables(
       offset,
       existences
     );
-    terminal(["db", `${result_set}`]);
+    terminal(["db", `${JSON.stringify(result_set, null, 2)}`]);
     for (const result of result_set.rows._array) {
       try {
         const paths: Array<Path> = [];
