@@ -28,6 +28,7 @@ import {
   ResourceComponent,
 } from "../../../../lib";
 import { ids } from "../../../../schema/ids";
+import { get_system_constants } from "../../../../lib/commons";
 
 // Higher existence for searching via keywords
 
@@ -205,8 +206,13 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                     borderColor={theme.border}
                     borderRadius={"sm"}
                     onPress={() => {
-                      if (tag !== "" && tags.length() !== 3) {
-                        set_tags(tags.add(tag));
+                      if (
+                        tag !== "" &&
+                        tags.length() !==
+                          get_system_constants().max_resource_tag_count.value
+                      ) {
+                        set_tags(tags.add(tag.toLocaleLowerCase()));
+                        set_tag("");
                       }
                     }}
                   >
