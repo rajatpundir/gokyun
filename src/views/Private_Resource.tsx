@@ -62,11 +62,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
   }, [props.state.values]);
   return (
     <Column
-      p={"2"}
-      m={"1"}
-      borderWidth={"1"}
-      borderRadius={"md"}
-      borderColor={theme.border}
+      my={"2"}
       backgroundColor={arrow(() => {
         if (props.selected) {
           return theme.background;
@@ -75,82 +71,80 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       })}
     >
       <Text>
-        {"Tag count: "}
+        {"Tags: "}
         <Field {...props} path={[[], "tag_count"]} />
       </Text>
       {resource !== undefined ? (
-        <Column
-          borderColor={theme.border}
-          borderWidth={"1"}
-          borderRadius={"xs"}
-        >
-          <Row>
+        <Column>
+          <Row backgroundColor={theme.border}>
             <ResourceComponent resource={resource} />
           </Row>
+          <Column p={"2"}>
+            {arrow(() => {
+              const struct = get_struct("Private_Resource_Tag");
+              const entrypoints: Array<Entrypoint> = [
+                [["private_resource"], "owner"],
+              ];
+              return (
+                <List
+                  selected={new Decimal(-1)}
+                  struct={struct}
+                  filters={[
+                    new OrFilter(
+                      0,
+                      [false, undefined],
+                      [false, undefined],
+                      [false, undefined],
+                      get_filter_paths(
+                        struct,
+                        [
+                          ["tag", [[], "tag"]],
+                          ["name", [["tag"], "name"]],
+                        ],
+                        entrypoints
+                      ).add(
+                        apply(
+                          new FilterPath(
+                            "private_resource",
+                            [[], "private_resource"],
+                            [
+                              "other",
+                              ["==", props.state.id as Decimal],
+                              get_struct("Private_Resource"),
+                            ],
+                            undefined
+                          ),
+                          (it) => {
+                            it.active = true;
+                            return it;
+                          }
+                        )
+                      )
+                    ),
+                    HashSet.of(),
+                  ]}
+                  limit={new Decimal(10)}
+                  options={[
+                    "row",
+                    {
+                      entrypoints: entrypoints,
+                      RenderElement: (props: RenderWrappedItemProps) => (
+                        <OtherComponent
+                          {...props}
+                          view={views.Private_Resource_Tag["Default"]}
+                        />
+                      ),
+                    },
+                  ]}
+                  RenderVariant={(props) => <Identity {...props} />}
+                />
+              );
+            })}
+          </Column>
         </Column>
       ) : (
         <></>
       )}
-      {arrow(() => {
-        const struct = get_struct("Private_Resource_Tag");
-        const entrypoints: Array<Entrypoint> = [
-          [["private_resource"], "owner"],
-        ];
-        return (
-          <List
-            selected={new Decimal(-1)}
-            struct={struct}
-            filters={[
-              new OrFilter(
-                0,
-                [false, undefined],
-                [false, undefined],
-                [false, undefined],
-                get_filter_paths(
-                  struct,
-                  [
-                    ["tag", [[], "tag"]],
-                    ["name", [["tag"], "name"]],
-                  ],
-                  entrypoints
-                ).add(
-                  apply(
-                    new FilterPath(
-                      "private_resource",
-                      [[], "private_resource"],
-                      [
-                        "other",
-                        ["==", props.state.id as Decimal],
-                        get_struct("Private_Resource"),
-                      ],
-                      undefined
-                    ),
-                    (it) => {
-                      it.active = true;
-                      return it;
-                    }
-                  )
-                )
-              ),
-              HashSet.of(),
-            ]}
-            limit={new Decimal(10)}
-            options={[
-              "row",
-              {
-                entrypoints: entrypoints,
-                RenderElement: (props: RenderWrappedItemProps) => (
-                  <OtherComponent
-                    {...props}
-                    view={views.Private_Resource_Tag["Default"]}
-                  />
-                ),
-              },
-            ]}
-            RenderVariant={(props) => <Identity {...props} />}
-          />
-        );
-      })}
     </Column>
   );
 };
