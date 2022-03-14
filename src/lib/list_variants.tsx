@@ -378,7 +378,7 @@ type RowVariantProps = {
 
 function RowVariant(props: VariantCommonProps & RowVariantProps) {
   return (
-    <Row space={"1"} flexWrap={"wrap"}>
+    <Row space={"2"} flexWrap={"wrap"}>
       {props.state.variables.map((variable) => (
         <props.RenderElement
           key={variable.id.toString()}
@@ -400,7 +400,7 @@ type ColumnVariantProps = {
 
 function ColumnVariant(props: VariantCommonProps & ColumnVariantProps) {
   return (
-    <Column space={"1"} flexWrap={"wrap"}>
+    <Column space={"2"} flexWrap={"wrap"}>
       {props.state.variables.map((variable) => (
         <props.RenderElement
           key={variable.id.toString()}

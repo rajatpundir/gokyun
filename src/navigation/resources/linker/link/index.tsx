@@ -164,19 +164,15 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
       {resource !== undefined ? (
         <>
           <ScrollView>
-            <Column px={"2"}>
-              <Column
-                borderColor={theme.border}
-                borderWidth={"1"}
-                borderRadius={"xs"}
-              >
-                <Row borderBottomWidth={"1"} borderColor={theme.border}>
+            <Column>
+              <Column>
+                <Row backgroundColor={theme.border}>
                   <ResourceComponent resource={resource} />
                 </Row>
                 <Row space={"1"} mx={"2"} mt={"3"} alignItems={"center"}>
                   <Input
                     flex={1}
-                    size={"9"}
+                    size={"md"}
                     maxLength={255}
                     placeholder={"tag name (eg. red or apple or red-apple)"}
                     value={tag}
@@ -199,7 +195,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                     placeholderTextColor={theme.placeholder}
                   />
                   <Pressable
-                    p={"1.5"}
+                    p={"2"}
                     justifyContent={"center"}
                     alignItems={"center"}
                     borderWidth={"1"}
@@ -216,10 +212,10 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
                       }
                     }}
                   >
-                    <AntDesign name="plus" size={20} color={theme.primary} />
+                    <AntDesign name="plus" size={26} color={theme.primary} />
                   </Pressable>
                 </Row>
-                <Row space={"1"} my={"2"} mx={"2"} flexWrap={"wrap"}>
+                <Row space={"2"} my={"2"} mx={"2"} flexWrap={"wrap"}>
                   {tags.toArray().map((x) => (
                     <View
                       key={x}
