@@ -101,7 +101,10 @@ export class Transform {
     args: TransformArgs,
     level: Decimal
   ): Promise<Result<TransformResult>> {
-    terminal(["transform", `\n[TRANSFORM] ${this.name}\n ${args}\n`]);
+    terminal([
+      "transform",
+      `\n[TRANSFORM] ${this.name}\n ${JSON.stringify(args, null, 2)}\n`,
+    ]);
     const computed_outputs: Array<Record<string, StrongEnum> | ComposeResult> =
       [];
     switch (this.type) {

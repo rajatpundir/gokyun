@@ -173,7 +173,10 @@ export class Fx {
   }
 
   async exec(args: FxArgs, level: Decimal): Promise<Result<FxResult>> {
-    terminal(["fx", `\n[FX] ${this.name}\n ${args}\n`]);
+    terminal([
+      "fx",
+      `\n[FX] ${this.name}\n ${JSON.stringify(args, null, 2)}\n`,
+    ]);
     const result = await get_symbols_for_fx_compose_paths(
       level,
       arrow(() => {
