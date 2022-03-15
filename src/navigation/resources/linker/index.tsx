@@ -21,7 +21,7 @@ export type NavigatorParams = {
   Upload: undefined;
 };
 
-export default function Navigator(props: ParentNavigatorProps<"Private">) {
+export default function Navigator(props: ParentNavigatorProps<"Linker">) {
   return (
     <BottomTab.Navigator
       initialRouteName="Link"

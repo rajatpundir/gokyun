@@ -23,7 +23,7 @@ export default function Component(
     <List
       selected={new Decimal(-1)}
       struct={struct}
-      filters={[
+      init_filter={
         new OrFilter(
           0,
           [false, undefined],
@@ -37,9 +37,9 @@ export default function Component(
             ],
             entrypoints
           )
-        ),
-        HashSet.of(),
-      ]}
+        )
+      }
+      filters={HashSet.of()}
       limit={new Decimal(10)}
       options={[
         "list",
