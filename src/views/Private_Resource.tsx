@@ -76,7 +76,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
       </Text>
       {resource !== undefined ? (
         <Column>
-          <Row backgroundColor={theme.border}>
+          <Row>
             <ResourceComponent resource={resource} />
           </Row>
           <Column p={"2"}>

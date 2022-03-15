@@ -31,13 +31,19 @@ export async function load_data() {
           {
             name: {
               type: "str",
-              value: "some tag",
+              value: "tree",
             },
           },
           {
             name: {
               type: "str",
-              value: "some tag2",
+              value: "landscape",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "image",
             },
           },
         ],
@@ -63,13 +69,64 @@ export async function load_data() {
           {
             name: {
               type: "str",
-              value: "some tag3",
+              value: "dragon-ball",
             },
           },
           {
             name: {
               type: "str",
-              value: "some tag2",
+              value: "seiyan",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "image",
+            },
+          },
+        ],
+      },
+    });
+    console.log(result);
+    console.log(
+      "-------------------------------------------------------------------"
+    );
+    result = await compose.value.run({
+      resource_type: {
+        type: "other",
+        other: "Resource_Type",
+        value: ids.ResourceType["video/mp4"]._id,
+      },
+      url: {
+        type: "str",
+        value:
+          "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/1080/Big_Buck_Bunny_1080_10s_1MB.mp4",
+      },
+      tags: {
+        type: "list",
+        value: [
+          {
+            name: {
+              type: "str",
+              value: "big",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "buck",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "bunny",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "video",
             },
           },
         ],

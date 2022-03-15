@@ -753,8 +753,8 @@ export function ResourceComponent(props: { resource: Resource }) {
                 resizeMode="contain"
                 width={"full"}
                 height={
-                  props.resource.height /
-                  (props.resource.width / dimensions.width)
+                  props.resource.height *
+                  (dimensions.width / props.resource.width)
                 }
                 alt="*"
                 fallbackElement={

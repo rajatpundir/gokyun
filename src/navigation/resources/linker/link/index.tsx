@@ -166,7 +166,7 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
           <ScrollView>
             <Column>
               <Column>
-                <Row backgroundColor={theme.border}>
+                <Row>
                   <ResourceComponent resource={resource} />
                 </Row>
                 <Row space={"1"} mx={"2"} mt={"3"} alignItems={"center"}>
