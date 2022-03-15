@@ -14,6 +14,7 @@ import {
   get_creation_paths,
   run_triggers,
   compute_checks,
+  dimensions,
 } from "./commons";
 import { RenderListVariantProps } from "./list";
 import {
@@ -751,8 +752,10 @@ export function ResourceComponent(props: { resource: Resource }) {
                 }}
                 resizeMode="contain"
                 width={"full"}
-                height={props.resource.height}
-                maxHeight={"80"}
+                height={
+                  props.resource.height /
+                  (props.resource.width / dimensions.width)
+                }
                 alt="*"
                 fallbackElement={
                   <Text fontSize={"xs"} color={theme.error}>
