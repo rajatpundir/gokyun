@@ -12,6 +12,8 @@ import {
   Entrypoint,
   useTheme,
   arrow,
+  apply,
+  FilterPath,
 } from "../../../lib";
 import { get_struct } from "../../../schema";
 import { views } from "../../../views";
@@ -39,6 +41,10 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
           maxLength={255}
           placeholder={"Search"}
           value={""}
+          onChangeText={() => {}}
+          color={theme.text}
+          borderColor={theme.border}
+          placeholderTextColor={theme.placeholder}
         />
         <Menu
           mx={"2"}
@@ -104,16 +110,108 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
             [false, undefined],
             [false, undefined],
             [false, undefined],
-            get_filter_paths(
-              struct,
-              [
-                ["type", [["resource_type"], "type"]],
-                ["subtype", [["resource_type"], "subtype"]],
-                ["url", [[], "url"]],
-                ["tag_count", [[], "tag_count"]],
-                ["owner", [[], "owner"]],
-              ],
-              entrypoints
+            apply(
+              get_filter_paths(
+                struct,
+                [
+                  ["url", [[], "url"]],
+                  ["tag_count", [[], "tag_count"]],
+                  ["owner", [[], "owner"]],
+                ],
+                entrypoints
+              ),
+              (it) => {
+                switch (resource_type) {
+                  case "image": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "image"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", undefined],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  case "video": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "video"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", undefined],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  case "pdf": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "application"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", ["==", "pdf"]],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  case "youtube": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "text"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", ["==", "youtube"]],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = resource_type;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }
             )
           )
         }
