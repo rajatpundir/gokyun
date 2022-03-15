@@ -11,6 +11,7 @@ import {
   List,
   Entrypoint,
   useTheme,
+  arrow,
 } from "../../../lib";
 import { get_struct } from "../../../schema";
 import { views } from "../../../views";
@@ -54,7 +55,24 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
               borderRadius={"sm"}
               px={"1.5"}
             >
-              <Text color={theme.text}>Images</Text>
+              <Text color={theme.text}>
+                {arrow(() => {
+                  switch (resource_type) {
+                    case "image":
+                      return "Images";
+                    case "video":
+                      return "Videos";
+                    case "pdf":
+                      return "PDF";
+                    case "youtube":
+                      return "YouTube";
+                    default: {
+                      const _exhaustiveCheck: never = resource_type;
+                      return _exhaustiveCheck;
+                    }
+                  }
+                })}
+              </Text>
               <MaterialCommunityIcons
                 name="menu-down"
                 size={20}
@@ -70,7 +88,7 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
             <Text color={theme.text}>Videos</Text>
           </Menu.Item>
           <Menu.Item onPress={() => set_resource_type("pdf")}>
-            <Text color={theme.text}>Docs</Text>
+            <Text color={theme.text}>PDF</Text>
           </Menu.Item>
           <Menu.Item onPress={() => set_resource_type("youtube")}>
             <Text color={theme.text}>YouTube</Text>
