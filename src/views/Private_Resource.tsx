@@ -89,7 +89,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                 <List
                   selected={new Decimal(-1)}
                   struct={struct}
-                  filters={[
+                  init_filter={
                     new OrFilter(
                       0,
                       [false, undefined],
@@ -120,9 +120,9 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                           }
                         )
                       )
-                    ),
-                    HashSet.of(),
-                  ]}
+                    )
+                  }
+                  filters={HashSet.of()}
                   limit={new Decimal(10)}
                   options={[
                     "row",

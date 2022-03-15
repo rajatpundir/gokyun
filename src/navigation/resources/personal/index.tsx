@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { Input, Menu, Pressable, Row, Text } from "native-base";
@@ -24,7 +24,7 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
   const struct = get_struct("Private_Resource");
   const entrypoints: Array<Entrypoint> = [[[], "owner"]];
   const [resource_type, set_resource_type] = useState(
-    "video" as "image" | "video" | "pdf" | "youtube"
+    "image" as "image" | "video" | "pdf" | "youtube"
   );
   return (
     <>
@@ -100,7 +100,7 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
       <List
         selected={new Decimal(-1)}
         struct={struct}
-        filters={[
+        init_filter={
           new OrFilter(
             0,
             [false, undefined],
@@ -117,6 +117,7 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
                 entrypoints
               ),
               (it) => {
+                console.log("**", it.length());
                 switch (resource_type) {
                   case "image": {
                     return it
@@ -209,9 +210,9 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
                 }
               }
             )
-          ),
-          HashSet.of(),
-        ]}
+          )
+        }
+        filters={HashSet.of()}
         limit={new Decimal(10)}
         options={[
           "list",

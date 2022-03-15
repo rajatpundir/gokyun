@@ -1651,21 +1651,19 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
       selected: value.value,
       struct: struct,
       level: undefined,
-      filters: [
-        new OrFilter(
-          0,
-          [false, undefined],
-          [false, undefined],
-          [false, undefined],
-          get_other_filter_paths(
-            props.struct,
-            props.state,
-            props.path,
-            props.labels
-          )
-        ),
-        HashSet.of(),
-      ] as [OrFilter, HashSet<AndFilter>],
+      init_filter: new OrFilter(
+        0,
+        [false, undefined],
+        [false, undefined],
+        [false, undefined],
+        get_other_filter_paths(
+          props.struct,
+          props.state,
+          props.path,
+          props.labels
+        )
+      ),
+      filters: HashSet.of<AndFilter>(),
       update_parent_values: (variable: Variable) =>
         props.dispatch([
           "values",

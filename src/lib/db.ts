@@ -141,14 +141,6 @@ function query(
     append_to_select_stmt("v1.updated_at AS _updated_at");
     append_to_select_stmt("v1.requested_at AS _requested_at");
   });
-  const get_path_name_expression = (n: number) => {
-    return Array.from(Array(n).keys())
-      .map((x) => {
-        const val_ref = x * 2 + 2;
-        return `IFNULL(v${val_ref}.field_name, '')`;
-      })
-      .join(` || '.' || `);
-  };
 
   apply(
     init_filter.filter_paths

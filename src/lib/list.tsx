@@ -439,7 +439,8 @@ export type CommonProps = {
 type ListProps = CommonProps & {
   selected: Decimal;
   struct: Struct;
-  filters: [OrFilter, HashSet<AndFilter>];
+  init_filter: OrFilter;
+  filters: HashSet<AndFilter>;
   update_parent_values?: (variable: Variable) => void;
 };
 
@@ -447,8 +448,8 @@ export function List(props: ListProps): JSX.Element {
   const bs_theme = useBSTheme();
   const [state, dispatch] = useImmerReducer<ListState, ListAction>(reducer, {
     struct: props.struct,
-    init_filter: props.filters[0],
-    filters: props.filters[1],
+    init_filter: props.init_filter,
+    filters: props.filters,
     limit: props.limit,
     offset: new Decimal(0),
     variables: [],
@@ -460,6 +461,11 @@ export function List(props: ListProps): JSX.Element {
 
   const request_counter = useRef(0);
   useEffect(() => {
+    console.log(
+      "$$%%%",
+      state.init_filter.filter_paths.length(),
+      state.init_filter.toString()
+    );
     const get_vars = async () => {
       request_counter.current += 1;
       const request_count = request_counter.current;
