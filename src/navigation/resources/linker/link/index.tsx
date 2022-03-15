@@ -99,8 +99,8 @@ export default function Component(props: ParentNavigatorProps<"Link">) {
   return (
     <>
       <Input
-        my={"4"}
         mx={"2"}
+        my={"3"}
         size={"md"}
         maxLength={255}
         placeholder={"Paste link to your resource (image, pdf, etc)"}

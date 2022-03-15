@@ -1,8 +1,8 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-
-import { NavigatorProps as ParentNavigatorProps } from "..";
+import { Input, Menu, Pressable, Row, Text } from "native-base";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   OrFilter,
   get_filter_paths,
@@ -14,9 +14,7 @@ import {
 } from "../../../lib";
 import { get_struct } from "../../../schema";
 import { views } from "../../../views";
-import { Pressable, Row, Text } from "native-base";
-import { useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { NavigatorProps as ParentNavigatorProps } from "..";
 
 export default function Component(props: ParentNavigatorProps<"Personal">) {
   const theme = useTheme();
@@ -27,97 +25,57 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
   );
   return (
     <>
-      <Row alignContent={"center"} mx={"1"} my={"2"}>
-        <Text fontSize={"md"} color={theme.label}>
-          Filter
-        </Text>
-        <Row alignContent={"center"} space={"2"} mx={"3"}>
-          <Pressable
-            flexDirection={"row"}
-            alignContent={"center"}
-            onPress={() => set_resource_type("image")}
-          >
-            {resource_type === "image" ? (
-              <Ionicons
-                name="radio-button-on"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
+      <Row
+        justifyContent={"space-between"}
+        space={"1"}
+        mx={"2"}
+        mt={"3"}
+        mb={"1"}
+      >
+        <Input
+          flex={"1"}
+          size={"md"}
+          maxLength={255}
+          placeholder={"Search"}
+          value={""}
+        />
+        <Menu
+          mx={"2"}
+          shouldOverlapWithTrigger={true}
+          backgroundColor={theme.background}
+          borderColor={theme.border}
+          trigger={(menu_props) => (
+            <Pressable
+              {...menu_props}
+              flexDirection={"row"}
+              alignItems={"center"}
+              borderColor={theme.border}
+              borderWidth={"1"}
+              borderRadius={"sm"}
+              px={"1.5"}
+            >
+              <Text color={theme.text}>Images</Text>
+              <MaterialCommunityIcons
+                name="menu-down"
+                size={20}
+                color={theme.text}
               />
-            ) : (
-              <Ionicons
-                name="radio-button-off"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            )}
-            <Text>Images</Text>
-          </Pressable>
-          <Pressable
-            flexDirection={"row"}
-            onPress={() => set_resource_type("video")}
-          >
-            {resource_type === "video" ? (
-              <Ionicons
-                name="radio-button-on"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            ) : (
-              <Ionicons
-                name="radio-button-off"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            )}
-            <Text>Videos</Text>
-          </Pressable>
-          <Pressable
-            flexDirection={"row"}
-            onPress={() => set_resource_type("pdf")}
-          >
-            {resource_type === "pdf" ? (
-              <Ionicons
-                name="radio-button-on"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            ) : (
-              <Ionicons
-                name="radio-button-off"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            )}
-            <Text>Docs</Text>
-          </Pressable>
-          <Pressable
-            flexDirection={"row"}
-            onPress={() => set_resource_type("youtube")}
-          >
-            {resource_type === "youtube" ? (
-              <Ionicons
-                name="radio-button-on"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            ) : (
-              <Ionicons
-                name="radio-button-off"
-                size={18}
-                color={theme.primary}
-                style={{ marginTop: 1 }}
-              />
-            )}
-            <Text>YouTube</Text>
-          </Pressable>
-        </Row>
+            </Pressable>
+          )}
+        >
+          <Menu.Item onPress={() => set_resource_type("image")}>
+            <Text color={theme.text}>Images</Text>
+          </Menu.Item>
+          <Menu.Item onPress={() => set_resource_type("video")}>
+            <Text color={theme.text}>Videos</Text>
+          </Menu.Item>
+          <Menu.Item onPress={() => set_resource_type("pdf")}>
+            <Text color={theme.text}>Docs</Text>
+          </Menu.Item>
+          <Menu.Item onPress={() => set_resource_type("youtube")}>
+            <Text color={theme.text}>YouTube</Text>
+          </Menu.Item>
+        </Menu>
       </Row>
       <List
         selected={new Decimal(-1)}
