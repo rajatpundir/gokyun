@@ -136,5 +136,76 @@ export async function load_data() {
     console.log(
       "-------------------------------------------------------------------"
     );
+    result = await compose.value.run({
+      resource_type: {
+        type: "other",
+        other: "Resource_Type",
+        value: ids.ResourceType["text/youtube"]._id,
+      },
+      url: {
+        type: "str",
+        value: "https://youtu.be/aZnxzBUtpf0",
+      },
+      tags: {
+        type: "list",
+        value: [
+          {
+            name: {
+              type: "str",
+              value: "youtube",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "cabin",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "fever",
+            },
+          },
+        ],
+      },
+    });
+    console.log(result);
+    console.log(
+      "-------------------------------------------------------------------"
+    );
+    result = await compose.value.run({
+      resource_type: {
+        type: "other",
+        other: "Resource_Type",
+        value: ids.ResourceType["application/pdf"]._id,
+      },
+      url: {
+        type: "str",
+        value:
+          "https://www.montclair.edu/human-resources/wp-content/uploads/sites/181/2018/12/Workday-Basics.pdf",
+      },
+      tags: {
+        type: "list",
+        value: [
+          {
+            name: {
+              type: "str",
+              value: "pdf",
+            },
+          },
+          {
+            name: {
+              type: "str",
+              value: "workday",
+            },
+          },
+        ],
+      },
+    });
+    console.log(result);
+    console.log(
+      "-------------------------------------------------------------------"
+    );
   }
 }
