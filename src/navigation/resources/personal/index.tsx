@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { Input, Menu, Pressable, Row, Text } from "native-base";
@@ -18,184 +18,14 @@ import {
 import { get_struct } from "../../../schema";
 import { views } from "../../../views";
 import { NavigatorProps as ParentNavigatorProps } from "..";
-import { Draft } from "immer";
-import { Struct } from "../../../lib/variable";
-import { useImmerReducer } from "use-immer";
-
-type State = {
-  resource_type: "image" | "video" | "pdf" | "youtube";
-  struct: Struct;
-  entrypoints: ReadonlyArray<Entrypoint>;
-  init_filter: OrFilter;
-};
-
-type Action = ["resource_type", State["resource_type"]];
-
-function reducer(state: Draft<State>, action: Action) {
-  switch (action[0]) {
-    case "resource_type": {
-      state.resource_type = action[1];
-      state.init_filter = new OrFilter(
-        0,
-        [false, undefined],
-        [false, undefined],
-        [false, undefined],
-        apply(
-          get_filter_paths(
-            state.struct as Struct,
-            [
-              ["url", [[], "url"]],
-              ["tag_count", [[], "tag_count"]],
-              ["owner", [[], "owner"]],
-            ],
-            state.entrypoints
-          ),
-          (it) => {
-            switch (state.resource_type) {
-              case "image": {
-                return it
-                  .addAll([
-                    new FilterPath(
-                      "type",
-                      [["resource_type"], "type"],
-                      ["str", ["==", "image"]],
-                      undefined
-                    ),
-                    new FilterPath(
-                      "subtype",
-                      [["resource_type"], "subtype"],
-                      ["str", undefined],
-                      undefined
-                    ),
-                  ])
-                  .map((x) => {
-                    x.active = true;
-                    return x;
-                  });
-              }
-              case "video": {
-                return it
-                  .addAll([
-                    new FilterPath(
-                      "type",
-                      [["resource_type"], "type"],
-                      ["str", ["==", "video"]],
-                      undefined
-                    ),
-                    new FilterPath(
-                      "subtype",
-                      [["resource_type"], "subtype"],
-                      ["str", undefined],
-                      undefined
-                    ),
-                  ])
-                  .map((x) => {
-                    x.active = true;
-                    return x;
-                  });
-              }
-              case "pdf": {
-                return it
-                  .addAll([
-                    new FilterPath(
-                      "type",
-                      [["resource_type"], "type"],
-                      ["str", ["==", "application"]],
-                      undefined
-                    ),
-                    new FilterPath(
-                      "subtype",
-                      [["resource_type"], "subtype"],
-                      ["str", ["==", "pdf"]],
-                      undefined
-                    ),
-                  ])
-                  .map((x) => {
-                    x.active = true;
-                    return x;
-                  });
-              }
-              case "youtube": {
-                return it
-                  .addAll([
-                    new FilterPath(
-                      "type",
-                      [["resource_type"], "type"],
-                      ["str", ["==", "text"]],
-                      undefined
-                    ),
-                    new FilterPath(
-                      "subtype",
-                      [["resource_type"], "subtype"],
-                      ["str", ["==", "youtube"]],
-                      undefined
-                    ),
-                  ])
-                  .map((x) => {
-                    x.active = true;
-                    return x;
-                  });
-              }
-              default: {
-                const _exhaustiveCheck: never = state.resource_type;
-                return _exhaustiveCheck;
-              }
-            }
-          }
-        )
-      );
-      break;
-    }
-    default: {
-      const _exhaustiveCheck: never = action[0];
-      return _exhaustiveCheck;
-    }
-  }
-}
 
 export default function Component(props: ParentNavigatorProps<"Personal">) {
   const theme = useTheme();
   const struct = get_struct("Private_Resource");
   const entrypoints: Array<Entrypoint> = [[[], "owner"]];
-  const [state, dispatch] = useImmerReducer<State, Action>(reducer, {
-    resource_type: "image",
-    struct: struct,
-    entrypoints: entrypoints,
-    init_filter: new OrFilter(
-      0,
-      [false, undefined],
-      [false, undefined],
-      [false, undefined],
-      get_filter_paths(
-        struct as Struct,
-        [
-          ["url", [[], "url"]],
-          ["tag_count", [[], "tag_count"]],
-          ["owner", [[], "owner"]],
-        ],
-        entrypoints
-      )
-        .addAll([
-          new FilterPath(
-            "type",
-            [["resource_type"], "type"],
-            ["str", ["==", "image"]],
-            undefined
-          ),
-          new FilterPath(
-            "subtype",
-            [["resource_type"], "subtype"],
-            ["str", undefined],
-            undefined
-          ),
-        ])
-        .map((x) => {
-          x.active = true;
-          return x;
-        })
-    ),
-  });
-
+  const [resource_type, set_resource_type] = useState(
+    "image" as "image" | "video" | "pdf" | "youtube"
+  );
   return (
     <>
       <Row
@@ -233,7 +63,7 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
             >
               <Text color={theme.text}>
                 {arrow(() => {
-                  switch (state.resource_type) {
+                  switch (resource_type) {
                     case "image":
                       return "Images";
                     case "video":
@@ -243,7 +73,7 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
                     case "youtube":
                       return "YouTube";
                     default: {
-                      const _exhaustiveCheck: never = state.resource_type;
+                      const _exhaustiveCheck: never = resource_type;
                       return _exhaustiveCheck;
                     }
                   }
@@ -257,16 +87,16 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
             </Pressable>
           )}
         >
-          <Menu.Item onPress={() => dispatch(["resource_type", "image"])}>
+          <Menu.Item onPress={() => set_resource_type("image")}>
             <Text color={theme.text}>Images</Text>
           </Menu.Item>
-          <Menu.Item onPress={() => dispatch(["resource_type", "video"])}>
+          <Menu.Item onPress={() => set_resource_type("video")}>
             <Text color={theme.text}>Videos</Text>
           </Menu.Item>
-          <Menu.Item onPress={() => dispatch(["resource_type", "pdf"])}>
+          <Menu.Item onPress={() => set_resource_type("pdf")}>
             <Text color={theme.text}>PDF</Text>
           </Menu.Item>
-          <Menu.Item onPress={() => dispatch(["resource_type", "youtube"])}>
+          <Menu.Item onPress={() => set_resource_type("youtube")}>
             <Text color={theme.text}>YouTube</Text>
           </Menu.Item>
         </Menu>
@@ -274,7 +104,117 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
       <List
         selected={new Decimal(-1)}
         struct={struct}
-        init_filter={state.init_filter}
+        init_filter={
+          new OrFilter(
+            0,
+            [false, undefined],
+            [false, undefined],
+            [false, undefined],
+            apply(
+              get_filter_paths(
+                struct,
+                [
+                  ["url", [[], "url"]],
+                  ["tag_count", [[], "tag_count"]],
+                  ["owner", [[], "owner"]],
+                ],
+                entrypoints
+              ),
+              (it) => {
+                switch (resource_type) {
+                  case "image": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "image"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", undefined],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  case "video": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "video"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", undefined],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  case "pdf": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "application"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", ["==", "pdf"]],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  case "youtube": {
+                    return it
+                      .addAll([
+                        new FilterPath(
+                          "type",
+                          [["resource_type"], "type"],
+                          ["str", ["==", "text"]],
+                          undefined
+                        ),
+                        new FilterPath(
+                          "subtype",
+                          [["resource_type"], "subtype"],
+                          ["str", ["==", "youtube"]],
+                          undefined
+                        ),
+                      ])
+                      .map((x) => {
+                        x.active = true;
+                        return x;
+                      });
+                  }
+                  default: {
+                    const _exhaustiveCheck: never = resource_type;
+                    return _exhaustiveCheck;
+                  }
+                }
+              }
+            )
+          )
+        }
         filters={HashSet.of()}
         limit={new Decimal(10)}
         options={[

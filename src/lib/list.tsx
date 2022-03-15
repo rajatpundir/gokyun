@@ -461,11 +461,6 @@ export function List(props: ListProps): JSX.Element {
 
   const request_counter = useRef(0);
   useEffect(() => {
-    console.log(
-      "$$%%%",
-      state.init_filter.filter_paths.length(),
-      state.init_filter.toString()
-    );
     const get_vars = async () => {
       request_counter.current += 1;
       const request_count = request_counter.current;
@@ -475,7 +470,7 @@ export function List(props: ListProps): JSX.Element {
             const variables = await get_variables(
               state.struct,
               undefined,
-              state.init_filter,
+              props.init_filter,
               state.filters,
               state.limit,
               state.offset,
@@ -494,7 +489,7 @@ export function List(props: ListProps): JSX.Element {
     get_vars();
   }, [
     state.struct,
-    state.init_filter,
+    props.init_filter,
     state.filters,
     state.limit,
     state.offset,
