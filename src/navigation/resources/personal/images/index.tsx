@@ -14,7 +14,7 @@ import {
 } from "../../../../lib";
 import { get_struct } from "../../../../schema";
 import { views } from "../../../../views";
-import { Pressable, Row, Text, View } from "native-base";
+import { Pressable, Row, Text } from "native-base";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -27,11 +27,14 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
   );
   return (
     <>
-      <Row m={"2"}>
-        <Text color={theme.label}>Type</Text>
+      <Row alignContent={"center"} mx={"1"} my={"2"}>
+        <Text fontSize={"md"} color={theme.label}>
+          Filter
+        </Text>
         <Row alignContent={"center"} space={"2"} mx={"3"}>
           <Pressable
             flexDirection={"row"}
+            alignContent={"center"}
             onPress={() => set_resource_type("image")}
           >
             {resource_type === "image" ? (
@@ -39,12 +42,14 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
                 name="radio-button-on"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             ) : (
               <Ionicons
                 name="radio-button-off"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             )}
             <Text>Images</Text>
@@ -58,12 +63,14 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
                 name="radio-button-on"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             ) : (
               <Ionicons
                 name="radio-button-off"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             )}
             <Text>Videos</Text>
@@ -77,12 +84,14 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
                 name="radio-button-on"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             ) : (
               <Ionicons
                 name="radio-button-off"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             )}
             <Text>Docs</Text>
@@ -96,19 +105,20 @@ export default function Component(props: ParentNavigatorProps<"Images">) {
                 name="radio-button-on"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             ) : (
               <Ionicons
                 name="radio-button-off"
                 size={18}
                 color={theme.primary}
+                style={{ marginTop: 1 }}
               />
             )}
             <Text>YouTube</Text>
           </Pressable>
         </Row>
       </Row>
-
       <List
         selected={new Decimal(-1)}
         struct={struct}
