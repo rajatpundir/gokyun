@@ -19,6 +19,16 @@ import { get_struct } from "../../../schema";
 import { views } from "../../../views";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 
+// TODO. Launch Resource modal on click to edit resource tags, delete or convert it
+
+// TODO. Inside Resource modal, click on resource will open specific resource in its own modal
+
+// TODO. Generate tags via input, search via generated tags
+
+// TODO. Integrate authentication via google
+
+// TODO. Integrate google drive
+
 export default function Component(props: ParentNavigatorProps<"Personal">) {
   const theme = useTheme();
   const struct = get_struct("Private_Resource");
