@@ -41,6 +41,10 @@ export default function Component(props: ParentNavigatorProps<"Personal">) {
           maxLength={255}
           placeholder={"Search"}
           value={""}
+          onChangeText={() => {}}
+          color={theme.text}
+          borderColor={theme.border}
+          placeholderTextColor={theme.placeholder}
         />
         <Menu
           mx={"2"}
