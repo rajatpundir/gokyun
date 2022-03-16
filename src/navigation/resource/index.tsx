@@ -13,7 +13,7 @@ export default function Component(
 ): JSX.Element {
   const theme = useTheme();
   const struct = get_struct("Test");
-  const [state, dispatch, jsx1] = useComponent({
+  const [state, dispatch, jsx] = useComponent({
     struct: struct,
     id: new Decimal(props.route.params.id),
     created_at: new Date(),

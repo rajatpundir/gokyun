@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { Column, Row, Text } from "native-base";
+import { Column, Pressable, Row, Text } from "native-base";
 import {
   ComponentViews,
   arrow,
@@ -24,10 +24,12 @@ import {
 import { get_struct } from "../schema";
 import Private_Resource_Tag from "./Private_Resource_Tag";
 import { RenderWrappedItemProps } from "../lib/list_variants";
+import { useNavigation } from "@react-navigation/native";
 
 const views = { Private_Resource_Tag };
 
 const common_default_component: ComponentViews[string]["show"] = (props) => {
+  const navigation = useNavigation();
   const theme = useTheme();
   const [resource, set_resource] = useState(undefined as Resource);
   useEffect(() => {

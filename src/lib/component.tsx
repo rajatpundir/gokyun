@@ -737,6 +737,7 @@ export function DeleteButton(props: {
 }
 
 export function ResourceComponent(props: { resource: Resource }) {
+  const navigation = useNavigation();
   const theme = useTheme();
   if (props.resource !== undefined) {
     switch (props.resource.type) {
@@ -746,23 +747,29 @@ export function ResourceComponent(props: { resource: Resource }) {
           case "jpeg":
           case "webp": {
             return (
-              <Image
-                source={{
-                  uri: props.resource.url,
-                }}
-                resizeMode="contain"
-                width={"full"}
+              <Pressable
                 height={
                   props.resource.height *
                   (dimensions.width / props.resource.width)
                 }
-                alt="*"
-                fallbackElement={
-                  <Text fontSize={"xs"} color={theme.error}>
-                    * Unable to load image, please check url
-                  </Text>
-                }
-              />
+                width={"100%"}
+                onPress={() => {}}
+              >
+                <Image
+                  source={{
+                    uri: props.resource.url,
+                  }}
+                  resizeMode="contain"
+                  height={"full"}
+                  width={"full"}
+                  alt="*"
+                  fallbackElement={
+                    <Text fontSize={"xs"} color={theme.error}>
+                      * Unable to load image, please check url
+                    </Text>
+                  }
+                />
+              </Pressable>
             );
           }
           default: {
@@ -803,13 +810,15 @@ export function ResourceComponent(props: { resource: Resource }) {
           case "pdf": {
             return (
               <Column flex={"1"}>
-                <WebView
-                  source={{
-                    uri: `http://docs.google.com/gview?embedded=true&url=${props.resource.url}`,
-                  }}
-                  nestedScrollEnabled={true}
-                  style={{ height: 240 }}
-                />
+                <Pressable onPress={() => {}}>
+                  <WebView
+                    source={{
+                      uri: `http://docs.google.com/gview?embedded=true&url=${props.resource.url}`,
+                    }}
+                    nestedScrollEnabled={true}
+                    style={{ height: 240 }}
+                  />
+                </Pressable>
               </Column>
             );
           }
