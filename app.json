@@ -1,8 +1,8 @@
 {
   "expo": {
     "entryPoint": "./src/navigation/main",
-    "name": "gokyun",
-    "slug": "gokyun",
+    "name": "aakhiri",
+    "slug": "aakhiri",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -26,8 +26,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "app.gokyun.com"
+      }
     },
     "web": {
       "favicon": "./assets/images/favicon.png"

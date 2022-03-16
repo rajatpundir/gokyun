@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Theme as ReactNavigationTheme } from "@react-navigation/native";
 import { extendTheme } from "native-base";
-import { DefaultTheme as PaperTheme } from "react-native-paper";
 import { colors } from "./tailwind";
 import { getState, subscribe } from "./store";
 import { arrow } from "./prelude";
@@ -167,60 +166,6 @@ export function useRNTheme(): ReactNavigationTheme {
     return unsub;
   }, []);
   return get_rn_theme(theme_name);
-}
-
-function get_rnp_theme(theme_name: ThemeName): ReactNativePaper.Theme {
-  const theme = useTheme();
-  switch (theme_name) {
-    case "Light": {
-      return {
-        ...PaperTheme,
-        dark: false,
-        roundness: 5,
-        colors: {
-          ...PaperTheme.colors,
-          primary: theme.primary,
-          accent: theme.accent,
-          background: theme.background,
-          placeholder: theme.placeholder,
-          text: theme.text,
-          error: theme.error,
-        },
-      };
-    }
-    case "Dark": {
-      return {
-        ...PaperTheme,
-        dark: true,
-        roundness: 5,
-        colors: {
-          ...PaperTheme.colors,
-          primary: theme.primary,
-          accent: theme.accent,
-          background: theme.background,
-          placeholder: theme.placeholder,
-          text: theme.text,
-          error: theme.error,
-        },
-      };
-    }
-    default: {
-      const _exhaustiveCheck: never = theme_name;
-      return _exhaustiveCheck;
-    }
-  }
-}
-
-export function useRNPTheme(): ReactNativePaper.Theme {
-  const [theme_name, set_theme_name] = useState(getState().params.theme);
-  useEffect(() => {
-    const unsub = subscribe(
-      (store) => store.params.theme,
-      (x) => set_theme_name(x)
-    );
-    return unsub;
-  }, []);
-  return get_rnp_theme(theme_name);
 }
 
 const empty_theme = extendTheme({});

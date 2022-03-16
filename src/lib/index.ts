@@ -24,13 +24,7 @@ export { Entrypoint } from "./permissions";
 export { arrow, apply, unwrap, Resource, get_resource } from "./prelude";
 export { tw } from "./tailwind";
 export { Template } from "./templates";
-export {
-  useBSTheme,
-  useTheme,
-  useRNTheme,
-  useNBTheme,
-  useRNPTheme,
-} from "./theme";
+export { useBSTheme, useTheme, useRNTheme, useNBTheme } from "./theme";
 export {
   compare_paths,
   get_path_string,

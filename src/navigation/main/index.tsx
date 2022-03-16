@@ -3,7 +3,6 @@ import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalProvider } from "@gorhom/portal";
-import { Provider as PaperProvider } from "react-native-paper";
 import { NativeBaseProvider } from "native-base";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
@@ -27,7 +26,6 @@ import {
   SelectionModalProps,
   useRNTheme,
   useNBTheme,
-  useRNPTheme,
   tw,
   SelectionModal,
   Path,
@@ -65,64 +63,55 @@ function Component() {
   const theme = useTheme();
   const theme_rn = useRNTheme();
   const theme_nb = useNBTheme();
-  const theme_rnp = useRNPTheme();
 
   useDeviceContext(tw);
   return apply(useAssets(), (is_loading_complete) => {
     if (is_loading_complete) {
       return (
         <GestureHandlerRootView style={tw.style(["flex-1"])}>
-          <PaperProvider theme={theme_rnp}>
-            <NativeBaseProvider theme={theme_nb}>
-              <BottomSheetModalProvider>
-                <PortalProvider>
-                  <SafeAreaProvider>
-                    <SafeAreaView style={tw.style(["flex-1"])}>
-                      <NavigationContainer theme={theme_rn}>
-                        <Stack.Navigator initialRouteName="Resources">
+          <NativeBaseProvider theme={theme_nb}>
+            <BottomSheetModalProvider>
+              <PortalProvider>
+                <SafeAreaProvider>
+                  <SafeAreaView style={tw.style(["flex-1"])}>
+                    <NavigationContainer theme={theme_rn}>
+                      <Stack.Navigator initialRouteName="Resources">
+                        <Stack.Group
+                          screenOptions={{
+                            headerShown: false,
+                          }}
+                        >
+                          <Stack.Screen name="Main" component={MainNavigator} />
                           <Stack.Group
                             screenOptions={{
-                              headerShown: false,
+                              presentation: "modal",
                             }}
                           >
                             <Stack.Screen
-                              name="Main"
-                              component={MainNavigator}
+                              name="SelectionModal"
+                              component={SelectionModal}
                             />
-                            <Stack.Group
-                              screenOptions={{
-                                presentation: "modal",
-                              }}
-                            >
-                              <Stack.Screen
-                                name="SelectionModal"
-                                component={SelectionModal}
-                              />
-                              <Stack.Screen
-                                name="Resources"
-                                component={Resources}
-                              />
-                              <Stack.Screen
-                                name="Resource"
-                                component={Resource}
-                              />
-                              <Stack.Screen
-                                name="Gallery"
-                                component={Gallery}
-                              />
-                              <Stack.Screen name="Search" component={Search} />
-                              <Stack.Screen name="Test" component={Test} />
-                            </Stack.Group>
+                            <Stack.Screen
+                              name="Resources"
+                              component={Resources}
+                            />
+                            <Stack.Screen
+                              name="Resource"
+                              component={Resource}
+                            />
+                            <Stack.Screen name="Gallery" component={Gallery} />
+                            <Stack.Screen name="Search" component={Search} />
+                            <Stack.Screen name="Test" component={Test} />
                           </Stack.Group>
-                        </Stack.Navigator>
-                      </NavigationContainer>
-                    </SafeAreaView>
-                    <StatusBar backgroundColor={theme.background} />
-                  </SafeAreaProvider>
-                </PortalProvider>
-              </BottomSheetModalProvider>
-            </NativeBaseProvider>
-          </PaperProvider>
+                        </Stack.Group>
+                      </Stack.Navigator>
+                    </NavigationContainer>
+                  </SafeAreaView>
+                  <StatusBar backgroundColor={theme.background} />
+                </SafeAreaProvider>
+              </PortalProvider>
+            </BottomSheetModalProvider>
+          </NativeBaseProvider>
         </GestureHandlerRootView>
       );
     }
