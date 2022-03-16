@@ -753,7 +753,12 @@ export function ResourceComponent(props: { resource: Resource }) {
                   (dimensions.width / props.resource.width)
                 }
                 width={"100%"}
-                onPress={() => {}}
+                onPress={() => {
+                  // navigation.navigate("Resource", {
+                  //   id: props.state.id.toNumber(),
+                  //   values: undefined,
+                  // });
+                }}
               >
                 <Image
                   source={{
