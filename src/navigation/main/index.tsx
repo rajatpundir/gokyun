@@ -17,10 +17,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import MainNavigator, { NavigatorParams as MainNavigatorParams } from "./tree";
 import { useDeviceContext } from "twrnc";
 
-import Test from "../test";
-import Search from "../search";
-import Resources from "../resources";
-import Resource from "../resource";
 import { HashSet } from "prelude-ts";
 
 import { FontAwesome } from "@expo/vector-icons";
@@ -40,6 +36,12 @@ import {
 import { LogBox } from "react-native";
 import { load_data } from "../../schema/load_data";
 
+import Test from "../test";
+import Search from "../search";
+import Resources from "../resources";
+import Resource from "../resource";
+import Gallery from "../gallery";
+
 // Ignore react navigation error related to serializability of props passed
 LogBox.ignoreLogs(["Require cycle:"]);
 
@@ -56,6 +58,7 @@ export type NavigatorParams = {
     id: number;
     values?: HashSet<Path>;
   };
+  Gallery: {};
 };
 
 function Component() {
@@ -102,6 +105,10 @@ function Component() {
                               <Stack.Screen
                                 name="Resource"
                                 component={Resource}
+                              />
+                              <Stack.Screen
+                                name="Gallery"
+                                component={Gallery}
                               />
                               <Stack.Screen name="Search" component={Search} />
                               <Stack.Screen name="Test" component={Test} />
