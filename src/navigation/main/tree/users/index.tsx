@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { NavigatorProps as ParentNavigatorProps } from "..";

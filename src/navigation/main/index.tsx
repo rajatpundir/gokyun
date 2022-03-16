@@ -20,6 +20,7 @@ import { useDeviceContext } from "twrnc";
 import Test from "../test";
 import Search from "../search";
 import Resources from "../resources";
+import Resource from "../resource";
 import { HashSet } from "prelude-ts";
 
 import { FontAwesome } from "@expo/vector-icons";
@@ -48,6 +49,10 @@ export type NavigatorParams = {
   Search: undefined;
   Resources: undefined;
   Test: {
+    id: number;
+    values?: HashSet<Path>;
+  };
+  Resource: {
     id: number;
     values?: HashSet<Path>;
   };
@@ -93,6 +98,10 @@ function Component() {
                               <Stack.Screen
                                 name="Resources"
                                 component={Resources}
+                              />
+                              <Stack.Screen
+                                name="Resource"
+                                component={Resource}
                               />
                               <Stack.Screen name="Search" component={Search} />
                               <Stack.Screen name="Test" component={Test} />

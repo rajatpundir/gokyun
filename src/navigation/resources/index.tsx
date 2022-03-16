@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 import { CompositeScreenProps } from "@react-navigation/native";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
