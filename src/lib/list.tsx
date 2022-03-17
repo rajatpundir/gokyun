@@ -54,7 +54,8 @@ export type ListAction =
   | ["filter_path", AndFilter, OrFilter, "replace", FilterPath]
   | ["layout", string]
   | ["reload"]
-  | ["remove", Array<number>];
+  | ["remove", Array<number>]
+  | ["init_filter", OrFilter];
 
 function reducer(state: Draft<ListState>, action: ListAction) {
   switch (action[0]) {
@@ -399,6 +400,10 @@ function reducer(state: Draft<ListState>, action: ListAction) {
       state.offset = new Decimal(state.variables.length);
       break;
     }
+    case "init_filter": {
+      state.init_filter = action[1];
+      break;
+    }
     default: {
       const _exhaustiveCheck: never = action[0];
       return _exhaustiveCheck;
@@ -459,6 +464,10 @@ export function List(props: ListProps): JSX.Element {
     reload: 0,
   });
 
+  useEffect(() => {
+    dispatch(["init_filter", props.init_filter]);
+  }, [props.init_filter]);
+
   const request_counter = useRef(0);
   useEffect(() => {
     const get_vars = async () => {
@@ -470,7 +479,7 @@ export function List(props: ListProps): JSX.Element {
             const variables = await get_variables(
               state.struct,
               undefined,
-              props.init_filter,
+              state.init_filter,
               state.filters,
               state.limit,
               state.offset,
@@ -489,7 +498,7 @@ export function List(props: ListProps): JSX.Element {
     get_vars();
   }, [
     state.struct,
-    props.init_filter,
+    state.init_filter,
     state.filters,
     state.limit,
     state.offset,

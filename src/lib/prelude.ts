@@ -146,7 +146,6 @@ export async function get_resource(url: URL): Promise<Resource> {
   const content_type: string | null = response.headers.get("content-type");
   if (content_type !== null && content_type.split("/").length === 2) {
     const [mime_type, mime_subtype] = content_type.split("/");
-    console.log("--", mime_type, "--", mime_subtype);
     switch (mime_type) {
       case "image": {
         switch (mime_subtype) {
