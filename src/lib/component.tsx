@@ -41,6 +41,7 @@ import { Portal } from "@gorhom/portal";
 import { Entrypoint } from "./permissions";
 import VideoPlayer from "expo-video-player";
 import WebView from "react-native-webview";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 
 export type ComponentViews = Record<
   string,
@@ -760,20 +761,31 @@ export function ResourceComponent(props: { resource: Resource }) {
                   // });
                 }}
               >
-                <Image
-                  source={{
-                    uri: props.resource.url,
-                  }}
-                  resizeMode="contain"
-                  height={"full"}
-                  width={"full"}
-                  alt="*"
-                  fallbackElement={
-                    <Text fontSize={"xs"} color={theme.error}>
-                      * Unable to load image, please check url
-                    </Text>
-                  }
-                />
+                <ReactNativeZoomableView
+                  maxZoom={30}
+                  // Give these to the zoomable view so it can apply the boundaries around the actual content.
+                  // Need to make sure the content is actually centered and the width and height are
+                  // dimensions when it's rendered naturally. Not the intrinsic size.
+                  // For example, an image with an intrinsic size of 400x200 will be rendered as 300x150 in this case.
+                  // Therefore, we'll feed the zoomable view the 300x150 size.
+                  // contentWidth={300}
+                  // contentHeight={150}
+                >
+                  <Image
+                    source={{
+                      uri: props.resource.url,
+                    }}
+                    resizeMode="contain"
+                    height={"full"}
+                    width={"full"}
+                    alt="*"
+                    fallbackElement={
+                      <Text fontSize={"xs"} color={theme.error}>
+                        * Unable to load image, please check url
+                      </Text>
+                    }
+                  />
+                </ReactNativeZoomableView>
               </Pressable>
             );
           }

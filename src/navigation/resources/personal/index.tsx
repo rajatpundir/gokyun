@@ -18,6 +18,7 @@ import {
 import { get_struct } from "../../../schema";
 import { views } from "../../../views";
 import { NavigatorProps as ParentNavigatorProps } from "..";
+import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 
 // TODO. Launch Resource modal on click to edit resource tags, delete or convert it
 
