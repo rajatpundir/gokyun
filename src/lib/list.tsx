@@ -483,7 +483,7 @@ export function List(props: ListProps): JSX.Element {
             }
           }
         },
-        props.searchable ? 10000 : 0
+        props.searchable ? 100 : 0
       );
     };
     get_vars();

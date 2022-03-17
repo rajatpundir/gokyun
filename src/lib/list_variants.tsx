@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import Decimal from "decimal.js";
-import { Menu, Text, Pressable, Row, Column } from "native-base";
+import { Menu, Text, Pressable, Row, Column, Spinner } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { Portal } from "@gorhom/portal";
 import {
@@ -101,9 +101,12 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
   const ListFooterComponent = useCallback(() => {
     if (!props.state.reached_end) {
       return (
-        <Text my={"1"} textAlign={"center"} color={bs_theme.text}>
-          Loading...
-        </Text>
+        <Row justifyContent={"center"} alignItems={"center"}>
+          <Text my={"1"} color={bs_theme.text}>
+            Loading
+          </Text>
+          <Spinner size={"sm"} color={bs_theme.primary} />
+        </Row>
       );
     }
     return <></>;

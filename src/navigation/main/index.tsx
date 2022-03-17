@@ -56,7 +56,7 @@ export type NavigatorParams = {
     id: number;
     values?: HashSet<Path>;
   };
-  Gallery: {};
+  Gallery: { id: number; values?: HashSet<Path> };
 };
 
 function Component() {
@@ -91,6 +91,7 @@ function Component() {
                               name="SelectionModal"
                               component={SelectionModal}
                             />
+                            <Stack.Screen name="Test" component={Test} />
                             <Stack.Screen
                               name="Resources"
                               component={Resources}
@@ -99,9 +100,8 @@ function Component() {
                               name="Resource"
                               component={Resource}
                             />
-                            <Stack.Screen name="Gallery" component={Gallery} />
                             <Stack.Screen name="Search" component={Search} />
-                            <Stack.Screen name="Test" component={Test} />
+                            <Stack.Screen name="Gallery" component={Gallery} />
                           </Stack.Group>
                         </Stack.Group>
                       </Stack.Navigator>

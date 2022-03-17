@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
-    "@gorhom/bottom-sheet": "^4",
+    "@gorhom/bottom-sheet": "4.1.5",
     "@gorhom/portal": "^1.0.12",
     "@react-native-community/datetimepicker": "4.0.0",
     "@react-native-community/slider": "4.1.12",
@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mustache": "^4.2.0",
-    "native-base": "^3.3.7",
+    "native-base": "3.3.1",
     "prelude-ts": "^1.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
