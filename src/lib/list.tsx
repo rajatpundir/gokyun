@@ -424,7 +424,7 @@ type RenderListItemProps = {
   entrypoints: Array<Entrypoint>;
   variable: Variable;
   selected: boolean;
-  update_parent_values: () => void;
+  on_select: () => void;
 };
 
 export type RenderListElement = [
@@ -454,7 +454,7 @@ type ListProps = CommonProps & {
   struct: Struct;
   init_filter: OrFilter;
   filters: HashSet<AndFilter>;
-  update_parent_values?: (variable: Variable) => void;
+  on_select?: (variable: Variable) => void;
 };
 
 export function List(props: ListProps): JSX.Element {
@@ -554,10 +554,8 @@ export function List(props: ListProps): JSX.Element {
             bsm_sorting_ref={bsm_sorting_ref}
             bsm_sorting_fields_ref={bsm_sorting_fields_ref}
             bsm_filters_ref={bsm_filters_ref}
-            update_parent_values={
-              props.update_parent_values !== undefined
-                ? props.update_parent_values
-                : () => {}
+            on_select={
+              props.on_select !== undefined ? props.on_select : () => {}
             }
           />
         }
@@ -721,9 +719,9 @@ export function SelectionModal(
       <ModalHeader title={props.route.params.title} />
       <List
         {...props.route.params}
-        update_parent_values={(variable: Variable) => {
-          if (props.route.params.update_parent_values !== undefined) {
-            props.route.params.update_parent_values(variable);
+        on_select={(variable: Variable) => {
+          if (props.route.params.on_select !== undefined) {
+            props.route.params.on_select(variable);
           }
           props.navigation.goBack();
         }}

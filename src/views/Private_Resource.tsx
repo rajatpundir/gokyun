@@ -196,17 +196,28 @@ export default {
       return (
         <>
           {resource !== undefined ? (
-            <View
+            <Pressable
+              onPress={props.on_select}
               height={100}
               m={"0.5"}
-              borderColor={theme.border}
-              borderWidth={"1"}
+              borderColor={arrow(() => {
+                if (props.selected) {
+                  return theme.primary;
+                }
+                return theme.border;
+              })}
+              borderWidth={arrow(() => {
+                if (props.selected) {
+                  return "2";
+                }
+                return "1";
+              })}
             >
               <ResourceComponent
                 resource={resource}
                 display={["row", dimensions.width / 3.1]}
               />
-            </View>
+            </Pressable>
           ) : (
             <></>
           )}

@@ -41,7 +41,6 @@ import { Portal } from "@gorhom/portal";
 import { Entrypoint } from "./permissions";
 import VideoPlayer from "expo-video-player";
 import WebView from "react-native-webview";
-import { ReactNativeZoomableView } from "@openspacelabs/react-native-zoomable-view";
 
 export type ComponentViews = Record<
   string,
@@ -56,14 +55,14 @@ export type ComponentViews = Record<
       state: State;
       dispatch: React.Dispatch<Action>;
       selected: boolean;
-      update_parent_values: () => void;
+      on_select: () => void;
     }) => JSX.Element;
     show: (props: {
       struct: Struct;
       state: State;
       dispatch: React.Dispatch<Action>;
       selected: boolean;
-      update_parent_values: () => void;
+      on_select: () => void;
     }) => JSX.Element;
   }
 >;
@@ -83,7 +82,7 @@ export function useComponent(props: {
   update: ComponentViews[string]["update"];
   show: ComponentViews[string]["show"];
   selected?: boolean;
-  update_parent_values?: () => void;
+  on_select?: () => void;
   found?: boolean | undefined;
 }): [State, React.Dispatch<Action>, JSX.Element] {
   const theme = useTheme();
@@ -224,11 +223,7 @@ export function useComponent(props: {
               state={state}
               dispatch={dispatch}
               selected={!!props.selected}
-              update_parent_values={
-                props.update_parent_values
-                  ? props.update_parent_values
-                  : () => {}
-              }
+              on_select={props.on_select ? props.on_select : () => {}}
             />
           );
         } else if (state.found === undefined) {
@@ -253,9 +248,7 @@ export function useComponent(props: {
             state={state}
             dispatch={dispatch}
             selected={!!props.selected}
-            update_parent_values={
-              props.update_parent_values ? props.update_parent_values : () => {}
-            }
+            on_select={props.on_select ? props.on_select : () => {}}
           />
         );
       } else if (state.found === undefined) {
@@ -281,7 +274,7 @@ export function OtherComponent(props: {
   entrypoints: ReadonlyArray<Entrypoint>;
   variable: Variable;
   selected: boolean;
-  update_parent_values: () => void;
+  on_select: () => void;
   view: ComponentViews[string];
 }): JSX.Element {
   const [, , jsx] = useComponent({
@@ -301,7 +294,7 @@ export function OtherComponent(props: {
     update: props.view.update,
     show: props.view.show,
     selected: props.selected,
-    update_parent_values: props.update_parent_values,
+    on_select: props.on_select,
     found: true,
   });
   return jsx;

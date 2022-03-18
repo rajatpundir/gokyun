@@ -44,7 +44,7 @@ const common_default_component: ComponentViews[string]["show"] = (props) => {
                 py={"2"}
                 rounded={"sm"}
                 backgroundColor={theme.primary}
-                onPress={props.update_parent_values}
+                onPress={props.on_select}
               >
                 <Text bold color={"white"}>
                   OK

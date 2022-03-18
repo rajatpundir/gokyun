@@ -1664,7 +1664,7 @@ function Other_Field(props: ComponentProps & OtherFieldProps): JSX.Element {
         )
       ),
       filters: HashSet.of<AndFilter>(),
-      update_parent_values: (variable: Variable) =>
+      on_select: (variable: Variable) =>
         props.dispatch([
           "values",
           get_upscaled_paths(props.path, variable, props.state.labels),

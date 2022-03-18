@@ -56,7 +56,7 @@ type VariantCommonProps = {
   state: ListState;
   dispatch: React.Dispatch<ListAction>;
   selected: Decimal;
-  update_parent_values: (variable: Variable) => void;
+  on_select: (variable: Variable) => void;
   bsm_view_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_ref: React.RefObject<BottomSheetModalMethods>;
   bsm_sorting_fields_ref: React.RefObject<BottomSheetModalMethods>;
@@ -87,9 +87,7 @@ function FlatlistVariant(props: VariantCommonProps & FlatlistVariantProps) {
           entrypoints={props.entrypoints}
           variable={list_item.item}
           selected={list_item.item.id.equals(props.selected)}
-          update_parent_values={() =>
-            props.update_parent_values(list_item.item)
-          }
+          on_select={() => props.on_select(list_item.item)}
         />
       );
     },
@@ -258,7 +256,7 @@ function MenuVariant(props: VariantCommonProps & MenuVariantProps) {
         return (
           <Menu.Item
             key={variable.id.toString()}
-            onPress={() => props.update_parent_values(variable)}
+            onPress={() => props.on_select(variable)}
           >
             <Text color={theme.text}>{props.RenderElement(variable)}</Text>
           </Menu.Item>
@@ -290,7 +288,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
       return (
         <Pressable
           onPress={() => {
-            props.update_parent_values(list_item.item);
+            props.on_select(list_item.item);
             bsm_ref.current?.forceClose();
           }}
         >
@@ -300,7 +298,7 @@ function SheetVariant(props: VariantCommonProps & SheetVariantProps) {
         </Pressable>
       );
     },
-    [props.selected, props.RenderElement, props.update_parent_values]
+    [props.selected, props.RenderElement, props.on_select]
   );
 
   const keyExtractor = (variable: Variable) => variable.id.toString();
@@ -371,7 +369,7 @@ export type RenderWrappedItemProps = {
   entrypoints: Array<Entrypoint>;
   variable: Variable;
   selected: boolean;
-  update_parent_values: () => void;
+  on_select: () => void;
 };
 
 type RowVariantProps = {
@@ -389,7 +387,7 @@ function RowVariant(props: VariantCommonProps & RowVariantProps) {
           entrypoints={props.entrypoints}
           variable={variable}
           selected={variable.id.equals(props.selected)}
-          update_parent_values={() => props.update_parent_values(variable)}
+          on_select={() => props.on_select(variable)}
         />
       ))}
     </Row>
@@ -411,7 +409,7 @@ function ColumnVariant(props: VariantCommonProps & ColumnVariantProps) {
           entrypoints={props.entrypoints}
           variable={variable}
           selected={variable.id.equals(props.selected)}
-          update_parent_values={() => props.update_parent_values(variable)}
+          on_select={() => props.on_select(variable)}
         />
       ))}
     </Column>
