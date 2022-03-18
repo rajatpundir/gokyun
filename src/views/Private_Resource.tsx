@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { Column, Pressable, Row, Text, View } from "native-base";
+import { Column, Pressable, Row, Text } from "native-base";
 import {
   ComponentViews,
   arrow,

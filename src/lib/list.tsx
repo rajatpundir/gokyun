@@ -65,7 +65,7 @@ export type ListAction =
   | ["init_filter", OrFilter];
 
 function reducer(state: Draft<ListState>, action: ListAction) {
-  console.log(`[LIST] dispatch ${action[0]}`);
+  // console.log(`[LIST] dispatch ${action[0]}`);
   switch (action[0]) {
     case "variables": {
       if (state.offset.equals(0)) {

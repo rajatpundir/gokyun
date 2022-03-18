@@ -13,14 +13,16 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ModalHeader, tw } from "../../lib";
 
 import Linker from "./linker";
-import Community from "./community";
+import Shared from "./shared";
 import Personal from "./personal";
+import Gallery from "./gallery";
 import { dimensions } from "../../lib/commons";
 
 export type NavigatorParams = {
   Linker: undefined;
-  Community: undefined;
+  Shared: undefined;
   Personal: undefined;
+  Gallery: undefined;
 };
 
 export default function Navigator(props: RootNavigatorProps<"Resources">) {
@@ -28,12 +30,12 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
     <>
       <ModalHeader title="Resources" />
       <TopTab.Navigator
-        initialRouteName="Community"
+        initialRouteName="Personal"
         screenOptions={{
           lazy: true,
           tabBarScrollEnabled: true,
           tabBarItemStyle: tw.style([], {
-            width: dimensions.width / 3,
+            width: dimensions.width / 3.5,
           }),
           tabBarLabelStyle: tw.style([], {
             fontSize: 14,
@@ -41,9 +43,11 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
           }),
         }}
       >
-        {/* <TopTab.Screen name="Linker" component={Linker} /> */}
-        {/* <TopTab.Screen name="Personal" component={Personal} /> */}
-        <TopTab.Screen name="Community" component={Community} />
+        <TopTab.Screen name="Linker" component={Linker} />
+        <TopTab.Screen name="Personal" component={Personal} />
+        <TopTab.Screen name="Shared" component={Shared} />
+        {/* Gallery should be used to only display images since other resources are evading onPress */}
+        <TopTab.Screen name="Gallery" component={Gallery} />
       </TopTab.Navigator>
     </>
   );

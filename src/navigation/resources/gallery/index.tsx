@@ -24,23 +24,12 @@ import {
   apply,
   FilterPath,
   Variable,
-  get_path_string,
 } from "../../../lib";
 import { get_struct } from "../../../schema";
 import { views } from "../../../views";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 
-// TODO. Launch Resource modal on click to edit resource tags, delete or convert it
-
-// TODO. Inside Resource modal, click on resource will open specific resource in its own modal
-
-// TODO. Generate tags via input, search via generated tags
-
-// TODO. Integrate authentication via google
-
-// TODO. Integrate google drive
-
-export default function Component(props: ParentNavigatorProps<"Community">) {
+export default function Component(props: ParentNavigatorProps<"Gallery">) {
   const theme = useTheme();
   const struct = get_struct("Private_Resource");
   const entrypoints: Array<Entrypoint> = [[[], "owner"]];
@@ -194,11 +183,7 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
                             new FilterPath(
                               "type",
                               [["resource_type"], "type"],
-                              [
-                                "str",
-                                // undefined,
-                                ["==", "image"],
-                              ],
+                              ["str", ["==", "image"]],
                               undefined
                             ),
                             new FilterPath(
@@ -304,15 +289,7 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
               },
             ]}
             RenderVariant={(props) => <Identity {...props} />}
-            on_select={(x) => {
-              set_variable(undefined);
-              console.log(
-                x.id.toString(),
-                x.struct.name,
-                x.paths.toArray().map((y) => get_path_string(y))
-              );
-              set_variable(x);
-            }}
+            on_select={(x) => set_variable(x)}
           />
         </Row>
       </Column>
