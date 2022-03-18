@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
-import { Input, Menu, Pressable, Row, Text } from "native-base";
+import { Column, Input, Menu, Pressable, Row, Text } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   OrFilter,
@@ -19,6 +19,16 @@ import { get_struct } from "../../../schema";
 import { views } from "../../../views";
 import { NavigatorProps as ParentNavigatorProps } from "..";
 
+// TODO. Launch Resource modal on click to edit resource tags, delete or convert it
+
+// TODO. Inside Resource modal, click on resource will open specific resource in its own modal
+
+// TODO. Generate tags via input, search via generated tags
+
+// TODO. Integrate authentication via google
+
+// TODO. Integrate google drive
+
 export default function Component(props: ParentNavigatorProps<"Community">) {
   const theme = useTheme();
   const struct = get_struct("Private_Resource");
@@ -27,7 +37,11 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
     "image" as "image" | "video" | "pdf" | "youtube"
   );
   return (
-    <>
+    <Column
+      flex={"1"}
+      //  justifyContent={"space-between"}
+      pb={"2"}
+    >
       <Row
         justifyContent={"space-between"}
         space={"1"}
@@ -101,139 +115,146 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
           </Menu.Item>
         </Menu>
       </Row>
-      <List
-        selected={new Decimal(-1)}
-        struct={struct}
-        init_filter={
-          new OrFilter(
-            0,
-            [false, undefined],
-            [false, undefined],
-            [false, undefined],
-            apply(
-              get_filter_paths(
-                struct,
-                [
-                  ["url", [[], "url"]],
-                  ["tag_count", [[], "tag_count"]],
-                  ["owner", [[], "owner"]],
-                ],
-                entrypoints
-              ),
-              (it) => {
-                switch (resource_type) {
-                  case "image": {
-                    return it
-                      .addAll([
-                        new FilterPath(
-                          "type",
-                          [["resource_type"], "type"],
-                          ["str", ["==", "image"]],
-                          undefined
-                        ),
-                        new FilterPath(
-                          "subtype",
-                          [["resource_type"], "subtype"],
-                          ["str", undefined],
-                          undefined
-                        ),
-                      ])
-                      .map((x) => {
-                        x.active = true;
-                        return x;
-                      });
-                  }
-                  case "video": {
-                    return it
-                      .addAll([
-                        new FilterPath(
-                          "type",
-                          [["resource_type"], "type"],
-                          ["str", ["==", "video"]],
-                          undefined
-                        ),
-                        new FilterPath(
-                          "subtype",
-                          [["resource_type"], "subtype"],
-                          ["str", undefined],
-                          undefined
-                        ),
-                      ])
-                      .map((x) => {
-                        x.active = true;
-                        return x;
-                      });
-                  }
-                  case "pdf": {
-                    return it
-                      .addAll([
-                        new FilterPath(
-                          "type",
-                          [["resource_type"], "type"],
-                          ["str", ["==", "application"]],
-                          undefined
-                        ),
-                        new FilterPath(
-                          "subtype",
-                          [["resource_type"], "subtype"],
-                          ["str", ["==", "pdf"]],
-                          undefined
-                        ),
-                      ])
-                      .map((x) => {
-                        x.active = true;
-                        return x;
-                      });
-                  }
-                  case "youtube": {
-                    return it
-                      .addAll([
-                        new FilterPath(
-                          "type",
-                          [["resource_type"], "type"],
-                          ["str", ["==", "text"]],
-                          undefined
-                        ),
-                        new FilterPath(
-                          "subtype",
-                          [["resource_type"], "subtype"],
-                          ["str", ["==", "youtube"]],
-                          undefined
-                        ),
-                      ])
-                      .map((x) => {
-                        x.active = true;
-                        return x;
-                      });
-                  }
-                  default: {
-                    const _exhaustiveCheck: never = resource_type;
-                    return _exhaustiveCheck;
+      <Row>
+        <List
+          selected={new Decimal(-1)}
+          struct={struct}
+          init_filter={
+            new OrFilter(
+              0,
+              [false, undefined],
+              [false, undefined],
+              [false, undefined],
+              apply(
+                get_filter_paths(
+                  struct,
+                  [
+                    ["url", [[], "url"]],
+                    ["tag_count", [[], "tag_count"]],
+                    ["owner", [[], "owner"]],
+                  ],
+                  entrypoints
+                ),
+                (it) => {
+                  switch (resource_type) {
+                    case "image": {
+                      return it
+                        .addAll([
+                          new FilterPath(
+                            "type",
+                            [["resource_type"], "type"],
+                            [
+                              "str",
+                              // undefined,
+                              ["==", "image"],
+                            ],
+                            undefined
+                          ),
+                          new FilterPath(
+                            "subtype",
+                            [["resource_type"], "subtype"],
+                            ["str", undefined],
+                            undefined
+                          ),
+                        ])
+                        .map((x) => {
+                          x.active = true;
+                          return x;
+                        });
+                    }
+                    case "video": {
+                      return it
+                        .addAll([
+                          new FilterPath(
+                            "type",
+                            [["resource_type"], "type"],
+                            ["str", ["==", "video"]],
+                            undefined
+                          ),
+                          new FilterPath(
+                            "subtype",
+                            [["resource_type"], "subtype"],
+                            ["str", undefined],
+                            undefined
+                          ),
+                        ])
+                        .map((x) => {
+                          x.active = true;
+                          return x;
+                        });
+                    }
+                    case "pdf": {
+                      return it
+                        .addAll([
+                          new FilterPath(
+                            "type",
+                            [["resource_type"], "type"],
+                            ["str", ["==", "application"]],
+                            undefined
+                          ),
+                          new FilterPath(
+                            "subtype",
+                            [["resource_type"], "subtype"],
+                            ["str", ["==", "pdf"]],
+                            undefined
+                          ),
+                        ])
+                        .map((x) => {
+                          x.active = true;
+                          return x;
+                        });
+                    }
+                    case "youtube": {
+                      return it
+                        .addAll([
+                          new FilterPath(
+                            "type",
+                            [["resource_type"], "type"],
+                            ["str", ["==", "text"]],
+                            undefined
+                          ),
+                          new FilterPath(
+                            "subtype",
+                            [["resource_type"], "subtype"],
+                            ["str", ["==", "youtube"]],
+                            undefined
+                          ),
+                        ])
+                        .map((x) => {
+                          x.active = true;
+                          return x;
+                        });
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = resource_type;
+                      return _exhaustiveCheck;
+                    }
                   }
                 }
-              }
+              )
             )
-          )
-        }
-        filters={HashSet.of()}
-        limit={new Decimal(10)}
-        options={[
-          "list",
-          {
-            entrypoints: entrypoints,
-            RenderElement: [
-              (props) => (
-                <OtherComponent
-                  {...props}
-                  view={views.Private_Resource["Default"]}
-                />
-              ),
-              {},
-            ],
-          },
-        ]}
-        RenderVariant={(props) => <Identity {...props} />}
-      />
-    </>
+          }
+          filters={HashSet.of()}
+          limit={new Decimal(10)}
+          options={[
+            "list",
+            {
+              horizontal: true,
+              entrypoints: entrypoints,
+              RenderElement: [
+                (props) => (
+                  <OtherComponent
+                    {...props}
+                    view={views.Private_Resource["Card"]}
+                  />
+                ),
+                {},
+              ],
+            },
+          ]}
+          RenderVariant={(props) => <Identity {...props} />}
+        />
+      </Row>
+    </Column>
   );
 }

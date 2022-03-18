@@ -737,9 +737,15 @@ export function DeleteButton(props: {
   );
 }
 
-export function ResourceComponent(props: { resource: Resource }) {
+export function ResourceComponent(props: {
+  resource: Resource;
+  display?: ["row" | "column", number];
+}) {
   const navigation = useNavigation();
   const theme = useTheme();
+  const display: ["row" | "column", number] = props.display
+    ? props.display
+    : ["column", dimensions.width];
   if (props.resource !== undefined) {
     switch (props.resource.type) {
       case "image": {
@@ -747,45 +753,55 @@ export function ResourceComponent(props: { resource: Resource }) {
           case "png":
           case "jpeg":
           case "webp": {
+            const resource = props.resource;
             return (
               <Pressable
-                height={
-                  props.resource.height *
-                  (dimensions.width / props.resource.width)
-                }
-                width={"100%"}
-                onPress={() => {
-                  // navigation.navigate("Resource", {
-                  //   id: props.state.id.toNumber(),
-                  //   values: undefined,
-                  // });
-                }}
-              >
-                <ReactNativeZoomableView
-                  maxZoom={30}
-                  // Give these to the zoomable view so it can apply the boundaries around the actual content.
-                  // Need to make sure the content is actually centered and the width and height are
-                  // dimensions when it's rendered naturally. Not the intrinsic size.
-                  // For example, an image with an intrinsic size of 400x200 will be rendered as 300x150 in this case.
-                  // Therefore, we'll feed the zoomable view the 300x150 size.
-                  // contentWidth={300}
-                  // contentHeight={150}
-                >
-                  <Image
-                    source={{
-                      uri: props.resource.url,
-                    }}
-                    resizeMode="contain"
-                    height={"full"}
-                    width={"full"}
-                    alt="*"
-                    fallbackElement={
-                      <Text fontSize={"xs"} color={theme.error}>
-                        * Unable to load image, please check url
-                      </Text>
+                height={arrow(() => {
+                  switch (display[0]) {
+                    case "column": {
+                      return resource.height * (display[1] / resource.width);
                     }
-                  />
-                </ReactNativeZoomableView>
+                    case "row": {
+                      return "100%";
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = display[0];
+                      return _exhaustiveCheck;
+                    }
+                  }
+                })}
+                width={arrow(() => {
+                  switch (display[0]) {
+                    case "column": {
+                      return "100%";
+                    }
+                    case "row": {
+                      return display[1];
+                    }
+                    default: {
+                      const _exhaustiveCheck: never = display[0];
+                      return _exhaustiveCheck;
+                    }
+                  }
+                })}
+                onPress={() => {}}
+              >
+                {/* <ReactNativeZoomableView> */}
+                <Image
+                  source={{
+                    uri: props.resource.url,
+                  }}
+                  resizeMode={display[0] === "row" ? "cover" : "contain"}
+                  height={"full"}
+                  width={"full"}
+                  alt="*"
+                  fallbackElement={
+                    <Text fontSize={"xs"} color={theme.error}>
+                      * Unable to load image, please check url
+                    </Text>
+                  }
+                />
+                {/* </ReactNativeZoomableView> */}
               </Pressable>
             );
           }
@@ -804,15 +820,28 @@ export function ResourceComponent(props: { resource: Resource }) {
                   source: {
                     uri: props.resource.url,
                   },
-                  resizeMode: "contain",
+                  resizeMode: display[0] === "row" ? "cover" : "contain",
                 }}
                 fullscreen={{
                   visible: false,
                 }}
-                style={{
-                  height: 240,
-                  videoBackgroundColor: theme.background,
-                }}
+                style={arrow(() => {
+                  switch (display[0]) {
+                    case "column": {
+                      return {
+                        height: 240,
+                        videoBackgroundColor: theme.background,
+                      };
+                    }
+                    case "row": {
+                      return {
+                        width: display[1],
+                        height: 90,
+                        videoBackgroundColor: theme.background,
+                      };
+                    }
+                  }
+                })}
               />
             );
           }
@@ -833,7 +862,20 @@ export function ResourceComponent(props: { resource: Resource }) {
                       uri: `http://docs.google.com/gview?embedded=true&url=${props.resource.url}`,
                     }}
                     nestedScrollEnabled={true}
-                    style={{ height: 240 }}
+                    style={arrow(() => {
+                      switch (display[0]) {
+                        case "column": {
+                          return {
+                            height: 240,
+                          };
+                        }
+                        case "row": {
+                          return {
+                            width: display[1],
+                          };
+                        }
+                      }
+                    })}
                   />
                 </Pressable>
               </Column>
@@ -879,7 +921,20 @@ export function ResourceComponent(props: { resource: Resource }) {
                         </body>
                         </html>`,
                   }}
-                  style={{ height: 210 }}
+                  style={arrow(() => {
+                    switch (display[0]) {
+                      case "column": {
+                        return {
+                          height: 210,
+                        };
+                      }
+                      case "row": {
+                        return {
+                          width: display[1],
+                        };
+                      }
+                    }
+                  })}
                 />
               </Column>
             );

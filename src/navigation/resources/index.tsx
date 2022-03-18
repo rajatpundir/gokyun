@@ -28,7 +28,7 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
     <>
       <ModalHeader title="Resources" />
       <TopTab.Navigator
-        initialRouteName="Linker"
+        initialRouteName="Community"
         screenOptions={{
           lazy: true,
           tabBarScrollEnabled: true,
@@ -41,8 +41,8 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
           }),
         }}
       >
-        <TopTab.Screen name="Linker" component={Linker} />
-        <TopTab.Screen name="Personal" component={Personal} />
+        {/* <TopTab.Screen name="Linker" component={Linker} /> */}
+        {/* <TopTab.Screen name="Personal" component={Personal} /> */}
         <TopTab.Screen name="Community" component={Community} />
       </TopTab.Navigator>
     </>
