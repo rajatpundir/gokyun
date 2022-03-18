@@ -109,16 +109,36 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
             </Pressable>
           )}
         >
-          <Menu.Item onPress={() => set_resource_type("image")}>
+          <Menu.Item
+            onPress={() => {
+              set_resource_type("image");
+              set_variable(undefined);
+            }}
+          >
             <Text color={theme.text}>Images</Text>
           </Menu.Item>
-          <Menu.Item onPress={() => set_resource_type("video")}>
+          <Menu.Item
+            onPress={() => {
+              set_resource_type("video");
+              set_variable(undefined);
+            }}
+          >
             <Text color={theme.text}>Videos</Text>
           </Menu.Item>
-          <Menu.Item onPress={() => set_resource_type("pdf")}>
+          <Menu.Item
+            onPress={() => {
+              set_resource_type("pdf");
+              set_variable(undefined);
+            }}
+          >
             <Text color={theme.text}>PDF</Text>
           </Menu.Item>
-          <Menu.Item onPress={() => set_resource_type("youtube")}>
+          <Menu.Item
+            onPress={() => {
+              set_resource_type("youtube");
+              set_variable(undefined);
+            }}
+          >
             <Text color={theme.text}>YouTube</Text>
           </Menu.Item>
         </Menu>
@@ -285,6 +305,7 @@ export default function Component(props: ParentNavigatorProps<"Community">) {
             ]}
             RenderVariant={(props) => <Identity {...props} />}
             on_select={(x) => {
+              set_variable(undefined);
               console.log(
                 x.id.toString(),
                 x.struct.name,

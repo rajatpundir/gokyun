@@ -58,11 +58,6 @@ export default {
               mime_subtype_value.type === "str"
             ) {
               set_resource(await get_resource(new URL(url_value.value)));
-              console.log(
-                url_value.value,
-                mime_type_value.value,
-                mime_subtype_value.value
-              );
             }
           }
         });
@@ -184,11 +179,6 @@ export default {
               mime_subtype_value.type === "str"
             ) {
               set_resource(await get_resource(new URL(url_value.value)));
-              console.log(
-                url_value.value,
-                mime_type_value.value,
-                mime_subtype_value.value
-              );
             }
           }
         });

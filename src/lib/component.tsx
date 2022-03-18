@@ -41,6 +41,7 @@ import { Portal } from "@gorhom/portal";
 import { Entrypoint } from "./permissions";
 import VideoPlayer from "expo-video-player";
 import WebView from "react-native-webview";
+import { cloneDeep } from "lodash";
 
 export type ComponentViews = Record<
   string,
@@ -102,6 +103,19 @@ export function useComponent(props: {
     entrypoints: props.entrypoints,
     found: props.found,
   });
+
+  useEffect(() => {
+    dispatch([
+      "variable",
+      new Variable(
+        props.struct,
+        props.id,
+        props.created_at,
+        props.updated_at,
+        props.values
+      ),
+    ]);
+  }, [props.id]);
 
   useLayoutEffect(() => {
     let mounted = true;
@@ -735,21 +749,24 @@ export function ResourceComponent(props: {
   display?: ["row" | "column", number];
 }) {
   const theme = useTheme();
+  const [resource, set_resource] = useState(props.resource);
   const display: ["row" | "column", number] = props.display
     ? props.display
     : ["column", dimensions.width];
-  if (props.resource !== undefined) {
-    switch (props.resource.type) {
+  useEffect(() => {
+    set_resource(props.resource);
+  }, [props.resource]);
+  if (resource !== undefined) {
+    switch (resource.type) {
       case "image": {
-        switch (props.resource.subtype) {
+        switch (resource.subtype) {
           case "png":
           case "jpeg":
           case "webp": {
-            const resource = props.resource;
             return (
               <Image
                 source={{
-                  uri: props.resource.url,
+                  uri: resource.url,
                 }}
                 resizeMode={display[0] === "row" ? "cover" : "contain"}
                 alt="*"
@@ -790,19 +807,19 @@ export function ResourceComponent(props: {
             );
           }
           default: {
-            const _exhaustiveCheck: never = props.resource;
+            const _exhaustiveCheck: never = resource;
             return _exhaustiveCheck;
           }
         }
       }
       case "video": {
-        switch (props.resource.subtype) {
+        switch (resource.subtype) {
           case "mp4": {
             return (
               <VideoPlayer
                 videoProps={{
                   source: {
-                    uri: props.resource.url,
+                    uri: resource.url,
                   },
                   resizeMode: display[0] === "row" ? "cover" : "contain",
                 }}
@@ -830,20 +847,20 @@ export function ResourceComponent(props: {
             );
           }
           default: {
-            const _exhaustiveCheck: never = props.resource;
+            const _exhaustiveCheck: never = resource;
             return _exhaustiveCheck;
           }
         }
       }
       case "application": {
-        switch (props.resource.subtype) {
+        switch (resource.subtype) {
           case "pdf": {
             return (
               <Column flex={"1"}>
                 <Pressable onPress={() => {}}>
                   <WebView
                     source={{
-                      uri: `http://docs.google.com/gview?embedded=true&url=${props.resource.url}`,
+                      uri: `http://docs.google.com/gview?embedded=true&url=${resource.url}`,
                     }}
                     nestedScrollEnabled={true}
                     style={arrow(() => {
@@ -866,13 +883,13 @@ export function ResourceComponent(props: {
             );
           }
           default: {
-            const _exhaustiveCheck: never = props.resource;
+            const _exhaustiveCheck: never = resource;
             return _exhaustiveCheck;
           }
         }
       }
       case "text": {
-        switch (props.resource.subtype) {
+        switch (resource.subtype) {
           case "youtube": {
             return (
               <Column flex={"1"}>
@@ -901,7 +918,7 @@ export function ResourceComponent(props: {
                             }
                         </style>
                         <body>
-                          <iframe src="https://www.youtube-nocookie.com/embed/${props.resource.url}?controls=0"></iframe>
+                          <iframe src="https://www.youtube-nocookie.com/embed/${resource.url}?controls=0"></iframe>
                         </body>
                         </html>`,
                   }}
@@ -924,13 +941,13 @@ export function ResourceComponent(props: {
             );
           }
           default: {
-            const _exhaustiveCheck: never = props.resource;
+            const _exhaustiveCheck: never = resource;
             return _exhaustiveCheck;
           }
         }
       }
       default: {
-        const _exhaustiveCheck: never = props.resource;
+        const _exhaustiveCheck: never = resource;
         return _exhaustiveCheck;
       }
     }

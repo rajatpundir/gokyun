@@ -42,7 +42,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mustache": "^4.2.0",
-    "native-base": "3.3.1",
+    "native-base": "3.3.5",
     "prelude-ts": "^1.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
