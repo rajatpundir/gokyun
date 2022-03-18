@@ -741,7 +741,6 @@ export function ResourceComponent(props: {
   resource: Resource;
   display?: ["row" | "column", number];
 }) {
-  const navigation = useNavigation();
   const theme = useTheme();
   const display: ["row" | "column", number] = props.display
     ? props.display
@@ -755,7 +754,17 @@ export function ResourceComponent(props: {
           case "webp": {
             const resource = props.resource;
             return (
-              <Pressable
+              <Image
+                source={{
+                  uri: props.resource.url,
+                }}
+                resizeMode={display[0] === "row" ? "cover" : "contain"}
+                alt="*"
+                fallbackElement={
+                  <Text fontSize={"xs"} color={theme.error}>
+                    * Unable to load image, please check url
+                  </Text>
+                }
                 height={arrow(() => {
                   switch (display[0]) {
                     case "column": {
@@ -784,25 +793,7 @@ export function ResourceComponent(props: {
                     }
                   }
                 })}
-                onPress={() => {}}
-              >
-                {/* <ReactNativeZoomableView> */}
-                <Image
-                  source={{
-                    uri: props.resource.url,
-                  }}
-                  resizeMode={display[0] === "row" ? "cover" : "contain"}
-                  height={"full"}
-                  width={"full"}
-                  alt="*"
-                  fallbackElement={
-                    <Text fontSize={"xs"} color={theme.error}>
-                      * Unable to load image, please check url
-                    </Text>
-                  }
-                />
-                {/* </ReactNativeZoomableView> */}
-              </Pressable>
+              />
             );
           }
           default: {
