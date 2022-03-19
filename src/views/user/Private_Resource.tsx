@@ -94,7 +94,7 @@ export default {
                   <Feather name="edit-3" size={16} color={theme.text} />
                 </Pressable>
               </Row>
-              <Row backgroundColor={theme.error}>
+              <Row>
                 {/* FAB */}
                 <ResourceComponent resource={resource} />
               </Row>
