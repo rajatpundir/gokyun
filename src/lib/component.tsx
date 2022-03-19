@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { View } from "react-native";
 import Decimal from "decimal.js";
 import { HashSet } from "prelude-ts";
 import { useImmerReducer } from "use-immer";
@@ -33,6 +32,7 @@ import {
   Column,
   Spinner,
   Image,
+  View,
 } from "native-base";
 import { BrokerKey, getState, setState, subscribe } from "./store";
 import { useBSTheme, useTheme } from "./theme";

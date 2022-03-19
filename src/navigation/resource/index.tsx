@@ -5,7 +5,6 @@ import { HashSet } from "prelude-ts";
 import { NavigatorProps as RootNavigatorProps } from "../main";
 import { get_struct } from "../../schema";
 import { views } from "../../views";
-import { Text } from "native-base";
 import { useComponent, useTheme } from "../../lib";
 
 export default function Component(
@@ -24,34 +23,17 @@ export default function Component(
     init_values: HashSet.of(),
     extensions: {},
     labels: [
-      ["STR", [[], "str"]],
-      ["LSTR", [[], "lstr"]],
-      ["CLOB", [[], "clob"]],
-      ["U32", [[], "u32"]],
-      ["I32", [[], "i32"]],
-      ["U64", [[], "u64"]],
-      ["I64", [[], "i64"]],
-      ["UDOUBLE", [[], "udouble"]],
-      ["IDOUBLE", [[], "idouble"]],
-      ["UDECIMAL", [[], "udecimal"]],
-      ["IDECIMAL", [[], "idecimal"]],
-      ["BOOL", [[], "bool"]],
-      ["DATE", [[], "date"]],
-      ["TIME", [[], "time"]],
-      ["TIMESTAMP", [[], "timestamp"]],
-      ["USER", [[], "user"]],
-      ["USER NICKNAME", [["user"], "nickname"]],
+      ["type", [["resource_type"], "type"]],
+      ["subtype", [["resource_type"], "subtype"]],
+      ["url", [[], "url"]],
+      ["tag_count", [[], "tag_count"]],
+      ["owner", [[], "owner"]],
     ],
     higher_structs: [],
     entrypoints: [[[], "user"]],
-    create: views.Test["Default"].create,
-    update: views.Test["Default"].update,
-    show: views.Test["Default"].show,
+    create: views.Private_Resource["Modal"].create,
+    update: views.Private_Resource["Modal"].update,
+    show: views.Private_Resource["Modal"].show,
   });
-
-  return (
-    <>
-      <Text>ABC</Text>
-    </>
-  );
+  return jsx;
 }
