@@ -26,6 +26,7 @@ import Private_Resource_Tag from "./Private_Resource_Tag";
 import { RenderWrappedItemProps } from "../../lib/list_variants";
 import { useNavigation } from "@react-navigation/native";
 import { dimensions } from "../../lib/commons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 const views = { Private_Resource_Tag };
 
@@ -71,16 +72,30 @@ export default {
             return theme.background;
           })}
         >
-          <Text>
+          {/* <Text>
             {"Tags: "}
             <Field {...props} path={[[], "tag_count"]} />
-          </Text>
+          </Text> */}
           {resource !== undefined ? (
             <Column>
               <Row justifyContent={"flex-end"}>
-                <Text>Open</Text>
+                <Pressable
+                  onPress={() => {}}
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  px={"2"}
+                  py={"1.5"}
+                  rounded={"sm"}
+                  borderWidth={"1"}
+                  borderColor={theme.border}
+                  m={"1"}
+                >
+                  {/* <Text color={theme.text}>Edit </Text> */}
+                  <Feather name="edit-3" size={16} color={theme.text} />
+                </Pressable>
               </Row>
-              <Row>
+              <Row backgroundColor={theme.error}>
+                {/* FAB */}
                 <ResourceComponent resource={resource} />
               </Row>
               <Column p={"2"}>
