@@ -20,12 +20,12 @@ import {
   get_resource,
   Resource,
   ResourceComponent,
-} from "../lib";
-import { get_struct } from "../schema";
+} from "../../lib";
+import { get_struct } from "../../schema";
 import Private_Resource_Tag from "./Private_Resource_Tag";
-import { RenderWrappedItemProps } from "../lib/list_variants";
+import { RenderWrappedItemProps } from "../../lib/list_variants";
 import { useNavigation } from "@react-navigation/native";
-import { dimensions } from "../lib/commons";
+import { dimensions } from "../../lib/commons";
 
 const views = { Private_Resource_Tag };
 

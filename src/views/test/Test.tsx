@@ -9,7 +9,7 @@ import {
   MaterialIcons,
 } from "@expo/vector-icons";
 import { ScrollView, Row, Text, Pressable, Column } from "native-base";
-import User from "./User";
+import User from "../system/User";
 import { HashSet } from "prelude-ts";
 import { cloneDeep } from "lodash";
 import {
@@ -32,8 +32,8 @@ import {
   useTheme,
   apply,
   Path,
-} from "../lib";
-import { get_fx } from "../schema";
+} from "../../lib";
+import { get_fx } from "../../schema";
 
 const views = {
   User,
@@ -233,7 +233,7 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    RenderElement: (variable) => {
+                    RenderElement: (variable: Variable) => {
                       const result = variable.paths.findAny((x) =>
                         compare_paths(get_path_string(x), [[], "nickname"])
                       );
@@ -324,41 +324,42 @@ const common_default_component: ComponentViews[string]["create"] = (props) => {
                       }
                       return <></>;
                     }),
-                    RenderElement: (variable) => (selected: boolean) =>
-                      (
-                        <Row py={"0.5"}>
-                          {selected ? (
-                            <Ionicons
-                              name="radio-button-on"
-                              size={24}
-                              color={bs_theme.primary}
-                            />
-                          ) : (
-                            <Ionicons
-                              name="radio-button-off"
-                              size={24}
-                              color={bs_theme.primary}
-                            />
-                          )}
-                          <Text pl={1} color={theme.text}>
-                            {arrow(() => {
-                              const result = variable.paths.findAny((x) =>
-                                compare_paths(get_path_string(x), [
-                                  [],
-                                  "nickname",
-                                ])
-                              );
-                              if (result.isSome()) {
-                                const path = result.get();
-                                if (path.path[1][1].type === "str") {
-                                  return path.path[1][1].value;
+                    RenderElement:
+                      (variable: Variable) => (selected: boolean) =>
+                        (
+                          <Row py={"0.5"}>
+                            {selected ? (
+                              <Ionicons
+                                name="radio-button-on"
+                                size={24}
+                                color={bs_theme.primary}
+                              />
+                            ) : (
+                              <Ionicons
+                                name="radio-button-off"
+                                size={24}
+                                color={bs_theme.primary}
+                              />
+                            )}
+                            <Text pl={1} color={theme.text}>
+                              {arrow(() => {
+                                const result = variable.paths.findAny((x) =>
+                                  compare_paths(get_path_string(x), [
+                                    [],
+                                    "nickname",
+                                  ])
+                                );
+                                if (result.isSome()) {
+                                  const path = result.get();
+                                  if (path.path[1][1].type === "str") {
+                                    return path.path[1][1].value;
+                                  }
                                 }
-                              }
-                              return variable.id.toString();
-                            })}
-                          </Text>
-                        </Row>
-                      ),
+                                return variable.id.toString();
+                              })}
+                            </Text>
+                          </Row>
+                        ),
                   },
                 ],
               },

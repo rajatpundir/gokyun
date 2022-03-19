@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, View } from "native-base";
-import { ComponentViews, useTheme, Field } from "../lib";
+import { ComponentViews, useTheme, Field } from "../../lib";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const views = {};
