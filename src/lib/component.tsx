@@ -41,7 +41,6 @@ import { Portal } from "@gorhom/portal";
 import { Entrypoint } from "./permissions";
 import VideoPlayer from "expo-video-player";
 import WebView from "react-native-webview";
-import { cloneDeep } from "lodash";
 
 export type ComponentViews = Record<
   string,

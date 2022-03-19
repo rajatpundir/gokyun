@@ -34,7 +34,6 @@ export default {
     create: () => <></>,
     update: () => <></>,
     show: (props) => {
-      const navigation = useNavigation();
       const theme = useTheme();
       const [resource, set_resource] = useState(undefined as Resource);
       useEffect(() => {

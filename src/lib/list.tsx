@@ -410,6 +410,11 @@ function reducer(state: Draft<ListState>, action: ListAction) {
     }
     case "init_filter": {
       state.init_filter = action[1];
+      state.reload += 1;
+      state.offset = new Decimal(0);
+      state.variables = [];
+      state.reached_end = false;
+      state.refreshing = true;
       break;
     }
     default: {

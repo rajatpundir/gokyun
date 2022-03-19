@@ -142,6 +142,7 @@ export function reducer(state: Draft<State>, action: Action) {
       break;
     }
     case "variable": {
+      state.id = action[1].id;
       state.created_at = action[1].created_at;
       state.updated_at = action[1].updated_at;
       state.values = get_writeable_paths(
