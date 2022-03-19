@@ -15,14 +15,12 @@ import { ModalHeader, tw } from "../../lib";
 import Linker from "./linker";
 import Shared from "./shared";
 import Personal from "./personal";
-import Gallery from "./gallery";
 import { dimensions } from "../../lib/commons";
 
 export type NavigatorParams = {
   Linker: undefined;
   Shared: undefined;
   Personal: undefined;
-  Gallery: undefined;
 };
 
 export default function Navigator(props: RootNavigatorProps<"Resources">) {
@@ -46,8 +44,6 @@ export default function Navigator(props: RootNavigatorProps<"Resources">) {
         <TopTab.Screen name="Linker" component={Linker} />
         <TopTab.Screen name="Personal" component={Personal} />
         <TopTab.Screen name="Shared" component={Shared} />
-        {/* Gallery should be used to only display images since other resources are evading onPress */}
-        <TopTab.Screen name="Gallery" component={Gallery} />
       </TopTab.Navigator>
     </>
   );

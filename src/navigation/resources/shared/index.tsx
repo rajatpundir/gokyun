@@ -9,7 +9,6 @@ import {
   Row,
   ScrollView,
   Text,
-  View,
 } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {

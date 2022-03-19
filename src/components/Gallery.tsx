@@ -9,7 +9,6 @@ import {
   Row,
   ScrollView,
   Text,
-  View,
 } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -24,12 +23,13 @@ import {
   apply,
   FilterPath,
   Variable,
-} from "../../../lib";
-import { get_struct } from "../../../schema";
-import { views } from "../../../views";
-import { NavigatorProps as ParentNavigatorProps } from "..";
+} from "../lib";
+import { get_struct } from "../schema";
+import { views } from "../views";
 
-export default function Component(props: ParentNavigatorProps<"Gallery">) {
+// Note. Gallery should be used to only display images since other resources are evading onPress
+
+export default function Component(props: {}): JSX.Element {
   const theme = useTheme();
   const struct = get_struct("Private_Resource");
   const entrypoints: Array<Entrypoint> = [[[], "owner"]];
